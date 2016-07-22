@@ -92,4 +92,6 @@ bindkey '^R' history-incremental-pattern-search-backward
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
+export PATH=$HOME/dotfiles/bin:$PATH
+
 source ~/dotfiles/zsh/zshrc.local

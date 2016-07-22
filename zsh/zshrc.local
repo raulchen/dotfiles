@@ -1,0 +1,11 @@
+source ~/dotfiles/zsh/zshrc_macos
+
+#export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.7.0_79.jdk/Contents/Home
+export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_60.jdk/Contents/Home
+export PATH="/opt/facebook/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/munki:/Users/chenh/bin:$JAVA_HOME/bin"
+# export MANPATH="/usr/local/man:$MANPATH"
+
+test -e ${HOME}/.iterm2_shell_integration.zsh && source ${HOME}/.iterm2_shell_integration.zsh
+
+eval "$(pyenv init -)"
+

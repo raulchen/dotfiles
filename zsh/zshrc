@@ -95,6 +95,8 @@ bindkey '^R' history-incremental-pattern-search-backward
 
 export PATH=$dotfiles/bin:$PATH
 
+source ${dotfiles}/alias
+
 os_name=`uname`
 if [[ $os_name == 'Darwin' ]]; then
     source "$dotfiles/zsh/zshrc_macos"

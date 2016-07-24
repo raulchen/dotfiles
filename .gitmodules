@@ -62,3 +62,6 @@
 [submodule "vim/plugins/jedi-vim"]
 	path = vim/plugins/jedi-vim
 	url = https://github.com/davidhalter/jedi-vim
+[submodule "vim/plugins/vim-polyglot"]
+	path = vim/plugins/vim-polyglot
+	url = https://github.com/sheerun/vim-polyglot

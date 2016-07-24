@@ -35,6 +35,9 @@ nmap <leader>Q :q!<cr>
 nnoremap <space> za
 vnoremap <space> zf
 
+" use system clipboard
+set clipboard=unnamed
+
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => VIM user interface
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""

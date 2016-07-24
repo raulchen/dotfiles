@@ -62,3 +62,6 @@
 [submodule "vim/plugins/vim-polyglot"]
 	path = vim/plugins/vim-polyglot
 	url = https://github.com/sheerun/vim-polyglot
+[submodule "vim/plugins/syntastic"]
+	path = vim/plugins/syntastic
+	url = https://github.com/scrooloose/syntastic

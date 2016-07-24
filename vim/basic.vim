@@ -9,7 +9,7 @@ set number
 set showcmd
 
 " Sets how many lines of history VIM has to remember
-set history=500
+set history=1000
 
 " Enable filetype plugins
 filetype plugin on
@@ -21,8 +21,11 @@ filetype indent on
 let mapleader = ","
 let g:mapleader = ","
 
+" go to command mode without shift
+noremap ; :
+
 " Fast saving
-"nmap <leader>w :w!<cr>
+nmap <leader>w :w!<cr>
 
 " :W sudo saves the file
 " (useful for handling the permission-denied error)
@@ -32,12 +35,15 @@ command W w !sudo tee % > /dev/null
 nmap <leader>q :q<cr>
 nmap <leader>Q :q!<cr>
 
+" Fold
 nnoremap <space> za
 vnoremap <space> zf
 
 " use system clipboard
 set clipboard=unnamed
 
+" enable mouse
+set mouse=a
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => VIM user interface
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -55,7 +61,7 @@ set wildmenu
 set wildmode=longest:full,full
 
 " Ignore compiled files
-set wildignore=*.o,*~,*.pyc
+set wildignore=*.o,*~,*.pyc,*.class,*.swp
 if has("win16") || has("win32")
     set wildignore+=.git\*,.hg\*,.svn\*
 else
@@ -244,6 +250,9 @@ set statusline=\ %{HasPaste()}%F%m%r%h\ %w\ \ CWD:\ %r%{getcwd()}%h\ \ \ Line:\ 
 " Remap VIM 0 to first non-blank character
 map 0 ^
 
+" redo
+nmap U <C-r>
+
 " Move a line of text
 nmap <C-j> mz:m+<cr>`z
 nmap <C-k> mz:m-2<cr>`z
@@ -314,10 +323,6 @@ map <leader>s? z=
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Remove the Windows ^M - when the encodings gets messed up
 noremap <Leader>m mmHmt:%s/<C-V><cr>//ge<cr>'tzt'm
-
-" Toggle paste mode on and off
-map <leader>pp :setlocal paste!<cr>
-
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Helper functions
@@ -432,4 +437,27 @@ endfunc
 func! CurrentFileDir(cmd)
     return a:cmd . " " . expand("%:p:h") . "/"
 endfunc
+
+"""""""""""""""""""
+" Fn keys
+"""""""""""""""""""
+" F2 to switch between number, relative_number, no_number
+function! SwitchNumber()
+    if(&relativenumber)
+        set norelativenumber
+        set nonumber
+    elseif(&number)
+        set relativenumber
+        set nonumber
+    else
+        set norelativenumber
+        set number
+    endif
+endfunc
+noremap <F2> :call SwitchNumber()<CR>
+" F3 to toggle wrap
+noremap <F3> :set wrap! wrap?<CR>
+" F4 to toggle paste
+map <F4> :setlocal paste!<cr>
+
 

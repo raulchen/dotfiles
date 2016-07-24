@@ -7,18 +7,12 @@
 [submodule "vim/plugins/nerdtree"]
 	path = vim/plugins/nerdtree
 	url = https://github.com/scrooloose/nerdtree.git
-[submodule "vim/plugins/mru"]
-	path = vim/plugins/mru
-	url = https://github.com/yegappan/mru
 [submodule "vim/plugins/tabline.vim"]
 	path = vim/plugins/tabline.vim
 	url = https://github.com/mkitt/tabline.vim
 [submodule "vim/plugins/ack.vim"]
 	path = vim/plugins/ack.vim
 	url = https://github.com/mileszs/ack.vim
-[submodule "vim/plugins/bufexplorer"]
-	path = vim/plugins/bufexplorer
-	url = https://github.com/jlanzarotta/bufexplorer
 [submodule "vim/plugins/ctrlp.vim"]
 	path = vim/plugins/ctrlp.vim
 	url = https://github.com/kien/ctrlp.vim

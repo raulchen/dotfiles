@@ -1,1 +1,2 @@
 *.local
+vim/temp_dirs/undodir/**

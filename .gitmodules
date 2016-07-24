@@ -27,7 +27,8 @@
 	url = https://github.com/tpope/vim-commentary
 [submodule "vim/plugins/vim-expand-region"]
 	path = vim/plugins/vim-expand-region
-	url = https://github.com/terryma/vim-expand-region
+    url = https://github.com/terryma/vim-expand-region
+    ignore = dirty
 [submodule "vim/plugins/vim-flake8"]
 	path = vim/plugins/vim-flake8
 	url = https://github.com/nvie/vim-flake8

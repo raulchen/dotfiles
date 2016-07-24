@@ -32,6 +32,9 @@ command W w !sudo tee % > /dev/null
 nmap <leader>q :q<cr>
 nmap <leader>Q :q!<cr>
 
+nnoremap <space> za
+vnoremap <space> zf
+
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => VIM user interface
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""

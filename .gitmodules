@@ -56,3 +56,6 @@
 [submodule "vim/plugins/vim-easymotion"]
 	path = vim/plugins/vim-easymotion
 	url = https://github.com/easymotion/vim-easymotion
+[submodule "vim/plugins/dracula-theme"]
+	path = vim/plugins/dracula-theme
+	url = https://www.github.com/dracula/vim.git

@@ -1,12 +1,17 @@
 """"""""""""""""""""""""""""""
-" => Load pathogen paths
+" Load pathogen paths
 """"""""""""""""""""""""""""""
 call pathogen#infect('~/dotfiles/vim/plugins/{}')
 call pathogen#helptags()
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Nerd Tree
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+""""""""""""""""""""""""
+" Dracula theme
+""""""""""""""""""""""""
+color dracula
+
+""""""""""""""""""""""""
+" Nerd Tree
+""""""""""""""""""""""""
 "let g:NERDTreeWinPos = "right"
 let NERDTreeShowHidden=0
 let NERDTreeIgnore = ['\.pyc$', '__pycache__']

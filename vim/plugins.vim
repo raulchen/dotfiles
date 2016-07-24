@@ -33,13 +33,13 @@ let g:EasyMotion_smartcase = 1
 """""""""""""""""""
 " YankStack
 """""""""""""""""""
-nmap <c-y> <Plug>yankstack_substitute_older_paste
-nmap <c-Y> <Plug>yankstack_substitute_newer_paste
+nmap <c-p> <Plug>yankstack_substitute_older_paste
+nmap <c-P> <Plug>yankstack_substitute_newer_paste
 
 """""""""""""""""""
 " CtrlP
 """""""""""""""""""
-let g:ctrlp_custom_ignore = 'node_modules\|^\.DS_Store\|^\.git\|^\.coffee'
+let g:ctrlp_map = ''
 map <leader>p :CtrlP<cr>
 map <leader>m :CtrlPMRUFiles<cr>
 map <leader>b :CtrlPBuffer<cr>

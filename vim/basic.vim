@@ -187,10 +187,7 @@ vnoremap <silent> # :<C-u>call VisualSelection('', '')<CR>?<C-R>=@/<CR><CR>
 map <silent> <leader><cr> :noh<cr>
 
 " Smart way to move between windows
-"map <c-j> <c-w>j
-"map <c-k> <c-w>k
-"map <C-h> <C-W>h
-"map <C-l> <C-W>l
+noremap H <C-w><C-w>
 
 noremap <C-h> :tabprevious<CR>
 noremap <C-l> :tabnext<CR>

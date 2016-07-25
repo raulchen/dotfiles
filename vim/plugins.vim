@@ -43,6 +43,7 @@ nmap <c-P> <Plug>yankstack_substitute_newer_paste
 """""""""""""""""""
 let g:ctrlp_map = ''
 map <leader>p :CtrlP<cr>
+map <leader>P :CtrlP
 map <leader>m :CtrlPMRUFiles<cr>
 map <leader>b :CtrlPBuffer<cr>
 

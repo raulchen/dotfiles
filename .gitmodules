@@ -13,9 +13,6 @@
 [submodule "vim/plugins/ack.vim"]
 	path = vim/plugins/ack.vim
 	url = https://github.com/mileszs/ack.vim
-[submodule "vim/plugins/ctrlp.vim"]
-	path = vim/plugins/ctrlp.vim
-	url = https://github.com/kien/ctrlp.vim
 [submodule "vim/plugins/lightline.vim"]
 	path = vim/plugins/lightline.vim
 	url = https://github.com/itchyny/lightline.vim
@@ -68,3 +65,6 @@
 [submodule "vim/plugins/vim-nerdtree-tabs"]
 	path = vim/plugins/vim-nerdtree-tabs
 	url = https://github.com/jistr/vim-nerdtree-tabs
+[submodule "vim/plugins/ctrlp.vim"]
+	path = vim/plugins/ctrlp.vim
+	url = https://github.com/ctrlpvim/ctrlp.vim

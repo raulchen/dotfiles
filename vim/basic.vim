@@ -39,9 +39,6 @@ nmap <leader>Q :q!<cr>
 nnoremap <space> za
 vnoremap <space> zf
 
-" use system clipboard
-set clipboard=unnamed
-
 " enable mouse
 set mouse=a
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -456,5 +453,14 @@ noremap <F2> :call SwitchNumber()<CR>
 noremap <F3> :set wrap! wrap?<CR>
 " F4 to toggle paste
 map <F4> :setlocal paste!<cr>
-
-
+" F5 to toggle system clipboard
+function! ToggleSystemClipboard()
+    if(&clipboard=='unnamed')
+        echo 'Using vim built-in clipboard'
+        set clipboard=
+    else
+        echo 'Using system clipboard'
+        set clipboard=unname
+    endif
+endfunc
+map <F5> :call ToggleSystemClipboard()<cr>

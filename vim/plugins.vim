@@ -8,6 +8,7 @@ call pathogen#helptags()
 " Dracula theme
 """"""""""""""""""""""""
 color dracula
+hi Search ctermfg=17 ctermbg=228 cterm=NONE guifg=#282a36 guibg=#f1fa8c gui=NONE
 
 """"""""""""""""""""""""
 " Nerd Tree

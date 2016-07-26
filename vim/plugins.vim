@@ -41,6 +41,7 @@ nmap <c-P> <Plug>yankstack_substitute_newer_paste
 """""""""""""""""""
 " CtrlP
 """""""""""""""""""
+let g:ctrlp_working_path_mode = 0
 let g:ctrlp_map = ''
 map <leader>p :CtrlP<cr>
 map <leader>P :CtrlP

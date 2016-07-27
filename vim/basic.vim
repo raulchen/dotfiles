@@ -140,7 +140,7 @@ set nobackup
 for d in ['undo', 'swap']
     let p = '~/dotfiles/vim/temp_dirs/'.d
     if !isdirectory(p)
-        execute 'silent !mkdir '.p.' > /dev/null 2>&1'
+        execute 'silent !mkdir -p '.p.' > /dev/null 2>&1'
     endif
 endfor
 set undodir=~/dotfiles/vim/temp_dirs/undo//

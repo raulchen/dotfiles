@@ -137,11 +137,11 @@ set nobackup
 set nowb
 set noswapfile
 
-try
-    set undodir=~/dotfiles/vim/temp_dirs/undodir
-    set undofile
-catch
-endtry
+if has('persistent_undo') && !isdirectory(expand('~').'dotfiles/vim/temp_dirs/undodir')
+  silent !mkdir ~/dotfiles/vim/temp_dirs/undodir > /dev/null 2>&1
+  set undodir=~/dotfiles/vim/temp_dirs/undodir
+  set undofile
+endif
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Text, tab and indent related
@@ -457,7 +457,7 @@ function! ToggleSystemClipboard()
         set clipboard=
     else
         echo 'Using system clipboard'
-        set clipboard=unname
+        set clipboard=unnamed
     endif
 endfunc
 map <F5> :call ToggleSystemClipboard()<cr>

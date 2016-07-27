@@ -68,3 +68,6 @@
 [submodule "vim/plugins/ctrlp.vim"]
 	path = vim/plugins/ctrlp.vim
 	url = https://github.com/ctrlpvim/ctrlp.vim
+[submodule "vim/plugins/vim-autoclose"]
+	path = vim/plugins/vim-autoclose
+	url = https://github.com/townk/vim-autoclose

@@ -132,16 +132,17 @@ set ffs=unix,dos,mac
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Files, backups and undo
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Turn backup off, since most stuff is in SVN, git et.c anyway...
+set nowritebackup
 set nobackup
-set nowb
-set noswapfile
-
-if has('persistent_undo') && !isdirectory(expand('~').'dotfiles/vim/temp_dirs/undodir')
-  silent !mkdir ~/dotfiles/vim/temp_dirs/undodir > /dev/null 2>&1
-  set undodir=~/dotfiles/vim/temp_dirs/undodir
-  set undofile
-endif
+" auto create temp_dirs
+for d in ['undo', 'swap']
+    let p = '~/dotfiles/vim/temp_dirs/'.d
+    if !isdirectory(p)
+        execute 'silent !mkdir '.p.' > /dev/null 2>&1'
+    endif
+endfor
+set undodir=~/dotfiles/vim/temp_dirs/undo//
+set directory=~/dotfiles/vim/temp_dirs/swap//
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Text, tab and indent related

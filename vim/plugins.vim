@@ -3,6 +3,13 @@
 """"""""""""""""""""""""""""""
 call pathogen#infect('~/dotfiles/vim/plugins/{}')
 call pathogen#helptags()
+let fzf = 0
+for p in ["~/.fzf", "/usr/local/opt/fzf"]
+    if isdirectory(expand(p))
+        execute "set rtp+=".p
+        let fzf = 1
+    endif
+endfor
 
 """"""""""""""""""""""""
 " Dracula theme

@@ -244,9 +244,6 @@ set statusline=\ %{HasPaste()}%F%m%r%h\ %w\ \ CWD:\ %r%{getcwd()}%h\ \ \ Line:\ 
 " Remap VIM 0 to first non-blank character
 map 0 ^
 
-" redo
-nmap U <C-r>
-
 " Move a line of text
 nmap <C-j> mz:m+<cr>`z
 nmap <C-k> mz:m-2<cr>`z
@@ -274,10 +271,10 @@ autocmd BufWrite * :call DeleteTrailingWS()
 "    requires ag.vim - it's much better than vimgrep/grep
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " When you press gv you Ag after the selected text
-vnoremap <silent> gv :call VisualSelection('gv', '')
+vnoremap <silent> gv :call VisualSelection('gv', '')<CR>
 
 " Open Ag and put the cursor in the right position
-map <leader>g :A
+map <leader>g :Ack<space>
 
 " When you press <leader>r you can search and replace the selected text
 vnoremap <silent> <leader>r :call VisualSelection('replace', '')<CR>

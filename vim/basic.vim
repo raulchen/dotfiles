@@ -21,6 +21,8 @@ filetype indent on
 let mapleader = ","
 let g:mapleader = ","
 
+set timeoutlen=1000
+
 " go to command mode without shift
 noremap ; :
 

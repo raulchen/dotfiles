@@ -3,6 +3,10 @@
 """"""""""""""""""""""""""""""
 call pathogen#infect('~/dotfiles/vim/plugins/{}')
 call pathogen#helptags()
+
+""""""""""""""""""""""""""""""
+" FZF
+""""""""""""""""""""""""""""""
 let fzf = 0
 for p in ["~/.fzf", "/usr/local/opt/fzf"]
     if isdirectory(expand(p))
@@ -10,6 +14,34 @@ for p in ["~/.fzf", "/usr/local/opt/fzf"]
         let fzf = 1
     endif
 endfor
+if !fzf
+    echo "FZF not found"
+else
+    let g:fzf_history_dir = '~/dotfiles/vim/temp_dirs/fzf-history'
+    nmap <c-g>f :Files<cr>
+    nmap <c-g>p :Files <c-r>=expand("%:p:h")<cr>/
+    nmap <c-g>b :Buffers<cr>
+    nmap <c-g>a :Ag<space>
+    nmap <c-g>l :BLines<cr>
+    nmap <c-g>L :Lines<cr>
+    nmap <c-g>t :BTags<cr>
+    nmap <c-g>T :Tags<cr>
+    nmap <c-g>m :Marks<cr>
+    nmap <c-g>h :History<cr>
+    nmap <c-g>/ :History/<cr>
+    nmap <c-g>; :History:<cr>
+    nmap <c-g>g :BCommits<cr>
+    nmap <c-g>G :Commits<cr>
+    nmap <c-g>c :Commands<cr>
+    nmap <c-g>m :Maps<cr>
+    xmap <c-g>m <plug>(fzf-maps-x)
+    omap <c-g>m <plug>(fzf-maps-o)
+    imap <c-g>m <plug>(fzf-maps-i)
+    imap <c-g>w <plug>(fzf-complete-word)
+    imap <c-g>p <plug>(fzf-complete-path)
+    imap <c-g>f <plug>(fzf-complete-file-ag)
+    imap <c-g>l <plug>(fzf-complete-line)
+endif
 
 """"""""""""""""""""""""
 " Dracula theme

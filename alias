@@ -1,4 +1,5 @@
 alias -g L="| less"
 alias -g G="| grep"
+alias -g F="| fzf"
 alias tailf="tail -f"
 alias bell="echo 'BELL''BELL''BELL'"

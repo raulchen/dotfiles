@@ -1,10 +1,4 @@
 """"""""""""""""""""""""""""""
-" Load pathogen paths
-""""""""""""""""""""""""""""""
-call pathogen#infect('~/dotfiles/vim/plugins/{}')
-call pathogen#helptags()
-
-""""""""""""""""""""""""""""""
 " FZF
 """"""""""""""""""""""""""""""
 let fzf = 0

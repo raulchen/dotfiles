@@ -247,8 +247,9 @@ set statusline=\ %{HasPaste()}%F%m%r%h\ %w\ \ CWD:\ %r%{getcwd()}%h\ \ \ Line:\ 
 " Remap VIM 0 to first non-blank character
 map 0 ^
 
-" not set register with x
+" not set register with x and s
 nnoremap x "_x
+nnoremap s "_s
 
 " Move a line of text
 nmap <C-j> mz:m+<cr>`z

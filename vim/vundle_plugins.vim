@@ -1,9 +1,9 @@
-set nocompatible              " be iMproved, required
+"set nocompatible              " be iMproved, required
 filetype off                  " required
 
 " set the runtime path to include Vundle and initialize
 set rtp+=~/dotfiles/vim/Vundle.vim
-call vundle#begin('~/dotfiles/vim/plugins')
+call vundle#begin('~/dotfiles/vim/installed_plugins')
 
 " let Vundle manage Vundle, required
 Plugin 'VundleVim/Vundle.vim'

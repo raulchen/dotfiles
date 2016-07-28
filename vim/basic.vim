@@ -60,7 +60,7 @@ set wildmenu
 set wildmode=longest:full,full
 
 " Ignore compiled files
-set wildignore=*.o,*~,*.pyc,*.class,*.swp
+set wildignore=*.o,*~,*.pyc,*.pyo,*.class,*.swp
 if has("win16") || has("win32")
     set wildignore+=.git\*,.hg\*,.svn\*
 else

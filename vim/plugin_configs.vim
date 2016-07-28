@@ -81,3 +81,8 @@ nmap <leader>p <Plug>yankstack_substitute_newer_paste
 """""""""""""""""""
 " Python
 let g:syntastic_python_checkers=['pyflakes']
+
+"""""""""""""""""""
+" Undo tree
+"""""""""""""""""""
+nnoremap <leader>u :UndotreeToggle<cr>

@@ -186,11 +186,11 @@ vnoremap <silent> # :<C-u>call VisualSelection('', '')<CR>?<C-R>=@/<CR><CR>
 " Disable highlight when <leader><cr> is pressed
 map <silent> <leader><cr> :noh<cr>
 
-" Smart way to move between windows
 noremap H <C-w><C-w>
 
-noremap <C-h> :tabprevious<CR>
-noremap <C-l> :tabnext<CR>
+" smart switch between windows or tabs
+nnoremap <silent> <c-h> :call SwitchWindowOrTab('h')<cr>
+nnoremap <silent> <c-l> :call SwitchWindowOrTab('l')<cr>
 
 "" Close the current buffer
 "map <leader>bd :Bclose<cr>:tabclose<cr>gT
@@ -325,6 +325,19 @@ set diffopt=vertical
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Helper functions
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+function! SwitchWindowOrTab(d)
+    let l:cur=winnr()
+    execute 'wincmd '.a:d
+    if(l:cur==winnr())
+        if(a:d=='h')
+            let l:tabcmd='tabprev'
+        else
+            let l:tabcmd='tabnext'
+        endif
+        execute l:tabcmd
+    endif
+endfunction
+
 function! CmdLine(str)
     exe "menu Foo.Bar :" . a:str
     emenu Foo.Bar

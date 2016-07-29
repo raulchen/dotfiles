@@ -1,7 +1,8 @@
-alias -g L="| less"
-alias -g G="| grep"
-alias -g F="| fzf"
+alias -g H="2>&1 | head"
+alias -g L="2>&1 | less"
+alias -g G="2>&1 | grep"
+alias -g F="2>&1 | fzf"
 alias tailf="tail -f"
 unalias d >/dev/null 2>&1
-alias d=dirs -v | head -10
+alias d="dirs -v | head -10"
 alias bell="echo 'BELL''BELL''BELL'"

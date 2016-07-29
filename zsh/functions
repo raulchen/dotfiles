@@ -24,8 +24,8 @@ fda() {
 }
 
 
-# fdu - cd to selected parent directory
-fdu() {
+# fu - cd upward
+fu() {
 	print_parent_dirs() {
 		path=$(pwd)
         path=${path%/*}

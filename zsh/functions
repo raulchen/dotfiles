@@ -28,13 +28,14 @@ fda() {
 fdu() {
 	print_parent_dirs() {
 		path=$(pwd)
+        path=${path%/*}
 		while [[ "$path" != "" ]]; do
 			echo $path
 			path=${path%/*}
 		done
 		echo "/"
 	}
-    local DIR=$(print_parent_dirs | tail -r | fzf-tmux --tac)
+    local DIR=$(print_parent_dirs | awk '{a[i++]=$0}END{for(j=i-1;j>=0;j--)print a[j];}' | fzf-tmux --tac)
     cd "$DIR"
 }
 

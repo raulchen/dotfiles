@@ -89,6 +89,10 @@ export EDITOR='vim'
 HISTSIZE=130000
 SAVEHIST=130000
 
+export FZF_DEFAULT_OPTS='
+--bind ctrl-f:page-down,ctrl-b:page-up
+'
+
 export TERM="xterm-256color"
 
 bindkey '^R' history-incremental-pattern-search-backward
@@ -98,6 +102,7 @@ bindkey '^R' history-incremental-pattern-search-backward
 export PATH=$dotfiles/bin:$PATH
 
 source ${dotfiles}/alias
+source ${dotfiles}/zsh/functions
 
 os_name=`uname`
 if [[ $os_name == 'Darwin' ]]; then

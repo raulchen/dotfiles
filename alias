@@ -2,4 +2,6 @@ alias -g L="| less"
 alias -g G="| grep"
 alias -g F="| fzf"
 alias tailf="tail -f"
+unalias d >/dev/null 2>&1
+alias d=dirs -v | head -10
 alias bell="echo 'BELL''BELL''BELL'"

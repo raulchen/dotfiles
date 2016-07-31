@@ -101,7 +101,7 @@ bindkey '^R' history-incremental-pattern-search-backward
 
 export PATH=$dotfiles/bin:$PATH
 
-source ${dotfiles}/alias
+source ${dotfiles}/zsh/alias
 source ${dotfiles}/zsh/functions
 
 os_name=`uname`

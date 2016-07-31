@@ -1,7 +1,7 @@
 alias -g H="2>&1 | head"
 alias -g L="2>&1 | less"
 alias -g G="2>&1 | grep"
-alias -g F="2>&1 | fzf"
+alias -g F="2>&1 | fzf --reverse"
 alias tailf="tail -f"
 unalias d >/dev/null 2>&1
 alias d="dirs -v | head -10"

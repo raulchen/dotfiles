@@ -144,6 +144,7 @@ for d in ['undo', 'swap']
     endif
 endfor
 set undodir=~/dotfiles/vim/temp_dirs/undo//
+set undofile
 set directory=~/dotfiles/vim/temp_dirs/swap//
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""

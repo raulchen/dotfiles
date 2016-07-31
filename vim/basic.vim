@@ -187,11 +187,11 @@ vnoremap <silent> # :<C-u>call VisualSelection('', '')<CR>?<C-R>=@/<CR><CR>
 " Disable highlight when <leader><cr> is pressed
 map <silent> <leader><cr> :noh<cr>
 
-noremap H <C-w><C-w>
-
 " smart switch between windows or tabs
 nnoremap <silent> <c-h> :call SwitchWindowOrTab('h')<cr>
 nnoremap <silent> <c-l> :call SwitchWindowOrTab('l')<cr>
+nnoremap <silent> <c-j> <c-w>j
+nnoremap <silent> <c-k> <c-w>k
 
 "" Close the current buffer
 "map <leader>bd :Bclose<cr>:tabclose<cr>gT
@@ -253,10 +253,12 @@ nnoremap x "_x
 nnoremap s "_s
 
 " Move a line of text
-nmap <C-j> mz:m+<cr>`z
-nmap <C-k> mz:m-2<cr>`z
-vmap <C-j> :m'>+<cr>`<my`>mzgv`yo`z
-vmap <C-k> :m'<-2<cr>`>my`<mzgv`yo`z
+nmap <leader>j mz:m+<cr>`z
+nmap <leader>k mz:m-2<cr>`z
+vmap <leader>j :m'>+<cr>`<my`>mzgv`yo`z
+vmap <leader>k :m'<-2<cr>`>my`<mzgv`yo`z
+vmap <c-j> <leader>j
+vmap <c-k> <leader>k
 
 "if has("mac") || has("macunix")
 "  nmap <D-j> <M-j>

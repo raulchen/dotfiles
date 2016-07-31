@@ -86,3 +86,10 @@ let g:syntastic_python_checkers=['pyflakes']
 " Undo tree
 """""""""""""""""""
 nnoremap <leader>u :UndotreeToggle<cr>
+
+"""""""""""""""""""
+" Ack.vim
+"""""""""""""""""""
+if executable('ag')
+    let g:ackprg = 'ag --vimgrep'
+endif

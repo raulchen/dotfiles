@@ -76,6 +76,18 @@ nmap <leader>p <Plug>yankstack_substitute_newer_paste
 """""""""""""""""""
 " Lightline
 """""""""""""""""""
+let g:lightline = {
+  \ 'active': {
+  \   'left': [ [ 'mode', 'paste' ],
+  \             [ 'fugitive', 'readonly', 'absolutepath', 'modified' ] ]
+  \ },
+  \ 'component': {
+  \   'fugitive': '%{exists("*fugitive#head")?fugitive#head():""}'
+  \ },
+  \ 'component_visible_condition': {
+  \   'fugitive': '(exists("*fugitive#head") && ""!=fugitive#head())'
+  \ },
+\ }
 
 """""""""""""""""""
 " Syntastic

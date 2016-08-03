@@ -79,7 +79,7 @@ nmap <leader>p <Plug>yankstack_substitute_newer_paste
 let g:lightline = {
   \ 'active': {
   \   'left': [ [ 'mode', 'paste' ],
-  \             [ 'fugitive', 'readonly', 'absolutepath', 'modified' ] ]
+  \             [ 'fugitive', 'readonly', 'relativepath', 'modified' ] ]
   \ },
   \ 'component': {
   \   'fugitive': '%{exists("*fugitive#head")?fugitive#head():""}'

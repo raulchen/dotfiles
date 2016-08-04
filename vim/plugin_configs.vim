@@ -106,3 +106,20 @@ nnoremap <leader>u :UndotreeToggle<cr>
 if executable('ag')
     let g:ackprg = 'ag --vimgrep'
 endif
+
+"""""""""""""""""""
+" Jedi-vim
+"""""""""""""""""""
+let g:jedi#use_tabs_not_buffers = 1
+let g:jedi#popup_on_dot = 1
+let g:jedi#popup_select_first = 1
+let g:jedi#smart_auto_mappings = 1
+let g:jedi#goto_command = "<c-e>g"
+let g:jedi#goto_assignments_command = "<c-e>a"
+let g:jedi#goto_definitions_command = "<c-e>d"
+let g:jedi#documentation_command = "K"
+let g:jedi#usages_command = "<c-e>u"
+let g:jedi#completions_command = "<C-Space>"
+let g:jedi#rename_command = "<c-e>r"
+autocmd FileType python setlocal completeopt-=preview
+autocmd FileType python setlocal complete-=i

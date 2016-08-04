@@ -31,6 +31,7 @@ Plugin 'jistr/vim-nerdtree-tabs'
 Plugin 'townk/vim-autoclose'
 Plugin 'junegunn/fzf.vim'
 Plugin 'mbbill/undotree'
+Plugin 'davidhalter/jedi-vim'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required

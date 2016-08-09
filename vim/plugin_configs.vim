@@ -72,6 +72,7 @@ let g:EasyMotion_smartcase = 1
 """""""""""""""""""
 nmap <c-p> <Plug>yankstack_substitute_older_paste
 nmap <leader>p <Plug>yankstack_substitute_newer_paste
+let g:yankstack_yank_keys = ['y', 'd']
 
 """""""""""""""""""
 " Lightline

@@ -233,6 +233,7 @@ map 0 ^
 
 " not set register with x and s
 nnoremap x "_x
+nnoremap X "_X
 nnoremap s "_s
 
 " Move a line of text

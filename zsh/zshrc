@@ -1,4 +1,6 @@
 dotfiles=$HOME/dotfiles
+os_name=`test uname`
+
 # Path to your oh-my-zsh installation.
 export ZSH=$dotfiles/zsh/oh-my-zsh
 
@@ -53,6 +55,14 @@ ZSH_CUSTOM=$dotfiles/zsh/oh_my_zsh_custom
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(git colored-man zsh-syntax-highlighting pip python fasd extract)
 
+if [[ $os_name == 'Darwin' ]]; then
+    plugins+=(osx brew brew-cask)
+fi
+
+if test -e "$dotfiles/zsh/plugins.local"; then
+    source $dotfiles/zsh/plugins.local
+fi
+
 source $ZSH/oh-my-zsh.sh
 
 # You may need to manually set your language environment
@@ -104,11 +114,6 @@ export PATH=$dotfiles/bin:$PATH
 
 source ${dotfiles}/zsh/alias
 source ${dotfiles}/zsh/functions
-
-os_name=`uname`
-if [[ $os_name == 'Darwin' ]]; then
-    source "$dotfiles/zsh/zshrc_macos"
-fi
 
 if test -e "$dotfiles/zsh/zshrc.local"; then
     source "$dotfiles/zsh/zshrc.local"

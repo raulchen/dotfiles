@@ -1,3 +1,4 @@
 *.local
+vim/temp_dirs
 vim/temp_dirs/**
 vim/installed_plugins/**

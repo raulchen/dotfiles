@@ -3,7 +3,6 @@ os_name=`test uname`
 
 # Path to your oh-my-zsh installation.
 export ZSH=$dotfiles/zsh/oh-my-zsh
-
 # Set name of the theme to load.
 # Look in ~/.oh-my-zsh/themes/
 # Optionally, if you set this to "random", it'll load a random theme each
@@ -118,3 +117,5 @@ source ${dotfiles}/zsh/functions
 if test -e "$dotfiles/zsh/zshrc.local"; then
     source "$dotfiles/zsh/zshrc.local"
 fi
+
+export ZLE_RPROMPT_INDENT=0

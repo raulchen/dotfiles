@@ -118,4 +118,6 @@ if test -e "$dotfiles/zsh/zshrc.local"; then
     source "$dotfiles/zsh/zshrc.local"
 fi
 
-export ZLE_RPROMPT_INDENT=0
+if [[ -n "$TMUX" ]]; then
+    export ZLE_RPROMPT_INDENT=0
+fi

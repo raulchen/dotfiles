@@ -98,7 +98,11 @@ export EDITOR='vim'
 HISTSIZE=130000
 SAVEHIST=130000
 
-export FZF_DEFAULT_COMMAND='ag -g ""'
+if type ag >/dev/null 2>&1 ; then
+    export FZF_DEFAULT_COMMAND='ag -g ""'
+else
+    export FZF_DEFAULT_COMMAND=''
+fi
 export FZF_DEFAULT_OPTS='
 --bind ctrl-f:page-down,ctrl-b:page-up
 '

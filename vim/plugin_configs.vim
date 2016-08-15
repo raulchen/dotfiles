@@ -12,7 +12,6 @@ if !fzf
     echo "FZF not found"
 else
     let g:fzf_history_dir = '~/dotfiles/vim/temp_dirs/fzf-history'
-    let $FZF_DEFAULT_COMMAND = 'ag -g ""'
     nmap <c-g>f :Files<cr>
     nmap <c-g>p :Files <c-r>=expand("%:p:h")<cr>/
     nmap <c-g>b :Buffers<cr>

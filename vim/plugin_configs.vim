@@ -111,7 +111,7 @@ endif
 " Jedi-vim
 """""""""""""""""""
 let g:jedi#use_tabs_not_buffers = 1
-let g:jedi#popup_on_dot = 1
+let g:jedi#popup_on_dot = 0
 let g:jedi#popup_select_first = 1
 let g:jedi#smart_auto_mappings = 1
 let g:jedi#goto_command = "<c-e>g"

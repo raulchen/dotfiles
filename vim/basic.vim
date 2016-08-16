@@ -441,7 +441,9 @@ noremap <F2> :call SwitchNumber()<CR>
 " F3 to toggle wrap
 noremap <F3> :set wrap! wrap?<CR>
 " F4 to toggle paste
-map <F4> :setlocal paste!<cr>
+noremap <F4> :setlocal paste!<cr>
+inoremap <F4> <esc>:setlocal paste!<cr>i
+
 " F5 to toggle system clipboard
 function! ToggleSystemClipboard()
     if(&clipboard=='unnamed')
@@ -452,4 +454,4 @@ function! ToggleSystemClipboard()
         set clipboard=unnamed
     endif
 endfunc
-map <F5> :call ToggleSystemClipboard()<cr>
+noremap <F5> :call ToggleSystemClipboard()<cr>

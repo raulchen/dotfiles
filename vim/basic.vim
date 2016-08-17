@@ -260,7 +260,7 @@ function! CopyToTmux() range
     let @" = l:saved_reg
     echo "Copied to tmux buffer"
 endfunction
-vnoremap <slient> <leader>y :call CopyToTmux()<cr>
+vnoremap <leader>y :call CopyToTmux()<cr>
 
 """"""""""""""""""""""""""""""""""""""
 " Ag searching and cope displaying

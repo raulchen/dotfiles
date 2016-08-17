@@ -252,6 +252,16 @@ func! DeleteTrailingWS()
 endfunc
 autocmd BufWrite * :call DeleteTrailingWS()
 
+function! CopyToTmux() range
+    let l:saved_reg = @"
+    execute "silent normal! vgvy"
+    let l:content = escape(@", '"')
+    call system('echo -n "'.l:content.'" | tmux loadb -')
+    let @" = l:saved_reg
+    echo "Copied to tmux buffer"
+endfunction
+vnoremap <slient> <leader>y :call CopyToTmux()<cr>
+
 """"""""""""""""""""""""""""""""""""""
 " Ag searching and cope displaying
 """""""""""""""""""""""""""""""""""""""

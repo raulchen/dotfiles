@@ -128,7 +128,7 @@ set encoding=utf8
 set ffs=unix,dos,mac
 
 """""""""""""""""""""""""""""""""
-" Files, backups and undo
+" => Files, backups and undo
 """""""""""""""""""""""""""""""""
 set nowritebackup
 set nobackup
@@ -308,32 +308,6 @@ map <leader>s? z=
 set diffopt=vertical
 set shellpipe=>
 
-""""""""""""""""""""""""""""""
-" Command mode related
-""""""""""""""""""""""""""""""
-" Smart mappings on the command line
-cno $h tabe ~/
-cno $d tabe ~/Desktop/
-cno $j tabe ./
-cno $c tabe <C-\>eCurrentFileDir("e")<cr>
-
-" $q is super useful when browsing on the command line
-" it deletes everything until the last slash
-cno $q <C-\>eDeleteTillSlash()<cr>
-
-" Bash like keys for the command line
-cnoremap <C-A> <Home>
-cnoremap <C-E> <End>
-cnoremap <C-K> <C-U>
-
-cnoremap <C-P> <Up>
-cnoremap <C-N> <Down>
-
-"""""""""""""""""""""""""""""""
-" General abbreviations
-"""""""""""""""""""""""""""""""
-iab xdate <c-r>=strftime("%d/%m/%y %H:%M:%S")<cr>
-
 """"""""""""""""""""""""""""
 " Helper functions
 """"""""""""""""""""""""""""
@@ -407,6 +381,35 @@ endfunction
 "   au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 "endif
 
+""""""""""""""""""""""""""""""
+" Command mode related
+""""""""""""""""""""""""""""""
+" Smart mappings on the command line
+cno $h tabe ~/
+cno $d tabe ~/Desktop/
+cno $j tabe ./
+cno $c tabe <C-\>eCurrentFileDir("e")<cr>
+
+" $q is super useful when browsing on the command line
+" it deletes everything until the last slash
+cno $q <C-\>eDeleteTillSlash()<cr>
+
+" Bash like keys for the command line
+cnoremap <C-A> <Home>
+cnoremap <C-E> <End>
+cnoremap <C-K> <C-U>
+
+cnoremap <C-P> <Up>
+cnoremap <C-N> <Down>
+
+"""""""""""""""""""""""""""""""
+" => General abbreviations
+"""""""""""""""""""""""""""""""
+iab xdate <c-r>=strftime("%d/%m/%y %H:%M:%S")<cr>
+
+"""""""""""""""""""""""""""""""
+" => Helper functions
+"""""""""""""""""""""""""""""""
 func! DeleteTillSlash()
     let g:cmd = getcmdline()
 

@@ -33,6 +33,7 @@ Plugin 'junegunn/fzf.vim'
 Plugin 'mbbill/undotree'
 Plugin 'davidhalter/jedi-vim'
 Plugin 'junegunn/gv.vim'
+Plugin 'haya14busa/incsearch.vim'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required

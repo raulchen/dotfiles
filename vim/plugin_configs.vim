@@ -123,3 +123,11 @@ let g:jedi#completions_command = "<C-Space>"
 let g:jedi#rename_command = "<c-e>r"
 autocmd FileType python setlocal completeopt-=preview
 autocmd FileType python setlocal complete-=i
+
+
+"""""""""""""""""""
+" incsearch.vim
+"""""""""""""""""""
+map /  <Plug>(incsearch-forward)
+map ?  <Plug>(incsearch-backward)
+map g/ <Plug>(incsearch-stay)

@@ -4,3 +4,9 @@ source ~/dotfiles/vim/basic.vim
 source ~/dotfiles/vim/filetypes.vim
 source ~/dotfiles/vim/vundle_plugins.vim
 source ~/dotfiles/vim/plugin_configs.vim
+
+try
+    source ~/dotfiles/vim/vimrc.local
+catch
+endtry
+

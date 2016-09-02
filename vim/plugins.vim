@@ -2,9 +2,9 @@ set rtp+=~/dotfiles/vim
 call plug#begin('~/dotfiles/vim/installed_plugins')
 
 " General
-Plug 'scrooloose/nerdtree'
-Plug 'jistr/vim-nerdtree-tabs'
-Plug 'mileszs/ack.vim'
+Plug 'scrooloose/nerdtree', {'on': 'NERDTreeTabsToggle'}
+Plug 'jistr/vim-nerdtree-tabs', {'on': 'NERDTreeTabsToggle'}
+Plug 'mileszs/ack.vim', {'on': 'Ack'}
 Plug 'haya14busa/incsearch.vim'
 Plug 'amix/open_file_under_cursor.vim'
 Plug 'easymotion/vim-easymotion'
@@ -12,7 +12,7 @@ Plug 'terryma/vim-expand-region'
 Plug 'michaeljsmith/vim-indent-object'
 for p in ['~/.fzf', '/usr/local/opt/fzf']
     if isdirectory(expand(p))
-        Plug 'junegunn/fzf', {'dir': p}
+        Plug p
         Plug 'junegunn/fzf.vim'
         break
     endif
@@ -20,12 +20,12 @@ endfor
 
 " Edit
 Plug 'tpope/vim-surround'
-Plug 'tpope/vim-commentary'
+Plug 'tpope/vim-commentary', {'on': '<Plug>Commentary'}
 Plug 'terryma/vim-multiple-cursors'
 Plug 'tpope/vim-repeat'
 Plug 'maxbrunsfeld/vim-yankstack'
 Plug 'townk/vim-autoclose'
-Plug 'mbbill/undotree'
+Plug 'mbbill/undotree', {'on': 'UndotreeToggle'}
 
 " UI
 Plug 'mkitt/tabline.vim'
@@ -35,11 +35,11 @@ Plug 'dracula/vim'
 " Git
 Plug 'tpope/vim-fugitive'
 Plug 'airblade/vim-gitgutter'
-Plug 'junegunn/gv.vim'
+Plug 'junegunn/gv.vim', {'on': 'GV'}
 
 " Language support
 Plug 'sheerun/vim-polyglot'
-Plug 'scrooloose/syntastic'
+Plug 'scrooloose/syntastic', {'on': 'SyntasticCheck'}
 Plug 'davidhalter/jedi-vim', {'for': 'python'}
 Plug 'nvie/vim-flake8', {'for': 'python'}
 

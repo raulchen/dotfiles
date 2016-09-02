@@ -1,31 +1,46 @@
 set rtp+=~/dotfiles/vim
 call plug#begin('~/dotfiles/vim/installed_plugins')
 
+" General
 Plug 'scrooloose/nerdtree'
-Plug 'mkitt/tabline.vim'
+Plug 'jistr/vim-nerdtree-tabs'
 Plug 'mileszs/ack.vim'
-Plug 'itchyny/lightline.vim'
+Plug 'haya14busa/incsearch.vim'
 Plug 'amix/open_file_under_cursor.vim'
-Plug 'tpope/vim-commentary'
+Plug 'easymotion/vim-easymotion'
 Plug 'terryma/vim-expand-region'
-Plug 'nvie/vim-flake8'
-Plug 'tpope/vim-fugitive'
-Plug 'airblade/vim-gitgutter'
+Plug 'michaeljsmith/vim-indent-object'
+for p in ['~/.fzf', '/usr/local/opt/fzf']
+    if isdirectory(expand(p))
+        Plug 'junegunn/fzf', {'dir': p}
+        Plug 'junegunn/fzf.vim'
+        break
+    endif
+endfor
+
+" Edit
+Plug 'tpope/vim-surround'
+Plug 'tpope/vim-commentary'
 Plug 'terryma/vim-multiple-cursors'
 Plug 'tpope/vim-repeat'
-Plug 'tpope/vim-surround'
 Plug 'maxbrunsfeld/vim-yankstack'
-Plug 'michaeljsmith/vim-indent-object'
-Plug 'easymotion/vim-easymotion'
+Plug 'townk/vim-autoclose'
+Plug 'mbbill/undotree'
+
+" UI
+Plug 'mkitt/tabline.vim'
+Plug 'itchyny/lightline.vim'
 Plug 'dracula/vim'
+
+" Git
+Plug 'tpope/vim-fugitive'
+Plug 'airblade/vim-gitgutter'
+Plug 'junegunn/gv.vim'
+
+" Language support
 Plug 'sheerun/vim-polyglot'
 Plug 'scrooloose/syntastic'
-Plug 'jistr/vim-nerdtree-tabs'
-Plug 'townk/vim-autoclose'
-Plug 'junegunn/fzf.vim'
-Plug 'mbbill/undotree'
-Plug 'davidhalter/jedi-vim'
-Plug 'junegunn/gv.vim'
-Plug 'haya14busa/incsearch.vim'
+Plug 'davidhalter/jedi-vim', {'for': 'python'}
+Plug 'nvie/vim-flake8', {'for': 'python'}
 
 call plug#end()

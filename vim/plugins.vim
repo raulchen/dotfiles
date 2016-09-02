@@ -2,8 +2,8 @@ set rtp+=~/dotfiles/vim
 call plug#begin('~/dotfiles/vim/installed_plugins')
 
 " General
-Plug 'scrooloose/nerdtree', {'on': 'NERDTreeTabsToggle'}
-Plug 'jistr/vim-nerdtree-tabs', {'on': 'NERDTreeTabsToggle'}
+Plug 'scrooloose/nerdtree'
+Plug 'jistr/vim-nerdtree-tabs'
 Plug 'mileszs/ack.vim', {'on': 'Ack'}
 Plug 'haya14busa/incsearch.vim'
 Plug 'amix/open_file_under_cursor.vim'

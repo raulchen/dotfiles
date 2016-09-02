@@ -1,0 +1,31 @@
+set rtp+=~/dotfiles/vim
+call plug#begin('~/dotfiles/vim/installed_plugins')
+
+Plug 'scrooloose/nerdtree'
+Plug 'mkitt/tabline.vim'
+Plug 'mileszs/ack.vim'
+Plug 'itchyny/lightline.vim'
+Plug 'amix/open_file_under_cursor.vim'
+Plug 'tpope/vim-commentary'
+Plug 'terryma/vim-expand-region'
+Plug 'nvie/vim-flake8'
+Plug 'tpope/vim-fugitive'
+Plug 'airblade/vim-gitgutter'
+Plug 'terryma/vim-multiple-cursors'
+Plug 'tpope/vim-repeat'
+Plug 'tpope/vim-surround'
+Plug 'maxbrunsfeld/vim-yankstack'
+Plug 'michaeljsmith/vim-indent-object'
+Plug 'easymotion/vim-easymotion'
+Plug 'dracula/vim'
+Plug 'sheerun/vim-polyglot'
+Plug 'scrooloose/syntastic'
+Plug 'jistr/vim-nerdtree-tabs'
+Plug 'townk/vim-autoclose'
+Plug 'junegunn/fzf.vim'
+Plug 'mbbill/undotree'
+Plug 'davidhalter/jedi-vim'
+Plug 'junegunn/gv.vim'
+Plug 'haya14busa/incsearch.vim'
+
+call plug#end()

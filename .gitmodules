@@ -6,7 +6,3 @@
 	path = zsh/oh-my-zsh
 	url = https://github.com/robbyrussell/oh-my-zsh
     ignore = dirty
-[submodule "vim/Vundle.vim"]
-	path = vim/Vundle.vim
-	url = https://github.com/VundleVim/Vundle.vim
-    ignore = dirty

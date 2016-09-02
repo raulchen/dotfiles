@@ -20,7 +20,7 @@ endfor
 
 " Edit
 Plug 'tpope/vim-surround'
-Plug 'tpope/vim-commentary', {'on': '<Plug>Commentary'}
+Plug 'tpope/vim-commentary'
 Plug 'terryma/vim-multiple-cursors'
 Plug 'tpope/vim-repeat'
 Plug 'maxbrunsfeld/vim-yankstack'
@@ -39,7 +39,7 @@ Plug 'junegunn/gv.vim', {'on': 'GV'}
 
 " Language support
 Plug 'sheerun/vim-polyglot'
-Plug 'scrooloose/syntastic', {'on': 'SyntasticCheck'}
+Plug 'scrooloose/syntastic'
 Plug 'davidhalter/jedi-vim', {'for': 'python'}
 Plug 'nvie/vim-flake8', {'for': 'python'}
 

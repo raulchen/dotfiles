@@ -103,9 +103,8 @@ if type ag >/dev/null 2>&1 ; then
 else
     export FZF_DEFAULT_COMMAND=''
 fi
-export FZF_DEFAULT_OPTS='
---bind ctrl-f:page-down,ctrl-b:page-up
-'
+export FZF_DEFAULT_OPTS='--bind ctrl-f:page-down,ctrl-b:page-up'
+
 
 export TERM="xterm-256color"
 

@@ -46,8 +46,7 @@ flog() {
       --bind "ctrl-m:execute:
                 (grep -o '[a-f0-9]\{7\}' | head -1 |
                 xargs -I % sh -c 'git show --color=always % | less -R') << 'FZF-EOF'
-                {}
-FZF-EOF"
+                {} FZF-EOF"
 }
 
 # v - open files in ~/.viminfo
@@ -64,6 +63,15 @@ alias fv=v
 fz() {
   local dir
   dir="$(fasd -Rdl "$1" | fzf-tmux -1 -0 --no-sort +m)" && cd "${dir}" || return 1
+}
+
+fag() {
+    local pos="$(ag --color $@ | fzf --ansi --reverse --no-sort)"
+    if [[ $pos ]]; then
+        local file="$(echo -n $pos | awk -F ':' '{print $1}')"
+        local lineno="$(echo -n $pos | awk -F ':' '{print $2}')"
+        vim +$lineno $file
+    fi
 }
 
 vless() {

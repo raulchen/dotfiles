@@ -114,8 +114,8 @@ bindkey '^R' history-incremental-pattern-search-backward
 
 export PATH=$dotfiles/bin:$PATH
 
-source ${dotfiles}/zsh/alias
-source ${dotfiles}/zsh/functions
+source ${dotfiles}/zsh/alias.zsh
+source ${dotfiles}/zsh/functions.zsh
 
 if test -e "$dotfiles/zsh/zshrc.local"; then
     source "$dotfiles/zsh/zshrc.local"

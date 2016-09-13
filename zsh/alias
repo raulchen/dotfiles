@@ -1,5 +1,6 @@
 alias -g H="2>&1 | head"
 alias -g L="2>&1 | less"
+alias -g VL="2>&1 | vless"
 alias -g G="2>&1 | grep -i"
 alias -g F="2>&1 | fzf --reverse"
 alias -g C="2>&1 | xargs -I{} tmux set-buffer {}"
@@ -9,7 +10,6 @@ alias tailf="tail -f"
 unalias d >/dev/null 2>&1
 alias d="dirs -v | head -10"
 alias bell="echo 'BELL''BELL''BELL'"
-
 
 if [[ `uname` == 'Darwin' ]]; then
     # Flush Directory Service cache

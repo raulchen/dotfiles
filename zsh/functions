@@ -65,3 +65,11 @@ fz() {
   local dir
   dir="$(fasd -Rdl "$1" | fzf-tmux -1 -0 --no-sort +m)" && cd "${dir}" || return 1
 }
+
+vless() {
+    if test $# -eq 0; then
+        vim -u ~/dotfiles/vim/less.vim -
+    else
+        vim -u ~/dotfiles/vim/less.vim $@
+    fi
+}

@@ -59,24 +59,26 @@ v() {
 }
 alias fv=v
 
+_vless="vim -u ~/dotfiles/vim/less.vim"
+
 fz() {
     local dir
     dir="$(fasd -Rdl "$1" | fzf-tmux -1 -0 --no-sort +m)" && cd "${dir}" || return 1
 }
 
 fag() {
-    local pos="$(ag --color $@ | fzf --ansi --reverse --no-sort)"
-    if [[ $pos ]]; then
-        local file="$(echo -n $pos | awk -F ':' '{print $1}')"
-        local lineno="$(echo -n $pos | awk -F ':' '{print $2}')"
-        vim +$lineno $file
-    fi
+    ag --color $@ | fzf --ansi --reverse --no-sort \
+        --bind "ctrl-m:execute:
+                (grep -oP '(?<=\").*?(?=\")' | head -1 |
+                awk -F':' '{print \"+\"\$2\" \"\$1}' |
+                xargs -I % sh -c '</dev/tty $_vless %') << 'FZF-EOF'
+                {} FZF-EOF"
 }
 
 vless() {
     if test $# -eq 0; then
-        vim -u ~/dotfiles/vim/less.vim -
+        $_vless -
     else
-        vim -u ~/dotfiles/vim/less.vim $@
+        $_vless $@
     fi
 }

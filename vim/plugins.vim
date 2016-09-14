@@ -10,6 +10,7 @@ Plug 'amix/open_file_under_cursor.vim'
 Plug 'easymotion/vim-easymotion'
 Plug 'terryma/vim-expand-region'
 Plug 'michaeljsmith/vim-indent-object'
+Plug 'dyng/ctrlsf.vim'
 for p in ['~/.fzf', '/usr/local/opt/fzf']
     if isdirectory(expand(p))
         Plug p

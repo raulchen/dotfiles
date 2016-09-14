@@ -121,3 +121,14 @@ autocmd FileType python setlocal complete-=i
 map /  <Plug>(incsearch-forward)
 map ?  <Plug>(incsearch-backward)
 map g/ <Plug>(incsearch-stay)
+
+"""""""""""""""""""
+" CtrlSF
+"""""""""""""""""""
+nnoremap <leader>a <Plug>CtrlSFPrompt
+vnoremap <leader>a <Plug>CtrlSFVwordPath
+let g:ctrlsf_auto_close = 0
+let g:ctrlsf_mapping = {
+    \ "popen": "<cr>",
+    \ }
+

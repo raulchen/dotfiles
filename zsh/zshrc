@@ -106,7 +106,7 @@ fi
 export FZF_DEFAULT_OPTS='--bind ctrl-p:toggle-preview,ctrl-d:page-down,ctrl-u:page-up'
 
 
-export TERM="xterm-256color"
+export TERM="screen-256color"
 
 bindkey '^R' history-incremental-pattern-search-backward
 

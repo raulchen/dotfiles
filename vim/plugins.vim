@@ -4,7 +4,6 @@ call plug#begin('~/dotfiles/vim/installed_plugins')
 " General
 Plug 'scrooloose/nerdtree'
 Plug 'jistr/vim-nerdtree-tabs'
-Plug 'mileszs/ack.vim', {'on': 'Ack'}
 Plug 'haya14busa/incsearch.vim'
 Plug 'amix/open_file_under_cursor.vim'
 Plug 'easymotion/vim-easymotion'

@@ -262,29 +262,12 @@ function! CopyToTmux() range
 endfunction
 vnoremap <leader>y :call CopyToTmux()<cr>
 
-""""""""""""""""""""""""""""""""""""""
-" Ag searching and cope displaying
-"""""""""""""""""""""""""""""""""""""""
-" When you press gv you Ag after the selected text
-vnoremap <leader>a :call VisualSelection('gv', '')<CR>
-
-" Open Ag and put the cursor in the right position
-nnoremap <leader>a :Ack<space>
-
-" When you press <leader>r you can search and replace the selected text
+" <leader>r to search and replace the selected text
 vnoremap <silent> <leader>r :call VisualSelection('replace', '')<CR>
 
-" Do :help cope if you are unsure what cope is. It's super useful!
-"
-" When you search with Ag, display your results in cope by doing:
-"   <leader>cc
-"
-" To go to the next search result do:
-"   <leader>n
-"
-" To go to the previous search results do:
-"   <leader>p
-"
+""""""""""""""""""""""""""""""""""""""
+" Cope displaying
+"""""""""""""""""""""""""""""""""""""""
 map <leader>cc :botright cope<cr>
 map <leader>co ggVGy:tabnew<cr>:set syntax=qf<cr>pgg
 map <leader>cn :cn<cr>

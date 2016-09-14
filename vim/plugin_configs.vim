@@ -90,13 +90,6 @@ let g:syntastic_python_checkers=['pyflakes']
 nnoremap <leader>u :UndotreeToggle<cr>
 
 """""""""""""""""""
-" Ack.vim
-"""""""""""""""""""
-if executable('ag')
-    let g:ackprg = 'ag --vimgrep'
-endif
-
-"""""""""""""""""""
 " Jedi-vim
 """""""""""""""""""
 let g:jedi#use_tabs_not_buffers = 1

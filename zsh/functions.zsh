@@ -69,7 +69,7 @@ fz() {
 fag() {
     ag --color $@ | fzf --ansi --reverse --no-sort \
         --bind "ctrl-m:execute:
-                (grep -oP '(?<=\").*?(?=\")' | head -1 |
+                (grep -o '[^: ]\+:\d\+' | head -1 | sed 's/^.//g' |
                 awk -F':' '{print \"+\"\$2\" \"\$1}' |
                 xargs -I % sh -c '</dev/tty $_vless %') << 'FZF-EOF'
                 {} FZF-EOF"

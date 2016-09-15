@@ -66,13 +66,13 @@ fz() {
 }
 
 fag() {
-    let _size=$LINES\*0.35-2
+    local _size=`echo "($LINES*0.35-2)/1" | bc`
     local _cmd="pcat %s -c %d -l $_size -n --color=always"
     ag --color $@ | fzf --ansi --reverse --no-sort \
         --preview-window down:35% \
         --preview "echo {} |
                    awk -F':' '{printf \"$_cmd\",\$1,\$2}' |
-                   awk 'system'" \
+                   awk '{system(\$0)}'" \
         --bind "ctrl-m:execute: echo {} |
                 awk -F':' '{print \"+\"\$2\" \"\$1}' |
                 xargs -I % sh -c '</dev/tty vim %'"

@@ -1,0 +1,76 @@
+#!/usr/bin/env python
+from __future__ import (
+    absolute_import,
+    division,
+    print_function,
+)
+import argparse
+import os
+import sys
+
+DEFAULT_LINES=10
+RED="""\033[0;31m"""
+NC="""\033[0m"""
+
+def exit(msg=None, code=-1):
+    if msg:
+        print(msg, file=sys.stderr)
+    sys.exit(code)
+
+def check(predict):
+    if not predict:
+        exit('bad param')
+
+def print_line(line, lineno, lineno_format, args):
+    if args.use_color and args.center == lineno:
+        print(RED, end='')
+    print(lineno_format % lineno if args.lineno else '', end='')
+    print(line, end='')
+    if args.use_color and args.center == lineno:
+        print(NC, end='')
+
+def pcat(args):
+    lines = args.lines
+    check(lines > 0)
+    begin = None
+    if args.center is not None:
+        check(args.center >= 0)
+        begin = max(args.center - lines // 2, 0)
+    elif args.begin is not None:
+        check(args.begin >= 0)
+        begin = args.begin
+    check(begin is not None)
+    end = begin + lines
+
+    file = args.file
+    if not os.path.isfile(file):
+        exit(msg='No such file: %s' % file)
+
+    lineno_format = "%" + str(len(str(end))) + "d: "
+    with open(file, 'r') as f:
+        cur = 1
+        for line in f.readlines():
+            if cur >= begin:
+                print_line(line, cur, lineno_format, args)
+            cur += 1
+            if cur >= end:
+                break
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Print specific lines of a file.')
+    parser.add_argument('file', help='The target file')
+    parser.add_argument('-l', '--lines', type=int, default=DEFAULT_LINES, help='Number of lines to print')
+    parser.add_argument('-b', '--begin', type=int, help='The begining line')
+    parser.add_argument('-c', '--center', type=int, help='The line in the center')
+    parser.add_argument('-n','--lineno', action="store_true", help='Print line number')
+    parser.add_argument('-C','--color', action="store",
+                        choices=['auto', 'no', 'always'], default='auto', help='Corlorize output')
+    args = parser.parse_args()
+    if args.color == 'always':
+        args.use_color = True
+    elif args.color == 'no':
+        args.use_color = False
+    else:
+        args.use_color = sys.stdout.isatty()
+    pcat(args)
+

@@ -66,11 +66,12 @@ fz() {
 }
 
 fag() {
-    local _grep="grep -n \\\"\\\" %s | grep --color=always -C3 \\\"^%d:.*\\\""
+    let _size=$LINES\*0.35-2
+    local _cmd="pcat %s -c %d -l $_size -n --color=always"
     ag --color $@ | fzf --ansi --reverse --no-sort \
         --preview-window down:35% \
         --preview "echo {} |
-                   awk -F':' '{printf \"$_grep\",\$1,\$2}' |
+                   awk -F':' '{printf \"$_cmd\",\$1,\$2}' |
                    awk 'system'" \
         --bind "ctrl-m:execute: echo {} |
                 awk -F':' '{print \"+\"\$2\" \"\$1}' |

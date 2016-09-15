@@ -118,8 +118,8 @@ map g/ <Plug>(incsearch-stay)
 """""""""""""""""""
 " CtrlSF
 """""""""""""""""""
-nnoremap <leader>a <Plug>CtrlSFPrompt
-vnoremap <leader>a <Plug>CtrlSFVwordPath
+nmap <leader>a <Plug>CtrlSFPrompt
+vmap <leader>a <Plug>CtrlSFVwordPath
 let g:ctrlsf_auto_close = 0
 let g:ctrlsf_mapping = {
     \ "popen": "<cr>",

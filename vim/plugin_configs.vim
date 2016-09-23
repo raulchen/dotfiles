@@ -82,7 +82,7 @@ let g:lightline = {
 " Syntastic
 """""""""""""""""""
 " Python
-let g:syntastic_python_checkers=['pyflakes']
+let g:syntastic_python_checkers=['flake8']
 
 """""""""""""""""""
 " Undo tree

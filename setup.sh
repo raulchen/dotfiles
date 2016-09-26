@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/env bash
 base_dir=$HOME/dotfiles
 backup_dir="$base_dir/.backups.local"
 backup_prefix="$backup_dir/$(date '+%Y%m%d%H%M%S')"
@@ -9,12 +9,12 @@ link_file() {
     local src=$1 dst=$2
 	local backup_dst=false delete_dst=false link_dst=true
     if [[ -e $dst ]]; then
-		current_link=$(readlink $dst)
+		current_link=$(readlink "$dst")
 		if [[ "$current_link" != "$src" ]]; then
 			while true; do
-				printf "File already exists: $dst. What do you want?\n"
+				printf "File already exists: %s. What do you want?\n" "$dst"
 				printf "[r]eplace; [b]ack up; [s]kip: "
-				read op
+				read -r op
 				case $op in
 					r )
 						delete_dst=true
@@ -33,11 +33,13 @@ link_file() {
 			   esac
 			done
 		else
+            echo "$dst is already linked to $src"
 			link_dst=false
 		fi
     fi
 	if [[ "$backup_dst" == "true" ]]; then
-		local backup_file="$backup_prefix$(basename $dst)"
+		local backup_file
+        backup_file="$backup_prefix$(basename "$dst")"
 		mv "$dst" "$backup_file"
 		echo "$dst was backed up to $backup_file"
 	fi
@@ -52,15 +54,15 @@ link_file() {
 }
 
 echo "Setting up zsh..."
-link_file $base_dir/zsh/oh-my-zsh ~/.oh-my-zsh
-link_file $base_dir/zsh/zshrc ~/.zshrc
+link_file "$base_dir/zsh/oh-my-zsh" ~/.oh-my-zsh
+link_file "$base_dir/zsh/zshrc" ~/.zshrc
 
 echo "Setting up vim..."
-if link_file $base_dir/vim/vimrc ~/.vimrc ; then
+if link_file "$base_dir/vim/vimrc" ~/.vimrc ; then
 	vim +PlugInstall +qall
 fi
 
 echo "Setting up tmux..."
-link_file $base_dir/tmux/tmux.conf ~/.tmux.conf
+link_file "$base_dir/tmux/tmux.conf" ~/.tmux.conf
 
 echo "Done"

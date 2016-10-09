@@ -30,7 +30,8 @@ imap <c-g>l <plug>(fzf-complete-line)
 " Dracula theme
 """"""""""""""""""""""""
 color dracula
-hi Search ctermfg=17 ctermbg=228 cterm=NONE guifg=#282a36 guibg=#f1fa8c gui=NONE
+hi IncSearch ctermfg=17 ctermbg=green cterm=underline
+hi Search ctermfg=17 ctermbg=yellow cterm=NONE
 
 """"""""""""""""""""""""
 " Nerd Tree
@@ -107,7 +108,6 @@ let g:jedi#show_call_signatures = "0"
 autocmd FileType python setlocal completeopt-=preview
 autocmd FileType python setlocal complete-=i
 
-
 """""""""""""""""""
 " incsearch.vim
 """""""""""""""""""
@@ -124,4 +124,3 @@ let g:ctrlsf_auto_close = 0
 let g:ctrlsf_mapping = {
     \ "popen": "<cr>",
     \ }
-

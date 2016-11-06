@@ -31,6 +31,7 @@ Plug 'mbbill/undotree', {'on': 'UndotreeToggle'}
 Plug 'mkitt/tabline.vim'
 Plug 'itchyny/lightline.vim'
 Plug 'dracula/vim'
+Plug 'jszakmeister/vim-togglecursor'
 
 " Git
 Plug 'tpope/vim-fugitive'

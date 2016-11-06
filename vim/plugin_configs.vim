@@ -124,3 +124,11 @@ let g:ctrlsf_auto_close = 0
 let g:ctrlsf_mapping = {
     \ "popen": "<cr>",
     \ }
+
+"""""""""""""""""""
+" togglecursor
+"""""""""""""""""""
+let g:togglecursor_default="blinking_underline"
+let g:togglecursor_insert="blinking_line"
+let g:togglecursor_leave="blinking_underline"
+let g:togglecursor_replace="blinking_block"

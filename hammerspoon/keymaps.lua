@@ -1,8 +1,17 @@
-utils = require("utils")
+utils = require('utils')
+volume = require('volume')
 
 local REPEAT_FASTER = 10 * 1000
 local REPEAT_SLOWER = 100 * 1000
 local NO_REPEAT = -1
+
+local function keyStroke(mod, key, repeatDelay)
+    hs.eventtap.event.newKeyEvent(mod, key, true):post()
+    if repeatDelay > 0 then
+        hs.timer.usleep(repeatDelay)
+    end
+    hs.eventtap.event.newKeyEvent(mod, key, false):post()
+end
 
 local function keymap(sourceKey, sourceMod, targetKey, targetMod, repeatDelay)
     sourceMod = sourceMod or {}
@@ -11,13 +20,7 @@ local function keymap(sourceKey, sourceMod, targetKey, targetMod, repeatDelay)
 	repeatDelay = repeatDelay or REPEAT_FASTER
 	noRepeat = repeatDelay <= 0
 
-    fn = function()
-        hs.eventtap.event.newKeyEvent(targetMod, targetKey, true):post()
-		if repeatDelay >0 then
-			hs.timer.usleep(repeatDelay)
-		end
-        hs.eventtap.event.newKeyEvent(targetMod, targetKey, false):post()
-    end
+    fn = hs.fnutils.partial(keyStroke, mod, key, repeatDelay)
 	if not noRepeat then
 		hs.hotkey.bind(sourceMod, sourceKey, fn, nil, fn)
 	else
@@ -60,3 +63,6 @@ keymap('n', 'alt', 'tab', 'ctrl+shift', REPEAT_SLOWER)
 keymap('m', 'alt', 'tab', 'ctrl', REPEAT_SLOWER)
 
 keymap('q', 'alt', 'escape', '', NO_REPEAT)
+
+hs.hotkey.bind('alt', ',', volume.up, nil, volume.down)
+hs.hotkey.bind('alt', '.', volume.up, nil, volume.down)

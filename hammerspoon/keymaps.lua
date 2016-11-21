@@ -20,7 +20,7 @@ local function keymap(sourceKey, sourceMod, targetKey, targetMod, repeatDelay)
 	repeatDelay = repeatDelay or REPEAT_FASTER
 	noRepeat = repeatDelay <= 0
 
-    fn = hs.fnutils.partial(keyStroke, mod, key, repeatDelay)
+    fn = hs.fnutils.partial(keyStroke, targetMod, targetKey, repeatDelay)
 	if not noRepeat then
 		hs.hotkey.bind(sourceMod, sourceKey, fn, nil, fn)
 	else

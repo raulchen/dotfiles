@@ -1,5 +1,4 @@
 utils = require('utils')
-volume = require('volume')
 
 local REPEAT_FASTER = 10 * 1000
 local REPEAT_SLOWER = 100 * 1000
@@ -7,24 +6,38 @@ local NO_REPEAT = -1
 
 local function keyStroke(mod, key, repeatDelay)
     hs.eventtap.event.newKeyEvent(mod, key, true):post()
-    if repeatDelay > 0 then
-        hs.timer.usleep(repeatDelay)
+    if repeatDelay <= 0 then
+        repeatDelay = REPEAT_FASTER
     end
+    hs.timer.usleep(repeatDelay)
     hs.eventtap.event.newKeyEvent(mod, key, false):post()
+end
+
+local function keyStrokeSystem(key, repeatDelay)
+    hs.eventtap.event.newSystemKeyEvent(key, true):post()
+    if repeatDelay <= 0 then
+        repeatDelay = REPEAT_FASTER
+    end
+    hs.timer.usleep(repeatDelay)
+    hs.eventtap.event.newSystemKeyEvent(key, false):post()
 end
 
 local function keymap(sourceKey, sourceMod, targetKey, targetMod, repeatDelay)
     sourceMod = sourceMod or {}
-    targetMod = utils.splitStr(targetMod or '', '+')
 
 	repeatDelay = repeatDelay or REPEAT_FASTER
 	noRepeat = repeatDelay <= 0
 
-    fn = hs.fnutils.partial(keyStroke, targetMod, targetKey, repeatDelay)
-	if not noRepeat then
-		hs.hotkey.bind(sourceMod, sourceKey, fn, nil, fn)
-	else
+    if targetMod == nil then
+        fn = hs.fnutils.partial(keyStrokeSystem, string.upper(targetKey), repeatDelay)
+    else
+        targetMod = utils.splitStr(targetMod, '+')
+        fn = hs.fnutils.partial(keyStroke, targetMod, targetKey, repeatDelay)
+    end
+	if noRepeat then
 		hs.hotkey.bind(sourceMod, sourceKey, fn, nil, nil)
+	else
+		hs.hotkey.bind(sourceMod, sourceKey, fn, nil, fn)
 	end
 end
 
@@ -64,5 +77,13 @@ keymap('m', 'alt', 'tab', 'ctrl', REPEAT_SLOWER)
 
 keymap('q', 'alt', 'escape', '', NO_REPEAT)
 
-hs.hotkey.bind('alt', ',', volume.up, nil, volume.down)
-hs.hotkey.bind('alt', '.', volume.up, nil, volume.down)
+-- ------------------
+-- system
+-- ------------------
+-- not working
+-- keymap('a', 'alt', 'CAPS_LOCK', nil, NO_REPEAT)
+-- keymap('p', 'alt', 'PLAY', nil, NO_REPEAT)
+-- keymap('[', 'alt', 'PREVIOUS', nil, NO_REPEAT)
+-- keymap(']', 'alt', 'NEXT', nil, NO_REPEAT)
+keymap(',', 'alt', 'SOUND_DOWN', nil)
+keymap('.', 'alt', 'SOUND_UP', nil)

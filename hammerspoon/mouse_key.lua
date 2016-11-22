@@ -1,5 +1,8 @@
+prefix = require("prefix")
+
 local modal = hs.hotkey.modal.new()
-hs.hotkey.bind('ctrl-cmd', 'space', function() modal:enter() end, nil, nil)
+
+prefix.bind('', 'm', function() modal:enter() end)
 
 modal.alertId = nil
 
@@ -14,6 +17,7 @@ function modal:exited()
 end
 
 modal:bind('', 'escape', function() modal:exit() end)
+modal:bind('', 'space', function() modal:exit() end)
 
 local DX = {-1, 0, 0, 1}
 local DY = {0, 1, -1, 0}
@@ -56,3 +60,22 @@ for i = 1, 4 do
     fn = hs.fnutils.partial(scroll, SDX[i] * SCROLL_DELTA, SDY[i] * SCROLL_DELTA)
     modal:bind('shift', KEYS[i], fn, nil, fn)
 end
+
+-- ------------
+-- click
+-- ------------
+
+function click(button)
+    p = hs.mouse.getAbsolutePosition()
+    if button == 0 then
+        hs.eventtap.leftClick(p)
+    elseif button == 1 then
+        hs.eventtap.rightClick(p)
+    else
+        hs.eventtap.middleClick(p)
+    end
+end
+
+modal:bind('', 'u', hs.fnutils.partial(click, 0), nil, nil)
+modal:bind('', 'i', hs.fnutils.partial(click, 1), nil, nil)
+modal:bind('', 'o', hs.fnutils.partial(click, 2), nil, nil)

@@ -82,8 +82,12 @@ keymap('q', 'alt', 'escape', '', NO_REPEAT)
 -- ------------------
 -- not working
 -- keymap('a', 'alt', 'CAPS_LOCK', nil, NO_REPEAT)
--- keymap('p', 'alt', 'PLAY', nil, NO_REPEAT)
--- keymap('[', 'alt', 'PREVIOUS', nil, NO_REPEAT)
--- keymap(']', 'alt', 'NEXT', nil, NO_REPEAT)
+
+keymap('p', 'alt', 'PLAY', nil, NO_REPEAT)
+keymap('[', 'alt', 'REWIND', nil, NO_REPEAT)
+keymap(']', 'alt', 'FAST', nil, NO_REPEAT)
+
 keymap(',', 'alt', 'SOUND_DOWN', nil)
 keymap('.', 'alt', 'SOUND_UP', nil)
+keymap('/', 'alt', 'MUTE', nil)
+

@@ -1,5 +1,4 @@
 -- Simulate tmux's key binding: prefix + hotkey
-
 local module = {}
 
 local TIMEOUT = 5
@@ -31,5 +30,7 @@ function module.bind(mod, key, fn, autoExit)
     end
     modal:bind(mod, key, bindFn)
 end
+
+module.bind('', 'd', hs.toggleConsole)
 
 return module

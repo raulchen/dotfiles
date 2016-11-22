@@ -1,4 +1,4 @@
-prefix = require("prefix")
+local prefix = require("prefix")
 
 local modal = hs.hotkey.modal.new()
 

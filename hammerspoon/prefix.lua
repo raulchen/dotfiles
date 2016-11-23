@@ -2,7 +2,7 @@
 
 local module = {}
 
-local TIMEOUT = 5
+local TIMEOUT = 3
 
 local modal = hs.hotkey.modal.new('ctrl', 'space')
 

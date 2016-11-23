@@ -4,10 +4,14 @@ local modal = hs.hotkey.modal.new()
 
 prefix.bind('', 'm', function() modal:enter() end)
 
-modal.alertId = nil
+local style = {
+    fillColor = {white = 0, alpha = 0},
+    strokeColor = {white = 0, alpha = 0},
+    textSize = 25,
+}
 
 function modal:entered()
-    modal.alertId = hs.alert.show('mouse mode', 99999)
+    modal.alertId = hs.alert.show('🐭', style, 99999)
 end
 
 function modal:exited()

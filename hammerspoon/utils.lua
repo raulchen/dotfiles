@@ -17,4 +17,12 @@ function module.splitStr(str, sep)
 	return t
 end
 
+function module.strToTable(str)
+    local t = {}
+    for i = 1, #str do
+        t[i] = str:sub(i, i)
+    end
+    return t
+end
+
 return module

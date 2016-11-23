@@ -7,7 +7,7 @@ function quitModal:entered()
 	hs.timer.doAfter(1, function() quitModal:exit() end)
 end
 
-function doQuit()
+local function doQuit()
 	res = hs.application.frontmostApplication():selectMenuItem("^Quit.*$")
 	quitModal:exit()
 end

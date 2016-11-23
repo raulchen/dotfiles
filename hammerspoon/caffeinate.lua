@@ -1,3 +1,5 @@
+-- To replace the Caffeinate app
+
 local prefix = require('prefix')
 
 local menu = nil

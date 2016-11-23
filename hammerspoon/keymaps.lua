@@ -1,5 +1,3 @@
-utils = require('utils')
-
 local REPEAT_FASTER = 10 * 1000
 local REPEAT_SLOWER = 100 * 1000
 local NO_REPEAT = -1
@@ -22,6 +20,7 @@ local function keyStrokeSystem(key, repeatDelay)
     hs.eventtap.event.newSystemKeyEvent(key, false):post()
 end
 
+-- Map sourceKey + sourceMod -> targetKey + targetMod
 local function keymap(sourceKey, sourceMod, targetKey, targetMod, repeatDelay)
     sourceMod = sourceMod or {}
 
@@ -44,7 +43,7 @@ end
 -- ------------------
 -- move
 -- ------------------
-arrows = {
+local arrows = {
 	h = 'left',
 	j = 'down',
 	k = 'up',

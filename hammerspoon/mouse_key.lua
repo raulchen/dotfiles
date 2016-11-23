@@ -1,5 +1,4 @@
-local prefix = require("prefix")
-
+-- Simulate mouse via keyboard
 local modal = hs.hotkey.modal.new()
 
 prefix.bind('', 'm', function() modal:enter() end)
@@ -69,7 +68,7 @@ end
 -- click
 -- ------------
 
-function click(button)
+local function click(button)
     p = hs.mouse.getAbsolutePosition()
     if button == 0 then
         hs.eventtap.leftClick(p)

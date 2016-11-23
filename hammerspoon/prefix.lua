@@ -1,4 +1,5 @@
 -- Simulate tmux's key binding: prefix + hotkey
+
 local module = {}
 
 local TIMEOUT = 5

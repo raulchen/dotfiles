@@ -1,8 +1,6 @@
 -- Auto reload Hammerspoon config
 
-utils = require("utils")
-
-function reloadConfig()
+local function reloadConfig()
   configFileWatcher:stop()
   configFileWatcher = nil
   hs.reload()

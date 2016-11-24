@@ -1,8 +1,7 @@
 inspect = hs.inspect.inspect
-utils = require("utils")
 prefix = require("prefix")
+utils = require("utils")
 
-require("auto_reload")
 require("double_cmdq_to_quit")
 require("keymaps")
 require("mouse_key")

@@ -33,5 +33,6 @@ function module.bind(mod, key, fn, autoExit)
 end
 
 module.bind('', 'd', hs.toggleConsole)
+module.bind('', 'r', hs.reload)
 
 return module

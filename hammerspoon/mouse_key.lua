@@ -1,7 +1,7 @@
 -- Simulate mouse via keyboard
 
 local modal = hs.hotkey.modal.new()
-modal.label = require("labels").new('🐭')
+modal.label = require("labels").new('🐭 mouse mode')
 
 prefix.bind('', 'm', function() modal:toggle() end)
 

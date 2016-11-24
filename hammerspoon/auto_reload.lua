@@ -1,14 +1,16 @@
 -- Auto reload Hammerspoon config
 
-local function reloadConfig()
-  configFileWatcher:stop()
-  configFileWatcher = nil
+local module = {}
+
+module.reload = function()
+  module.configFileWatcher:stop()
   hs.reload()
 end
 
-configFileWatcher = hs.pathwatcher.new(os.getenv("HOME") .. "/.hammerspoon/", reloadConfig)
-configFileWatcher:start()
-utils.tempNotify(3, hs.notify.new({
-    title = "Hammerspoon",
-    subTitle = "Config reloaded",
-}))
+module.configFileWatcher = hs.pathwatcher.new(
+    os.getenv("HOME") .. "/.hammerspoon/",
+    module.reload
+)
+module.configFileWatcher:start()
+
+return module

@@ -1,22 +1,26 @@
 -- Simulate mouse via keyboard
+
 local modal = hs.hotkey.modal.new()
+modal.label = require("labels").new('🐭')
 
-prefix.bind('', 'm', function() modal:enter() end)
+prefix.bind('', 'm', function() modal:toggle() end)
 
-local style = {
-    fillColor = {white = 0, alpha = 0},
-    strokeColor = {white = 0, alpha = 0},
-    textSize = 25,
-}
+function modal:toggle()
+    if modal.enabled then
+        modal:exit()
+    else
+        modal:enter()
+    end
+end
 
 function modal:entered()
-    modal.alertId = hs.alert.show('🐭', style, 99999)
+    modal.enabled = true
+    modal.label:show()
 end
 
 function modal:exited()
-    if modal.alertId then
-        hs.alert.closeSpecific(modal.alertId)
-    end
+    modal.enabled = false
+    modal.label:hide()
 end
 
 modal:bind('', 'escape', function() modal:exit() end)

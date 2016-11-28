@@ -7,8 +7,8 @@ local TIMEOUT = 3
 local modal = hs.hotkey.modal.new('ctrl', 'space')
 
 function modal:entered()
-	modal.alertId = hs.alert.show("Prefix mode", TIMEOUT)
-	hs.timer.doAfter(TIMEOUT, function() modal:exit() end)
+    modal.alertId = hs.alert.show("Prefix mode", TIMEOUT)
+    hs.timer.doAfter(TIMEOUT, function() modal:exit() end)
 end
 
 function modal:exited()

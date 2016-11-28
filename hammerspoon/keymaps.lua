@@ -24,8 +24,8 @@ end
 local function keymap(sourceKey, sourceMod, targetKey, targetMod, repeatDelay)
     sourceMod = sourceMod or {}
 
-	repeatDelay = repeatDelay or REPEAT_FASTER
-	noRepeat = repeatDelay <= 0
+    repeatDelay = repeatDelay or REPEAT_FASTER
+    noRepeat = repeatDelay <= 0
 
     if targetMod == nil then
         fn = hs.fnutils.partial(keyStrokeSystem, string.upper(targetKey), repeatDelay)
@@ -33,26 +33,26 @@ local function keymap(sourceKey, sourceMod, targetKey, targetMod, repeatDelay)
         targetMod = utils.splitStr(targetMod, '+')
         fn = hs.fnutils.partial(keyStroke, targetMod, targetKey, repeatDelay)
     end
-	if noRepeat then
-		hs.hotkey.bind(sourceMod, sourceKey, fn, nil, nil)
-	else
-		hs.hotkey.bind(sourceMod, sourceKey, fn, nil, fn)
-	end
+    if noRepeat then
+        hs.hotkey.bind(sourceMod, sourceKey, fn, nil, nil)
+    else
+        hs.hotkey.bind(sourceMod, sourceKey, fn, nil, fn)
+    end
 end
 
 -- ------------------
 -- move
 -- ------------------
 local arrows = {
-	h = 'left',
-	j = 'down',
-	k = 'up',
-	l = 'right'
+    h = 'left',
+    j = 'down',
+    k = 'up',
+    l = 'right'
 }
 for k, v in pairs(arrows) do
-	keymap(k, 'alt', v, '')
-	keymap(k, 'alt+shift', v, 'alt')
-	keymap(k, 'alt+shift+ctrl', v, 'shift')
+    keymap(k, 'alt', v, '')
+    keymap(k, 'alt+shift', v, 'alt')
+    keymap(k, 'alt+shift+ctrl', v, 'shift')
 end
 
 keymap('y', 'alt', 'home', '')

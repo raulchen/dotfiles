@@ -231,8 +231,6 @@ set statusline=\ %{HasPaste()}%F%m%r%h\ %w\ \ CWD:\ %r%{getcwd()}%h\ \ \ Line:\ 
 """"""""""""""""""""""""""""""
 " Editing mappings
 """"""""""""""""""""""""""""""
-" Remap VIM 0 to first non-blank character
-map 0 ^
 
 " not set register with x and s
 nnoremap x "_x

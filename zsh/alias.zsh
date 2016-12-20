@@ -15,13 +15,9 @@ if [[ `uname` == 'Darwin' ]]; then
     # Flush Directory Service cache
     alias flushdns="dscacheutil -flushcache && sudo killall -HUP mDNSResponder"
 
-    # Show/hide hidden files in Finder
-    alias show_files="defaults write com.apple.finder AppleShowAllFiles -bool true && killall Finder"
-    alias hide_files="defaults write com.apple.finder AppleShowAllFiles -bool false && killall Finder"
-
     # Hide/show all desktop icons (useful when presenting)
-    alias hide_desktop="defaults write com.apple.finder CreateDesktop -bool false && killall Finder"
-    alias show_filesdesktop="defaults write com.apple.finder CreateDesktop -bool true && killall Finder"
+    alias hidedesktop="defaults write com.apple.finder CreateDesktop -bool false && killall Finder"
+    alias showdesktop="defaults write com.apple.finder CreateDesktop -bool true && killall Finder"
 
     # Merge PDF files
     # Usage: `mergepdf -o output.pdf input{1,2,3}.pdf`

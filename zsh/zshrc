@@ -1,8 +1,7 @@
-dotfiles=$HOME/dotfiles
-os_name=`test uname`
+DOTFILES=$HOME/dotfiles
 
 # Path to your oh-my-zsh installation.
-export ZSH=$dotfiles/zsh/oh-my-zsh
+export ZSH=$DOTFILES/zsh/oh-my-zsh
 # Set name of the theme to load.
 # Look in ~/.oh-my-zsh/themes/
 # Optionally, if you set this to "random", it'll load a random theme each
@@ -46,7 +45,7 @@ COMPLETION_WAITING_DOTS="true"
 # HIST_STAMPS="mm/dd/yyyy"
 
 # Would you like to use another custom folder than $ZSH/custom?
-ZSH_CUSTOM=$dotfiles/zsh/oh_my_zsh_custom
+ZSH_CUSTOM=$DOTFILES/zsh/oh_my_zsh_custom
 
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
@@ -54,12 +53,12 @@ ZSH_CUSTOM=$dotfiles/zsh/oh_my_zsh_custom
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(git colored-man zsh-syntax-highlighting pip python fasd extract)
 
-if [[ $os_name == 'Darwin' ]]; then
+if [[ `uname` == 'Darwin' ]]; then
     plugins+=(osx brew brew-cask)
 fi
 
-if test -e "$dotfiles/zsh/plugins.local"; then
-    source $dotfiles/zsh/plugins.local
+if test -e "$DOTFILES/zsh/plugins.local"; then
+    source $DOTFILES/zsh/plugins.local
 fi
 
 source $ZSH/oh-my-zsh.sh
@@ -116,13 +115,13 @@ bindkey '^R' history-incremental-pattern-search-backward
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
-export PATH=$dotfiles/bin:$PATH
+export PATH=$DOTFILES/bin:$PATH
 
-source ${dotfiles}/zsh/alias.zsh
-source ${dotfiles}/zsh/functions.zsh
+source $DOTFILES/zsh/alias.zsh
+source $DOTFILES/zsh/functions.zsh
 
-if test -e "$dotfiles/zsh/zshrc.local"; then
-    source "$dotfiles/zsh/zshrc.local"
+if test -e "$DOTFILES/zsh/zshrc.local"; then
+    source "$DOTFILES/zsh/zshrc.local"
 fi
 
 if [[ -n "$TMUX" ]]; then

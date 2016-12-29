@@ -8,6 +8,7 @@ require("mouse_key")
 require("window")
 require("caffeinate")
 require("url_dispatcher")
+require("redshift")
 require("local")
 
 utils.tempNotify(3, hs.notify.new({

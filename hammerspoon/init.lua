@@ -7,6 +7,7 @@ require("keymaps")
 require("mouse_key")
 require("window")
 require("caffeinate")
+require("url_dispatcher")
 require("local")
 
 utils.tempNotify(3, hs.notify.new({

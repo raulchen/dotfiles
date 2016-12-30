@@ -1,4 +1,4 @@
-#!/bin/env bash
+#!/bin/bash
 base_dir=$HOME/dotfiles
 backup_dir="$base_dir/.backups.local"
 backup_prefix="$backup_dir/$(date '+%Y%m%d%H%M%S')"
@@ -64,5 +64,11 @@ fi
 
 echo "Setting up tmux..."
 link_file "$base_dir/tmux/tmux.conf" ~/.tmux.conf
+
+printf "Set up hammerspoons config? [yn]"
+read -r op
+if [[ "$op" == "y" ]]; then
+    link_file "$base_dir/hammerspoon" ~/.hammerspoon
+fi
 
 echo "Done"

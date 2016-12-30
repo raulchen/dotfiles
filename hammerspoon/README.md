@@ -1,6 +1,6 @@
-# My Hammerspoon Configuration
+# Hammerspoon
 
-This configuration heavily uses Tmux style hotkey binding, i.e., using a prefix to activate hotkeys. 
+This configuration heavily uses Tmux style hotkey binding, i.e., using a prefix to activate hotkeys.
 
 The default prefix is `ctrl+space`, e.g., `prefix - a` = press and release `ctrl+space` first, then press `a`.
 
@@ -52,7 +52,7 @@ In macOS, the option key is used to input special characters. However, most peop
   - `option + .`: volume up.
   - `option + /`: mute.
 
-# URL dispatcher:
+# URL dispatcher
 
 If Hammerspoon is set as the default browser, a prompt of choosing browsers will be shown every time you open a URL.
 

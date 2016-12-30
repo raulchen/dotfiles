@@ -1,3 +1,5 @@
+*.DS_Store
+
 *.local
 vim/temp_dirs
 vim/temp_dirs/**

@@ -27,6 +27,7 @@ local function keymap(sourceKey, sourceMod, targetKey, targetMod, repeatDelay)
     repeatDelay = repeatDelay or REPEAT_FASTER
     noRepeat = repeatDelay <= 0
 
+    local fn = nil
     if targetMod == nil then
         fn = hs.fnutils.partial(keyStrokeSystem, string.upper(targetKey), repeatDelay)
     else

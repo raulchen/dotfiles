@@ -8,7 +8,7 @@ function quitModal:entered()
 end
 
 local function doQuit()
-    res = hs.application.frontmostApplication():selectMenuItem("^Quit.*$")
+    local res = hs.application.frontmostApplication():selectMenuItem("^Quit.*$")
     quitModal:exit()
 end
 

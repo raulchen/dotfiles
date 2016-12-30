@@ -37,16 +37,16 @@ local DELTA = 20
 local SLOW_DELTA = 5
 
 local function moveMouse(dx, dy)
-    p = hs.mouse.getAbsolutePosition()
+    local p = hs.mouse.getAbsolutePosition()
     p['x'] = p['x'] + dx
     p['y'] = p['y'] + dy
     hs.mouse.setAbsolutePosition(p)
 end
 
 for i = 1, 4 do
-    fn = hs.fnutils.partial(moveMouse, DX[i] * DELTA, DY[i] * DELTA)
+    local fn = hs.fnutils.partial(moveMouse, DX[i] * DELTA, DY[i] * DELTA)
     modal:bind('', KEYS[i], fn, nil, fn)
-    fnSlow = hs.fnutils.partial(moveMouse, DX[i] * SLOW_DELTA, DY[i] * SLOW_DELTA)
+    local fnSlow = hs.fnutils.partial(moveMouse, DX[i] * SLOW_DELTA, DY[i] * SLOW_DELTA)
     modal:bind('cmd', KEYS[i], fnSlow, nil, fnSlow)
 end
 
@@ -59,12 +59,12 @@ local SDX = {-1, 0, 0, 1}
 local SDY = {0, -1, 1, 0}
 
 local function scroll(dx, dy)
-    offset = {dx, dy}
+    local offset = {dx, dy}
     hs.eventtap.event.newScrollEvent(offset, {}):post()
 end
 
 for i = 1, 4 do
-    fn = hs.fnutils.partial(scroll, SDX[i] * SCROLL_DELTA, SDY[i] * SCROLL_DELTA)
+    local fn = hs.fnutils.partial(scroll, SDX[i] * SCROLL_DELTA, SDY[i] * SCROLL_DELTA)
     modal:bind('shift', KEYS[i], fn, nil, fn)
 end
 
@@ -73,7 +73,7 @@ end
 -- ------------
 
 local function click(button)
-    p = hs.mouse.getAbsolutePosition()
+    local p = hs.mouse.getAbsolutePosition()
     if button == 0 then
         hs.eventtap.leftClick(p)
     elseif button == 1 then

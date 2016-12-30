@@ -5,7 +5,7 @@ local prefix = require('prefix')
 local menu = nil
 
 local function toggle()
-    enabled = hs.caffeinate.toggle('system')
+    local enabled = hs.caffeinate.toggle('system')
     if enabled then
         menu = hs.menubar.new():setTitle('☕')
     else

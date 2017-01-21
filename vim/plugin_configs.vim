@@ -133,3 +133,8 @@ let g:togglecursor_default="blinking_underline"
 let g:togglecursor_insert="blinking_line"
 let g:togglecursor_leave="blinking_underline"
 let g:togglecursor_replace="blinking_block"
+
+"""""""""""""""""""
+" Polyglot
+"""""""""""""""""""
+let g:polyglot_disabled = ['python']

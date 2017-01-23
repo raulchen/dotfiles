@@ -18,7 +18,8 @@ Resize and move windows:
   - `prefix - ctrl+j`: move window to left two-thirds of screen.
   - `prefix - ctrl+k`: move window to right two-thirds of screen.
   - `prefix - ctrl+l`: move window to right one-third of screen.
-  - `prefix - shift+hjkl`: move window (need to press esc to normal mode after moving)
+  - `prefix - shift+hjkl`: move window (need to press esc to normal mode after moving).
+  - `prefix - ;`: move window to the next screen.
 
 # Mouse key
 

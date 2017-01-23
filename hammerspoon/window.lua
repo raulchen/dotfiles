@@ -1,6 +1,8 @@
 local prefix = require("prefix")
 local utils = require("utils")
 
+hs.window.animationDuration = 0
+
 ----------------
 -- Grid
 ----------------
@@ -147,3 +149,27 @@ for i = 1, 4 do
     prefix.bindMultiple('shift', arrowKeys[i], pressedFn, nil, moveWin)
 end
 
+-- prefix + ; -> move window to the next screen
+
+local function getNextScreen(s)
+    all = hs.screen.allScreens()
+    for i = 1, #all do
+        if all[i] == s then
+            return all[(i - 1 + 1) % #all + 1]
+        end
+    end
+    return nil
+end
+
+local function moveToNextScreen()
+    local win = hs.window.focusedWindow()
+    if win ~= nil then
+        currentScreen = win:screen()
+        nextScreen = getNextScreen(currentScreen)
+        if nextScreen then
+            win:moveToScreen(nextScreen)
+        end
+    end
+end
+
+prefix.bind('', ';', moveToNextScreen)

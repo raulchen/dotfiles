@@ -20,9 +20,9 @@ local switcher = hs.window.switcher.new(nil, {
     fontName = ".AppleSystemUIFont",
     textSize = 16,
     textColor = { white = 0, alpha = 1 },
-    highlightColor = { white = 0.6, alpha = 0.9 },
-    backgroundColor = { white = 1, alpha = 0.8 },
-    titleBackgroundColor = { white = 0.9, alpha = 0.9 },
+    highlightColor = { white = 0.5, alpha = 0.3 },
+    backgroundColor = { white = 0.95, alpha = 0.9 },
+    titleBackgroundColor = { white = 0.95, alpha = 0 },
     showThumbnails = false,
     showSelectedThumbnail = false,
 })

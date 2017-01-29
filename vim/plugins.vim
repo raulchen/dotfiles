@@ -41,7 +41,7 @@ Plug 'junegunn/gv.vim', {'on': 'GV'}
 " Language support
 Plug 'sheerun/vim-polyglot'
 Plug 'scrooloose/syntastic'
-Plug 'davidhalter/jedi-vim', {'for': 'python'}
-Plug 'nvie/vim-flake8', {'for': 'python'}
+Plug 'davidhalter/jedi-vim', {'for': ['python', 'pyrex']}
+Plug 'nvie/vim-flake8', {'for': ['python', 'pyrex']}
 
 call plug#end()

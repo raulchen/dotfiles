@@ -106,8 +106,8 @@ let g:jedi#usages_command = "<c-e>u"
 let g:jedi#completions_command = "<C-Space>"
 let g:jedi#rename_command = "<c-e>r"
 let g:jedi#show_call_signatures = "0"
-autocmd FileType python setlocal completeopt-=preview
-autocmd FileType python setlocal complete-=i
+autocmd FileType python,pyrex setlocal completeopt-=preview
+autocmd FileType python,pyrex setlocal complete-=i
 
 """""""""""""""""""
 " incsearch.vim

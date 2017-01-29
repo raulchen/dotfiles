@@ -173,3 +173,24 @@ local function moveToNextScreen()
 end
 
 prefix.bind('', ';', moveToNextScreen)
+
+-- prefix + - -> shrink window frame
+-- prefix + = -> expand window frame
+
+local function expandWin(ratio)
+    local win = hs.window.focusedWindow()
+    if win == nil then
+        return
+    end
+    frame = win:frame()
+    local cx = frame.x + frame.w / 2
+    local cy = frame.y + frame.h / 2
+    local nw = frame.w * ratio
+    local nh = frame.h * ratio
+    local nx = cx - nw / 2
+    local ny = cy - nh / 2
+    win:setFrame(hs.geometry.rect(nx, ny, nw, nh))
+end
+
+prefix.bind('', '-', function() expandWin(0.9) end)
+prefix.bind('', '=', function() expandWin(1.1) end)

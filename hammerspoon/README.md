@@ -20,6 +20,8 @@ Resize and move windows:
   - `prefix - ctrl+l`: move window to right one-third of screen.
   - `prefix - shift+hjkl`: move window (need to press esc to normal mode after moving).
   - `prefix - ;`: move window to the next screen.
+  - `prefix - -`: shrink window frame.
+  - `prefix - =`: expand window frame.
 
 # Mouse key
 

@@ -9,7 +9,6 @@ alias -g N="> /dev/null 2>&1 "
 alias tailf="tail -f"
 unalias d >/dev/null 2>&1
 alias d="dirs -v | head -10"
-alias bell="echo 'BELL''BELL''BELL'"
 
 if [[ `uname` == 'Darwin' ]]; then
     # Flush Directory Service cache

@@ -85,3 +85,16 @@ vless() {
         vim -u ~/dotfiles/vim/less.vim $@
     fi
 }
+
+function _notify {
+  echo -ne 'trigger''-notify('$@')' && sleep 0.01 && echo -e '\r\033[K\033[1A'
+}
+
+function notify {
+    sleep 0.1;
+    if [ $? = 0 ]; then
+        _notify "Task finished"
+    else
+        _notify "Task failed"
+    fi
+}

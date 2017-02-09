@@ -9,6 +9,7 @@ require("window")
 require("caffeinate")
 require("url_dispatcher")
 require("redshift")
+eventListener = require("event_listener")
 pcall(hs.fnutils.partial(require, "local"))
 
 utils.tempNotify(3, hs.notify.new({

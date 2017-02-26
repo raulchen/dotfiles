@@ -48,12 +48,12 @@ In macOS, the option key is used to input special characters. However, most peop
   - `option + shift + f`: option + forward delete.
   - `option + n/m`: cmd [+ shift] + tab (switch tabs).
   - `option + q`: esc.
-  - `option + p`: play.
-  - `option + [`: previous track.
-  - `option + ]`: next track.
-  - `option + ,`: volume down.
-  - `option + .`: volume up.
-  - `option + /`: mute.
+  - `option + p` / `option + 1`: play.
+  - `option + [` / `option + 2`: previous track.
+  - `option + ]` / `option + 3`: next track.
+  - `option + /` / `option + f1`: mute.
+  - `option + ,` / `option + f2`: volume down.
+  - `option + .` / `option + f3`: volume up.
 
 # URL dispatcher
 

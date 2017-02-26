@@ -68,4 +68,4 @@ The motivation is that I mostly use Chrome for more powerful functionalities, bu
   - `prefix - n`: toggle night shift.
   - `prefix - r`: reload Hammerspoon config.
   - `prefix - d`: toggle Hammerspoon console for debug.
-
+  - `press ctrl twice`: escape 

@@ -23,9 +23,6 @@ let g:mapleader = ","
 
 set timeoutlen=1000
 
-" go to command mode without shift
-noremap ; :
-
 " Fast saving
 nmap <leader>w :w!<cr>
 

@@ -229,10 +229,10 @@ set statusline=\ %{HasPaste()}%F%m%r%h\ %w\ \ CWD:\ %r%{getcwd()}%h\ \ \ Line:\ 
 " Editing mappings
 """"""""""""""""""""""""""""""
 
-" not set register with x and s
-nnoremap x "_x
-nnoremap X "_X
-nnoremap s "_s
+" use register z for x and s
+nnoremap x "zx
+nnoremap X "zX
+nnoremap s "zs
 
 " Move a line of text
 nmap <leader>j mz:m+<cr>`z

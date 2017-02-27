@@ -20,8 +20,10 @@ Resize and move windows:
   - `prefix - ctrl+l`: move window to right one-third of screen.
   - `prefix - shift+hjkl`: move window (need to press esc to normal mode after moving).
   - `prefix - ;`: move window to the next screen.
-  - `prefix - -`: shrink window frame.
   - `prefix - =`: expand window frame.
+  - `prefix - -`: shrink window frame.
+  - `prefix - cmd+hjkl`: expand window edges.
+  - `prefix - cmd+shift+hjkl`: shrink window edges.
 
 # Mouse key
 
@@ -68,4 +70,4 @@ The motivation is that I mostly use Chrome for more powerful functionalities, bu
   - `prefix - n`: toggle night shift.
   - `prefix - r`: reload Hammerspoon config.
   - `prefix - d`: toggle Hammerspoon console for debug.
-  - `press ctrl twice`: escape 
+  - `press ctrl twice`: escape

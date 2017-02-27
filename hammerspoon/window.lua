@@ -194,3 +194,46 @@ end
 
 prefix.bind('', '-', function() expandWin(0.9) end)
 prefix.bind('', '=', function() expandWin(1.1) end)
+
+
+-- prefix + cmd-hjkl -> expand window edges
+-- prefix + cmd-shift-hjkl -> shrink window edges
+--
+local function expandEdge(edge, ratio)
+    local win = hs.window.focusedWindow()
+    if win == nil then
+        return
+    end
+    frame = win:frame()
+    local x, y, w, h = frame.x, frame.y, frame.w, frame.h
+    if edge == 'h' then
+        w = frame.w * ratio
+        x = frame.x + frame.w - w
+    elseif edge == 'j' then
+        h = frame.h * ratio
+    elseif edge == 'k' then
+        h = frame.h * ratio
+        y = frame.y + frame.h - h
+    elseif edge == 'l' then
+        w = frame.w * ratio
+    else
+        return
+    end
+    win:setFrame(hs.geometry.rect(x, y, w, h))
+end
+
+local edges = {'h', 'j', 'k', 'l'}
+local ratios = {0.9, 1.111111}
+
+for i = 1, #edges do
+    local edge = edges[i]
+    for j = 1, #ratios do
+        local mod = (ratios[j] > 1) and 'cmd' or 'cmd+shift'
+        local fn = function() expandEdge(edge, ratios[j]) end
+        local pressedFn = function()
+            prefix.cancelTimeout()
+            fn()
+        end
+        prefix.bindMultiple(mod, edge, pressedFn, nil, fn)
+    end
+end

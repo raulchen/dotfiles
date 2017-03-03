@@ -5,7 +5,7 @@ set nocompatible
 
 set number
 
-"Show incomplete cmds down the bottom
+" Show incomplete cmds down the bottom
 set showcmd
 
 " Sets how many lines of history VIM has to remember
@@ -38,7 +38,7 @@ nmap <leader>Q :q!<cr>
 nnoremap <space> za
 vnoremap <space> zf
 
-" enable mouse
+" Enable mouse
 set mouse=a
 
 """"""""""""""""""""""""""""
@@ -47,13 +47,7 @@ set mouse=a
 " Set 7 lines to the cursor - when moving vertically using j/k
 set so=7
 
-" Avoid garbled characters in Chinese language windows OS
-let $LANG='en'
-set langmenu=en
-source $VIMRUNTIME/delmenu.vim
-source $VIMRUNTIME/menu.vim
-
-" Turn on the WiLd menu
+" Turn on the wild menu
 set wildmenu
 set wildmode=longest:full,full
 
@@ -110,9 +104,6 @@ set novisualbell
 set t_vb=
 set tm=500
 
-" Add a bit extra margin to the left
-"set foldcolumn=1
-
 """""""""""""""""""""""""
 " Colors and Fonts
 """""""""""""""""""""""""
@@ -128,7 +119,7 @@ set encoding=utf8
 set ffs=unix,dos,mac
 
 """""""""""""""""""""""""""""""""
-" => Files, backups and undo
+" Files, backups and undo
 """""""""""""""""""""""""""""""""
 set nowritebackup
 set nobackup
@@ -165,13 +156,12 @@ set si "Smart indent
 set wrap "Wrap lines
 
 """"""""""""""""""""""""""""""
-" => Visual mode related
+" Visual mode related
 """"""""""""""""""""""""""""""
 " Visual mode pressing * or # searches for the current selection
 " Super useful! From an idea by Michael Naumann
 vnoremap <silent> * :<C-u>call VisualSelection('', '')<CR>/<C-R>=@/<CR><CR>
 vnoremap <silent> # :<C-u>call VisualSelection('', '')<CR>?<C-R>=@/<CR><CR>
-
 
 """"""""""""""""""""""""""""""""""""""""""""
 " Moving around, tabs, windows and buffers
@@ -214,7 +204,6 @@ endtry
 " Return to last edit position when opening files (You want this!)
 au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 
-
 """"""""""""""""""""""""""""""
 " Status line
 """"""""""""""""""""""""""""""
@@ -223,7 +212,6 @@ set laststatus=2
 
 " Format the status line
 set statusline=\ %{HasPaste()}%F%m%r%h\ %w\ \ CWD:\ %r%{getcwd()}%h\ \ \ Line:\ %l\ \ Column:\ %c
-
 
 """"""""""""""""""""""""""""""
 " Editing mappings
@@ -358,11 +346,6 @@ function! <SID>BufcloseCloseIt()
     endif
 endfunction
 
-" Make VIM remember position in file after reopen
-" if has("autocmd")
-"   au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
-"endif
-
 """"""""""""""""""""""""""""""
 " Command mode related
 """"""""""""""""""""""""""""""
@@ -385,12 +368,12 @@ cnoremap <C-P> <Up>
 cnoremap <C-N> <Down>
 
 """""""""""""""""""""""""""""""
-" => General abbreviations
+" General abbreviations
 """""""""""""""""""""""""""""""
 iab xdate <c-r>=strftime("%d/%m/%y %H:%M:%S")<cr>
 
 """""""""""""""""""""""""""""""
-" => Helper functions
+" Helper functions
 """""""""""""""""""""""""""""""
 func! DeleteTillSlash()
     let g:cmd = getcmdline()

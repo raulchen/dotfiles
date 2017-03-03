@@ -1,6 +1,6 @@
-""""""""""""""""""""""""""""""
-" => Python section
-""""""""""""""""""""""""""""""
+"""""""""""""""
+" Python
+"""""""""""""""
 let python_highlight_all = 1
 au FileType python,pyrex syn keyword pythonDecorator True None False self cls
 

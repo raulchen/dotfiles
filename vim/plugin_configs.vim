@@ -2,29 +2,42 @@
 " FZF
 """"""""""""""""""""""""""""""
 let g:fzf_history_dir = '~/dotfiles/vim/temp_dirs/fzf-history'
-nmap <c-g>f :Files<cr>
-nmap <c-g>p :Files <c-r>=expand("%:p:h")<cr>/
-nmap <c-g>b :Buffers<cr>
-nmap <c-g>a :Ag<space>
-nmap <c-g>l :BLines<cr>
-nmap <c-g>L :Lines<cr>
-nmap <c-g>t :BTags<cr>
-nmap <c-g>T :Tags<cr>
-nmap <c-g>m :Marks<cr>
-nmap <c-g>h :History<cr>
+" [Buffers] Jump to the existing window if possible
+let g:fzf_buffers_jump = 1
+" Augmenting Ag command using fzf#vim#with_preview function
+"   * fzf#vim#with_preview([[options], preview window, [toggle keys...]])
+"   * Preview script requires Ruby
+"   * Install Highlight or CodeRay to enable syntax highlighting
+"
+"   :Ag  - Start fzf with hidden preview window that can be enabled with "?" key
+"   :Ag! - Start fzf in fullscreen and display the preview window above
+command! -bang -nargs=* Ag
+  \ call fzf#vim#ag(<q-args>,
+  \                 <bang>0 ? fzf#vim#with_preview('up:60%')
+  \                         : fzf#vim#with_preview('right:60%:hidden', '?'),
+  \                 <bang>0)
+
+nmap <c-g><c-f> :Files<cr>
+nmap <c-g><c-p> :Files <c-r>=expand("%:p:h")<cr>/
+" J for jump
+nmap <c-g><c-j> :Buffers<cr>
+nmap <c-g><c-a> :Ag<space>
+" TODO vmap <c-g><c-a>
+nmap <c-g><c-t> :BTags<cr>
+nmap <c-g><c-g><c-t> :Tags<cr>
+nmap <c-g><c-m> :Marks<cr>
+nmap <c-g><c-h> :History<cr>
 nmap <c-g>/ :History/<cr>
 nmap <c-g>; :History:<cr>
-nmap <c-g>g :BCommits<cr>
-nmap <c-g>G :Commits<cr>
-nmap <c-g>c :Commands<cr>
+" L for log
+nmap <c-g><c-g><c-l> :BCommits<cr>
+nmap <c-g><c-l> :Commits<cr>
 nmap <c-g>m :Maps<cr>
-xmap <c-g>m <plug>(fzf-maps-x)
-omap <c-g>m <plug>(fzf-maps-o)
-imap <c-g>m <plug>(fzf-maps-i)
-imap <c-g>w <plug>(fzf-complete-word)
-imap <c-g>p <plug>(fzf-complete-path)
-imap <c-g>f <plug>(fzf-complete-file-ag)
-imap <c-g>l <plug>(fzf-complete-line)
+
+imap <c-g><c-w> <plug>(fzf-complete-word)
+imap <c-g><c-p> <plug>(fzf-complete-path)
+imap <c-g><c-f> <plug>(fzf-complete-file-ag)
+imap <c-g><c-l> <plug>(fzf-complete-line)
 
 """"""""""""""""""""""""
 " Dracula theme

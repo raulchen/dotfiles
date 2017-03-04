@@ -159,8 +159,8 @@ set wrap "Wrap lines
 " Visual mode
 """"""""""""""""""""""""""""""
 " Make * and # work in visual mode as well
-vnoremap <silent> * :<c-u>call SaveSelection()<cr>/<c-r>/<cr>
-vnoremap <silent> # :<c-u>call SaveSelection()<cr>?<c-r>/<cr>
+vnoremap <expr> <silent> * SearchSelection(1)
+vnoremap <expr> <silent> # SearchSelection(0)
 
 """"""""""""""""""""""""""""""""""""""""""""
 " Moving around, tabs, windows and buffers
@@ -240,7 +240,7 @@ autocmd BufWrite * :call DeleteTrailingWS()
 vnoremap <leader>y :call CopyToTmux()<cr>
 
 " <leader>r to search and replace the selected text
-vnoremap <silent> <leader>r :call ReplaceSelection()<CR>
+vnoremap <expr> <leader>r ReplaceSelection()
 
 """"""""""""""""""""""""""""""""""""""
 " Cope displaying
@@ -284,37 +284,34 @@ function! SwitchWindowOrTab(d)
     endif
 endfunction
 
-function! CmdLine(str)
-    exe "menu Foo.Bar :" . a:str
-    emenu Foo.Bar
-    unmenu Foo
-endfunction
-
-function! GetSelection() range
-  let [lnum1, col1] = getpos("'<")[1:2]
-  let [lnum2, col2] = getpos("'>")[1:2]
-  let lines = getline(lnum1, lnum2)
-  let lines[-1] = lines[-1][: col2 - (&selection == 'inclusive' ? 1 : 2)]
-  let lines[0] = lines[0][col1 - 1:]
-  return join(lines, "\n")
+function! GetSelection(one_line, escape) range
+    let [lnum1, col1] = getpos("'<")[1:2]
+    let [lnum2, col2] = getpos("'>")[1:2]
+    let lines = getline(lnum1, lnum2)
+    let lines[-1] = lines[-1][: col2 - (&selection == 'inclusive' ? 1 : 2)]
+    let lines[0] = lines[0][col1 - 1:]
+    let res = join(lines, a:one_line ? '\n' : "\n")
+    if a:escape != ''
+        let res = escape(res, a:escape)
+    endif
+    return res
 endfunction
 
 function! CopyToTmux() range
-    let l:s = GetSelection()
-    let l:s = substitute(l:s, "\n", "", "g")
-    let l:s = escape(l:s, '"')
-    call system('echo -n "'.l:s.'" | tmux loadb -')
+    let s = GetSelection(0, '"')
+    call system('echo -n "' . s . '" | tmux loadb -')
     echo "Copied to tmux buffer"
 endfunction
 
 function! ReplaceSelection() range
-    let l:s = GetSelection()
-    let l:s = substitute(l:s, "\n", "", "g")
-    call CmdLine("%sno/". l:s . "/")
+    let cmd = '":\<c-u>%sno/".GetSelection(1, "")."/"'
+    return ":\<c-u>call feedkeys(". cmd. ", 'n')\<cr>"
 endfunction
 
-function! SaveSelection() range
-    let @/ = GetSelection()
+function! SearchSelection(forward) range
+    let cmd = a:forward ? '"/' : '"?'
+    let cmd .= '\<c-u>".GetSelection(1, "")."\<cr>"'
+    return ":\<c-u>call feedkeys(". cmd . ", 'n')\<cr>"
 endfunction
 
 " Returns true if paste mode is enabled

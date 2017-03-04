@@ -23,7 +23,7 @@ nmap <c-g><c-p> :Files <c-r>=expand("%:p:h")<cr>/
 " J for jump
 nmap <c-g><c-j> :Buffers<cr>
 nmap <c-g><c-a> :Ag<space>
-vmap <c-g><c-a> :call VisualAg()<CR>
+vmap <expr> <c-g><c-a> VisualAg()
 nmap <c-g><c-t> :BTags<cr>
 nmap <c-g><c-g><c-t> :Tags<cr>
 nmap <c-g><c-m> :Marks<cr>
@@ -41,9 +41,8 @@ imap <c-g><c-f> <plug>(fzf-complete-file-ag)
 imap <c-g><c-l> <plug>(fzf-complete-line)
 
 function! VisualAg() range
-    let l:s = GetSelection(0)
-    let l:s = substitute(l:s, "\n", "", "g")
-    call CmdLine("Ag ". l:s)
+    let cmd = '":\<c-u>Ag ".GetSelection(1, "")'
+    return ":\<c-u>call feedkeys(" . cmd . ", 'n')\<cr>"
 endfunction
 
 """"""""""""""""""""""""

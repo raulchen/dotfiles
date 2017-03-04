@@ -159,8 +159,8 @@ set wrap "Wrap lines
 " Visual mode
 """"""""""""""""""""""""""""""
 " Make * and # work in visual mode as well
-vnoremap <silent> * :<C-u>call GetSelection(1)<CR>/<C-R>/<CR><CR>
-vnoremap <silent> # :<C-u>call GetSelection(1)<CR>?<C-R>/<CR><CR>
+vnoremap <silent> * :<c-u>call SaveSelection()<cr>/<c-r>/<cr>
+vnoremap <silent> # :<c-u>call SaveSelection()<cr>?<c-r>/<cr>
 
 """"""""""""""""""""""""""""""""""""""""""""
 " Moving around, tabs, windows and buffers
@@ -290,19 +290,17 @@ function! CmdLine(str)
     unmenu Foo
 endfunction
 
-function! GetSelection(overwrite_reg) range
-    let l:saved_reg = @"
-    execute "silent normal! vgvy"
-    let l:res = @"
-    let @" = l:saved_reg
-    if a:overwrite_reg
-        let @/ = l:res
-    endif
-    return l:res
+function! GetSelection() range
+  let [lnum1, col1] = getpos("'<")[1:2]
+  let [lnum2, col2] = getpos("'>")[1:2]
+  let lines = getline(lnum1, lnum2)
+  let lines[-1] = lines[-1][: col2 - (&selection == 'inclusive' ? 1 : 2)]
+  let lines[0] = lines[0][col1 - 1:]
+  return join(lines, "\n")
 endfunction
 
 function! CopyToTmux() range
-    let l:s = GetSelection(0)
+    let l:s = GetSelection()
     let l:s = substitute(l:s, "\n", "", "g")
     let l:s = escape(l:s, '"')
     call system('echo -n "'.l:s.'" | tmux loadb -')
@@ -310,9 +308,13 @@ function! CopyToTmux() range
 endfunction
 
 function! ReplaceSelection() range
-    let l:s = GetSelection(0)
+    let l:s = GetSelection()
     let l:s = substitute(l:s, "\n", "", "g")
     call CmdLine("%sno/". l:s . "/")
+endfunction
+
+function! SaveSelection() range
+    let @/ = GetSelection()
 endfunction
 
 " Returns true if paste mode is enabled

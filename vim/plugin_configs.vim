@@ -5,16 +5,17 @@ let g:fzf_history_dir = '~/dotfiles/vim/temp_dirs/fzf-history'
 " [Buffers] Jump to the existing window if possible
 let g:fzf_buffers_jump = 1
 " Augmenting Ag command using fzf#vim#with_preview function
-"   * fzf#vim#with_preview([[options], preview window, [toggle keys...]])
-"   * Preview script requires Ruby
-"   * Install Highlight or CodeRay to enable syntax highlighting
-"
-"   :Ag  - Start fzf with hidden preview window that can be enabled with "?" key
-"   :Ag! - Start fzf in fullscreen and display the preview window above
+" Ag searches literals by default
 command! -bang -nargs=* Ag
+  \ call fzf#vim#ag(<q-args>, '--literal',
+  \                 <bang>0 ? fzf#vim#with_preview('up:60%')
+  \                         : fzf#vim#with_preview('right:60%:hidden'),
+  \                 <bang>0)
+" Agp searches regex patterns
+command! -bang -nargs=* Agp
   \ call fzf#vim#ag(<q-args>,
   \                 <bang>0 ? fzf#vim#with_preview('up:60%')
-  \                         : fzf#vim#with_preview('right:60%:hidden', '?'),
+  \                         : fzf#vim#with_preview('right:60%:hidden'),
   \                 <bang>0)
 
 nmap <c-g><c-f> :Files<cr>

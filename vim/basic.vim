@@ -27,7 +27,6 @@ set timeoutlen=1000
 nmap <leader>w :w!<cr>
 
 " :W sudo saves the file
-" (useful for handling the permission-denied error)
 command W w !sudo tee % > /dev/null
 
 " Fast quit
@@ -42,7 +41,7 @@ vnoremap <space> zf
 set mouse=a
 
 """"""""""""""""""""""""""""
-" VIM user interface
+" User Interface
 """"""""""""""""""""""""""""
 " Set 7 lines to the cursor - when moving vertically using j/k
 set so=7
@@ -104,15 +103,11 @@ set novisualbell
 set t_vb=
 set tm=500
 
-"""""""""""""""""""""""""
-" Colors and Fonts
-"""""""""""""""""""""""""
 " Enable syntax highlighting
 syntax enable
 
 set background=dark
 
-" Set utf8 as standard encoding and en_US as the standard language
 set encoding=utf8
 
 " Use Unix as the standard file type
@@ -140,7 +135,7 @@ set directory=~/dotfiles/vim/temp_dirs/swap//
 " Use spaces instead of tabs
 set expandtab
 
-" Be smart when using tabs ;)
+" Be smart when using tabs
 set smarttab
 
 " 1 tab == 4 spaces
@@ -151,9 +146,9 @@ set tabstop=4
 set lbr
 set tw=500
 
-set ai "Auto indent
-set si "Smart indent
-set wrap "Wrap lines
+set ai " Auto indent
+set si " Smart indent
+set wrap " Wrap lines
 
 """"""""""""""""""""""""""""""
 " Visual mode
@@ -168,7 +163,7 @@ vnoremap <expr> <silent> # SearchSelection(0)
 " Disable highlight when <leader><cr> is pressed
 map <silent> <leader><cr> :noh<cr>
 
-" smart switch between windows or tabs
+" smart switch among windows or tabs
 nnoremap <silent> <c-h> :call SwitchWindowOrTab('h')<cr>
 nnoremap <silent> <c-l> :call SwitchWindowOrTab('l')<cr>
 nnoremap <silent> <c-j> <c-w>j
@@ -183,11 +178,10 @@ map <leader>tn :tabnew<cr>
 
 " Let 'tl' toggle between this and the last accessed tab
 let g:lasttab = 1
-nmap <Leader>tl :exe "tabn ".g:lasttab<CR>
+nmap <leader>tl :exe "tabn ".g:lasttab<cr>
 au TabLeave * let g:lasttab = tabpagenr()
 
 " Opens a new tab with the current buffer's path
-" Super useful when editing files in the same directory
 map <leader>te :tabedit <c-r>=expand("%:p:h")<cr>/
 
 " Switch CWD to the directory of the open buffer
@@ -200,7 +194,7 @@ try
 catch
 endtry
 
-" Return to last edit position when opening files (You want this!)
+" Return to last edit position when opening files
 au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 
 """"""""""""""""""""""""""""""
@@ -209,11 +203,8 @@ au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g
 " Always show the status line
 set laststatus=2
 
-" Format the status line
-set statusline=\ %{HasPaste()}%F%m%r%h\ %w\ \ CWD:\ %r%{getcwd()}%h\ \ \ Line:\ %l\ \ Column:\ %c
-
 """"""""""""""""""""""""""""""
-" Editing mappings
+" Editing
 """"""""""""""""""""""""""""""
 
 " use register z for x and s
@@ -229,17 +220,17 @@ vmap <leader>k :m'<-2<cr>`>my`<mzgv`yo`z
 vmap <c-j> <leader>j
 vmap <c-k> <leader>k
 
-" Delete trailing white space on save, useful for Python and CoffeeScript ;)
-func! DeleteTrailingWS()
+" Delete trailing white space on save
+func! DeleteTrailingWhitespaces()
     exe "normal mz"
     %s/\s\+$//ge
     exe "normal `z"
 endfunc
-autocmd BufWrite * :call DeleteTrailingWS()
+autocmd BufWrite * :call DeleteTrailingWhitespaces()
 
 vnoremap <leader>y :call CopyToTmux()<cr>
 
-" <leader>r to search and replace the selected text
+" <leader>r to replace selected text
 vnoremap <expr> <leader>r ReplaceSelection()
 
 """"""""""""""""""""""""""""""""""""""
@@ -253,10 +244,9 @@ map <leader>cp :cp<cr>
 """"""""""""""""""""""""""
 " Spell checking
 """"""""""""""""""""""""""
-" Pressing ,ss will toggle and untoggle spell checking
+"  toggle spell checking
 map <leader>ss :setlocal spell!<cr>
 
-" Shortcuts using <leader>
 map <leader>sn ]s
 map <leader>sp [s
 map <leader>sa zg
@@ -272,12 +262,12 @@ set shellpipe=>
 " Command mode related
 """"""""""""""""""""""""""""""
 " Bash like keys for the command line
-cnoremap <C-A> <Home>
-cnoremap <C-E> <End>
-cnoremap <C-K> <C-U>
+cnoremap <c-a> <home>
+cnoremap <c-e> <end>
+cnoremap <c-k> <c-u>
 
-cnoremap <C-P> <Up>
-cnoremap <C-N> <Down>
+cnoremap <c-p> <up>
+cnoremap <c-n> <down>
 
 """"""""""""""""""""""""""""
 " Helper functions
@@ -325,14 +315,6 @@ function! SearchSelection(forward) range
     return ":\<c-u>call feedkeys(". cmd . ", 'n')\<cr>"
 endfunction
 
-" Returns true if paste mode is enabled
-function! HasPaste()
-    if &paste
-        return 'PASTE MODE  '
-    endif
-    return ''
-endfunction
-
 """""""""""""""""""
 " Fn keys
 """""""""""""""""""
@@ -349,9 +331,9 @@ function! SwitchNumber()
         set number
     endif
 endfunc
-noremap <F2> :call SwitchNumber()<CR>
+noremap <F2> :call SwitchNumber()<cr>
 " F3 to toggle wrap
-noremap <F3> :set wrap! wrap?<CR>
+noremap <F3> :set wrap! wrap?<cr>
 " F4 to toggle paste
 noremap <F4> :setlocal paste!<cr>
 inoremap <F4> <esc>:setlocal paste!<cr>i

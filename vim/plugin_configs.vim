@@ -20,8 +20,7 @@ command! -bang -nargs=* Agp
 
 nmap <c-g><c-f> :Files<cr>
 nmap <c-g><c-p> :Files <c-r>=expand("%:p:h")<cr>/
-" J for jump
-nmap <c-g><c-j> :Buffers<cr>
+nmap <c-g><c-j> :Buffers<cr> "J for jump
 nmap <c-g><c-a> :Ag<space>
 vmap <expr> <c-g><c-a> VisualAg()
 nmap <c-g><c-t> :BTags<cr>

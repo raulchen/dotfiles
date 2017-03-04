@@ -22,7 +22,7 @@ nmap <c-g><c-p> :Files <c-r>=expand("%:p:h")<cr>/
 " J for jump
 nmap <c-g><c-j> :Buffers<cr>
 nmap <c-g><c-a> :Ag<space>
-" TODO vmap <c-g><c-a>
+vmap <c-g><c-a> :call VisualAg()<CR>
 nmap <c-g><c-t> :BTags<cr>
 nmap <c-g><c-g><c-t> :Tags<cr>
 nmap <c-g><c-m> :Marks<cr>
@@ -38,6 +38,12 @@ imap <c-g><c-w> <plug>(fzf-complete-word)
 imap <c-g><c-p> <plug>(fzf-complete-path)
 imap <c-g><c-f> <plug>(fzf-complete-file-ag)
 imap <c-g><c-l> <plug>(fzf-complete-line)
+
+function! VisualAg() range
+    let l:s = GetSelection(0)
+    let l:s = substitute(l:s, "\n", "", "g")
+    call CmdLine("Ag ". l:s)
+endfunction
 
 """"""""""""""""""""""""
 " Dracula theme

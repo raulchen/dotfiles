@@ -156,12 +156,11 @@ set si "Smart indent
 set wrap "Wrap lines
 
 """"""""""""""""""""""""""""""
-" Visual mode related
+" Visual mode
 """"""""""""""""""""""""""""""
-" Visual mode pressing * or # searches for the current selection
-" Super useful! From an idea by Michael Naumann
-vnoremap <silent> * :<C-u>call VisualSelection('', '')<CR>/<C-R>=@/<CR><CR>
-vnoremap <silent> # :<C-u>call VisualSelection('', '')<CR>?<C-R>=@/<CR><CR>
+" Make * and # work in visual mode as well
+vnoremap <silent> * :<C-u>call GetSelection(1)<CR>/<C-R>/<CR><CR>
+vnoremap <silent> # :<C-u>call GetSelection(1)<CR>?<C-R>/<CR><CR>
 
 """"""""""""""""""""""""""""""""""""""""""""
 " Moving around, tabs, windows and buffers
@@ -238,18 +237,10 @@ func! DeleteTrailingWS()
 endfunc
 autocmd BufWrite * :call DeleteTrailingWS()
 
-function! CopyToTmux() range
-    let l:saved_reg = @"
-    execute "silent normal! vgvy"
-    let l:content = escape(@", '"')
-    call system('echo -n "'.l:content.'" | tmux loadb -')
-    let @" = l:saved_reg
-    echo "Copied to tmux buffer"
-endfunction
 vnoremap <leader>y :call CopyToTmux()<cr>
 
 " <leader>r to search and replace the selected text
-vnoremap <silent> <leader>r :call VisualSelection('replace', '')<CR>
+vnoremap <silent> <leader>r :call ReplaceSelection()<CR>
 
 """"""""""""""""""""""""""""""""""""""
 " Cope displaying
@@ -299,22 +290,29 @@ function! CmdLine(str)
     unmenu Foo
 endfunction
 
-function! VisualSelection(direction, extra_filter) range
+function! GetSelection(overwrite_reg) range
     let l:saved_reg = @"
-    execute "normal! vgvy"
-
-    let l:pattern = @"
-    let l:pattern = substitute(l:pattern, "\n", "", "g")
-
-    if a:direction == 'gv'
-        let l:pattern = escape(l:pattern, '"')
-        call CmdLine("Ack -Q \"" . l:pattern . "\"")
-    elseif a:direction == 'replace'
-        call CmdLine("%sno/". l:pattern . "/")
-    endif
-
-    let @/ = l:pattern
+    execute "silent normal! vgvy"
+    let l:res = @"
     let @" = l:saved_reg
+    if a:overwrite_reg
+        let @/ = l:res
+    endif
+    return l:res
+endfunction
+
+function! CopyToTmux() range
+    let l:s = GetSelection(0)
+    let l:s = substitute(l:s, "\n", "", "g")
+    let l:s = escape(l:s, '"')
+    call system('echo -n "'.l:s.'" | tmux loadb -')
+    echo "Copied to tmux buffer"
+endfunction
+
+function! ReplaceSelection() range
+    let l:s = GetSelection(0)
+    let l:s = substitute(l:s, "\n", "", "g")
+    call CmdLine("%sno/". l:s . "/")
 endfunction
 
 " Returns true if paste mode is enabled

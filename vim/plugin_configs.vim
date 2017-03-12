@@ -20,7 +20,8 @@ command! -bang -nargs=* Agp
 
 nmap <c-g><c-f> :Files<cr>
 nmap <c-g><c-p> :Files <c-r>=expand("%:p:h")<cr>/
-nmap <c-g><c-j> :Buffers<cr> "J for jump
+"J for jump
+nmap <c-g><c-j> :Buffers<cr>
 nmap <c-g><c-a> :Ag<space>
 vmap <expr> <c-g><c-a> VisualAg()
 nmap <c-g><c-t> :BTags<cr>
@@ -116,13 +117,13 @@ let g:jedi#use_tabs_not_buffers = 1
 let g:jedi#popup_on_dot = 0
 let g:jedi#popup_select_first = 1
 let g:jedi#smart_auto_mappings = 1
-let g:jedi#goto_command = "<c-e>g"
-let g:jedi#goto_assignments_command = "<c-e>a"
-let g:jedi#goto_definitions_command = "<c-e>d"
+let g:jedi#goto_command = "<c-e><c-g>"
+let g:jedi#goto_assignments_command = "<c-e><c-a>"
+let g:jedi#goto_definitions_command = "<c-e><c-d>"
 let g:jedi#documentation_command = "K"
-let g:jedi#usages_command = "<c-e>u"
+let g:jedi#usages_command = "<c-e><c-u>"
 let g:jedi#completions_command = "<c-e>"
-let g:jedi#rename_command = "<c-e>r"
+let g:jedi#rename_command = "<c-e><c-r>"
 let g:jedi#show_call_signatures = "0"
 autocmd FileType python,pyrex setlocal completeopt-=preview
 autocmd FileType python,pyrex setlocal complete-=i

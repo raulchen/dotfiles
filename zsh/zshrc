@@ -127,3 +127,5 @@ fi
 if [[ -n "$TMUX" ]]; then
     export ZLE_RPROMPT_INDENT=0
 fi
+
+export XDG_CONFIG_HOME=~/.config

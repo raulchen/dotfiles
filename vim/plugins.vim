@@ -43,5 +43,6 @@ Plug 'sheerun/vim-polyglot'
 Plug 'scrooloose/syntastic'
 Plug 'davidhalter/jedi-vim', {'for': ['python', 'pyrex']}
 Plug 'nvie/vim-flake8', {'for': ['python', 'pyrex']}
+Plug 'hdima/python-syntax', {'for': ['python', 'pyrex']}
 
 call plug#end()

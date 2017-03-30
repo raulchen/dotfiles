@@ -52,6 +52,7 @@ color dracula
 hi IncSearch ctermfg=17 ctermbg=green cterm=underline
 hi Search ctermfg=17 ctermbg=yellow cterm=NONE
 hi CursorLine ctermfg=NONE ctermbg=NONE cterm=underline
+hi PmenuSel ctermbg=61
 
 """"""""""""""""""""""""
 " Nerd Tree

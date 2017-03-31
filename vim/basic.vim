@@ -233,6 +233,10 @@ vnoremap <leader>y :call CopyToTmux()<cr>
 " <leader>r to replace selected text
 vnoremap <expr> <leader>r ReplaceSelection()
 
+" Don't lose selection when indenting
+xnoremap <  <gv
+xnoremap >  >gv
+
 """"""""""""""""""""""""""""""""""""""
 " Cope displaying
 """""""""""""""""""""""""""""""""""""""

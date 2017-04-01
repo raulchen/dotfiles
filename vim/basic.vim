@@ -335,4 +335,5 @@ function! ToggleSystemClipboard()
         set clipboard=unnamed
     endif
 endfunc
-noremap <F5> :call ToggleSystemClipboard()<cr>
+nnoremap <F5> :call ToggleSystemClipboard()<cr>
+vnoremap <F5> :call ToggleSystemClipboard()<cr>gv

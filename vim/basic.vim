@@ -213,12 +213,8 @@ nnoremap X "zX
 nnoremap s "zs
 
 " Move a line of text
-nmap <leader>j mz:m+<cr>`z
-nmap <leader>k mz:m-2<cr>`z
-vmap <leader>j :m'>+<cr>`<my`>mzgv`yo`z
-vmap <leader>k :m'<-2<cr>`>my`<mzgv`yo`z
-vmap <c-j> <leader>j
-vmap <c-k> <leader>k
+vnoremap <c-j> :m'>+<cr>`<my`>mzgv`yo`z
+vnoremap <c-k> :m'<-2<cr>`>my`<mzgv`yo`z
 
 " Delete trailing white space on save
 func! DeleteTrailingWhitespaces()

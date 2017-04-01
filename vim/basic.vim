@@ -24,14 +24,14 @@ let g:mapleader = ","
 set timeoutlen=1000
 
 " Fast saving
-nmap <leader>w :w!<cr>
+nnoremap <leader>w :w!<cr>
 
 " :W sudo saves the file
 command W w !sudo tee % > /dev/null
 
 " Fast quit
-nmap <leader>q :q<cr>
-nmap <leader>Q :q!<cr>
+nnoremap <leader>q :q<cr>
+nnoremap <leader>Q :q!<cr>
 
 " Fold
 nnoremap <space> za
@@ -160,8 +160,8 @@ vnoremap <expr> <silent> # SearchSelection(0)
 """"""""""""""""""""""""""""""""""""""""""""
 " Moving around, tabs, windows and buffers
 """"""""""""""""""""""""""""""""""""""""""""
-" Disable highlight when <leader><cr> is pressed
-map <silent> <leader><cr> :noh<cr>
+" disable highlight
+noremap <silent> <leader><cr> :noh<cr>
 
 " switch tabs
 noremap <tab> gt
@@ -174,18 +174,18 @@ nnoremap <silent> <c-j> <c-w>j
 nnoremap <silent> <c-k> <c-w>k
 
 " create new tab
-map <leader>tn :tabnew<cr>
+nnoremap <leader>tn :tabnew<cr>
 
-" Let 'tl' toggle between this and the last accessed tab
+" go to last accessed tab
 let g:lasttab = 1
-nmap <leader>tl :exe "tabn ".g:lasttab<cr>
+nnoremap <leader>tl :exe "tabn ".g:lasttab<cr>
 au TabLeave * let g:lasttab = tabpagenr()
 
 " Opens a new tab with the current buffer's path
-map <leader>te :tabedit <c-r>=expand("%:p:h")<cr>/
+noremap <leader>te :tabedit <c-r>=expand("%:p:h")<cr>/
 
 " Switch CWD to the directory of the open buffer
-map <leader>cd :cd %:p:h<cr>:pwd<cr>
+noremap <leader>cd :cd %:p:h<cr>:pwd<cr>
 
 " Specify the behavior when switching between buffers
 try
@@ -240,21 +240,21 @@ xnoremap >  >gv
 """"""""""""""""""""""""""""""""""""""
 " Cope displaying
 """""""""""""""""""""""""""""""""""""""
-map <leader>cc :botright cope<cr>
-map <leader>co ggVGy:tabnew<cr>:set syntax=qf<cr>pgg
-map <leader>cn :cn<cr>
-map <leader>cp :cp<cr>
+noremap <leader>cc :botright cope<cr>
+noremap <leader>co ggVGy:tabnew<cr>:set syntax=qf<cr>pgg
+noremap <leader>cn :cn<cr>
+noremap <leader>cp :cp<cr>
 
 """"""""""""""""""""""""""
 " Spell checking
 """"""""""""""""""""""""""
 "  toggle spell checking
-map <leader>ss :setlocal spell!<cr>
+noremap <leader>ss :setlocal spell!<cr>
 
-map <leader>sn ]s
-map <leader>sp [s
-map <leader>sa zg
-map <leader>s? z=
+noremap <leader>sn ]s
+noremap <leader>sp [s
+noremap <leader>sa zg
+noremap <leader>s? z=
 
 """""""""""""""""""""""""""
 " Misc

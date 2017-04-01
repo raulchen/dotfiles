@@ -31,7 +31,7 @@ command W w !sudo tee % > /dev/null
 
 " Fast quit
 nnoremap <leader>q :q<cr>
-nnoremap <leader>Q :q!<cr>
+nnoremap <leader><leader>q :q!<cr>
 
 " Fold
 nnoremap <space> za

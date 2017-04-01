@@ -89,6 +89,7 @@ let g:yankstack_yank_keys = ['y', 'd']
 " Lightline
 """""""""""""""""""
 let g:lightline = {
+\     'colorscheme': 'darcula',
 \     'active': {
 \       'left': [ [ 'mode', 'paste' ],
 \                 [ 'fugitive', 'readonly', 'relativepath', 'modified' ] ]

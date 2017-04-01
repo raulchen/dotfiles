@@ -163,15 +163,15 @@ vnoremap <expr> <silent> # SearchSelection(0)
 " Disable highlight when <leader><cr> is pressed
 map <silent> <leader><cr> :noh<cr>
 
-" smart switch among windows or tabs
-nnoremap <silent> <c-h> :call SwitchWindowOrTab('h')<cr>
-nnoremap <silent> <c-l> :call SwitchWindowOrTab('l')<cr>
+" switch tabs
+noremap <tab> gt
+noremap <s-tab> gT
+
+" switch windows
+nnoremap <silent> <c-h> <c-w>h
+nnoremap <silent> <c-l> <c-w>l
 nnoremap <silent> <c-j> <c-w>j
 nnoremap <silent> <c-k> <c-w>k
-
-"switch buffers
-map <leader>h :bprev<cr>
-map <leader>l :bnext<cr>
 
 " create new tab
 map <leader>tn :tabnew<cr>
@@ -276,19 +276,6 @@ cnoremap <c-n> <down>
 """"""""""""""""""""""""""""
 " Helper functions
 """"""""""""""""""""""""""""
-function! SwitchWindowOrTab(d)
-    let l:cur=winnr()
-    execute 'wincmd '.a:d
-    if(l:cur==winnr())
-        if(a:d=='h')
-            let l:tabcmd='tabprev'
-        else
-            let l:tabcmd='tabnext'
-        endif
-        execute l:tabcmd
-    endif
-endfunction
-
 function! GetSelection(one_line, escape) range
     let [lnum1, col1] = getpos("'<")[1:2]
     let [lnum2, col2] = getpos("'>")[1:2]

@@ -10,6 +10,7 @@ Plug 'easymotion/vim-easymotion'
 Plug 'terryma/vim-expand-region'
 Plug 'michaeljsmith/vim-indent-object'
 Plug 'dyng/ctrlsf.vim'
+Plug 'google/vim-searchindex'
 for p in ['~/.fzf', '/usr/local/opt/fzf']
     if isdirectory(expand(p))
         Plug p

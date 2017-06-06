@@ -34,9 +34,9 @@ Plug 'itchyny/lightline.vim'
 Plug 'dracula/vim'
 Plug 'jszakmeister/vim-togglecursor'
 
-" Git
+" Source control
+Plug 'mhinz/vim-signify'
 Plug 'tpope/vim-fugitive'
-Plug 'airblade/vim-gitgutter'
 Plug 'junegunn/gv.vim', {'on': 'GV'}
 
 " Language support

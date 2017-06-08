@@ -26,6 +26,25 @@ _prompt_precmd() {
    PROMPT="$source_control_info$PROMPT_SUFFIX"
 }
 
+_get_hg_branch() {
+    # Return current bookmark, or remote bookmark, or commit hash
+    local branch
+    local current="$1/bookmarks.current"
+    if [[ -f "$current" ]]; then
+        branch=$(cat "$current")
+    else
+        local commit_hash=$(hg log -r . -l 1 -T "{node}")
+        local remote=$(awk "/$commit_hash bookmarks/{print \$3}" $1/remotenames)
+        if [[ -n "$remote" ]]; then
+            branch=$(echo "$remote" | cut -c 7-)
+            branch="r$branch"
+        else
+            branch=$(echo "$commit_hash" | cut -c 1-7)
+        fi
+    fi
+    echo "$branch"
+}
+
 _get_source_control_prompt_info() {
     local branch dirty
     builtin cd -q "$1/.."
@@ -33,11 +52,7 @@ _get_source_control_prompt_info() {
         branch=$(git_current_branch)
         dirty=$(command git status --porcelain 2> /dev/null | head -n1)
     elif [[ "$1" == *.hg ]]; then
-        branch="master"
-        local current="$1/bookmarks.current"
-        if [[ -f "$current" ]]; then
-            branch=$(cat "$current")
-        fi
+        branch=$(_get_hg_branch $1)
         dirty=$(command hg status 2> /dev/null | head -n1)
     fi
 

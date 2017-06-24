@@ -66,4 +66,4 @@ When Hammerspoon is set as the default browser, a prompt will be shown to let yo
   - `prefix - s`: start screen saver.
   - `prefix - r`: reload Hammerspoon config.
   - `prefix - d`: toggle Hammerspoon console for debug.
-  - `press ctrl twice`: esc
+  - `press ctrl twice` / `ctrl + [`: esc

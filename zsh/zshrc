@@ -51,7 +51,7 @@ ZSH_CUSTOM=$DOTFILES/zsh/oh_my_zsh_custom
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git async colored-man zsh-syntax-highlighting pip python fasd extract)
+plugins=(git async colored-man zsh-syntax-highlighting pip python fasd extract my-vim-mode)
 
 if [[ `uname` == 'Darwin' ]]; then
     plugins+=(osx brew brew-cask)

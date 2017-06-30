@@ -1,4 +1,4 @@
-PROMPT_SUFFIX='%{$fg[yellow]%}%(?,,%{${fg[red]}%})$ %{$reset_color%}'
+PROMPT_SUFFIX='$(my_vim_mode_prompt_info)%{$fg[yellow]%}%(?,,%{${fg[red]}%})$ %{$reset_color%}'
 RPROMPT='%{$fg[green]%}%~%{$fg[black]%}|%{$fg[yellow]%}%*%{$reset_color%}'
 
 _prompt_precmd() {

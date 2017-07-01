@@ -3,24 +3,29 @@ bindkey -v
 # Super fast escape time
 export KEYTIMEOUT=1
 
-# ===================
-# Mode indicator
-# ===================
+function zle-keymap-select {
+  case $KEYMAP in
+    viins|main) echo -ne "\e[5 q";; # vertical bar
+    *)     echo -ne "\e[4 q";; # underline
+  esac
 
-function zle-keymap-select() {
   zle reset-prompt
   zle -R
 }
 
-zle -N zle-keymap-select
-
-if [[ "$MODE_INDICATOR" == "" ]]; then
-  MODE_INDICATOR="%{$fg[red]%}N%{$fg[black]%}|%{$reset_color%}"
-fi
-
-function my_vim_mode_prompt_info() {
-  echo "${${KEYMAP/vicmd/$MODE_INDICATOR}/(main|viins)/}"
+function zle-line-init {
+  echo -ne "\e[5 q"
+  echoti smkx
 }
+
+function zle-line-finish {
+  echo -ne "\e[4 q"
+  echoti rmkx
+}
+
+zle -N zle-line-init
+zle -N zle-line-finish
+zle -N zle-keymap-select
 
 # ===================
 # Extra keybindings

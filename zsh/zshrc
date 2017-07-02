@@ -111,6 +111,10 @@ else
     export TERM="screen-256color"
 fi
 
+if [[ -z $TERM_PROGRAM ]]; then
+    export TERM_PROGRAM=iTerm.app
+fi
+
 bindkey '^R' history-incremental-pattern-search-backward
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh

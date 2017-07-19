@@ -50,8 +50,6 @@ endfunction
 """"""""""""""""""""""""
 color dracula
 hi Normal ctermbg=None
-hi IncSearch ctermfg=17 ctermbg=green cterm=underline
-hi Search ctermfg=17 ctermbg=yellow cterm=NONE
 hi CursorLine ctermfg=NONE ctermbg=NONE cterm=underline
 hi Pmenu ctermbg=237
 hi PmenuSel ctermbg=61

@@ -63,7 +63,7 @@ When Hammerspoon is set as the default browser, a prompt will be shown to let yo
 # Other features
 
   - `prefix - c`: toggle caffeinate (disable sleep).
-  - `prefix - s`: start screen saver.
+  - `prefix - s`: sleep dislay.
   - `prefix - r`: reload Hammerspoon config.
   - `prefix - d`: toggle Hammerspoon console for debug.
   - `press ctrl twice` / `ctrl + [`: esc

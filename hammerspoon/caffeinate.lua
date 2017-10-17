@@ -16,9 +16,5 @@ local function toggle()
     end
 end
 
-local function sleepDislay()
-    hs.execute('pmset displaysleepnow')
-end
-
 prefix.bind('', 'c', toggle)
-prefix.bind('', 's', sleepDislay)
+prefix.bind('', 's', hs.caffeinate.startScreensaver)

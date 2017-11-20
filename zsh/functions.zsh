@@ -78,6 +78,28 @@ fag() {
                 xargs -I % sh -c '</dev/tty vim %'"
 }
 
+__fzf_select_from_tmux() {
+    local cmd="command tmux capture-pane -CJp | command perl -pe 's/\s+/\n/g' | sort | uniq"
+    setopt localoptions pipefail 2> /dev/null
+    eval "$cmd | $(__fzfcmd) -m" | while read item; do
+        echo -n "${(q)item} "
+    done
+    local ret=$?
+    echo
+    return $ret
+}
+
+fzf-select-from-tmux-widget() {
+    LBUFFER="${LBUFFER}$(__fzf_select_from_tmux)"
+    local ret=$?
+    zle redisplay
+    typeset -f zle-line-init >/dev/null && zle zle-line-init
+    return $ret
+}
+
+zle     -N   fzf-select-from-tmux-widget
+bindkey '^Y' fzf-select-from-tmux-widget
+
 vless() {
     if test $# -eq 0; then
         vim -u ~/dotfiles/vim/less.vim -

@@ -38,6 +38,7 @@ Plug 'jszakmeister/vim-togglecursor'
 Plug 'mhinz/vim-signify'
 Plug 'tpope/vim-fugitive'
 Plug 'junegunn/gv.vim', {'on': 'GV'}
+Plug 'jlfwong/vim-mercenary'
 
 " Language support
 Plug 'sheerun/vim-polyglot'

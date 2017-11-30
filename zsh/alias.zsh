@@ -3,7 +3,7 @@ alias -g L="2>&1 | less"
 alias -g VL="2>&1 | vless"
 alias -g G="2>&1 | grep -i"
 alias -g F="2>&1 | fzf --reverse"
-alias -g C="2>&1 | xargs -I{} tmux set-buffer {}"
+alias -g C="2>&1 | tmux load-buffer -"
 alias -g N="> /dev/null 2>&1 "
 
 alias tailf="tail -f"

@@ -81,8 +81,6 @@ keymap('[', 'ctrl', 'escape', '', NO_REPEAT)
 -- ------------------
 -- system
 -- ------------------
--- not working
--- keymap('a', 'alt', 'CAPS_LOCK', nil, NO_REPEAT)
 
 keymap('p', 'alt', 'PLAY', nil, NO_REPEAT)
 keymap('[', 'alt', 'REWIND', nil, NO_REPEAT)
@@ -97,3 +95,6 @@ keymap('3', 'alt', 'FAST', nil, NO_REPEAT)
 keymap('f1', 'alt', 'MUTE', nil)
 keymap('f2', 'alt', 'SOUND_DOWN', nil)
 keymap('f3', 'alt', 'SOUND_UP', nil)
+
+
+hs.hotkey.bind('alt', 'a', hs.hid.capslock.toggle, nil, nil)

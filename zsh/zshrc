@@ -109,6 +109,7 @@ if [[ -z $TMUX ]]; then
     export TERM="xterm-256color"
 else
     export TERM="screen-256color"
+    export FZF_TMUX=1
 fi
 
 if [[ -z $TERM_PROGRAM ]]; then

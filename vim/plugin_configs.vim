@@ -158,3 +158,9 @@ let g:togglecursor_replace="blinking_block"
 " Polyglot
 """""""""""""""""""
 let g:polyglot_disabled = ['python']
+
+"""""""""""""""""""
+" Tagbar
+"""""""""""""""""""
+nmap <F8> :TagbarToggle<CR>
+let g:tagbar_sort = 0

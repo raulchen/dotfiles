@@ -33,6 +33,7 @@ Plug 'mkitt/tabline.vim'
 Plug 'itchyny/lightline.vim'
 Plug 'dracula/vim'
 Plug 'jszakmeister/vim-togglecursor'
+Plug 'majutsushi/tagbar'
 
 " Source control
 Plug 'mhinz/vim-signify'

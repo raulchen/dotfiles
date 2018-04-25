@@ -25,7 +25,7 @@ Plug 'tpope/vim-commentary'
 Plug 'terryma/vim-multiple-cursors'
 Plug 'tpope/vim-repeat'
 Plug 'maxbrunsfeld/vim-yankstack'
-Plug 'townk/vim-autoclose'
+Plug 'jiangmiao/auto-pairs'
 Plug 'mbbill/undotree', {'on': 'UndotreeToggle'}
 
 " UI

@@ -27,6 +27,7 @@ Plug 'tpope/vim-repeat'
 Plug 'maxbrunsfeld/vim-yankstack'
 Plug 'jiangmiao/auto-pairs'
 Plug 'mbbill/undotree', {'on': 'UndotreeToggle'}
+Plug 'tpope/vim-sleuth'
 
 " UI
 Plug 'mkitt/tabline.vim'

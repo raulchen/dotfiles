@@ -48,10 +48,10 @@ endfunction
 """"""""""""""""""""""""
 " Dracula theme
 """"""""""""""""""""""""
-let g:dracula_italic = 0
 color dracula
 hi Normal ctermbg=None
 hi CursorLine ctermfg=NONE ctermbg=NONE cterm=underline
+hi Comment cterm=italic ctermfg=61
 
 """"""""""""""""""""""""
 " Nerd Tree

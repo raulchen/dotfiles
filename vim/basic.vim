@@ -113,6 +113,10 @@ set encoding=utf8
 " Use Unix as the standard file type
 set ffs=unix,dos,mac
 
+" Support italic
+set t_ZH=[3m
+set t_ZR=[23m
+
 """""""""""""""""""""""""""""""""
 " Files, backups and undo
 """""""""""""""""""""""""""""""""

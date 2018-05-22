@@ -48,5 +48,7 @@ Plug 'scrooloose/syntastic'
 Plug 'davidhalter/jedi-vim', {'for': ['python', 'pyrex'], 'on': 'Pyimport'}
 Plug 'nvie/vim-flake8', {'for': ['python', 'pyrex']}
 Plug 'hdima/python-syntax', {'for': ['python', 'pyrex']}
+Plug 'tshirtman/vim-cython'
+Plug 'zchee/vim-flatbuffers'
 
 call plug#end()

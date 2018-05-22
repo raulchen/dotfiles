@@ -3,10 +3,14 @@ bindkey -v
 # Super fast escape time
 export KEYTIMEOUT=1
 
+local block="\e[1 q"
+local underline="\e[3 q"
+local vertical_bar="\e[5 q"
+
 function zle-keymap-select {
   case $KEYMAP in
-    viins|main) echo -ne "\e[5 q";; # vertical bar
-    *)     echo -ne "\e[4 q";; # underline
+    viins|main) echo -ne "$vertical_bar";;
+    *)     echo -ne "$block";;
   esac
 
   zle reset-prompt
@@ -14,12 +18,12 @@ function zle-keymap-select {
 }
 
 function zle-line-init {
-  echo -ne "\e[5 q"
+  echo -ne "$vertical_bar"
   echoti smkx
 }
 
 function zle-line-finish {
-  echo -ne "\e[4 q"
+  echo -ne "$block"
   echoti rmkx
 }
 

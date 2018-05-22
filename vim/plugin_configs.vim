@@ -149,9 +149,9 @@ let g:ctrlsf_mapping = {
 """""""""""""""""""
 " togglecursor
 """""""""""""""""""
-let g:togglecursor_default="blinking_underline"
+let g:togglecursor_default="blinking_block"
 let g:togglecursor_insert="blinking_line"
-let g:togglecursor_leave="blinking_underline"
+let g:togglecursor_leave="blinking_block"
 let g:togglecursor_replace="blinking_block"
 
 """""""""""""""""""

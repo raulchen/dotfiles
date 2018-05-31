@@ -32,7 +32,7 @@ Plug 'tpope/vim-sleuth'
 " UI
 Plug 'mkitt/tabline.vim'
 Plug 'itchyny/lightline.vim'
-Plug 'dracula/vim'
+Plug 'dracula/vim', {'as': 'dracula-vim'}
 Plug 'jszakmeister/vim-togglecursor'
 Plug 'majutsushi/tagbar'
 

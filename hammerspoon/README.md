@@ -1,6 +1,6 @@
 # Hammerspoon
 
-Some of the following key binding configurations are inspired by Tmux. The default prefix key is `ctrl+space`. E.g., `prefix - a` means to press and release `ctrl+space`, then press `a`.
+Some of the following key bindings are inspired by Tmux. The default prefix key is `ctrl+space`. E.g., `prefix - a` means to press `ctrl+space` first, then press `a`.
 
 # Window management
   - `prefix - g`: show a 6x6 grid that lets you set the window frame.
@@ -30,11 +30,10 @@ Use `prefix - m` to enter mouse mode, then you can use `hjkl` to move the mouse,
 # Double CMD+Q to quit app
 
 Press `cmd+q` twice to quit current app, in order to avoid unintended quits.
-Note: This should work in all apps. But if your system language is not English, you'll need to change `Quit` in `double_cmdq_to_quit.lua` to the equivalent in your language.
 
 # Option based key bindings
 
-In macOS, the option key is used to input special characters. However, most people don't usually need it. So I'm using option key for something more useful.
+In macOS, the option key is used to input special characters that most people barely use. So I'm using it for something more useful.
 
   - `option + hjkl`: arrow keys.
   - `option + shift + hjkl`: option + arrow keys (move faster).

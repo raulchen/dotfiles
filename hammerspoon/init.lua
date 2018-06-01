@@ -4,7 +4,6 @@ utils = require("utils")
 
 require("double_cmdq_to_quit")
 require("keymaps")
-require("mouse_key")
 require("window")
 require("caffeinate")
 require("url_dispatcher")

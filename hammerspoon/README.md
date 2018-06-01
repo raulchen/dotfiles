@@ -23,10 +23,6 @@ Resize and move windows:
   - `prefix - cmd+hjkl`: expand window edges.
   - `prefix - cmd+shift+hjkl`: shrink window edges.
 
-# Mouse key mode
-
-Use `prefix - m` to enter mouse mode, then you can use `hjkl` to move the mouse, use `cmd+hjkl` to move slowly, use `shift+hjkl` to scroll, use `u`, `i`, `o` to perform left, right, middle button click actions.
-
 # Double CMD+Q to quit app
 
 Press `cmd+q` twice to quit current app, in order to avoid unintended quits.

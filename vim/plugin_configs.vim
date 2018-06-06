@@ -58,7 +58,7 @@ hi Comment cterm=italic ctermfg=61
 """"""""""""""""""""""""
 let NERDTreeShowHidden=0
 map <leader>n :NERDTreeTabsToggle<cr>
-map <leader><leader>n :NERDTreeTabsFind<cr>
+map <leader><leader>n :NERDTreeFind<cr>
 
 """""""""""""""""""
 " EasyMotion

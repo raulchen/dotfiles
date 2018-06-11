@@ -12,3 +12,7 @@ au FileType python,pyrex set foldlevel=99
 
 au FileType python,pyrex ia ipdb import ipdb; ipdb.set_trace()
 
+"""""""""""""""
+" C/C++
+"""""""""""""""
+autocmd FileType c,cpp setlocal commentstring=//\ %s

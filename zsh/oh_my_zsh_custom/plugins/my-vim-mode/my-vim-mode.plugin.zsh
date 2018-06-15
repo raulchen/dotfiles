@@ -31,6 +31,17 @@ zle -N zle-line-init
 zle -N zle-line-finish
 zle -N zle-keymap-select
 
+# Expand ".../"
+function expand-dots {
+   if [[ $LBUFFER =~ ".*\.\.\.$" ]]; then
+	 zle _expand_alias
+	 zle expand-word
+   fi
+   zle self-insert
+}
+zle -N expand-dots
+bindkey -M viins "/" expand-dots
+
 # ===================
 # Extra keybindings
 # ===================

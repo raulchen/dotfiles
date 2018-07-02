@@ -64,7 +64,7 @@ typeset -A commands_to_plugins=(
 )
 
 for cmd in ${(@k)commands_to_plugins}; do
-    if [[ $(command -v "$cmd" >/dev/null 2>&1) ]]; then
+    if [[ $(command -v "$cmd") ]]; then
         plugins+=($commands_to_plugins[$cmd])
     fi
 done

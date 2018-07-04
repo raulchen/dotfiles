@@ -58,6 +58,7 @@ if [[ `uname` == 'Darwin' ]]; then
 fi
 
 typeset -A commands_to_plugins=(
+    "docker" "docker"
     "fasd" "fasd"
     "pyenv" "pyenv"
     "scala" "scala"

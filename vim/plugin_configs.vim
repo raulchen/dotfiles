@@ -90,14 +90,11 @@ let g:yankstack_yank_keys = ['y', 'd']
 let g:lightline = {
 \     'colorscheme': 'darcula',
 \     'active': {
-\       'left': [ [ 'mode', 'paste' ],
-\                 [ 'fugitive', 'readonly', 'relativepath', 'modified' ] ]
+\       'left': [['mode', 'paste'], ['gitbranch', 'readonly', 'relativepath', 'modified']],
+\       'right': [['lineinfo'], ['percent'], ['filetype']]
 \     },
-\     'component': {
-\         'fugitive': '%{exists("*fugitive#head")?fugitive#head():""}'
-\     },
-\     'component_visible_condition': {
-\         'fugitive': '(exists("*fugitive#head") && ""!=fugitive#head())'
+\     'component_function': {
+\         'gitbranch': 'fugitive#head'
 \     },
 \ }
 

@@ -27,6 +27,7 @@ Plug 'maxbrunsfeld/vim-yankstack'
 Plug 'jiangmiao/auto-pairs'
 Plug 'mbbill/undotree', {'on': 'UndotreeToggle'}
 Plug 'tpope/vim-sleuth'
+Plug 'Chiel92/vim-autoformat'
 
 " UI
 Plug 'itchyny/lightline.vim'
@@ -45,7 +46,6 @@ Plug 'jlfwong/vim-mercenary'
 Plug 'sheerun/vim-polyglot'
 Plug 'scrooloose/syntastic'
 Plug 'davidhalter/jedi-vim', {'for': ['python', 'pyrex'], 'on': 'Pyimport'}
-Plug 'nvie/vim-flake8', {'for': ['python', 'pyrex']}
 Plug 'hdima/python-syntax', {'for': ['python', 'pyrex']}
 Plug 'tshirtman/vim-cython'
 Plug 'zchee/vim-flatbuffers'

@@ -165,3 +165,10 @@ let g:polyglot_disabled = ['python']
 """""""""""""""""""
 nmap <F8> :TagbarToggle<CR>
 let g:tagbar_sort = 0
+
+"""""""""""""""""""
+" AutoFormat
+"""""""""""""""""""
+let g:autoformat_autoindent = 0
+let g:autoformat_retab = 0
+let g:autoformat_remove_trailing_spaces = 0

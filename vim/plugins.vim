@@ -3,7 +3,6 @@ call plug#begin('~/dotfiles/vim/installed_plugins')
 
 " General
 Plug 'scrooloose/nerdtree'
-Plug 'jistr/vim-nerdtree-tabs'
 Plug 'haya14busa/incsearch.vim'
 Plug 'amix/open_file_under_cursor.vim'
 Plug 'easymotion/vim-easymotion'
@@ -30,8 +29,8 @@ Plug 'mbbill/undotree', {'on': 'UndotreeToggle'}
 Plug 'tpope/vim-sleuth'
 
 " UI
-Plug 'mkitt/tabline.vim'
 Plug 'itchyny/lightline.vim'
+Plug 'mgee/lightline-bufferline'
 Plug 'dracula/vim', {'as': 'dracula-vim'}
 Plug 'jszakmeister/vim-togglecursor'
 Plug 'majutsushi/tagbar'

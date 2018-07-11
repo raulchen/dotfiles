@@ -117,6 +117,10 @@ set ffs=unix,dos,mac
 set t_ZH=[3m
 set t_ZR=[23m
 
+" Always show status line and tabline
+set laststatus=2
+set showtabline=2
+
 """""""""""""""""""""""""""""""""
 " Files, backups and undo
 """""""""""""""""""""""""""""""""
@@ -166,9 +170,12 @@ vnoremap <expr> <silent> # SearchSelection(0)
 " disable highlight
 noremap <silent> <leader><cr> :noh<cr>
 
-" switch tabs
-noremap <tab> gt
-noremap <s-tab> gT
+" delete buffer
+noremap <leader>d :bd<cr>
+
+" switch buffers
+noremap <tab> :bn<cr>
+noremap <s-tab> :bp<cr>
 
 " switch windows
 nnoremap <silent> <c-h> <c-w>h
@@ -176,35 +183,14 @@ nnoremap <silent> <c-l> <c-w>l
 nnoremap <silent> <c-j> <c-w>j
 nnoremap <silent> <c-k> <c-w>k
 
-" create new tab
-nnoremap <leader>tn :tabnew<cr>
-
-" go to last accessed tab
-let g:lasttab = 1
-nnoremap <leader>tl :exe "tabn ".g:lasttab<cr>
-au TabLeave * let g:lasttab = tabpagenr()
-
-" Opens a new tab with the current buffer's path
-noremap <leader>te :tabedit <c-r>=expand("%:p:h")<cr>/
+" Opens a new buffer with the current buffer's path
+noremap <leader>e :edit <c-r>=expand("%:p:h")<cr>/
 
 " Switch CWD to the directory of the open buffer
 noremap <leader>cd :cd %:p:h<cr>:pwd<cr>
 
-" Specify the behavior when switching between buffers
-try
-  set switchbuf=useopen,usetab
-  set stal=2
-catch
-endtry
-
 " Return to last edit position when opening files
 au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
-
-""""""""""""""""""""""""""""""
-" Status line
-""""""""""""""""""""""""""""""
-" Always show the status line
-set laststatus=2
 
 """"""""""""""""""""""""""""""
 " Editing

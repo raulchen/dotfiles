@@ -57,8 +57,8 @@ hi Comment cterm=italic ctermfg=61
 " Nerd Tree
 """"""""""""""""""""""""
 let NERDTreeShowHidden=0
-map <leader>n :NERDTreeTabsToggle<cr>
-map <leader><leader>n :NERDTreeTabsOpen<cr>:NERDTreeSteppedOpen<cr>:NERDTreeSteppedClose<cr>:NERDTreeTabsFind<cr>
+map <leader>n :NERDTreeToggle<cr>
+map <leader><leader>n :NERDTreeFind<cr>
 
 """""""""""""""""""
 " EasyMotion
@@ -101,6 +101,10 @@ let g:lightline = {
 \     },
 \ }
 
+let g:lightline.tabline          = {'left': [['buffers']], 'right': []}
+let g:lightline.component_expand = {'buffers': 'lightline#bufferline#buffers'}
+let g:lightline.component_type   = {'buffers': 'tabsel'}
+
 """""""""""""""""""
 " Syntastic
 """""""""""""""""""
@@ -115,7 +119,6 @@ nnoremap <leader>u :UndotreeToggle<cr>
 """""""""""""""""""
 " Jedi-vim
 """""""""""""""""""
-let g:jedi#use_tabs_not_buffers = 1
 let g:jedi#popup_on_dot = 0
 let g:jedi#popup_select_first = 1
 let g:jedi#smart_auto_mappings = 1

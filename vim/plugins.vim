@@ -44,7 +44,7 @@ Plug 'jlfwong/vim-mercenary'
 
 " Language support
 Plug 'sheerun/vim-polyglot'
-Plug 'scrooloose/syntastic'
+Plug 'w0rp/ale'
 Plug 'davidhalter/jedi-vim', {'for': ['python', 'pyrex'], 'on': 'Pyimport'}
 Plug 'hdima/python-syntax', {'for': ['python', 'pyrex']}
 Plug 'tshirtman/vim-cython'

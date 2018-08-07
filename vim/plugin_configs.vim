@@ -85,28 +85,49 @@ nmap <leader>p <Plug>yankstack_substitute_newer_paste
 let g:yankstack_yank_keys = ['y', 'd']
 
 """""""""""""""""""
+" Ale
+"""""""""""""""""""
+let g:ale_fixers = {
+\   'cpp': ['clang-format'],
+\   'python': ['yapf'],
+\}
+let g:ale_lint_on_text_changed = 'never'
+let g:ale_lint_on_enter = 0
+
+"""""""""""""""""""
 " Lightline
 """""""""""""""""""
+function! LinterStatus() abort
+    let l:counts = ale#statusline#Count(bufnr(''))
+
+    let l:all_errors = l:counts.error + l:counts.style_error
+    let l:all_non_errors = l:counts.total - l:all_errors
+
+    return l:counts.total == 0 ? 'OK' : printf(
+    \   'W:%d E:%d',
+    \   all_non_errors,
+    \   all_errors
+    \)
+endfunction
+
 let g:lightline = {
 \     'colorscheme': 'darcula',
 \     'active': {
 \       'left': [['mode', 'paste'], ['gitbranch', 'readonly', 'relativepath', 'modified']],
-\       'right': [['lineinfo'], ['percent'], ['filetype']]
+\       'right': [['linter'], ['lineinfo'], ['filetype']]
+\     },
+\     'component': {
+\         'lineinfo': '%l:%v %p%%'
 \     },
 \     'component_function': {
-\         'gitbranch': 'fugitive#head'
+\         'gitbranch': 'fugitive#head',
+\         'linter': 'LinterStatus'
 \     },
 \ }
 
 let g:lightline.tabline          = {'left': [['buffers']], 'right': []}
 let g:lightline.component_expand = {'buffers': 'lightline#bufferline#buffers'}
 let g:lightline.component_type   = {'buffers': 'tabsel'}
-
-"""""""""""""""""""
-" Syntastic
-"""""""""""""""""""
-" Python
-let g:syntastic_python_checkers=['flake8']
 
 """""""""""""""""""
 " Undo tree

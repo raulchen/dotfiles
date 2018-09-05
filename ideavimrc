@@ -28,6 +28,6 @@ nnoremap <silent> <c-l> gt
 map 0 ^
 
 " not set register with x and s
-nnoremap x "_x
-nnoremap s "_s
+nnoremap x "zx
+nnoremap s "zs
 

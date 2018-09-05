@@ -18,8 +18,6 @@ nmap <leader>w :w!<cr>
 nmap <leader>q :q<cr>
 nmap <leader>Q :q!<cr>
 
-nmap ; :
-
 map <silent> <leader><cr> :noh<cr>
 
 " smart switch between windows or tabs

@@ -22,7 +22,6 @@ fda() {
     dir=$(find ${1:-.} -type d 2> /dev/null | fzf-tmux +m) && cd "$dir"
 }
 
-
 # fu - cd upward
 fu() {
     print_parent_dirs() {
@@ -49,16 +48,14 @@ flog() {
               xargs -I % sh -c 'vim fugitive://\$(git rev-parse --show-toplevel)/.git//% < /dev/tty'"
 }
 
-# v - open files in ~/.viminfo
-unalias v 2>/dev/null
-v() {
+# vh - open recently edited files
+vh() {
     local files
     files=$(grep '^>' ~/.viminfo | cut -c3- |
     while read line; do
         [ -f "${line/\~/$HOME}" ] && echo "$line"
     done | fzf-tmux -d -m -q "$*" -1) && vim ${files//\~/$HOME}
 }
-alias fv=v
 
 fz() {
     local dir

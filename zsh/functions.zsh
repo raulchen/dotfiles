@@ -39,7 +39,7 @@ fu() {
 
 # flog - git commit browser
 flog() {
-  glol |
+  glol --color=always |
   fzf --ansi --no-sort --reverse --tiebreak=index --bind=ctrl-s:toggle-sort \
       --header "Press CTRL-S to toggle sort" \
       --preview "echo {} | grep -o '[a-f0-9]\{7\}' | head -1 |

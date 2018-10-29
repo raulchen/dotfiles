@@ -114,10 +114,7 @@ fi
 export FZF_DEFAULT_OPTS='--bind ctrl-p:toggle-preview,ctrl-d:page-down,ctrl-u:page-up'
 
 
-if [[ -z $TMUX ]]; then
-    export TERM="xterm-256color"
-else
-    export TERM="tmux-256color"
+if [[ ! -z $TMUX ]]; then
     export FZF_TMUX=1
 fi
 

@@ -213,7 +213,7 @@ func! DeleteTrailingWhitespaces()
 endfunc
 autocmd BufWrite * :call DeleteTrailingWhitespaces()
 
-vnoremap <leader>y :call CopyToTmux()<cr>
+vnoremap <leader>y :call CopyToTmuxAndClipboard()<cr>
 
 " <leader>r to replace selected text
 vnoremap <expr> <leader>r ReplaceSelection()
@@ -261,33 +261,32 @@ cnoremap <c-n> <down>
 """"""""""""""""""""""""""""
 " Helper functions
 """"""""""""""""""""""""""""
-function! GetSelection(one_line, escape) range
+function! GetSelection(one_line) range
     let [lnum1, col1] = getpos("'<")[1:2]
     let [lnum2, col2] = getpos("'>")[1:2]
     let lines = getline(lnum1, lnum2)
     let lines[-1] = lines[-1][: col2 - (&selection == 'inclusive' ? 1 : 2)]
     let lines[0] = lines[0][col1 - 1:]
     let res = join(lines, a:one_line ? '\n' : "\n")
-    if a:escape != ''
-        let res = escape(res, a:escape)
-    endif
     return res
 endfunction
 
-function! CopyToTmux() range
-    let s = GetSelection(0, '"')
-    call system('echo -n "' . s . '" | tmux loadb -')
-    echo "Copied to tmux buffer"
+function! CopyToTmuxAndClipboard() range
+    let s = GetSelection(0)
+    let s = shellescape(s)
+    call system("which tmux > /dev/null && echo -n " . s . " | tmux loadb -")
+    call system("which pbcopy > /dev/null && echo -n " . s . " | pbcopy")
+    echo "Content copied."
 endfunction
 
 function! ReplaceSelection() range
-    let cmd = '":\<c-u>%sno/".GetSelection(1, "")."/"'
+    let cmd = '":\<c-u>%sno/".GetSelection(1)."/"'
     return ":\<c-u>call feedkeys(". cmd. ", 'n')\<cr>"
 endfunction
 
 function! SearchSelection(forward) range
     let cmd = a:forward ? '"/' : '"?'
-    let cmd .= '\<c-u>".GetSelection(1, "")."\<cr>"'
+    let cmd .= '\<c-u>".GetSelection(1)."\<cr>"'
     return ":\<c-u>call feedkeys(". cmd . ", 'n')\<cr>"
 endfunction
 

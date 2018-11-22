@@ -152,13 +152,6 @@ autocmd FileType python,pyrex setlocal completeopt-=preview
 autocmd FileType python,pyrex setlocal complete-=i
 
 """""""""""""""""""
-" incsearch.vim
-"""""""""""""""""""
-map /  <Plug>(incsearch-forward)
-map ?  <Plug>(incsearch-backward)
-map g/ <Plug>(incsearch-stay)
-
-"""""""""""""""""""
 " CtrlSF
 """""""""""""""""""
 nmap <leader>a <Plug>CtrlSFPrompt

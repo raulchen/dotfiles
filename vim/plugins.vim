@@ -45,6 +45,7 @@ Plug 'jlfwong/vim-mercenary'
 Plug 'sheerun/vim-polyglot'
 Plug 'w0rp/ale'
 Plug 'davidhalter/jedi-vim', {'for': ['python', 'pyrex'], 'on': 'Pyimport'}
+Plug 'lambdalisue/vim-pyenv', {'for': ['python', 'pyrex'], 'on': 'Pyimport'}
 Plug 'hdima/python-syntax', {'for': ['python', 'pyrex']}
 Plug 'tshirtman/vim-cython'
 Plug 'zchee/vim-flatbuffers'

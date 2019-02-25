@@ -46,12 +46,13 @@ function! VisualAg() range
 endfunction
 
 """"""""""""""""""""""""
-" Dracula theme
+" Color scheme
 """"""""""""""""""""""""
-color dracula
-hi Normal ctermbg=None
-hi CursorLine ctermfg=NONE ctermbg=NONE cterm=underline
-hi Comment cterm=italic ctermfg=61
+" color dracula
+" hi Normal ctermbg=None
+" hi CursorLine ctermfg=NONE ctermbg=NONE cterm=underline
+" hi Comment cterm=italic ctermfg=61
+colorscheme snazzy
 
 """"""""""""""""""""""""
 " Nerd Tree
@@ -111,7 +112,7 @@ function! LinterStatus() abort
 endfunction
 
 let g:lightline = {
-\     'colorscheme': 'darcula',
+\     'colorscheme': 'snazzy',
 \     'active': {
 \       'left': [['mode', 'paste'], ['gitbranch', 'readonly', 'relativepath', 'modified']],
 \       'right': [['linter'], ['lineinfo'], ['filetype']]

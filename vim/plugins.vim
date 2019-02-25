@@ -31,7 +31,8 @@ Plug 'Chiel92/vim-autoformat'
 " UI
 Plug 'itchyny/lightline.vim'
 Plug 'mgee/lightline-bufferline'
-Plug 'dracula/vim', {'as': 'dracula-vim'}
+" Plug 'dracula/vim', {'as': 'dracula-vim'}
+Plug 'connorholyday/vim-snazzy'
 Plug 'jszakmeister/vim-togglecursor'
 Plug 'majutsushi/tagbar'
 

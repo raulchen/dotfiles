@@ -184,6 +184,9 @@ noremap <leader>d :bd<cr>
 noremap <tab> :bn<cr>
 noremap <s-tab> :bp<cr>
 
+" switch to last edited buffer
+noremap <leader>l <c-^>
+
 " switch windows
 nnoremap <silent> <c-h> <c-w>h
 nnoremap <silent> <c-l> <c-w>l

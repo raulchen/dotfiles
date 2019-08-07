@@ -201,3 +201,8 @@ let g:autoformat_retab = 0
 let g:autoformat_remove_trailing_spaces = 0
 nnoremap <leader>f :Autoformat<CR>
 vnoremap <leader>f :Autoformat<CR>
+
+"""""""""""""""""""
+" auto-pairs
+"""""""""""""""""""
+let g:AutoPairsMultilineClose = 0

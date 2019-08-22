@@ -74,6 +74,10 @@ done
 
 source $ZSH/oh-my-zsh.sh
 
+# Support bash completion.
+autoload bashcompinit
+bashcompinit
+
 # You may need to manually set your language environment
 # export LANG=en_US.UTF-8
 

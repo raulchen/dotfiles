@@ -65,7 +65,7 @@ fz() {
 fag() {
     local _size=`echo "($LINES*0.35-2)/1" | bc`
     local _cmd="pcat %s -c %d -l $_size -n --color=always"
-    ag --color $@ | fzf --ansi --reverse --no-sort \
+    ag $AG_OPTIONS --color $@ | fzf --ansi --reverse --no-sort \
         --preview-window down:35% \
         --preview "echo {} |
                    awk -F':' '{printf \"$_cmd\",\$1,\$2}' |

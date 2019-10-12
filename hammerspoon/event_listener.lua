@@ -22,4 +22,17 @@ table.insert(mod.flagsChangeCallbacks, function(e)
     end
 end)
 
+-- double shift -> caps lock
+local lastShiftTime = 0
+table.insert(mod.flagsChangeCallbacks, function(e)
+    local f = e:getFlags()
+    if f.shift and not (f.cmd or f.alt or f.fn or f.ctrl) then
+        local now = hs.timer.secondsSinceEpoch()
+        if now - lastShiftTime < 0.5 then
+            hs.hid.capslock.toggle()
+        end
+        lastShiftTime = now
+    end
+end)
+
 return mod

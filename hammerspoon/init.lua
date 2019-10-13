@@ -7,7 +7,7 @@ require("keymaps")
 require("window")
 require("caffeinate")
 require("url_dispatcher")
-eventListener = require("event_listener")
+require("smart_modifier_keys")
 pcall(hs.fnutils.partial(require, "local"))
 
 utils.tempNotify(3, hs.notify.new({

@@ -51,6 +51,12 @@ In macOS, the option key is used to input special characters that most people ba
   - `option + ,` / `option + f2`: volume down.
   - `option + .` / `option + f3`: volume up.
 
+# Smart modifier keys
+
+Make the modifier keys smarter:
+  - Tap ctrl -> esc.
+  - Tap shift -> switch input method.
+
 # URL dispatcher
 
 When Hammerspoon is set as the default browser, a prompt will be shown to let you choose which browser to open a URL with.
@@ -61,4 +67,3 @@ When Hammerspoon is set as the default browser, a prompt will be shown to let yo
   - `prefix - s`: start screen saver.
   - `prefix - r`: reload Hammerspoon config.
   - `prefix - d`: toggle Hammerspoon console for debug.
-  - `press ctrl twice` / `ctrl + [`: esc

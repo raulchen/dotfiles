@@ -8,12 +8,16 @@ local shiftPressed = 0
 
 hs.eventtap.new({hs.eventtap.event.types.flagsChanged}, function(e)
     local modifiers = e:getFlags()
+    local events_to_post = {}
     if modifiers['ctrl'] then
       ctrlPressed = true
     else
       if ctrlPressed then
         -- Ctrl was tapped, send an esc key.
-        hs.eventtap.keyStroke({}, 'escape', 0)
+        events_to_post = {
+            hs.eventtap.event.newKeyEvent(nil, "escape", true),
+            hs.eventtap.event.newKeyEvent(nil, "escape", false),
+        }
       end
       ctrlPressed = false
     end
@@ -23,10 +27,14 @@ hs.eventtap.new({hs.eventtap.event.types.flagsChanged}, function(e)
     else
       if shiftPressed then
         -- Shift was tapped, switch input method (cmd + space).
-        hs.eventtap.keyStroke({'cmd'}, 'space', 0)
+        events_to_post = {
+            hs.eventtap.event.newKeyEvent({"cmd"}, "space", true),
+            hs.eventtap.event.newKeyEvent({"cmd"}, "space", false),
+        }
       end
       shiftPressed = false
     end
+    return false, events_to_post
 end):start()
 
 

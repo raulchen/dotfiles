@@ -3,37 +3,51 @@
 -- Tap shift -> switch input method.
 
 -- Whether ctrl and shift is being pressed alone.
-local ctrlPressed = 0
-local shiftPressed = 0
+local ctrlPressed = false
+local shiftPressed = false
+
+local prevModifiers = {}
+
+local log = hs.logger.new('smart_modifier_keys','debug')
 
 hs.eventtap.new({hs.eventtap.event.types.flagsChanged}, function(e)
+    local events_to_post = nil
+
     local modifiers = e:getFlags()
-    local events_to_post = {}
-    if modifiers['ctrl'] then
-      ctrlPressed = true
-    else
-      if ctrlPressed then
-        -- Ctrl was tapped, send an esc key.
-        events_to_post = {
-            hs.eventtap.event.newKeyEvent(nil, "escape", true),
-            hs.eventtap.event.newKeyEvent(nil, "escape", false),
-        }
-      end
-      ctrlPressed = false
+    local count = 0
+    for _, __ in pairs(modifiers) do
+        count = count + 1
     end
 
-    if modifiers['shift'] then
-      shiftPressed = true
+    -- Check `ctrl` key.
+    if modifiers['ctrl'] and not prevModifiers['ctrl'] and count == 1 then
+        ctrlPressed = true
     else
-      if shiftPressed then
-        -- Shift was tapped, switch input method (cmd + space).
-        events_to_post = {
-            hs.eventtap.event.newKeyEvent({"cmd"}, "space", true),
-            hs.eventtap.event.newKeyEvent({"cmd"}, "space", false),
-        }
-      end
-      shiftPressed = false
+        if count == 0 and ctrlPressed then
+            -- Ctrl was tapped alone, send an esc key.
+            events_to_post = {
+                hs.eventtap.event.newKeyEvent(nil, "escape", true),
+                hs.eventtap.event.newKeyEvent(nil, "escape", false),
+            }
+        end
+        ctrlPressed = false
     end
+
+    -- Check `shift` key.
+    if modifiers['shift'] and not prevModifiers['shift'] and count == 1 then
+        shiftPressed = true
+    else
+        if count == 0 and shiftPressed then
+            -- Shift was tapped alone, switch input method (cmd + space).
+            events_to_post = {
+                hs.eventtap.event.newKeyEvent({"cmd"}, "space", true),
+                hs.eventtap.event.newKeyEvent({"cmd"}, "space", false),
+            }
+        end
+        shiftPressed = false
+    end
+
+    prevModifiers = modifiers
     return false, events_to_post
 end):start()
 

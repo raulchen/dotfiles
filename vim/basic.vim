@@ -22,6 +22,8 @@ let mapleader = ","
 let g:mapleader = ","
 
 set timeoutlen=1000
+set ttimeoutlen=10
+
 
 " Fast saving
 nnoremap <leader>w :w!<cr>

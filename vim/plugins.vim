@@ -41,6 +41,7 @@ Plug 'mhinz/vim-signify'
 Plug 'tpope/vim-fugitive'
 Plug 'junegunn/gv.vim', {'on': 'GV'}
 Plug 'jlfwong/vim-mercenary'
+Plug 'will133/vim-dirdiff'
 
 " Language support
 Plug 'sheerun/vim-polyglot'

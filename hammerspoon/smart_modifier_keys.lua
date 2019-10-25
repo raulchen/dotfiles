@@ -2,15 +2,17 @@
 -- Tap ctrl -> esc.
 -- Tap shift -> switch input method.
 
+local module = {}
+
 -- Whether ctrl and shift is being pressed alone.
-local ctrlPressed = false
-local shiftPressed = false
+module.ctrlPressed = false
+module.shiftPressed = false
 
-local prevModifiers = {}
+module.prevModifiers = {}
 
-local log = hs.logger.new('smart_modifier_keys','debug')
+module.log = hs.logger.new('smart_modifier_keys','debug')
 
-hs.eventtap.new({hs.eventtap.event.types.flagsChanged}, function(e)
+module.modifierKeyListener = hs.eventtap.new({hs.eventtap.event.types.flagsChanged}, function(e)
     local events_to_post = nil
 
     local modifiers = e:getFlags()
@@ -20,40 +22,42 @@ hs.eventtap.new({hs.eventtap.event.types.flagsChanged}, function(e)
     end
 
     -- Check `ctrl` key.
-    if modifiers['ctrl'] and not prevModifiers['ctrl'] and count == 1 then
-        ctrlPressed = true
+    if modifiers['ctrl'] and not module.prevModifiers['ctrl'] and count == 1 then
+        module.ctrlPressed = true
     else
-        if count == 0 and ctrlPressed then
+        if count == 0 and module.ctrlPressed then
             -- Ctrl was tapped alone, send an esc key.
             events_to_post = {
                 hs.eventtap.event.newKeyEvent(nil, "escape", true),
                 hs.eventtap.event.newKeyEvent(nil, "escape", false),
             }
         end
-        ctrlPressed = false
+        module.ctrlPressed = false
     end
 
     -- Check `shift` key.
-    if modifiers['shift'] and not prevModifiers['shift'] and count == 1 then
-        shiftPressed = true
+    if modifiers['shift'] and not module.prevModifiers['shift'] and count == 1 then
+        module.shiftPressed = true
     else
-        if count == 0 and shiftPressed then
+        if count == 0 and module.shiftPressed then
             -- Shift was tapped alone, switch input method (cmd + space).
             events_to_post = {
                 hs.eventtap.event.newKeyEvent({"cmd"}, "space", true),
                 hs.eventtap.event.newKeyEvent({"cmd"}, "space", false),
             }
         end
-        shiftPressed = false
+        module.shiftPressed = false
     end
 
-    prevModifiers = modifiers
+    module.prevModifiers = modifiers
     return false, events_to_post
 end):start()
 
 
-hs.eventtap.new({hs.eventtap.event.types.keyDown}, function(e)
+module.normalKeyListener = hs.eventtap.new({hs.eventtap.event.types.keyDown}, function(e)
     -- If a non-modifier key is pressed, reset these two flags.
-    ctrlPressed = false
-    shiftPressed = false
+    module.ctrlPressed = false
+    module.shiftPressed = false
 end):start()
+
+return module

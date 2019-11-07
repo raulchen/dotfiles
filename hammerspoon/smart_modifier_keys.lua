@@ -42,8 +42,8 @@ module.modifierKeyListener = hs.eventtap.new({hs.eventtap.event.types.flagsChang
         if count == 0 and module.shiftPressed then
             -- Shift was tapped alone, switch input method (cmd + space).
             events_to_post = {
-                hs.eventtap.event.newKeyEvent({"cmd"}, "space", true),
-                hs.eventtap.event.newKeyEvent({"cmd"}, "space", false),
+                hs.eventtap.event.newKeyEvent({"cmd", "shift"}, "space", true),
+                hs.eventtap.event.newKeyEvent({"cmd", "shift"}, "space", false),
             }
         end
         module.shiftPressed = false

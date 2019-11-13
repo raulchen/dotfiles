@@ -59,6 +59,7 @@ fi
 
 # The following plugins will be loaded only when the corresponding commands exist.
 typeset -A commands_to_plugins=(
+    "bazel" "bazel"
     "docker" "docker"
     "fasd" "fasd"
     "mvn" "mvn"

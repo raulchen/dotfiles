@@ -11,6 +11,5 @@ require("smart_modifier_keys")
 pcall(hs.fnutils.partial(require, "local"))
 
 utils.tempNotify(3, hs.notify.new({
-    title = "Hammerspoon",
-    subTitle = "Config reloaded",
+    title = "Config reloaded",
 }))

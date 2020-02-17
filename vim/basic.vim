@@ -130,6 +130,9 @@ if exists('+termguicolors')
   set termguicolors
 endif
 
+set splitbelow
+set splitright
+
 """""""""""""""""""""""""""""""""
 " Files, backups and undo
 """""""""""""""""""""""""""""""""

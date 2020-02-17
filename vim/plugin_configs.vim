@@ -111,24 +111,32 @@ function! LinterStatus() abort
     \)
 endfunction
 
+function TabIndex()
+  return printf('%d/%d', tabpagenr(), tabpagenr('$'))
+endfunction
+
 let g:lightline = {
 \     'colorscheme': 'snazzy',
 \     'active': {
 \       'left': [['mode', 'paste'], ['gitbranch', 'readonly', 'relativepath', 'modified']],
 \       'right': [['linter'], ['lineinfo'], ['filetype']]
 \     },
+\     'tabline': {'left': [['tab_index'], ['buffers']], 'right': []},
 \     'component': {
 \         'lineinfo': '%l:%v %p%%'
 \     },
 \     'component_function': {
 \         'gitbranch': 'fugitive#head',
+\         'tab_index': 'TabIndex',
 \         'linter': 'LinterStatus'
 \     },
+\     'component_expand': {'buffers': 'lightline#bufferline#buffers'},
+\     'component_type': {'buffers': 'tabsel'},
 \ }
 
-let g:lightline.tabline          = {'left': [['buffers']], 'right': []}
-let g:lightline.component_expand = {'buffers': 'lightline#bufferline#buffers'}
-let g:lightline.component_type   = {'buffers': 'tabsel'}
+let g:lightline#bufferline#show_number = 1
+let g:lightline#bufferline#number_separator = '.'
+let g:lightline#bufferline#filename_modifier = ':t'
 
 """""""""""""""""""
 " Undo tree

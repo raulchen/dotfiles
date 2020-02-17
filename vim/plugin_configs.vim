@@ -214,3 +214,40 @@ vnoremap <leader>f :Autoformat<CR>
 " auto-pairs
 """""""""""""""""""
 let g:AutoPairsMultilineClose = 0
+
+"""""""""""""""""""
+" vim-merge
+"""""""""""""""""""
+let g:vimmerge#buffer_numbers = {
+\ 'BASE': 1,
+\ 'LOCAL': 2,
+\ 'REMOTE': 3,
+\ 'MERGED': 4
+\}
+
+function VimMergeSwitchLayout(left, right)
+  silent windo diffoff
+  silent wincmd o
+  silent execute 'buffer' . g:vimmerge#buffer_numbers[a:left]
+  silent vsp
+  silent execute 'buffer' . g:vimmerge#buffer_numbers[a:right]
+  silent windo diffthis
+  silent windo diffupdate
+  silent wincmd w
+endfunction
+
+function VimMergeStart()
+  call VimMergeSwitchLayout('MERGED', 'LOCAL')
+  " Set shortcuts for switching layouts.
+  nnoremap <leader>1 :call VimMergeSwitchLayout('BASE', 'LOCAL')<cr>
+  nnoremap <leader>2 :call VimMergeSwitchLayout('BASE', 'REMOTE')<cr>
+  nnoremap <leader>3 :call VimMergeSwitchLayout('MERGED', 'LOCAL')<cr>
+  nnoremap <leader>4 :call VimMergeSwitchLayout('MERGED', 'REMOTE')<cr>
+  nnoremap <leader>5 :call VimMergeSwitchLayout('MERGED', 'BASE')<cr>
+  " Search conflict markers.
+  let pattern = "[<=>]\\{7\\}"
+  execute 'normal! /'. pattern ."\<cr>"
+  let @/ = pattern
+endfunction
+
+

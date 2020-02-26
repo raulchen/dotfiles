@@ -9,3 +9,6 @@
 [submodule "zsh/oh_my_zsh_custom/plugins/async"]
 	path = zsh/oh_my_zsh_custom/plugins/async
 	url = https://github.com/mafredri/zsh-async
+[submodule "tmux/tpm"]
+	path = tmux/tpm
+	url = https://github.com/tmux-plugins/tpm

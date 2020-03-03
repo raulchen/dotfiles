@@ -9,7 +9,6 @@ alias -g N="> /dev/null 2>&1 "
 alias tailf="tail -f"
 unalias d >/dev/null 2>&1
 alias d="dirs -v | head -10"
-alias ssh="TERM=xterm-256color ssh"
 
 if [[ `uname` == 'Darwin' ]]; then
     # Flush Directory Service cache

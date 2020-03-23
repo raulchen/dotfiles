@@ -50,9 +50,9 @@ endfunction
 """"""""""""""""""""""""
 " color dracula
 " hi Normal ctermbg=None
-" hi CursorLine ctermfg=NONE ctermbg=NONE cterm=underline
 " hi Comment cterm=italic ctermfg=61
 colorscheme snazzy
+hi CursorLine cterm=underline
 
 """"""""""""""""""""""""
 " Nerd Tree

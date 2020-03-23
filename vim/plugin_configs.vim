@@ -50,8 +50,8 @@ endfunction
 """"""""""""""""""""""""
 " color dracula
 " hi Normal ctermbg=None
-" hi Comment cterm=italic ctermfg=61
 colorscheme snazzy
+hi Comment cterm=italic
 hi CursorLine cterm=underline
 
 """"""""""""""""""""""""

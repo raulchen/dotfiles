@@ -185,9 +185,13 @@ noremap <silent> <leader><cr> :noh<cr>
 " delete buffer
 noremap <leader>d :bd<cr>
 
-" switch buffers
-noremap <tab> :bn<cr>
-noremap <s-tab> :bp<cr>
+" switch buffers and tabs
+nnoremap <tab> :bn<cr>
+nnoremap <s-tab> :bp<cr>
+nnoremap <leader>b :bn<cr>
+nnoremap <leader>B :bp<cr>
+nnoremap <leader>t gt
+nnoremap <leader>T gT
 
 " switch to last edited buffer
 noremap <leader>l <c-^>

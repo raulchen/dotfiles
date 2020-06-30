@@ -62,7 +62,7 @@ fz() {
     dir="$(fasd -Rdl "$1" | fzf-tmux -1 -0 --no-sort +m)" && cd "${dir}" || return 1
 }
 
-fg() {
+frg() {
     local _size=`echo "($LINES*0.35-2)/1" | bc`
     local _cmd="pcat %s -c %d -l $_size -n --color=always"
     rg --color always $@ | fzf --ansi --reverse --no-sort \

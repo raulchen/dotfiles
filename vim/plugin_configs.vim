@@ -4,26 +4,17 @@
 let g:fzf_history_dir = '~/dotfiles/vim/temp_dirs/fzf-history'
 " [Buffers] Jump to the existing window if possible
 let g:fzf_buffers_jump = 1
-" Augmenting Ag command using fzf#vim#with_preview function
-" Ag searches literals by default
-command! -bang -nargs=* Ag
-  \ call fzf#vim#ag(<q-args>, '--literal',
-  \                 <bang>0 ? fzf#vim#with_preview('up:60%')
-  \                         : fzf#vim#with_preview('right:60%:hidden'),
-  \                 <bang>0)
-" Agp searches regex patterns
-command! -bang -nargs=* Agp
-  \ call fzf#vim#ag(<q-args>,
-  \                 <bang>0 ? fzf#vim#with_preview('up:60%')
-  \                         : fzf#vim#with_preview('right:60%:hidden'),
-  \                 <bang>0)
+
+command! -bang -nargs=* Rg
+  \ call fzf#vim#grep(
+  \   'rg --column --line-number --no-heading --color=always --smart-case -- '.shellescape(<q-args>), 1,
+  \   fzf#vim#with_preview(), <bang>0)
 
 nmap <c-g><c-f> :Files<cr>
 nmap <c-g><c-p> :Files <c-r>=expand("%:p:h")<cr>/
 "J for jump
 nmap <c-g><c-j> :Buffers<cr>
-nmap <c-g><c-a> :Ag<space>
-vmap <expr> <c-g><c-a> VisualAg()
+nmap <c-g><c-g> :Rg<space>
 nmap <c-g><c-t> :BTags<cr>
 nmap <c-g><c-g><c-t> :Tags<cr>
 nmap <c-g><c-m> :Marks<cr>
@@ -37,13 +28,8 @@ nmap <c-g>m :Maps<cr>
 
 imap <c-g><c-w> <plug>(fzf-complete-word)
 imap <c-g><c-p> <plug>(fzf-complete-path)
-imap <c-g><c-f> <plug>(fzf-complete-file-ag)
+imap <expr> <c-g><c-f> fzf#vim#complete#path('rg --files')
 imap <c-g><c-l> <plug>(fzf-complete-line)
-
-function! VisualAg() range
-    let cmd = '":\<c-u>Ag ".GetSelection(1, "")'
-    return ":\<c-u>call feedkeys(" . cmd . ", 'n')\<cr>"
-endfunction
 
 """"""""""""""""""""""""
 " Color scheme

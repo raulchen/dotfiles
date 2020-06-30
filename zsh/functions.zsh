@@ -65,7 +65,7 @@ fz() {
 frg() {
     local _size=`echo "($LINES*0.35-2)/1" | bc`
     local _cmd="pcat %s -c %d -l $_size -n --color=always"
-    rg --color always --hidden $@ | fzf --ansi --reverse --no-sort \
+    rg  --column --line-number --no-heading --color=always --smart-case $@ | fzf --ansi --reverse --no-sort \
         --preview-window down:35% \
         --preview "echo {} |
                    awk -F':' '{printf \"$_cmd\",\$1,\$2}' |

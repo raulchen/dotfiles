@@ -51,6 +51,6 @@ Plug 'lambdalisue/vim-pyenv', {'for': ['python', 'pyrex'], 'on': 'Pyimport'}
 Plug 'hdima/python-syntax', {'for': ['python', 'pyrex']}
 Plug 'tshirtman/vim-cython'
 Plug 'zchee/vim-flatbuffers'
-Plug 'zxqfl/tabnine-vim'
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 call plug#end()

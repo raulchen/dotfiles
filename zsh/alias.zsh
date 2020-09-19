@@ -10,6 +10,8 @@ alias tailf="tail -f"
 unalias d >/dev/null 2>&1
 alias d="dirs -v | head -10"
 
+alias vh="vim -c ':History'"
+
 if [[ `uname` == 'Darwin' ]]; then
     # Flush Directory Service cache
     alias flushdns="dscacheutil -flushcache && sudo killall -HUP mDNSResponder"

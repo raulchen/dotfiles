@@ -48,15 +48,6 @@ flog() {
               xargs -I % sh -c 'vim fugitive://\$(git rev-parse --show-toplevel)/.git//% < /dev/tty'"
 }
 
-# vh - open recently edited files
-vh() {
-    local files
-    files=$(grep '^>' ~/.viminfo | cut -c3- |
-    while read line; do
-        [ -f "${line/\~/$HOME}" ] && echo "$line"
-    done | fzf-tmux -d -m -q "$*" -1) && vim ${files//\~/$HOME}
-}
-
 fz() {
     local dir
     dir="$(fasd -Rdl "$1" | fzf-tmux -1 -0 --no-sort +m)" && cd "${dir}" || return 1

@@ -133,6 +133,11 @@ endif
 set splitbelow
 set splitright
 
+if has("patch-8.1.1564")
+  " Recently vim can merge signcolumn and number column into one
+  set signcolumn=number
+endif
+
 """""""""""""""""""""""""""""""""
 " Files, backups and undo
 """""""""""""""""""""""""""""""""

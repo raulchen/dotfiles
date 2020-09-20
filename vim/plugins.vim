@@ -9,6 +9,7 @@ Plug 'terryma/vim-expand-region'
 Plug 'michaeljsmith/vim-indent-object'
 Plug 'dyng/ctrlsf.vim'
 Plug 'google/vim-searchindex'
+Plug 'airblade/vim-rooter'
 for p in ['~/.fzf', '/usr/local/opt/fzf', '/home/linuxbrew/.linuxbrew/opt/fzf']
     if isdirectory(expand(p))
         Plug p

@@ -30,6 +30,7 @@ Plug 'tpope/vim-sleuth'
 Plug 'Chiel92/vim-autoformat'
 
 " UI
+Plug 'mhinz/vim-startify'
 Plug 'itchyny/lightline.vim'
 Plug 'mgee/lightline-bufferline'
 " Plug 'dracula/vim', {'as': 'dracula-vim'}

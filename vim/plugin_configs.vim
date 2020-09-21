@@ -36,7 +36,7 @@ nmap <c-g><c-f> :Files<cr>
 nmap <c-g><c-p> :Files <c-r>=expand("%:p:h")<cr>/
 "J for jump
 nmap <c-g><c-j> :Buffers<cr>
-nmap <c-g><c-g> :Rg<space>
+nmap <c-g><c-r> :Rg<space>
 nmap <c-g><c-t> :BTags<cr>
 nmap <c-g><c-g><c-t> :Tags<cr>
 nmap <c-g><c-m> :Marks<cr>

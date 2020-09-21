@@ -46,6 +46,7 @@ Plug 'jlfwong/vim-mercenary'
 Plug 'will133/vim-dirdiff'
 
 " Language support
+let g:polyglot_disabled = ['python']
 Plug 'sheerun/vim-polyglot'
 Plug 'w0rp/ale'
 Plug 'davidhalter/jedi-vim', {'for': ['python', 'pyrex'], 'on': 'Pyimport'}

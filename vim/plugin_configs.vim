@@ -7,8 +7,11 @@ let g:fzf_buffers_jump = 1
 
 let $FZF_DEFAULT_OPTS = '--layout=reverse --inline-info'
 
-" let g:fzf_layout = { 'down': '80%' }
-let g:fzf_layout = { 'window': { 'width': 0.8, 'height': 0.8, 'border': 'sharp'} }
+if has("patch-8.2.191")
+  let g:fzf_layout = { 'window': { 'width': 0.8, 'height': 0.8, 'border': 'sharp'} }
+else
+  let g:fzf_layout = { 'window': 'enew' }
+endif
 
 " Customize fzf colors to match your color scheme
 " - fzf#wrap translates this to a set of `--color` options

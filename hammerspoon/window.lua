@@ -4,13 +4,6 @@ local utils = require("utils")
 hs.window.animationDuration = 0
 
 ----------------
--- Grid
-----------------
-hs.grid.setGrid('6x4', nil, nil)
-hs.grid.setMargins({0, 0})
-prefix.bind('', 'g', function() hs.grid.show() end)
-
-----------------
 -- Switch
 ----------------
 hs.hints.hintChars = utils.strToTable('ASDFGQWERTZXCVB12345')

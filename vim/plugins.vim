@@ -10,13 +10,8 @@ Plug 'michaeljsmith/vim-indent-object'
 Plug 'dyng/ctrlsf.vim'
 Plug 'google/vim-searchindex'
 Plug 'airblade/vim-rooter'
-for p in ['~/.fzf', '/usr/local/opt/fzf', '/home/linuxbrew/.linuxbrew/opt/fzf']
-    if isdirectory(expand(p))
-        Plug p
-        Plug 'junegunn/fzf.vim'
-        break
-    endif
-endfor
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
 
 " Edit
 Plug 'tpope/vim-surround'

@@ -50,5 +50,6 @@ Plug 'hdima/python-syntax', {'for': ['python', 'pyrex']}
 Plug 'tshirtman/vim-cython'
 Plug 'zchee/vim-flatbuffers'
 Plug 'zxqfl/tabnine-vim'
+Plug 'vim-scripts/a.vim'
 
 call plug#end()

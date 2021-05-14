@@ -36,7 +36,7 @@ command! -bang -nargs=* Rg
   \   fzf#vim#with_preview(), <bang>0)
 
 nmap <c-g><c-f> :Files<cr>
-nmap <c-g><c-p> :Files <c-r>=expand("%:p:h")<cr>/
+nmap <c-g><c-p> :Files <c-r>=expand("%:p:h")<cr>/<cr>
 "J for jump
 nmap <c-g><c-j> :Buffers<cr>
 nmap <c-g><c-r> :Rg<space>

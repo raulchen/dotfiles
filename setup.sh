@@ -64,7 +64,6 @@ fi
 
 echo "Setting up tmux..."
 link_file "$base_dir/tmux/tmux.conf" ~/.tmux.conf
-tic -x "$base_dir/tmux/tmux.terminfo"
 
 printf "Set up hammerspoons config? [yn]"
 read -r op

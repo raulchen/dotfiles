@@ -34,23 +34,23 @@ Plug 'connorholyday/vim-snazzy'
 Plug 'jszakmeister/vim-togglecursor'
 Plug 'majutsushi/tagbar'
 
-" Source control
-Plug 'mhinz/vim-signify'
-Plug 'tpope/vim-fugitive'
-Plug 'junegunn/gv.vim', {'on': 'GV'}
-Plug 'jlfwong/vim-mercenary'
-Plug 'will133/vim-dirdiff'
-
-" Language support
-let g:polyglot_disabled = ['python']
-Plug 'sheerun/vim-polyglot'
-Plug 'w0rp/ale'
-Plug 'davidhalter/jedi-vim', {'for': ['python', 'pyrex'], 'on': 'Pyimport'}
-Plug 'lambdalisue/vim-pyenv', {'for': ['python', 'pyrex'], 'on': 'Pyimport'}
-Plug 'hdima/python-syntax', {'for': ['python', 'pyrex']}
-Plug 'tshirtman/vim-cython'
-Plug 'zchee/vim-flatbuffers'
-Plug 'zxqfl/tabnine-vim'
-Plug 'vim-scripts/a.vim'
+if $VIM_DEV_ENABLED == "1"
+  " Source control
+  Plug 'mhinz/vim-signify'
+  Plug 'tpope/vim-fugitive'
+  Plug 'junegunn/gv.vim', {'on': 'GV'}
+  Plug 'jlfwong/vim-mercenary'
+  Plug 'will133/vim-dirdiff'
+   "anguage support
+  let g:polyglot_disabled = ['python']
+  Plug 'sheerun/vim-polyglot'
+  Plug 'w0rp/ale'
+  Plug 'davidhalter/jedi-vim', {'for': ['python', 'pyrex'], 'on': 'Pyimport'}
+  Plug 'lambdalisue/vim-pyenv', {'for': ['python', 'pyrex'], 'on': 'Pyimport'}
+  Plug 'hdima/python-syntax', {'for': ['python', 'pyrex']}
+  Plug 'tshirtman/vim-cython'
+  Plug 'zxqfl/tabnine-vim'
+  Plug 'vim-scripts/a.vim'
+endif
 
 call plug#end()

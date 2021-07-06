@@ -237,8 +237,6 @@ func! DeleteTrailingWhitespaces()
 endfunc
 autocmd BufWrite * :call DeleteTrailingWhitespaces()
 
-vnoremap <leader>y :call CopyToTmuxAndClipboard()<cr>
-
 " <leader>r to replace selected text
 vnoremap <expr> <leader>r ReplaceSelection()
 
@@ -293,14 +291,6 @@ function! GetSelection(one_line) range
     let lines[0] = lines[0][col1 - 1:]
     let res = join(lines, a:one_line ? '\n' : "\n")
     return res
-endfunction
-
-function! CopyToTmuxAndClipboard() range
-    let s = GetSelection(0)
-    let s = shellescape(s)
-    call system("which tmux > /dev/null && echo -n " . s . " | tmux loadb -")
-    call system("which pbcopy > /dev/null && echo -n " . s . " | pbcopy")
-    echo "Content copied."
 endfunction
 
 function! ReplaceSelection() range

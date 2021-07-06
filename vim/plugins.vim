@@ -23,6 +23,7 @@ Plug 'mbbill/undotree', {'on': 'UndotreeToggle'}
 Plug 'tpope/vim-sleuth'
 Plug 'Chiel92/vim-autoformat'
 Plug 'junegunn/vim-peekaboo'
+Plug 'ojroques/vim-oscyank'
 
 " UI
 Plug 'mhinz/vim-startify'

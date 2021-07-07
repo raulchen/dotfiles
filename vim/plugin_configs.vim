@@ -62,7 +62,9 @@ imap <c-g><c-l> <plug>(fzf-complete-line)
 " color dracula
 " hi Normal ctermbg=None
 colorscheme snazzy
-hi Comment cterm=italic
+if $TERM == "xterm-256color" || $TERM == "tmux-256color"
+  hi Comment cterm=italic
+endif
 hi CursorLine cterm=underline
 
 """"""""""""""""""""""""

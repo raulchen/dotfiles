@@ -185,11 +185,6 @@ nnoremap <leader>f :Autoformat<CR>
 vnoremap <leader>f :Autoformat<CR>
 
 """""""""""""""""""
-" auto-pairs
-"""""""""""""""""""
-let g:AutoPairsMultilineClose = 0
-
-"""""""""""""""""""
 " vim-merge
 """""""""""""""""""
 let g:vimmerge#buffer_numbers = {

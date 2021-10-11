@@ -18,7 +18,6 @@ Plug 'tpope/vim-surround'
 Plug 'tpope/vim-commentary'
 Plug 'terryma/vim-multiple-cursors'
 Plug 'tpope/vim-repeat'
-Plug 'jiangmiao/auto-pairs'
 Plug 'mbbill/undotree', {'on': 'UndotreeToggle'}
 Plug 'tpope/vim-sleuth'
 Plug 'Chiel92/vim-autoformat'

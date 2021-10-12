@@ -4,7 +4,7 @@ local module = {}
 
 local TIMEOUT = 5
 
-local modal = hs.hotkey.modal.new('ctrl', 'space')
+local modal = hs.hotkey.modal.new({'cmd', 'shift'}, 'space')
 
 function modal:entered()
     modal.alertId = hs.alert.show("Prefix Mode", 9999)
@@ -37,7 +37,7 @@ function module.bindMultiple(mod, key, pressedFn, releasedFn, repeatFn)
 end
 
 module.bind('', 'escape', module.exit)
-module.bind('ctrl', 'space', module.exit)
+module.bind({'cmd', 'shift'}, 'space', module.exit)
 
 module.bind('', 'd', hs.toggleConsole)
 module.bind('', 'r', hs.reload)

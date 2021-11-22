@@ -1,6 +1,6 @@
 # Hammerspoon
 
-Some of the following key bindings are inspired by Tmux. The default prefix key is `cmd+shift+space`. E.g., `prefix - a` means to press `cmd+shift+space` first, then press `a`.
+Some of the following key bindings are inspired by Tmux. The default prefix key is `` ctrl+` ``. E.g., `prefix - a` means to press `` ctrl+` `` first, then press `a`.
 
 # Window management
 

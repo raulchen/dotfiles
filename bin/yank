@@ -20,7 +20,7 @@ test -n "$TMUX" &&
 # }
 
 # copy via pbcopy
-(command -v pbcopy >/dev/null & input | pbcopy) && exit 0
+(command -v pbcopy >/dev/null && input | pbcopy) && exit 0
 
 # copy via OSC 52
 printf_escape() {

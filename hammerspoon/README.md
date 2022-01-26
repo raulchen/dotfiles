@@ -65,6 +65,7 @@ When Hammerspoon is set as the default browser, a prompt will be shown to let yo
 
 # Other features
 
+- `prefix - m`: switch primary monitor.
 - `prefix - c`: toggle caffeinate (disable sleep).
 - `prefix - s`: start screen saver.
 - `prefix - r`: reload Hammerspoon config.

@@ -45,7 +45,7 @@ if $VIM_DEV_ENABLED == "1"
   Plug 'sheerun/vim-polyglot'
   Plug 'w0rp/ale'
   Plug 'davidhalter/jedi-vim', {'for': ['python', 'pyrex'], 'on': 'Pyimport'}
-  Plug 'lambdalisue/vim-pyenv', {'for': ['python', 'pyrex'], 'on': 'Pyimport'}
+  Plug 'lambdalisue/vim-pyenv'
   Plug 'hdima/python-syntax', {'for': ['python', 'pyrex']}
   Plug 'tshirtman/vim-cython'
   Plug 'zxqfl/tabnine-vim'

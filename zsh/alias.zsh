@@ -9,8 +9,8 @@ alias -g N="> /dev/null 2>&1 "
 alias tailf="tail -f"
 unalias d >/dev/null 2>&1
 alias d="dirs -v | head -10"
-
 alias vh="vim -c ':History'"
+alias tat="tmux a || tmux"
 
 if [[ `uname` == 'Darwin' ]]; then
     # Flush Directory Service cache

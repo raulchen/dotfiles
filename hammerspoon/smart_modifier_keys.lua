@@ -22,18 +22,18 @@ module.modifierKeyListener = hs.eventtap.new({hs.eventtap.event.types.flagsChang
     end
 
     -- Check `ctrl` key.
-    if modifiers['ctrl'] and not module.prevModifiers['ctrl'] and count == 1 then
-        module.ctrlPressed = true
-    else
-        if count == 0 and module.ctrlPressed then
-            -- Ctrl was tapped alone, send an esc key.
-            events_to_post = {
-                hs.eventtap.event.newKeyEvent(nil, "escape", true),
-                hs.eventtap.event.newKeyEvent(nil, "escape", false),
-            }
-        end
-        module.ctrlPressed = false
-    end
+    -- if modifiers['ctrl'] and not module.prevModifiers['ctrl'] and count == 1 then
+    --     module.ctrlPressed = true
+    -- else
+    --     if count == 0 and module.ctrlPressed then
+    --         -- Ctrl was tapped alone, send an esc key.
+    --         events_to_post = {
+    --             hs.eventtap.event.newKeyEvent(nil, "escape", true),
+    --             hs.eventtap.event.newKeyEvent(nil, "escape", false),
+    --         }
+    --     end
+    --     module.ctrlPressed = false
+    -- end
 
     -- Check `shift` key.
     if modifiers['shift'] and not module.prevModifiers['shift'] and count == 1 then

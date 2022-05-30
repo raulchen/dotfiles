@@ -150,3 +150,6 @@ if [[ -n "$TMUX" ]]; then
 fi
 
 export XDG_CONFIG_HOME=~/.config
+
+# Disable auto update for oh-my-zsh
+zstyle ':omz:update' mode disabled

@@ -122,7 +122,7 @@ let g:lightline = {
 \         'lineinfo': '%l:%v %p%%'
 \     },
 \     'component_function': {
-\         'gitbranch': 'fugitive#head',
+\         'gitbranch': 'FugitiveHead',
 \         'tab_index': 'TabIndex',
 \         'linter': 'LinterStatus'
 \     },

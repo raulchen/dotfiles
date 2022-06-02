@@ -40,7 +40,7 @@ if $VIM_DEV_ENABLED == "1"
   Plug 'junegunn/gv.vim', {'on': 'GV'}
   Plug 'jlfwong/vim-mercenary'
   Plug 'will133/vim-dirdiff'
-   "anguage support
+  " Language support
   let g:polyglot_disabled = ['python']
   Plug 'sheerun/vim-polyglot'
   Plug 'w0rp/ale'

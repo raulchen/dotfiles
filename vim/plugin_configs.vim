@@ -156,3 +156,4 @@ let g:rooter_patterns = [".git", "WORKSPACE"]
 """""""""""""""""""
 " Copy to system clipboard.
 vnoremap <leader>y :OSCYank<CR>
+let g:oscyank_term = 'default'

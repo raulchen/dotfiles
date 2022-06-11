@@ -42,4 +42,12 @@ Plug 'will133/vim-dirdiff'
 Plug 'sheerun/vim-polyglot'
 Plug 'vim-scripts/a.vim'
 
+if has("nvim")
+	Plug 'neovim/nvim-lspconfig'
+	Plug 'hrsh7th/nvim-cmp'
+	Plug 'hrsh7th/cmp-nvim-lsp'
+	Plug 'saadparwaiz1/cmp_luasnip'
+	Plug 'L3MON4D3/LuaSnip'
+endif
+
 call plug#end()

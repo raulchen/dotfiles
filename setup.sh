@@ -61,6 +61,10 @@ echo "Setting up vim..."
 if link_file "$base_dir/vim/vimrc" ~/.vimrc ; then
     vim +PlugInstall +qall
 fi
+if which nvim >/dev/null 2>&1 ; then
+    echo "Setting up neovim..."
+    link_file "$base_dir/nvim" ~/.config/nvim
+fi
 
 echo "Setting up tmux..."
 link_file "$base_dir/tmux/tmux.conf" ~/.tmux.conf

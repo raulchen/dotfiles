@@ -69,9 +69,8 @@ fi
 echo "Setting up tmux..."
 link_file "$base_dir/tmux/tmux.conf" ~/.tmux.conf
 
-printf "Set up hammerspoons config? [yn]"
-read -r op
-if [[ "$op" == "y" ]]; then
+if [[ `uname` == "Darwin" ]]; then
+    echo "Setting up Hammerspoon..."
     link_file "$base_dir/hammerspoon" ~/.hammerspoon
 fi
 

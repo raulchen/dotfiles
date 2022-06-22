@@ -151,7 +151,6 @@ else
     " Create temp dirs if not exist
     for d in ['undo', 'swap']
         let p = g:vim_temp_dir_root.d
-        echo p
         if !isdirectory(p)
             execute 'silent !mkdir -p '.p.' > /dev/null 2>&1'
         endif

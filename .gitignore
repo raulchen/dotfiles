@@ -1,7 +1,5 @@
-*.DS_Store
-
 *.local
 vim/temp_dirs
-vim/temp_dirs/**
+nvim/temp_dirs
 vim/installed_plugins/**
 hammerspoon/local.lua

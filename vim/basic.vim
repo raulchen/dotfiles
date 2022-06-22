@@ -144,16 +144,22 @@ endif
 """""""""""""""""""""""""""""""""
 set nowritebackup
 set nobackup
-" auto create temp_dirs
-for d in ['undo', 'swap']
-    let p = '~/dotfiles/vim/temp_dirs/'.d
-    if !isdirectory(p)
-        execute 'silent !mkdir -p '.p.' > /dev/null 2>&1'
-    endif
-endfor
-set undodir=~/dotfiles/vim/temp_dirs/undo//
+if has("nvim")
+    let g:vim_temp_dir_root = '~/dotfiles/nvim/temp_dirs/'
+else
+    let g:vim_temp_dir_root = '~/dotfiles/vim/temp_dirs/'
+    " Create temp dirs if not exist
+    for d in ['undo', 'swap']
+        let p = g:vim_temp_dir_root.d
+        echo p
+        if !isdirectory(p)
+            execute 'silent !mkdir -p '.p.' > /dev/null 2>&1'
+        endif
+    endfor
+endif
+exec "set undodir=".g:vim_temp_dir_root."/undo//"
 set undofile
-set directory=~/dotfiles/vim/temp_dirs/swap//
+exec "set directory=".g:vim_temp_dir_root."/swap//"
 
 """"""""""""""""""""""""""""""""""
 " Text, tab and indent related

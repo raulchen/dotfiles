@@ -17,7 +17,3 @@ My config files for Zsh, Tmux, Vim, and Hammerspoon.
 ## Hammerspoon
 
 [See more](https://github.com/raulchen/dotfiles/tree/master/hammerspoon)
-
-## Screenshots
-![Screenshot 1](https://raw.githubusercontent.com/raulchen/dotfiles/master/screenshots/ss1.png)
-

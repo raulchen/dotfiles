@@ -17,6 +17,9 @@ if which nvim >/dev/null 2>&1; then
     alias vimdiff='nvim -d'
 fi
 
+alias proxy_on="export {http,https,ftp}_proxy=http://127.0.0.1:7890; export socks_proxy=socks5://127.0.0.1:7891; no_proxy='localhost,127.0.0.1,*.local'"
+alias proxy_off="unset {http,https,ftp,all,socks,no}_proxy"
+
 if [[ `uname` == 'Darwin' ]]; then
     # Flush Directory Service cache
     alias flushdns="dscacheutil -flushcache && sudo killall -HUP mDNSResponder"

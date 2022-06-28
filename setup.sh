@@ -63,6 +63,7 @@ if link_file "$base_dir/vim/vimrc" ~/.vimrc ; then
 fi
 if which nvim >/dev/null 2>&1 ; then
     echo "Setting up neovim..."
+    mkdir -p ~/.config
     link_file "$base_dir/nvim" ~/.config/nvim
 fi
 

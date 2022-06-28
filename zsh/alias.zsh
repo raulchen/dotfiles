@@ -12,6 +12,11 @@ alias d="dirs -v | head -10"
 alias vh="vim -c ':History'"
 alias tat="tmux a || tmux"
 
+if which nvim >/dev/null 2>&1; then
+    alias vim=nvim
+    alias vimdiff='nvim -d'
+fi
+
 if [[ `uname` == 'Darwin' ]]; then
     # Flush Directory Service cache
     alias flushdns="dscacheutil -flushcache && sudo killall -HUP mDNSResponder"

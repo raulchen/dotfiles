@@ -57,14 +57,15 @@ echo "Setting up zsh..."
 link_file "$base_dir/zsh/oh-my-zsh" ~/.oh-my-zsh
 link_file "$base_dir/zsh/zshrc" ~/.zshrc
 
+if which nvim >/dev/null 2>&1 ; then
+    echo "Setting up neovim..."
+    alias vim=nvim
+    mkdir -p ~/.config
+    link_file "$base_dir/nvim" ~/.config/nvim
+fi
 echo "Setting up vim..."
 if link_file "$base_dir/vim/vimrc" ~/.vimrc ; then
     vim +PlugInstall +qall
-fi
-if which nvim >/dev/null 2>&1 ; then
-    echo "Setting up neovim..."
-    mkdir -p ~/.config
-    link_file "$base_dir/nvim" ~/.config/nvim
 fi
 
 echo "Setting up tmux..."

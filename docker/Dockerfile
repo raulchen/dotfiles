@@ -15,11 +15,10 @@ ARG git_user
 ARG git_email
 RUN git config --global user.name "$git_user" && git config --global user.email "$git_email"
 
-RUN wget https://github.com/neovim/neovim/releases/download/v0.7.2/nvim-linux64.tar.gz && \
-    tar xzf nvim-linux64.tar.gz && \
-    rm -rf nvim-linux64.tar.gz && \
-    mkdir -p ~/bin && \
-    ln -s ~/nvim-linux64/bin/nvim ~/bin/nvim
+RUN wget https://github.com/neovim/neovim/releases/download/v0.7.2/nvim-linux64.deb && \
+    chmod 666 nvim-linux64.deb && \
+    apt install ./nvim-linux64.deb && \
+    rm -rf nvim-linux64.deb
 
 RUN git clone --recursive https://github.com/raulchen/dotfiles.git ~/dotfiles && yes n | ~/dotfiles/setup.sh
 CMD zsh

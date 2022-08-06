@@ -54,7 +54,7 @@ ZSH_CUSTOM=$DOTFILES/zsh/oh_my_zsh_custom
 plugins=(git async colored-man-pages zsh-syntax-highlighting my-vim-mode extract)
 
 if [[ `uname` == 'Darwin' ]]; then
-    plugins+=(osx brew)
+    plugins+=(macos brew)
 fi
 
 # The following plugins will be loaded only when the corresponding commands exist.

@@ -3,8 +3,6 @@ base_dir=$HOME/dotfiles
 backup_dir="$base_dir/.backups.local"
 backup_prefix="$backup_dir/$(date '+%Y%m%d%H%M%S')"
 
-mkdir -p "$backup_dir"
-
 link_file() {
     local src=$1 dst=$2
     local backup_dst=false delete_dst=false link_dst=true
@@ -38,6 +36,7 @@ link_file() {
         fi
     fi
     if [[ "$backup_dst" == "true" ]]; then
+        mkdir -p "$backup_dir"
         local backup_file
         backup_file="$backup_prefix$(basename "$dst")"
         mv "$dst" "$backup_file"

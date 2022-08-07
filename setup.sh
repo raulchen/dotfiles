@@ -59,7 +59,6 @@ link_file "$base_dir/zsh/zshrc" ~/.zshrc
 
 if which nvim >/dev/null 2>&1 ; then
     echo "Setting up neovim..."
-    alias vim=nvim
     mkdir -p ~/.config
     link_file "$base_dir/nvim" ~/.config/nvim
 fi

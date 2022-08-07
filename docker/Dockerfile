@@ -12,13 +12,14 @@ RUN echo "deb http://ports.ubuntu.com/ubuntu-ports/ kinetic main universe" >> /e
     apt clean
 RUN locale-gen --no-purge en_US.UTF-8
 
-# Install fzf
-RUN git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf && \
-    yes | ~/.fzf/install
-
 ARG git_user
 ARG git_email
 RUN git config --global user.name "$git_user" && git config --global user.email "$git_email"
 
 RUN git clone --recursive https://github.com/raulchen/dotfiles.git ~/dotfiles && yes n | ~/dotfiles/setup.sh
+
+# Install fzf
+RUN git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf && \
+    yes | ~/.fzf/install
+
 CMD zsh

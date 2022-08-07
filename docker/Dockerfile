@@ -5,7 +5,7 @@ ENV LANG=C.UTF-8
 
 RUN yes | unminimize
 RUN apt update && \
-    apt install -y vim zsh tmux git fzf fasd wget curl unzip && \
+    apt install -y vim zsh tmux git fzf fasd wget curl unzip ripgrep bc && \
     apt install -y locales dnsutils net-tools ca-certificates && \
     apt install -y python3 python3-pip python-is-python3 && \
     apt clean

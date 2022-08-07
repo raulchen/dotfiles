@@ -5,11 +5,15 @@ ENV LANG=C.UTF-8
 
 RUN yes | unminimize
 RUN apt update && \
-    apt install -y vim zsh tmux git fzf fasd wget curl unzip ripgrep bc && \
+    apt install -y vim zsh tmux git fasd wget curl unzip ripgrep bc && \
     apt install -y locales dnsutils net-tools ca-certificates && \
     apt install -y python3 python3-pip python-is-python3 && \
     apt clean
 RUN locale-gen --no-purge en_US.UTF-8
+
+# Install fzf
+RUN git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf && \
+    yes | ~/.fzf/install
 
 ARG git_user
 ARG git_email

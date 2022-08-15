@@ -155,3 +155,7 @@ if [[ -n "$TMUX" ]]; then
 fi
 
 export XDG_CONFIG_HOME=~/.config
+
+# Make Ctrl-P/N search by begining like Up/Down arrow keys do.
+bindkey '^P' up-line-or-beginning-search
+bindkey '^N' down-line-or-beginning-search

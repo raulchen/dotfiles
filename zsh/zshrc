@@ -73,6 +73,15 @@ for cmd in ${(@k)commands_to_plugins}; do
     fi
 done
 
+# NOTE: This needs to be done before "source $ZSH/oh-my-zsh.sh",
+# otherwise the "pyenv" plugin will print a warning.
+if command -v pyenv 1>/dev/null 2>&1; then
+    eval "$(pyenv init -)"
+fi
+
+# Disable auto update for oh-my-zsh
+zstyle ':omz:update' mode disabled
+
 source $ZSH/oh-my-zsh.sh
 
 # Support bash completion.
@@ -132,10 +141,6 @@ bindkey '^R' history-incremental-pattern-search-backward
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
-if command -v pyenv 1>/dev/null 2>&1; then
-    eval "$(pyenv init -)"
-fi
-
 export PATH=$HOME/bin:$DOTFILES/bin:$PATH
 
 source $DOTFILES/zsh/alias.zsh
@@ -150,6 +155,3 @@ if [[ -n "$TMUX" ]]; then
 fi
 
 export XDG_CONFIG_HOME=~/.config
-
-# Disable auto update for oh-my-zsh
-zstyle ':omz:update' mode disabled

@@ -46,6 +46,7 @@ local servers = {
   'pyright',
   'clangd',
   'gopls',
+  'rust_analyzer',
 }
 local lspconfig = require('lspconfig')
 for _, lsp in ipairs(servers) do

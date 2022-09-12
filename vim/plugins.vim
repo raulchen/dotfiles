@@ -1,3 +1,5 @@
+let g:plug_threads = 8
+let g:plug_retrie = 4
 set rtp+=~/dotfiles/vim
 call plug#begin('~/dotfiles/vim/installed_plugins')
 

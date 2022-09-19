@@ -274,6 +274,7 @@ noremap <leader>s? z=
 """""""""""""""""""""""""""
 set diffopt=vertical
 set shellpipe=>
+set iskeyword+=\-
 
 """"""""""""""""""""""""""""""
 " Command mode related

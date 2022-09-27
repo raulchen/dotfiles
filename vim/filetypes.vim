@@ -16,3 +16,4 @@ au FileType python,pyrex ia ipdb import ipdb; ipdb.set_trace()
 " C/C++
 """""""""""""""
 autocmd FileType c,cpp setlocal commentstring=//\ %s
+autocmd FileType c,cpp setlocal iskeyword-=\-

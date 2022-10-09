@@ -72,23 +72,6 @@ map <leader>n :NERDTreeToggle<cr>
 map <leader><leader>n :NERDTreeFind<cr>
 
 """""""""""""""""""
-" EasyMotion
-"""""""""""""""""""
-" <Leader>f{char} to move to {char}
-map  <Leader>f <Plug>(easymotion-bd-f)
-nmap <Leader>f <Plug>(easymotion-overwin-f)
-
-" Move to line
-map <Leader>L <Plug>(easymotion-bd-jk)
-nmap <Leader>L <Plug>(easymotion-overwin-line)
-
-" Move to word
-map  <Leader>W <Plug>(easymotion-bd-w)
-nmap <Leader>W <Plug>(easymotion-overwin-w)
-
-let g:EasyMotion_smartcase = 1
-
-"""""""""""""""""""
 " Lightline
 """""""""""""""""""
 function TabIndex()

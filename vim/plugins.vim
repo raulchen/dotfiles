@@ -6,7 +6,6 @@ call plug#begin('~/dotfiles/vim/installed_plugins')
 " General
 Plug 'scrooloose/nerdtree'
 Plug 'amix/open_file_under_cursor.vim'
-Plug 'terryma/vim-expand-region'
 Plug 'michaeljsmith/vim-indent-object'
 Plug 'google/vim-searchindex'
 Plug 'airblade/vim-rooter'

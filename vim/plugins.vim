@@ -12,6 +12,7 @@ Plug 'google/vim-searchindex'
 Plug 'airblade/vim-rooter'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
+Plug 'voldikss/vim-floaterm'
 
 " Edit
 Plug 'tpope/vim-surround'

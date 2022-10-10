@@ -140,3 +140,9 @@ let g:rooter_patterns = [".git", "WORKSPACE"]
 " Copy to system clipboard.
 vnoremap <leader>y :OSCYank<CR>
 let g:oscyank_term = 'default'
+
+"""""""""""""""""""
+" vim-floaterm
+"""""""""""""""""""
+let g:floaterm_keymap_toggle = '<C-T>'
+let g:floaterm_opener = 'edit'

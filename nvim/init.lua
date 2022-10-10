@@ -49,19 +49,7 @@ local servers = {
   'rust_analyzer',
 }
 local lspconfig = require('lspconfig')
-for _, lsp in ipairs(servers) do
-  lspconfig[lsp].setup {
-    on_attach = on_attach,
-    flags = {
-      -- This will be the default in neovim 0.7+
-      debounce_text_changes = 150,
-    },
-    capabilities = capabilities,
-  }
-end
-
-lspconfig["java_language_server"].setup {
-  cmd = {"java_language_server.sh"},
+local config = {
   on_attach = on_attach,
   flags = {
     -- This will be the default in neovim 0.7+
@@ -69,6 +57,12 @@ lspconfig["java_language_server"].setup {
   },
   capabilities = capabilities,
 }
+for _, lsp in ipairs(servers) do
+  lspconfig[lsp].setup(config)
+end
+
+config["cmd"] = {"java_language_server.sh"}
+lspconfig["java_language_server"].setup(config)
 
 -- luasnip setup
 local luasnip = require 'luasnip'

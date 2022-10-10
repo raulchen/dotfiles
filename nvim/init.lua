@@ -60,6 +60,16 @@ for _, lsp in ipairs(servers) do
   }
 end
 
+lspconfig["java_language_server"].setup {
+  cmd = {"java_language_server.sh"},
+  on_attach = on_attach,
+  flags = {
+    -- This will be the default in neovim 0.7+
+    debounce_text_changes = 150,
+  },
+  capabilities = capabilities,
+}
+
 -- luasnip setup
 local luasnip = require 'luasnip'
 

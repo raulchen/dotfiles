@@ -2,6 +2,14 @@
 if which nvim >/dev/null 2>&1; then
     nvim "$@"
 else
-    vim "$@"
+    # Find the original vim command.
+    _vim=""
+    for v in $(which -a vim); do
+        if [[ "$v" != *"dotfiles/bin/vim"* ]]; then
+            _vim="$v"
+            break
+        fi
+    done
+    $_vim "$@"
 fi
 

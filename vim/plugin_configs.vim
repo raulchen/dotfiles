@@ -131,8 +131,8 @@ vnoremap <leader>f :Autoformat<CR>
 """""""""""""""""""
 " vim-rooter
 """""""""""""""""""
-let g:rooter_silent_chdir = 1
-let g:rooter_patterns = [".git", "WORKSPACE"]
+let g:rooter_silent_chdir = 0
+let g:rooter_patterns = [".git", "WORKSPACE", "Makefile", "src"]
 
 """""""""""""""""""
 " vim-oscyank

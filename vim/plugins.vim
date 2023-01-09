@@ -49,6 +49,8 @@ if has("nvim")
 	Plug 'hrsh7th/cmp-nvim-lsp'
 	Plug 'saadparwaiz1/cmp_luasnip'
 	Plug 'L3MON4D3/LuaSnip'
+	Plug 'mfussenegger/nvim-dap'
+	Plug 'rcarriga/nvim-dap-ui'
 endif
 
 call plug#end()

@@ -161,7 +161,7 @@ dap.listeners.before.event_exited["dapui_config"] = function()
   dapui.close()
 end
 
-vim.api.nvim_create_user_command('Dstart', function(opts) require("dap").conintue() end, {})
+vim.api.nvim_create_user_command('Dstart', function(opts) require("dap").continue() end, {})
 vim.api.nvim_create_user_command('Dbp', function(opts) require("dap").toggle_breakpoint() end, {})
 vim.api.nvim_create_user_command('Dnext', function(opts) require("dap").step_over() end, {})
 vim.api.nvim_create_user_command('Dinto', function(opts) require("dap").step_into() end, {})

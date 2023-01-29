@@ -50,6 +50,8 @@ if has("nvim")
 	Plug 'L3MON4D3/LuaSnip'
 	Plug 'mfussenegger/nvim-dap'
 	Plug 'rcarriga/nvim-dap-ui'
+	Plug 'williamboman/mason.nvim'
+	Plug 'williamboman/mason-lspconfig.nvim'
 endif
 
 call plug#end()

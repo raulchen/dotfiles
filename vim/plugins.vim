@@ -20,7 +20,6 @@ Plug 'terryma/vim-multiple-cursors'
 Plug 'tpope/vim-repeat'
 Plug 'mbbill/undotree', {'on': 'UndotreeToggle'}
 Plug 'tpope/vim-sleuth'
-Plug 'Chiel92/vim-autoformat'
 Plug 'junegunn/vim-peekaboo'
 Plug 'ojroques/vim-oscyank'
 

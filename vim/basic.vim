@@ -229,7 +229,6 @@ au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g
 " use register z for x and s
 nnoremap x "zx
 nnoremap X "zX
-nnoremap s "zs
 
 " Move a line of text
 vnoremap <c-j> :m'>+<cr>`<my`>mzgv`yo`z

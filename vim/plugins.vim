@@ -22,6 +22,7 @@ Plug 'mbbill/undotree', {'on': 'UndotreeToggle'}
 Plug 'tpope/vim-sleuth'
 Plug 'junegunn/vim-peekaboo'
 Plug 'ojroques/vim-oscyank'
+Plug 'justinmk/vim-sneak'
 
 " UI
 Plug 'mhinz/vim-startify'

@@ -9,7 +9,7 @@ require("mason-lspconfig").setup()
 
 -- Mappings.
 -- See `:help vim.diagnostic.*` for documentation on any of the below functions
-local opts = { noremap=true, silent=true }
+local opts = { noremap = true, silent = true }
 vim.keymap.set('n', '<space>e', vim.diagnostic.open_float, opts)
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, opts)
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next, opts)
@@ -23,7 +23,7 @@ local on_attach = function(client, bufnr)
 
   -- Mappings.
   -- See `:help vim.lsp.*` for documentation on any of the below functions
-  local bufopts = { noremap=true, silent=false, buffer=bufnr }
+  local bufopts = { noremap = true, silent = false, buffer = bufnr }
   vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, bufopts)
   vim.keymap.set('n', 'gd', vim.lsp.buf.definition, bufopts)
   vim.keymap.set('n', 'K', vim.lsp.buf.hover, bufopts)
@@ -47,22 +47,22 @@ local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
 
 local servers = {
-  'bashls',
-  'clangd',
-  'gopls',
-  "jdtls",
-  'pyright',
-  'rust_analyzer',
-  'sumneko_lua',
+    'bashls',
+    'clangd',
+    'gopls',
+    "jdtls",
+    'pyright',
+    'rust_analyzer',
+    'sumneko_lua',
 }
 local lspconfig = require('lspconfig')
 local config = {
-  on_attach = on_attach,
-  flags = {
-    -- This will be the default in neovim 0.7+
-    debounce_text_changes = 150,
-  },
-  capabilities = capabilities,
+    on_attach = on_attach,
+    flags = {
+        -- This will be the default in neovim 0.7+
+        debounce_text_changes = 150,
+    },
+    capabilities = capabilities,
 }
 for _, lsp in ipairs(servers) do
   lspconfig[lsp].setup(config)
@@ -74,78 +74,78 @@ local luasnip = require 'luasnip'
 -- nvim-cmp setup
 local cmp = require 'cmp'
 cmp.setup {
-  snippet = {
-    expand = function(args)
-      luasnip.lsp_expand(args.body)
-    end,
-  },
-  mapping = cmp.mapping.preset.insert({
-    ['<C-d>'] = cmp.mapping.scroll_docs(-4),
-    ['<C-f>'] = cmp.mapping.scroll_docs(4),
-    ['<C-_>'] = cmp.mapping.complete(),  -- "C-_" is "ctrl+/"
-    ['<CR>'] = cmp.mapping.confirm {
-      behavior = cmp.ConfirmBehavior.Replace,
-      select = true,
+    snippet = {
+        expand = function(args)
+          luasnip.lsp_expand(args.body)
+        end,
     },
-    ['<C-n>'] = cmp.mapping(function(fallback)
-      if cmp.visible() then
-        cmp.select_next_item()
-      elseif luasnip.expand_or_jumpable() then
-        luasnip.expand_or_jump()
-      else
-        fallback()
-      end
-    end, { 'i', 's' }),
-    ['<C-p>'] = cmp.mapping(function(fallback)
-      if cmp.visible() then
-        cmp.select_prev_item()
-      elseif luasnip.jumpable(-1) then
-        luasnip.jump(-1)
-      else
-        fallback()
-      end
-    end, { 'i', 's' }),
-  }),
-  sources = {
-    { name = 'nvim_lsp' },
-    { name = 'luasnip' },
-  },
+    mapping = cmp.mapping.preset.insert({
+        ['<C-d>'] = cmp.mapping.scroll_docs( -4),
+        ['<C-f>'] = cmp.mapping.scroll_docs(4),
+        ['<C-_>'] = cmp.mapping.complete(), -- "C-_" is "ctrl+/"
+        ['<CR>'] = cmp.mapping.confirm {
+            behavior = cmp.ConfirmBehavior.Replace,
+            select = true,
+        },
+        ['<C-n>'] = cmp.mapping(function(fallback)
+          if cmp.visible() then
+            cmp.select_next_item()
+          elseif luasnip.expand_or_jumpable() then
+            luasnip.expand_or_jump()
+          else
+            fallback()
+          end
+        end, { 'i', 's' }),
+        ['<C-p>'] = cmp.mapping(function(fallback)
+          if cmp.visible() then
+            cmp.select_prev_item()
+          elseif luasnip.jumpable( -1) then
+            luasnip.jump( -1)
+          else
+            fallback()
+          end
+        end, { 'i', 's' }),
+    }),
+    sources = {
+        { name = 'nvim_lsp' },
+        { name = 'luasnip' },
+    },
 }
 
 local dap = require('dap')
 local lldb_vscode = vim.fn.system('which lldb-vscode'):gsub('\n', '')
 if not string.find(lldb_vscode, "not found") then
   dap.adapters.lldb = {
-    type = 'executable',
-    command = lldb_vscode, -- adjust as needed, must be absolute path
-    name = 'lldb'
+      type = 'executable',
+      command = lldb_vscode, -- adjust as needed, must be absolute path
+      name = 'lldb'
   }
 
   dap.configurations.cpp = {
-    {
-      name = 'Launch',
-      type = 'lldb',
-      request = 'launch',
-      program = function()
-        return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
-      end,
-      cwd = '${workspaceFolder}',
-      stopOnEntry = false,
-      args = {},
+      {
+          name = 'Launch',
+          type = 'lldb',
+          request = 'launch',
+          program = function()
+            return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
+          end,
+          cwd = '${workspaceFolder}',
+          stopOnEntry = false,
+          args = {},
 
-      -- 💀
-      -- if you change `runInTerminal` to true, you might need to change the yama/ptrace_scope setting:
-      --
-      --    echo 0 | sudo tee /proc/sys/kernel/yama/ptrace_scope
-      --
-      -- Otherwise you might get the following error:
-      --
-      --    Error on launch: Failed to attach to the target process
-      --
-      -- But you should be aware of the implications:
-      -- https://www.kernel.org/doc/html/latest/admin-guide/LSM/Yama.html
-      -- runInTerminal = false,
-    },
+          -- 💀
+          -- if you change `runInTerminal` to true, you might need to change the yama/ptrace_scope setting:
+          --
+          --    echo 0 | sudo tee /proc/sys/kernel/yama/ptrace_scope
+          --
+          -- Otherwise you might get the following error:
+          --
+          --    Error on launch: Failed to attach to the target process
+          --
+          -- But you should be aware of the implications:
+          -- https://www.kernel.org/doc/html/latest/admin-guide/LSM/Yama.html
+          -- runInTerminal = false,
+      },
   }
 
   -- If you want to use this for Rust and C, add something like this:

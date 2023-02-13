@@ -53,6 +53,7 @@ if has("nvim")
 	Plug 'rcarriga/nvim-dap-ui'
 	Plug 'williamboman/mason.nvim'
 	Plug 'williamboman/mason-lspconfig.nvim'
+	Plug 'github/copilot.vim'
 endif
 
 call plug#end()

@@ -137,3 +137,11 @@ let g:oscyank_term = 'default'
 """""""""""""""""""
 let g:floaterm_keymap_toggle = '<C-T>'
 let g:floaterm_opener = 'edit'
+
+"""""""""""""""""""
+" vim-floaterm
+"""""""""""""""""""
+" Fix copliot compatibility with nvim-dap
+let g:copilot_filetypes = {
+\  'dap-repl': v:false
+\}

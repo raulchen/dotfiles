@@ -37,15 +37,13 @@ fu() {
     cd "$DIR"
 }
 
-# flog - git commit browser
+# Git commit browser
 flog() {
-  glol --color=always |
-  fzf --ansi --no-sort --reverse --tiebreak=index --bind=ctrl-s:toggle-sort \
-      --header "Press CTRL-S to toggle sort" \
-      --preview "echo {} | grep -o '[a-f0-9]\{7\}' | head -1 |
-                 xargs -I % sh -c 'git show --color=always % | head -$LINES'" \
-      --bind "enter:execute:echo {} | grep -o '[a-f0-9]\{7\}' | head -1 |
-              xargs -I % sh -c 'vim fugitive://\$(git rev-parse --show-toplevel)/.git//% < /dev/tty'"
+  git log --oneline --decorate --color=always |
+  fzf --ansi --no-sort --reverse \
+      --delimiter=' ' \
+      --preview "git show {1} | bat --color=always -l gitlog --line-range :$LINES --style plain" \
+      --bind 'enter:become(git show {1})'
 }
 
 fz() {

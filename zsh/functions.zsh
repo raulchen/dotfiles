@@ -54,16 +54,13 @@ fz() {
 }
 
 frg() {
-    local _size=`echo "($LINES*0.35-2)/1" | bc`
-    local _cmd="pcat %s -c %d -l $_size -n --color=always"
-    rg  --column --line-number --no-heading --color=always --smart-case $@ | fzf --ansi --reverse --no-sort \
-        --preview-window down:35% \
-        --preview "echo {} |
-                   awk -F':' '{printf \"$_cmd\",\$1,\$2}' |
-                   awk '{system(\$0)}'" \
-        --bind "ctrl-m:execute: echo {} |
-                awk -F':' '{print \"+\"\$2\" \"\$1}' |
-                xargs -I % sh -c '</dev/tty vim %'"
+    rg --color=always --line-number --no-heading --smart-case "${*:-}" |
+      fzf --ansi \
+          --color "hl:-1:underline,hl+:-1:underline:reverse" \
+          --delimiter : \
+          --preview 'bat --color=always {1} --highlight-line {2}' \
+          --preview-window 'up,60%,border-bottom,+{2}+3/3,~3' \
+          --bind 'enter:become(vim {1} +{2})'
 }
 
 __fzf_select_from_tmux() {

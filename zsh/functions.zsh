@@ -63,6 +63,15 @@ frg() {
           --bind 'enter:become(vim {1} +{2})'
 }
 
+# Search and kill a process.
+fkill() {
+    (date; ps -ef) |
+      fzf --bind='ctrl-r:reload(date; ps -ef)' \
+          --header=$'Press CTRL-R to reload\n\n' --header-lines=2 \
+          --preview='echo {}' --preview-window=down,3,wrap \
+          --layout=reverse --height=80% | awk '{print $2}' | xargs kill -9
+}
+
 __fzf_select_from_tmux() {
     local cmd="command tmux capture-pane -CJp | command perl -pe 's/\s+/\n/g' | sort | uniq"
     setopt localoptions pipefail 2> /dev/null

@@ -5,13 +5,14 @@ let g:fzf_history_dir = g:vim_temp_dir_root."fzf-history"
 " [Buffers] Jump to the existing window if possible
 let g:fzf_buffers_jump = 1
 
-let $FZF_DEFAULT_OPTS = '--layout=reverse --inline-info --bind "ctrl-/:toggle-preview,ctrl-d:page-down,ctrl-u:page-up,ctrl-p:up,ctrl-n:down"'
+let $FZF_DEFAULT_OPTS = '--layout=reverse'
 
-if has("patch-8.2.191")
-  let g:fzf_layout = { 'window': { 'width': 0.8, 'height': 0.8, 'border': 'sharp'} }
+if has("patch-8.2.191") || has("nvim")
+  let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.9} }
 else
   let g:fzf_layout = { 'window': 'enew' }
 endif
+let g:fzf_preview_window = ['right,50%,<70(down,50%)', 'ctrl-/']
 
 " Customize fzf colors to match your color scheme
 " - fzf#wrap translates this to a set of `--color` options
@@ -51,6 +52,7 @@ nmap <c-g><c-g><c-l> :BCommits<cr>
 nmap <c-g><c-l> :Commits<cr>
 nmap <c-g>m :Maps<cr>
 
+" Insert mode completion
 imap <c-g><c-w> <plug>(fzf-complete-word)
 imap <c-g><c-p> <plug>(fzf-complete-path)
 imap <expr> <c-g><c-f> fzf#vim#complete#path('rg --files')

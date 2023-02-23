@@ -126,7 +126,7 @@ if type rg >/dev/null 2>&1 ; then
     export FZF_DEFAULT_COMMAND='rg --hidden --files'
     export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 fi
-export FZF_DEFAULT_OPTS='--bind "ctrl-/:toggle-preview,ctrl-d:page-down,ctrl-u:page-up,ctrl-p:up,ctrl-n:down"'
+export FZF_DEFAULT_OPTS='--reverse'
 
 
 if [[ ! -z $TMUX ]]; then

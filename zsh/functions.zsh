@@ -57,7 +57,7 @@ frg() {
           --color "hl:-1:underline,hl+:-1:underline:reverse" \
           --delimiter : \
           --preview 'bat --color=always {1} --highlight-line {2}' \
-          --preview-window 'up,60%,border-bottom,+{2}+3/3,~3' \
+          --preview-window 'right,50%,<70(down,50%),+{2}+3/3,~3' \
           --bind 'enter:become(vim {1} +{2})'
 }
 

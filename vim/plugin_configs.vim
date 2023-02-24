@@ -146,9 +146,14 @@ let g:floaterm_keymap_toggle = '<C-T>'
 let g:floaterm_opener = 'edit'
 
 """""""""""""""""""
-" vim-floaterm
+" Copilot
 """""""""""""""""""
 " Fix copliot compatibility with nvim-dap
 let g:copilot_filetypes = {
-\  'dap-repl': v:false
+\  'dap-repl': v:false,
+\  'dapui_console': v:false,
+\  'dapui_scopes': v:false,
+\  'dapui_breakpoints': v:false,
+\  'dapui_stacks': v:false,
+\  'dapui_watches': v:false
 \}

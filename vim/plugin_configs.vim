@@ -144,6 +144,9 @@ let g:oscyank_term = 'default'
 """""""""""""""""""
 let g:floaterm_keymap_toggle = '<C-T>'
 let g:floaterm_opener = 'edit'
+let g:floaterm_width = 0.9
+let g:floaterm_height = 0.9
+command! Ranger FloatermNew ranger
 
 """""""""""""""""""
 " Copilot

@@ -5,7 +5,7 @@ let g:fzf_history_dir = g:vim_temp_dir_root."fzf-history"
 " [Buffers] Jump to the existing window if possible
 let g:fzf_buffers_jump = 1
 
-let $FZF_DEFAULT_OPTS = '--layout=reverse'
+let $FZF_DEFAULT_OPTS = '--layout=reverse --bind "ctrl-/:toggle-preview,ctrl-d:page-down,ctrl-u:page-up,ctrl-p:up,ctrl-n:down"'
 
 if has("patch-8.2.191") || has("nvim")
   let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.9} }

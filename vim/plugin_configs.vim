@@ -41,7 +41,15 @@ command! -bang -nargs=* GGrep
   \   'git grep --line-number -- '.shellescape(<q-args>), 0,
   \   fzf#vim#with_preview({'dir': systemlist('git rev-parse --show-toplevel')[0]}), <bang>0)
 
-nmap <c-g><c-f> :Files<cr>
+function FilesOrGFiles()
+  if system('git rev-parse --is-inside-work-tree 2>/dev/null') =~ 'true'
+    execute 'GFiles'
+  else
+    execute 'Files'
+  endif
+endfunction
+
+nmap <c-g><c-f> :execute FilesOrGFiles()<cr>
 nmap <c-g><c-p> :Files <c-r>=expand("%:p:h")<cr>/<cr>
 "J for jump
 nmap <c-g><c-j> :Buffers<cr>

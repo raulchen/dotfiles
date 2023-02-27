@@ -174,7 +174,7 @@ let g:copilot_filetypes = {
 " vim-tmux-navigator
 """""""""""""""""""
 " Disable tmux navigator when zooming the Vim pane
-let g:tmux_navigator_disable_when_zoomed = 1
+" let g:tmux_navigator_disable_when_zoomed = 1
 
 let g:tmux_navigator_no_mappings = 1
 noremap <silent> <C-M-H> :<C-U>TmuxNavigateLeft<cr>

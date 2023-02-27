@@ -157,3 +157,16 @@ let g:copilot_filetypes = {
 \  'dapui_stacks': v:false,
 \  'dapui_watches': v:false
 \}
+
+
+"""""""""""""""""""
+" vim-tmux-navigator
+"""""""""""""""""""
+" Disable tmux navigator when zooming the Vim pane
+let g:tmux_navigator_disable_when_zoomed = 1
+
+let g:tmux_navigator_no_mappings = 1
+noremap <silent> <C-M-H> :<C-U>TmuxNavigateLeft<cr>
+noremap <silent> <C-M-J> :<C-U>TmuxNavigateDown<cr>
+noremap <silent> <C-M-K> :<C-U>TmuxNavigateUp<cr>
+noremap <silent> <C-M-L> :<C-U>TmuxNavigateRight<cr>

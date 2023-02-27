@@ -12,6 +12,7 @@ Plug 'airblade/vim-rooter'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 Plug 'voldikss/vim-floaterm'
+Plug 'christoomey/vim-tmux-navigator'
 
 " Edit
 Plug 'tpope/vim-surround'

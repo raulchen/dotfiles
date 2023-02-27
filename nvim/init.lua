@@ -1,3 +1,4 @@
+---@diagnostic disable: deprecated
 vim.cmd [[
 source ~/.vimrc
 ]]
@@ -150,8 +151,50 @@ dap.listeners.before.event_exited["dapui_config"] = function()
   dapui.close()
 end
 
-vim.api.nvim_create_user_command('Dstart', function(opts) require("dap").continue() end, {})
-vim.api.nvim_create_user_command('Dterminate', function(opts) require("dap").terminate() end, {})
-vim.api.nvim_create_user_command('Dbp', function(opts) require("dap").toggle_breakpoint() end, {})
-vim.api.nvim_create_user_command('Dnext', function(opts) require("dap").step_over() end, {})
-vim.api.nvim_create_user_command('Dinto', function(opts) require("dap").step_into() end, {})
+function Debug(opts)
+  local dap = require("dap")
+  local args = vim.fn.split(opts.args, " ", true)
+  -- remove empty strings from args
+  for i = #args, 1, -1 do
+    if args[i] == "" then
+      table.remove(args, i)
+    end
+  end
+  if #args == 0 then
+    dap.continue()
+    return
+  end
+  local program = args[1]
+  local program_args = { unpack(args, 2) }
+
+  local ft = vim.bo.filetype
+  local configs = dap.configurations[ft]
+  if configs == nil then
+    print("Filetype \"" .. ft .. "\" has no dap configs")
+    return
+  end
+  local dap_config = configs[1]
+  if #configs > 1 then
+    vim.ui.select(
+        configs,
+        {
+            prompt = "Select config to run: ",
+            format_item = function(config)
+              return config.name
+            end
+        },
+        function(config)
+          dap_config = config
+        end
+    )
+  end
+  dap_config = vim.deepcopy(dap_config)
+  dap_config.program = program
+  dap_config.args = program_args
+  dap.run(dap_config)
+end
+
+vim.api.nvim_create_user_command('Debug', Debug, { nargs = '?' })
+vim.api.nvim_create_user_command('DebugLast', function(opts) require("dap").run_last() end, {})
+vim.api.nvim_create_user_command('DebugTerminate', function(opts) require("dap").terminate() end, {})
+vim.api.nvim_create_user_command('Breakpoint', function(opts) require("dap").toggle_breakpoint() end, {})

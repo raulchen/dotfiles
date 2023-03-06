@@ -11,7 +11,9 @@ Plug 'google/vim-searchindex'
 Plug 'airblade/vim-rooter'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
-Plug 'voldikss/vim-floaterm'
+if has("terminal")
+    Plug 'voldikss/vim-floaterm'
+endif
 Plug 'christoomey/vim-tmux-navigator'
 
 " Edit

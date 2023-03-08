@@ -54,7 +54,7 @@ local servers = {
     "jdtls",
     'pyright',
     'rust_analyzer',
-    'sumneko_lua',
+    'lua_ls',
 }
 local lspconfig = require('lspconfig')
 local config = {

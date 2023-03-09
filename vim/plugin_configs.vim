@@ -157,20 +157,6 @@ let g:floaterm_height = 0.9
 command! Ranger FloatermNew ranger
 
 """""""""""""""""""
-" Copilot
-"""""""""""""""""""
-" Fix copliot compatibility with nvim-dap
-let g:copilot_filetypes = {
-\  'dap-repl': v:false,
-\  'dapui_console': v:false,
-\  'dapui_scopes': v:false,
-\  'dapui_breakpoints': v:false,
-\  'dapui_stacks': v:false,
-\  'dapui_watches': v:false
-\}
-
-
-"""""""""""""""""""
 " vim-tmux-navigator
 """""""""""""""""""
 " Disable tmux navigator when zooming the Vim pane

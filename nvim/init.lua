@@ -198,3 +198,19 @@ vim.api.nvim_create_user_command('Debug', Debug, { nargs = '?' })
 vim.api.nvim_create_user_command('DebugLast', function(opts) require("dap").run_last() end, {})
 vim.api.nvim_create_user_command('DebugTerminate', function(opts) require("dap").terminate() end, {})
 vim.api.nvim_create_user_command('Breakpoint', function(opts) require("dap").toggle_breakpoint() end, {})
+
+-- Only enable Copilot for certain filetypes.
+vim.g.copilot_filetypes = {
+    ["*"] = false,
+    ["c"] = true,
+    ["c++"] = true,
+    ["java"] = true,
+    ["python"] = true,
+    ["lua"] = true,
+    ["rust"] = true,
+    ["go"] = true,
+    ["vim"] = true,
+    ["sh"] = true,
+    ["zsh"] = true,
+    ["xml"] = true,
+}

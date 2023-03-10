@@ -203,7 +203,7 @@ vim.api.nvim_create_user_command('Breakpoint', function(opts) require("dap").tog
 vim.g.copilot_filetypes = {
     ["*"] = false,
     ["c"] = true,
-    ["c++"] = true,
+    ["cpp"] = true,
     ["java"] = true,
     ["python"] = true,
     ["lua"] = true,

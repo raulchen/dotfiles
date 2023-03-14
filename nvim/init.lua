@@ -213,6 +213,7 @@ vim.g.copilot_filetypes = {
     ["sh"] = true,
     ["zsh"] = true,
     ["xml"] = true,
+    ["gitcommit"] = true,
 }
 -- Bind <C-F> to copilot-next.
 vim.keymap.set('i', '<C-F>', "<Plug>(copilot-next)", {})

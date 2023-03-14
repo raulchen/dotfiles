@@ -214,3 +214,5 @@ vim.g.copilot_filetypes = {
     ["zsh"] = true,
     ["xml"] = true,
 }
+-- Bind <C-F> to copilot-next.
+vim.keymap.set('i', '<C-F>', "<Plug>(copilot-next)", {})

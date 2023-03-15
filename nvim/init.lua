@@ -145,9 +145,28 @@ dap.configurations.cpp = {
 }
 
 local dapui = require("dapui")
-dapui.setup()
+dapui.setup({
+    icons = {
+        expanded = "▾",
+        cuurent_frame = "●",
+        collapsed = "▸",
+    },
+    controls = {
+        icons = {
+            disconnect = "🚫",
+            pause = "⏸️",
+            play = "▶️",
+            run_last = "🔂",
+            step_back = "↩️",
+            step_into = "⬇️",
+            step_out = "⬆️",
+            step_over = "➡️",
+            terminate = "⏹️",
+        },
+    }
+})
 dap.listeners.after.event_initialized["dapui_config"] = function()
-  dapui.open()
+  dapui.open({ reset = true })
 end
 dap.listeners.before.event_terminated["dapui_config"] = function()
   dapui.close()

@@ -144,7 +144,7 @@ let g:rooter_patterns = [".git", "WORKSPACE", "Makefile"]
 " vim-oscyank
 """""""""""""""""""
 " Copy to system clipboard.
-vnoremap <leader>y :OSCYank<CR>
+vnoremap <leader>y :OSCYankVisual<CR>
 let g:oscyank_term = 'default'
 
 """""""""""""""""""

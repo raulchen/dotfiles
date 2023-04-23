@@ -1,49 +1,49 @@
 local dap = require('dap')
 dap.adapters.codelldb = {
-    type = 'server',
-    port = "${port}",
-    executable = {
-        command = 'codelldb',
-        args = { "--port", "${port}" },
-    }
+  type = 'server',
+  port = "${port}",
+  executable = {
+    command = 'codelldb',
+    args = { "--port", "${port}" },
+  }
 }
 dap.configurations.cpp = {
-    {
-        name = "Launch file",
-        type = "codelldb",
-        request = "launch",
-        program = function()
-          return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
-        end,
-        args = function()
-          local args = vim.fn.input('Arguments: ')
-          return vim.fn.split(args, " ", true)
-        end,
-        cwd = '${workspaceFolder}',
-        stopOnEntry = false,
-    },
+  {
+    name = "Launch file",
+    type = "codelldb",
+    request = "launch",
+    program = function()
+      return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
+    end,
+    args = function()
+      local args = vim.fn.input('Arguments: ')
+      return vim.fn.split(args, " ", true)
+    end,
+    cwd = '${workspaceFolder}',
+    stopOnEntry = false,
+  },
 }
 
 local dapui = require("dapui")
 dapui.setup({
+  icons = {
+    expanded = "▾",
+    cuurent_frame = "●",
+    collapsed = "▸",
+  },
+  controls = {
     icons = {
-        expanded = "▾",
-        cuurent_frame = "●",
-        collapsed = "▸",
+      disconnect = "🚫",
+      pause = "⏸️",
+      play = "▶️",
+      run_last = "🔂",
+      step_back = "↩️",
+      step_into = "⬇️",
+      step_out = "⬆️",
+      step_over = "➡️",
+      terminate = "⏹️",
     },
-    controls = {
-        icons = {
-            disconnect = "🚫",
-            pause = "⏸️",
-            play = "▶️",
-            run_last = "🔂",
-            step_back = "↩️",
-            step_into = "⬇️",
-            step_out = "⬆️",
-            step_over = "➡️",
-            terminate = "⏹️",
-        },
-    }
+  }
 })
 dap.listeners.after.event_initialized["dapui_config"] = function()
   dapui.open({ reset = true })
@@ -80,16 +80,16 @@ function Debug(opts)
   local dap_config = configs[1]
   if #configs > 1 then
     vim.ui.select(
-        configs,
-        {
-            prompt = "Select config to run: ",
-            format_item = function(config)
-              return config.name
-            end
-        },
-        function(config)
-          dap_config = config
+      configs,
+      {
+        prompt = "Select config to run: ",
+        format_item = function(config)
+          return config.name
         end
+      },
+      function(config)
+        dap_config = config
+      end
     )
   end
   dap_config = vim.deepcopy(dap_config)

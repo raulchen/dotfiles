@@ -19,4 +19,3 @@ vim.g.copilot_filetypes = {
 }
 -- Bind <C-F> to copilot-next.
 vim.keymap.set('i', '<C-F>', "<Plug>(copilot-next)", {})
-

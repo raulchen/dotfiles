@@ -64,6 +64,17 @@ local config = {
     debounce_text_changes = 150,
   },
   capabilities = capabilities,
+  settings = {
+    Lua = {
+      workspace = {
+        -- Add the Neovim runtime files to the path.
+        library = vim.api.nvim_get_runtime_file('', true),
+        -- Avoid annoying prompts.
+        -- https://github.com/neovim/nvim-lspconfig/issues/1700#issuecomment-1033127328
+        checkThirdParty = false,
+      },
+    },
+  },
 }
 for _, lsp in ipairs(servers) do
   lspconfig[lsp].setup(config)

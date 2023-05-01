@@ -47,6 +47,16 @@ COMPLETION_WAITING_DOTS="true"
 # Would you like to use another custom folder than $ZSH/custom?
 ZSH_CUSTOM=$DOTFILES/zsh/oh_my_zsh_custom
 
+# NOTE: PATH should be set before initializing oh-my-zsh plugins.
+# Because we will choose plugins based on availability of commands.
+export PATH="$HOME/bin:$DOTFILES/bin:/opt/homebrew/bin:$PATH"
+
+# NOTE: This needs to be done before "source $ZSH/oh-my-zsh.sh",
+# otherwise the "pyenv" plugin will print a warning.
+if command -v pyenv 1>/dev/null 2>&1; then
+    eval "$(pyenv init -)"
+fi
+
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
@@ -72,12 +82,6 @@ for cmd in ${(@k)commands_to_plugins}; do
         plugins+=($commands_to_plugins[$cmd])
     fi
 done
-
-# NOTE: This needs to be done before "source $ZSH/oh-my-zsh.sh",
-# otherwise the "pyenv" plugin will print a warning.
-if command -v pyenv 1>/dev/null 2>&1; then
-    eval "$(pyenv init -)"
-fi
 
 # Disable auto update for oh-my-zsh
 zstyle ':omz:update' mode disabled
@@ -140,8 +144,6 @@ fi
 bindkey '^R' history-incremental-pattern-search-backward
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-
-export PATH="$HOME/bin:$DOTFILES/bin:/opt/homebrew/bin:$PATH"
 
 source $DOTFILES/zsh/alias.zsh
 source $DOTFILES/zsh/functions.zsh

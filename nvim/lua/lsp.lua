@@ -1,6 +1,8 @@
 require("mason").setup()
 require("mason-lspconfig").setup()
 
+-- vim.lsp.set_log_level("debug")
+
 -- === lspconfig ===
 
 -- Mappings.
@@ -47,19 +49,31 @@ local servers = {
   'clangd',
   'gopls',
   "jdtls",
-  'pyright',
+  'pylsp',
   'rust_analyzer',
   'lua_ls',
 }
-local lspconfig = require('lspconfig')
-local config = {
-  on_attach = on_attach,
-  flags = {
-    -- This will be the default in neovim 0.7+
-    debounce_text_changes = 150,
+
+-- NOTE: Use pip to install pylsp and its plugins, do not use Mason.
+-- pip install 'python-lsp-server[all]' python-lsp-black python-lsp-isort
+
+-- Settings for each LSP server.
+local server_settings = {
+  pylsp = {
+    pylsp = {
+      plugins = {
+        autopep8 = { enabled = false },
+        black = { enabled = true },
+        flake8 = { enabled = true },
+        isort = { enabled = true },
+        mccabe = { enabled = false },
+        pycodestyle = { enabled = false },
+        pydocstyle = { enabled = false },
+        pyflakes = { enabled = false },
+      },
+    },
   },
-  capabilities = capabilities,
-  settings = {
+  lua_ls = {
     Lua = {
       workspace = {
         -- Add the Neovim runtime files to the path.
@@ -71,7 +85,20 @@ local config = {
     },
   },
 }
+
+local lspconfig = require('lspconfig')
 for _, lsp in ipairs(servers) do
+  local config = {
+    on_attach = on_attach,
+    flags = {
+      -- This will be the default in neovim 0.7+
+      debounce_text_changes = 150,
+    },
+    capabilities = capabilities,
+  }
+  if server_settings[lsp] ~= nil then
+    config.settings = server_settings[lsp]
+  end
   lspconfig[lsp].setup(config)
 end
 

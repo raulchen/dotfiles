@@ -39,7 +39,7 @@ fu() {
 
 # Git commit browser
 flog() {
-  git log --oneline --decorate --color=always |
+  git log --oneline --decorate --color=always $@ |
   fzf --ansi --no-sort --reverse \
       --delimiter=' ' \
       --preview "git show {1} | bat --color=always -l gitlog --line-range :$LINES --style plain" \

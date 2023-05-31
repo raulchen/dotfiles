@@ -19,7 +19,7 @@ Plug 'christoomey/vim-tmux-navigator'
 " Edit
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-commentary'
-Plug 'terryma/vim-multiple-cursors'
+Plug 'mg979/vim-visual-multi'
 Plug 'tpope/vim-repeat'
 Plug 'mbbill/undotree', {'on': 'UndotreeToggle'}
 Plug 'tpope/vim-sleuth'

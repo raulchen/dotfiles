@@ -108,6 +108,10 @@ set tm=500
 
 " Enable syntax highlighting
 syntax enable
+" Parse syntax from this many lines backwards.
+" If syntax is still incorrect, manually reparse syntax with
+" ':syntax sync fromstart'.
+autocmd BufEnter * syntax sync minlines=5000
 
 set background=dark
 

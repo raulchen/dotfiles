@@ -59,6 +59,7 @@ if has("nvim")
     Plug 'github/copilot.vim'
     Plug 'nvim-lua/plenary.nvim'
     Plug 'jose-elias-alvarez/null-ls.nvim'
+    Plug 'lukas-reineke/indent-blankline.nvim'
 endif
 
 call plug#end()

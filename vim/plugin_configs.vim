@@ -89,23 +89,18 @@ map <leader><leader>n :NERDTreeFind<cr>
 """""""""""""""""""
 " Lightline
 """""""""""""""""""
-function TabIndex()
-  return printf('%d/%d', tabpagenr(), tabpagenr('$'))
-endfunction
-
 let g:lightline = {
 \     'colorscheme': 'snazzy',
 \     'active': {
 \       'left': [['mode', 'paste'], ['gitbranch', 'readonly', 'relativepath', 'modified']],
 \       'right': [['linter'], ['lineinfo'], ['filetype']]
 \     },
-\     'tabline': {'left': [['tab_index'], ['buffers']], 'right': []},
+\     'tabline': {'left': [['buffers']], 'right': []},
 \     'component': {
 \         'lineinfo': '%l:%v %p%%'
 \     },
 \     'component_function': {
 \         'gitbranch': 'FugitiveHead',
-\         'tab_index': 'TabIndex',
 \     },
 \     'component_expand': {'buffers': 'lightline#bufferline#buffers'},
 \     'component_type': {'buffers': 'tabsel'},

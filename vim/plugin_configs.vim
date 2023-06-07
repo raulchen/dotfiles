@@ -92,12 +92,13 @@ map <leader><leader>n :NERDTreeFind<cr>
 let g:lightline = {
 \     'colorscheme': 'snazzy',
 \     'active': {
-\       'left': [['mode', 'paste'], ['gitbranch', 'readonly', 'relativepath', 'modified']],
-\       'right': [['linter'], ['lineinfo'], ['filetype']]
+\       'left': [['mode', 'paste'], ['gitbranch', 'readonly', 'relativepath', 'current_tag', 'modified']],
+\       'right': [['linter'], ['lineinfo'], ['filetype']],
 \     },
 \     'tabline': {'left': [['buffers']], 'right': []},
 \     'component': {
-\         'lineinfo': '%l:%v %p%%'
+\         'lineinfo': '%l:%v %p%%',
+\         'current_tag': '%{tagbar#currenttag("%s", "", "f")}',
 \     },
 \     'component_function': {
 \         'gitbranch': 'FugitiveHead',

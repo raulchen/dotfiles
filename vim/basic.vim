@@ -24,7 +24,6 @@ let g:mapleader = ","
 set timeoutlen=1000
 set ttimeoutlen=10
 
-
 " Fast saving
 nnoremap <leader>w :w!<cr>
 
@@ -203,10 +202,6 @@ noremap <leader>d :bd<cr>
 " switch buffers and tabs
 nnoremap <tab> :bn<cr>
 nnoremap <s-tab> :bp<cr>
-nnoremap <leader>b :bn<cr>
-nnoremap <leader>B :bp<cr>
-nnoremap <leader>t gt
-nnoremap <leader>T gT
 
 " switch to last edited buffer
 noremap <leader>l <c-^>
@@ -252,25 +247,6 @@ vnoremap <expr> <leader>r ReplaceSelection()
 " Don't lose selection when indenting
 xnoremap <  <gv
 xnoremap >  >gv
-
-""""""""""""""""""""""""""""""""""""""
-" Cope displaying
-"""""""""""""""""""""""""""""""""""""""
-noremap <leader>cc :botright cope<cr>
-noremap <leader>co ggVGy:tabnew<cr>:set syntax=qf<cr>pgg
-noremap <leader>cn :cn<cr>
-noremap <leader>cp :cp<cr>
-
-""""""""""""""""""""""""""
-" Spell checking
-""""""""""""""""""""""""""
-"  toggle spell checking
-noremap <leader>ss :setlocal spell!<cr>
-
-noremap <leader>sn ]s
-noremap <leader>sp [s
-noremap <leader>sa zg
-noremap <leader>s? z=
 
 """""""""""""""""""""""""""
 " Misc

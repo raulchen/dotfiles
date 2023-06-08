@@ -23,7 +23,6 @@ Plug 'mg979/vim-visual-multi'
 Plug 'tpope/vim-repeat'
 Plug 'mbbill/undotree', {'on': 'UndotreeToggle'}
 Plug 'tpope/vim-sleuth'
-Plug 'junegunn/vim-peekaboo'
 Plug 'ojroques/vim-oscyank'
 Plug 'justinmk/vim-sneak'
 
@@ -60,6 +59,7 @@ if has("nvim")
     Plug 'nvim-lua/plenary.nvim'
     Plug 'jose-elias-alvarez/null-ls.nvim'
     Plug 'lukas-reineke/indent-blankline.nvim'
+    Plug 'folke/which-key.nvim'
 endif
 
 call plug#end()

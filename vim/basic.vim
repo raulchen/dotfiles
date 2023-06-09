@@ -1,6 +1,4 @@
-"""""""""""""""""""""""
-" General
-"""""""""""""""""""""""
+""" General
 set nocompatible
 
 set number
@@ -18,32 +16,14 @@ filetype indent on
 " Set to auto read when a file is changed from the outside
 "set autoread
 
-let mapleader = ","
-let g:mapleader = ","
-
 set timeoutlen=1000
 set ttimeoutlen=10
-
-" Fast saving
-nnoremap <leader>w :w!<cr>
-
-" :W sudo saves the file
-command W w !sudo tee % > /dev/null
-
-" Fast quit
-nnoremap <leader>q :q<cr>
-nnoremap <leader><leader>q :q!<cr>
-
-" Fold
-nnoremap <space> za
-vnoremap <space> zf
 
 " Enable mouse
 set mouse=a
 
-""""""""""""""""""""""""""""
-" User Interface
-""""""""""""""""""""""""""""
+""" User Interface
+
 " Set 7 lines to the cursor - when moving vertically using j/k
 set so=7
 
@@ -107,10 +87,6 @@ set tm=500
 
 " Enable syntax highlighting
 syntax enable
-" Parse syntax from this many lines backwards.
-" If syntax is still incorrect, manually reparse syntax with
-" ':syntax sync fromstart'.
-autocmd BufEnter * syntax sync minlines=5000
 
 set background=dark
 
@@ -142,9 +118,8 @@ if has("patch-8.1.1564")
   set signcolumn=number
 endif
 
-"""""""""""""""""""""""""""""""""
-" Files, backups and undo
-"""""""""""""""""""""""""""""""""
+""" Files, backups and undo
+
 set nowritebackup
 set nobackup
 if has("nvim")
@@ -163,9 +138,8 @@ exec "set undodir=".g:vim_temp_dir_root."/undo//"
 set undofile
 exec "set directory=".g:vim_temp_dir_root."/swap//"
 
-""""""""""""""""""""""""""""""""""
-" Text, tab and indent related
-""""""""""""""""""""""""""""""""""
+""" Text, tab and indent related
+
 " Use spaces instead of tabs
 set expandtab
 
@@ -183,16 +157,102 @@ set tw=500
 set ai " Auto indent
 set wrap " Wrap lines
 
-""""""""""""""""""""""""""""""
-" Visual mode
-""""""""""""""""""""""""""""""
+""" Misc
+
+set diffopt=vertical
+set shellpipe=>
+set iskeyword+=\-
+
+""" Custom commands
+
+" :W sudo saves the file
+command W w !sudo tee % > /dev/null
+
+""" Custom functions
+
+func! DeleteTrailingWhitespaces()
+    exe "normal mz"
+    %s/\s\+$//ge
+    exe "normal `z"
+endfunc
+
+function! GetSelection(one_line) range
+    let [lnum1, col1] = getpos("'<")[1:2]
+    let [lnum2, col2] = getpos("'>")[1:2]
+    let lines = getline(lnum1, lnum2)
+    let lines[-1] = lines[-1][: col2 - (&selection == 'inclusive' ? 1 : 2)]
+    let lines[0] = lines[0][col1 - 1:]
+    let res = join(lines, a:one_line ? '\n' : "\n")
+    return res
+endfunction
+
+function! ReplaceSelection() range
+    let cmd = '":\<c-u>%sno/".GetSelection(1)."/"'
+    return ":\<c-u>call feedkeys(". cmd. ", 'n')\<cr>"
+endfunction
+
+function! SearchSelection(forward) range
+    let cmd = a:forward ? '"/' : '"?'
+    let cmd .= '\<c-u>".GetSelection(1)."\<cr>"'
+    return ":\<c-u>call feedkeys(". cmd . ", 'n')\<cr>"
+endfunction
+
+function! SwitchNumber()
+    if(&relativenumber)
+        set norelativenumber
+        set nonumber
+    elseif(&number)
+        set relativenumber
+        set nonumber
+    else
+        set norelativenumber
+        set number
+    endif
+endfunc
+
+function! ToggleSystemClipboard()
+    if(&clipboard=='unnamed')
+        echo 'Using vim built-in clipboard'
+        set clipboard=
+    else
+        echo 'Using system clipboard'
+        set clipboard=unnamed
+    endif
+endfunc
+
+""" Auto Commands
+
+" Parse syntax from this many lines backwards.
+" If syntax is still incorrect, manually reparse syntax with
+" ':syntax sync fromstart'.
+autocmd BufEnter * syntax sync minlines=5000
+
+" Return to last edit position when opening files
+autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+
+" Delete trailing white space on save
+autocmd BufWrite * :call DeleteTrailingWhitespaces()
+
+""" Key mappings
+
+let mapleader = ","
+let g:mapleader = ","
+
+" Fast saving
+nnoremap <leader>w :w!<cr>
+
+" Fast quit
+nnoremap <leader>q :q<cr>
+nnoremap <leader><leader>q :q!<cr>
+
+" Fold
+nnoremap <space> za
+vnoremap <space> zf
+
 " Make * and # work in visual mode as well
 vnoremap <expr> <silent> * SearchSelection(1)
 vnoremap <expr> <silent> # SearchSelection(0)
 
-""""""""""""""""""""""""""""""""""""""""""""
-" Moving around, tabs, windows and buffers
-""""""""""""""""""""""""""""""""""""""""""""
 " disable highlight
 noremap <silent> <leader><cr> :noh<cr>
 
@@ -218,13 +278,6 @@ noremap <leader>e :edit <c-r>=expand("%:p:h")<cr>/
 " Switch CWD to the directory of the open buffer
 noremap <leader>cd :cd %:p:h<cr>:pwd<cr>
 
-" Return to last edit position when opening files
-au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
-
-""""""""""""""""""""""""""""""
-" Editing
-""""""""""""""""""""""""""""""
-
 " use register z for x and s
 nnoremap x "zx
 nnoremap X "zX
@@ -233,14 +286,6 @@ nnoremap X "zX
 vnoremap <c-j> :m'>+<cr>`<my`>mzgv`yo`z
 vnoremap <c-k> :m'<-2<cr>`>my`<mzgv`yo`z
 
-" Delete trailing white space on save
-func! DeleteTrailingWhitespaces()
-    exe "normal mz"
-    %s/\s\+$//ge
-    exe "normal `z"
-endfunc
-autocmd BufWrite * :call DeleteTrailingWhitespaces()
-
 " <leader>r to replace selected text
 vnoremap <expr> <leader>r ReplaceSelection()
 
@@ -248,64 +293,14 @@ vnoremap <expr> <leader>r ReplaceSelection()
 xnoremap <  <gv
 xnoremap >  >gv
 
-"""""""""""""""""""""""""""
-" Misc
-"""""""""""""""""""""""""""
-set diffopt=vertical
-set shellpipe=>
-set iskeyword+=\-
-
-""""""""""""""""""""""""""""""
-" Command mode related
-""""""""""""""""""""""""""""""
 " Bash like keys for the command line
 cnoremap <c-a> <home>
 cnoremap <c-e> <end>
 cnoremap <c-k> <c-u>
-
 cnoremap <c-p> <up>
 cnoremap <c-n> <down>
 
-""""""""""""""""""""""""""""
-" Helper functions
-""""""""""""""""""""""""""""
-function! GetSelection(one_line) range
-    let [lnum1, col1] = getpos("'<")[1:2]
-    let [lnum2, col2] = getpos("'>")[1:2]
-    let lines = getline(lnum1, lnum2)
-    let lines[-1] = lines[-1][: col2 - (&selection == 'inclusive' ? 1 : 2)]
-    let lines[0] = lines[0][col1 - 1:]
-    let res = join(lines, a:one_line ? '\n' : "\n")
-    return res
-endfunction
-
-function! ReplaceSelection() range
-    let cmd = '":\<c-u>%sno/".GetSelection(1)."/"'
-    return ":\<c-u>call feedkeys(". cmd. ", 'n')\<cr>"
-endfunction
-
-function! SearchSelection(forward) range
-    let cmd = a:forward ? '"/' : '"?'
-    let cmd .= '\<c-u>".GetSelection(1)."\<cr>"'
-    return ":\<c-u>call feedkeys(". cmd . ", 'n')\<cr>"
-endfunction
-
-"""""""""""""""""""
-" Fn keys
-"""""""""""""""""""
 " F2 to switch between number, relative_number, no_number
-function! SwitchNumber()
-    if(&relativenumber)
-        set norelativenumber
-        set nonumber
-    elseif(&number)
-        set relativenumber
-        set nonumber
-    else
-        set norelativenumber
-        set number
-    endif
-endfunc
 noremap <F2> :call SwitchNumber()<cr>
 " F3 to toggle wrap
 noremap <F3> :set wrap! wrap?<cr>
@@ -314,14 +309,5 @@ noremap <F4> :setlocal paste!<cr>
 inoremap <F4> <esc>:setlocal paste!<cr>i
 
 " F5 to toggle system clipboard
-function! ToggleSystemClipboard()
-    if(&clipboard=='unnamed')
-        echo 'Using vim built-in clipboard'
-        set clipboard=
-    else
-        echo 'Using system clipboard'
-        set clipboard=unnamed
-    endif
-endfunc
 nnoremap <F5> :call ToggleSystemClipboard()<cr>
 vnoremap <F5> :call ToggleSystemClipboard()<cr>gv

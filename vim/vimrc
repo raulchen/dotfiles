@@ -1,7 +1,6 @@
 set runtimepath+=~/dotfiles/vim
 
 source ~/dotfiles/vim/basic.vim
-source ~/dotfiles/vim/filetypes.vim
 source ~/dotfiles/vim/plugins.vim
 source ~/dotfiles/vim/plugin_configs.vim
 

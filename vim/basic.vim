@@ -233,6 +233,17 @@ autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "norm
 " Delete trailing white space on save
 autocmd BufWrite * :call DeleteTrailingWhitespaces()
 
+" Python
+" Fold files based on indentation
+autocmd FileType python,pyrex set foldmethod=indent
+autocmd FileType python,pyrex set foldlevel=99
+
+" C/C++
+" Use "//"-style comments
+autocmd FileType c,cpp setlocal commentstring=//\ %s
+" Don't treat "-" as a keyword
+autocmd FileType c,cpp setlocal iskeyword-=\-
+
 """ Key mappings
 
 let mapleader = ","

@@ -249,6 +249,22 @@ autocmd FileType c,cpp setlocal iskeyword-=\-
 let mapleader = ","
 let g:mapleader = ","
 
+"" Override builtins
+
+" Make * and # work in visual mode as well
+vnoremap <expr> <silent> * SearchSelection(1)
+vnoremap <expr> <silent> # SearchSelection(0)
+
+" use register z for x and s
+nnoremap x "zx
+nnoremap X "zX
+
+" Don't lose selection when indenting
+xnoremap <  <gv
+xnoremap >  >gv
+
+"" Save and quit
+
 " Fast saving
 nnoremap <leader>w :w!<cr>
 
@@ -256,16 +272,16 @@ nnoremap <leader>w :w!<cr>
 nnoremap <leader>q :q<cr>
 nnoremap <leader><leader>q :q!<cr>
 
+"" UI
+
 " Fold
 nnoremap <space> za
 vnoremap <space> zf
 
-" Make * and # work in visual mode as well
-vnoremap <expr> <silent> * SearchSelection(1)
-vnoremap <expr> <silent> # SearchSelection(0)
-
 " disable highlight
 noremap <silent> <leader><cr> :noh<cr>
+
+"" Navigation
 
 " delete buffer
 noremap <leader>d :bd<cr>
@@ -289,9 +305,7 @@ noremap <leader>e :edit <c-r>=expand("%:p:h")<cr>/
 " Switch CWD to the directory of the open buffer
 noremap <leader>cd :cd %:p:h<cr>:pwd<cr>
 
-" use register z for x and s
-nnoremap x "zx
-nnoremap X "zX
+"" Editing
 
 " Move a line of text
 vnoremap <c-j> :m'>+<cr>`<my`>mzgv`yo`z
@@ -300,9 +314,7 @@ vnoremap <c-k> :m'<-2<cr>`>my`<mzgv`yo`z
 " <leader>r to replace selected text
 vnoremap <expr> <leader>r ReplaceSelection()
 
-" Don't lose selection when indenting
-xnoremap <  <gv
-xnoremap >  >gv
+"" Command mode.
 
 " Bash like keys for the command line
 cnoremap <c-a> <home>
@@ -310,6 +322,8 @@ cnoremap <c-e> <end>
 cnoremap <c-k> <c-u>
 cnoremap <c-p> <up>
 cnoremap <c-n> <down>
+
+"" Fn keys.
 
 " F2 to switch between number, relative_number, no_number
 noremap <F2> :call SwitchNumber()<cr>

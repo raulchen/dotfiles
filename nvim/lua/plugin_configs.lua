@@ -24,3 +24,11 @@ vim.keymap.set('i', '<C-F>', "<Plug>(copilot-next)", {})
 -- which-key.nvim
 ---------------------
 require("which-key").setup()
+
+---------------------
+-- gitsigns.nvim
+---------------------
+require("gitsigns").setup({
+    signcolumn = false,
+    numhl = true,
+})

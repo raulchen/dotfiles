@@ -36,7 +36,6 @@ Plug 'jszakmeister/vim-togglecursor'
 Plug 'majutsushi/tagbar'
 
 " Source control
-Plug 'mhinz/vim-signify'
 Plug 'tpope/vim-fugitive'
 Plug 'junegunn/gv.vim', {'on': 'GV'}
 Plug 'will133/vim-dirdiff'
@@ -59,6 +58,7 @@ if has("nvim")
     Plug 'jose-elias-alvarez/null-ls.nvim'
     Plug 'lukas-reineke/indent-blankline.nvim'
     Plug 'folke/which-key.nvim'
+    Plug 'lewis6991/gitsigns.nvim'
 endif
 
 call plug#end()

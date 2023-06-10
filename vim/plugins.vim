@@ -43,7 +43,6 @@ Plug 'will133/vim-dirdiff'
 
 " Language support
 Plug 'sheerun/vim-polyglot'
-Plug 'vim-scripts/a.vim'
 
 if has("nvim")
     Plug 'neovim/nvim-lspconfig'

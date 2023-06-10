@@ -73,7 +73,7 @@ nnoremap <leader>fc  :BCommits<cr>
 " Find all git commits.
 nnoremap <leader>fC :Commits<cr>
 " Find key mappings.
-nnoremap <leader>mk :Maps<cr>
+nnoremap <leader>fk :Maps<cr>
 
 " Insert mode completion
 inoremap <c-g><c-w> <plug>(fzf-complete-word)

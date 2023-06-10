@@ -91,8 +91,18 @@ hi CursorLine cterm=underline
 " Nerd Tree
 """"""""""""""""""""""""
 let NERDTreeShowHidden=0
-noremap <leader>n :NERDTreeToggle<cr>
-noremap <leader>N :NERDTreeFind<cr>
+
+function! NerdTreeToggleFind()
+    if exists("g:NERDTree") && g:NERDTree.IsOpen()
+        NERDTreeClose
+    elseif filereadable(expand('%'))
+        NERDTreeFind
+    else
+        NERDTree
+    endif
+endfunction
+
+nnoremap <leader>n :call NerdTreeToggleFind()<CR>
 
 """""""""""""""""""
 " Lightline

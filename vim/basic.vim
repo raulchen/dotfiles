@@ -246,8 +246,8 @@ autocmd FileType c,cpp setlocal iskeyword-=\-
 
 """ Key mappings
 
-let mapleader = ","
-let g:mapleader = ","
+let mapleader = " "
+let g:mapleader = " "
 
 "" Override builtins
 
@@ -273,10 +273,6 @@ nnoremap <leader>q :q<cr>
 nnoremap <leader><leader>q :q!<cr>
 
 "" UI
-
-" Fold
-nnoremap <space> za
-vnoremap <space> zf
 
 " disable highlight
 noremap <silent> <leader><cr> :noh<cr>

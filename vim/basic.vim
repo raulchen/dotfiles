@@ -270,6 +270,8 @@ noremap <leader>uh :noh<cr>
 noremap <leader>un :call SwitchNumber()<cr>
 " toggle wrap
 noremap <leader>uw :set wrap! wrap?<cr>
+" toggle spell checking
+noremap <leader>us :set spell! spell?<cr>
 
 "" Navigation
 

@@ -30,7 +30,6 @@ Plug 'justinmk/vim-sneak'
 Plug 'mhinz/vim-startify'
 Plug 'itchyny/lightline.vim'
 Plug 'mgee/lightline-bufferline'
-" Plug 'dracula/vim', {'as': 'dracula-vim'}
 Plug 'connorholyday/vim-snazzy'
 Plug 'jszakmeister/vim-togglecursor'
 Plug 'majutsushi/tagbar'

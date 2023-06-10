@@ -277,13 +277,12 @@ noremap <leader>us :set spell! spell?<cr>
 
 " delete buffer
 noremap <leader>d :bd<cr>
+" switch to last edited buffer
+noremap <leader>bl <c-^>
 
 " switch buffers and tabs
 nnoremap <tab> :bn<cr>
 nnoremap <s-tab> :bp<cr>
-
-" switch to last edited buffer
-noremap <leader>l <c-^>
 
 " switch windows
 nnoremap <silent> <c-h> <c-w>h

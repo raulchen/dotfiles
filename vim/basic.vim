@@ -210,16 +210,6 @@ function! SwitchNumber()
     endif
 endfunc
 
-function! ToggleSystemClipboard()
-    if(&clipboard=='unnamed')
-        echo 'Using vim built-in clipboard'
-        set clipboard=
-    else
-        echo 'Using system clipboard'
-        set clipboard=unnamed
-    endif
-endfunc
-
 """ Auto Commands
 
 " Parse syntax from this many lines backwards.
@@ -270,12 +260,16 @@ nnoremap <leader>w :w!<cr>
 
 " Fast quit
 nnoremap <leader>q :q<cr>
-nnoremap <leader><leader>q :q!<cr>
+nnoremap <leader>Q :q!<cr>
 
 "" UI
 
 " disable highlight
-noremap <silent> <leader><cr> :noh<cr>
+noremap <leader>uh :noh<cr>
+" switch between number, relative_number, no_number
+noremap <leader>un :call SwitchNumber()<cr>
+" toggle wrap
+noremap <leader>uw :set wrap! wrap?<cr>
 
 "" Navigation
 
@@ -318,17 +312,3 @@ cnoremap <c-e> <end>
 cnoremap <c-k> <c-u>
 cnoremap <c-p> <up>
 cnoremap <c-n> <down>
-
-"" Fn keys.
-
-" F2 to switch between number, relative_number, no_number
-noremap <F2> :call SwitchNumber()<cr>
-" F3 to toggle wrap
-noremap <F3> :set wrap! wrap?<cr>
-" F4 to toggle paste
-noremap <F4> :setlocal paste!<cr>
-inoremap <F4> <esc>:setlocal paste!<cr>i
-
-" F5 to toggle system clipboard
-nnoremap <F5> :call ToggleSystemClipboard()<cr>
-vnoremap <F5> :call ToggleSystemClipboard()<cr>gv

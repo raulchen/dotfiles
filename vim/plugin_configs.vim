@@ -49,27 +49,37 @@ function FilesOrGFiles()
   endif
 endfunction
 
-nmap <c-g><c-f> :execute FilesOrGFiles()<cr>
-nmap <c-g><c-p> :Files <c-r>=expand("%:p:h")<cr>/<cr>
-"J for jump
-nmap <c-g><c-j> :Buffers<cr>
-nmap <c-g><c-r> :Rg<space>
-nmap <c-g><c-t> :BTags<cr>
-nmap <c-g><c-g><c-t> :Tags<cr>
-nmap <c-g><c-m> :Marks<cr>
-nmap <c-g><c-h> :History<cr>
-nmap <c-g>/ :History/<cr>
-nmap <c-g>; :History:<cr>
-" L for log
-nmap <c-g><c-g><c-l> :BCommits<cr>
-nmap <c-g><c-l> :Commits<cr>
-nmap <c-g>m :Maps<cr>
+" Find files.
+nnoremap <leader>ff :execute FilesOrGFiles()<cr>
+" Find files under the directory of the current file.
+nnoremap <leader>fF :Files <c-r>=expand("%:p:h")<cr>/<cr>
+" Find a buffer.
+nnoremap <leader>fb :Buffers<cr>
+" Find with Rg
+nnoremap <leader>fr :Rg<space>
+" Find tag for the current buffer.
+nnoremap <leader>ft :BTags<cr>
+nnoremap <leader>fT :Tags<cr>
+" Find marks
+nnoremap <leader>fm :Marks<cr>
+" Find file history.
+nnoremap <leader>fh :History<cr>
+" FInd search history.
+nnoremap <leader>f/ :History/<cr>
+" Find command history.
+nnoremap <leader>f: :History:<cr>
+" Find git commits for the current buffer.
+nnoremap <leader>fc  :BCommits<cr>
+" Find all git commits.
+nnoremap <leader>fC :Commits<cr>
+" Find key mappings.
+nnoremap <leader>mk :Maps<cr>
 
 " Insert mode completion
-imap <c-g><c-w> <plug>(fzf-complete-word)
-imap <c-g><c-p> <plug>(fzf-complete-path)
-imap <expr> <c-g><c-f> fzf#vim#complete#path('rg --files')
-imap <c-g><c-l> <plug>(fzf-complete-line)
+inoremap <c-g><c-w> <plug>(fzf-complete-word)
+inoremap <c-g><c-p> <plug>(fzf-complete-path)
+inoremap <expr> <c-g><c-f> fzf#vim#complete#path('rg --files')
+inoremap <c-g><c-l> <plug>(fzf-complete-line)
 
 """"""""""""""""""""""""
 " Color scheme
@@ -83,8 +93,8 @@ hi CursorLine cterm=underline
 " Nerd Tree
 """"""""""""""""""""""""
 let NERDTreeShowHidden=0
-map <leader>n :NERDTreeToggle<cr>
-map <leader><leader>n :NERDTreeFind<cr>
+noremap <leader>n :NERDTreeToggle<cr>
+noremap <leader>N :NERDTreeFind<cr>
 
 """""""""""""""""""
 " Lightline
@@ -114,7 +124,7 @@ let g:lightline#bufferline#filename_modifier = ':t'
 """""""""""""""""""
 " Undo tree
 """""""""""""""""""
-nnoremap <leader>u :UndotreeToggle<cr>
+nnoremap <leader>uu :UndotreeToggle<cr>
 
 """""""""""""""""""
 " togglecursor
@@ -127,7 +137,7 @@ let g:togglecursor_replace="blinking_block"
 """""""""""""""""""
 " Tagbar
 """""""""""""""""""
-nmap <F8> :TagbarToggle<CR>
+nnoremap <leader>ut :TagbarToggle<CR>
 let g:tagbar_sort = 0
 
 """""""""""""""""""

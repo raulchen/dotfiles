@@ -52,7 +52,7 @@ endfunction
 " Find files.
 nnoremap <leader>ff :execute FilesOrGFiles()<cr>
 " Find files under the directory of the current file.
-nnoremap <leader>fF :Files <c-r>=expand("%:p:h")<cr>/<cr>
+nnoremap <leader>fd :Files <c-r>=expand("%:p:h")<cr>/<cr>
 " Find a buffer.
 nnoremap <leader>fb :Buffers<cr>
 " Find with Rg

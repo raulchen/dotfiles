@@ -84,7 +84,7 @@ inoremap <c-g><c-l> <plug>(fzf-complete-line)
 """"""""""""""""""""""""
 " Color scheme
 """"""""""""""""""""""""
-colorscheme snazzy
+" colorscheme snazzy
 hi CursorLine cterm=underline
 
 """"""""""""""""""""""""

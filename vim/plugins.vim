@@ -1,63 +1,77 @@
-let g:plug_threads = 8
-let g:plug_retries = 4
-set rtp+=~/dotfiles/vim
-call plug#begin('~/dotfiles/vim/installed_plugins')
+let g:vim_plugins = []
 
 " General
-Plug 'scrooloose/nerdtree'
-Plug 'amix/open_file_under_cursor.vim'
-Plug 'michaeljsmith/vim-indent-object'
-Plug 'google/vim-searchindex'
-Plug 'airblade/vim-rooter'
-Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-Plug 'junegunn/fzf.vim'
-if has("nvim") || has("terminal")
-    Plug 'voldikss/vim-floaterm'
-endif
-Plug 'christoomey/vim-tmux-navigator'
+call extend(g:vim_plugins, [
+\  "scrooloose/nerdtree",
+\  "amix/open_file_under_cursor.vim",
+\  "michaeljsmith/vim-indent-object",
+\  "google/vim-searchindex",
+\  "airblade/vim-rooter",
+\  "junegunn/fzf",
+\  "junegunn/fzf.vim",
+\  "christoomey/vim-tmux-navigator",
+\])
 
-" Edit
-Plug 'tpope/vim-surround'
-Plug 'tpope/vim-commentary'
-Plug 'mg979/vim-visual-multi'
-Plug 'tpope/vim-repeat'
-Plug 'mbbill/undotree', {'on': 'UndotreeToggle'}
-Plug 'tpope/vim-sleuth'
-Plug 'ojroques/vim-oscyank'
-Plug 'justinmk/vim-sneak'
+if has("nvim") || has("terminal")
+    call add(g:vim_plugins, "voldikss/vim-floaterm")
+endif
+
+" Editing
+call extend(g:vim_plugins, [
+\  "tpope/vim-surround",
+\  "tpope/vim-commentary",
+\  "mg979/vim-visual-multi",
+\  "tpope/vim-repeat",
+\  "mbbill/undotree",
+\  "tpope/vim-sleuth",
+\  "ojroques/vim-oscyank",
+\  "justinmk/vim-sneak",
+\])
 
 " UI
-Plug 'mhinz/vim-startify'
-Plug 'itchyny/lightline.vim'
-Plug 'mgee/lightline-bufferline'
-Plug 'connorholyday/vim-snazzy'
-Plug 'jszakmeister/vim-togglecursor'
-Plug 'majutsushi/tagbar'
+call extend(g:vim_plugins, [
+\  "mhinz/vim-startify",
+\  "connorholyday/vim-snazzy",
+\  "itchyny/lightline.vim",
+\  "mgee/lightline-bufferline",
+\  "jszakmeister/vim-togglecursor",
+\  "majutsushi/tagbar",
+\])
 
 " Source control
-Plug 'tpope/vim-fugitive'
-Plug 'junegunn/gv.vim', {'on': 'GV'}
-Plug 'will133/vim-dirdiff'
+call extend(g:vim_plugins, [
+\  "tpope/vim-fugitive",
+\  "junegunn/gv.vim",
+\  "will133/vim-dirdiff",
+\])
 
-" Language support
-Plug 'sheerun/vim-polyglot'
+if !has("nvim")
+    let g:plug_threads = 8
+    let g:plug_retries = 4
+    set rtp+=~/dotfiles/vim
+    call plug#begin('~/dotfiles/vim/installed_plugins')
+    for plugin in g:vim_plugins
+	execute "Plug '" . plugin . "'"
+    endfor
+    call plug#end()
 
-if has("nvim")
-    Plug 'neovim/nvim-lspconfig'
-    Plug 'hrsh7th/nvim-cmp'
-    Plug 'hrsh7th/cmp-nvim-lsp'
-    Plug 'saadparwaiz1/cmp_luasnip'
-    Plug 'L3MON4D3/LuaSnip'
-    Plug 'mfussenegger/nvim-dap'
-    Plug 'rcarriga/nvim-dap-ui'
-    Plug 'williamboman/mason.nvim'
-    Plug 'williamboman/mason-lspconfig.nvim'
-    Plug 'github/copilot.vim'
-    Plug 'nvim-lua/plenary.nvim'
-    Plug 'jose-elias-alvarez/null-ls.nvim'
-    Plug 'lukas-reineke/indent-blankline.nvim'
-    Plug 'folke/which-key.nvim'
-    Plug 'lewis6991/gitsigns.nvim'
+    colorscheme snazzy
 endif
 
-call plug#end()
+" if has("nvim")
+"     Plug 'neovim/nvim-lspconfig'
+"     Plug 'hrsh7th/nvim-cmp'
+"     Plug 'hrsh7th/cmp-nvim-lsp'
+"     Plug 'saadparwaiz1/cmp_luasnip'
+"     Plug 'L3MON4D3/LuaSnip'
+"     Plug 'mfussenegger/nvim-dap'
+"     Plug 'rcarriga/nvim-dap-ui'
+"     Plug 'williamboman/mason.nvim'
+"     Plug 'williamboman/mason-lspconfig.nvim'
+"     Plug 'github/copilot.vim'
+"     Plug 'nvim-lua/plenary.nvim'
+"     Plug 'jose-elias-alvarez/null-ls.nvim'
+"     Plug 'lukas-reineke/indent-blankline.nvim'
+"     Plug 'folke/which-key.nvim'
+"     Plug 'lewis6991/gitsigns.nvim'
+" endif

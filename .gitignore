@@ -1,5 +1,6 @@
 *.local
+vim/installed_plugins
 vim/temp_dirs
 nvim/temp_dirs
-vim/installed_plugins/**
+nvim/lazy-lock.json
 hammerspoon/local.lua

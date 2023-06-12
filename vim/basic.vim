@@ -2,6 +2,7 @@
 set nocompatible
 
 set number
+set relativenumber
 
 " Show incomplete cmds down the bottom
 set showcmd
@@ -200,12 +201,12 @@ endfunction
 function! SwitchNumber()
     if(&relativenumber)
         set norelativenumber
-        set nonumber
+        set number
     elseif(&number)
-        set relativenumber
+        set norelativenumber
         set nonumber
     else
-        set norelativenumber
+        set orelativenumber
         set number
     endif
 endfunc

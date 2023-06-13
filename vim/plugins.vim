@@ -32,8 +32,6 @@ call extend(g:vim_plugins, [
 call extend(g:vim_plugins, [
 \  "mhinz/vim-startify",
 \  "connorholyday/vim-snazzy",
-\  "itchyny/lightline.vim",
-\  "mgee/lightline-bufferline",
 \  "jszakmeister/vim-togglecursor",
 \  "majutsushi/tagbar",
 \])
@@ -44,6 +42,14 @@ call extend(g:vim_plugins, [
 \  "junegunn/gv.vim",
 \  "will133/vim-dirdiff",
 \])
+
+" Following plugins are not enabled for neovim.
+if !has("nvim")
+    call extend(g:vim_plugins, [
+    \  "itchyny/lightline.vim",
+    \  "mgee/lightline-bufferline",
+    \])
+end
 
 if !has("nvim")
     let g:plug_threads = 8

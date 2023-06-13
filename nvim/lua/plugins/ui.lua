@@ -15,6 +15,16 @@ return {
     },
   },
   {
+    -- Show current code context.
+    "SmiteshP/nvim-navic",
+    dependencies = "neovim/nvim-lspconfig",
+    opts = {
+      lsp = {
+        auto_attach = true,
+      },
+    },
+  },
+  {
     "nvim-lualine/lualine.nvim",
     dependencies = "nvim-tree/nvim-web-devicons",
     opts = {
@@ -23,6 +33,14 @@ return {
           {
             "filename",
             path = 1,
+          },
+        },
+      },
+      winbar = {
+        lualine_c = {
+          {
+            function() return require("nvim-navic").get_location() end,
+            cond = function() return package.loaded["nvim-navic"] and require("nvim-navic").is_available() end,
           },
         },
       },

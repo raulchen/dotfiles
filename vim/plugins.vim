@@ -2,7 +2,6 @@ let g:vim_plugins = []
 
 " General
 call extend(g:vim_plugins, [
-\  "scrooloose/nerdtree",
 \  "amix/open_file_under_cursor.vim",
 \  "michaeljsmith/vim-indent-object",
 \  "google/vim-searchindex",
@@ -46,6 +45,7 @@ call extend(g:vim_plugins, [
 " Following plugins are not enabled for neovim.
 if !has("nvim")
     call extend(g:vim_plugins, [
+    \  "scrooloose/nerdtree",
     \  "itchyny/lightline.vim",
     \  "mgee/lightline-bufferline",
     \])

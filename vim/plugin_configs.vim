@@ -90,33 +90,37 @@ hi CursorLine cterm=underline
 """"""""""""""""""""""""
 " Nerd Tree
 """"""""""""""""""""""""
-let NERDTreeShowHidden=0
+if !has("nvim")
+  let NERDTreeShowHidden=0
 
-function! NerdTreeToggleFind()
-    if exists("g:NERDTree") && g:NERDTree.IsOpen()
-        NERDTreeClose
-    elseif filereadable(expand('%'))
-        NERDTreeFind
-    else
-        NERDTree
-    endif
-endfunction
+  function! NerdTreeToggleFind()
+      if exists("g:NERDTree") && g:NERDTree.IsOpen()
+          NERDTreeClose
+      elseif filereadable(expand('%'))
+          NERDTreeFind
+      else
+          NERDTree
+      endif
+  endfunction
 
-nnoremap <leader>n :call NerdTreeToggleFind()<CR>
+  nnoremap <leader>n :call NerdTreeToggleFind()<CR>
+end
 
 """""""""""""""""""
 " Lightline
 """""""""""""""""""
-let g:lightline = {
-\     'colorscheme': 'snazzy',
-\     'tabline': {'left': [['buffers']], 'right': []},
-\     'component_expand': {'buffers': 'lightline#bufferline#buffers'},
-\     'component_type': {'buffers': 'tabsel'},
-\ }
+if !has("nvim")
+  let g:lightline = {
+  \     'colorscheme': 'snazzy',
+  \     'tabline': {'left': [['buffers']], 'right': []},
+  \     'component_expand': {'buffers': 'lightline#bufferline#buffers'},
+  \     'component_type': {'buffers': 'tabsel'},
+  \ }
 
-let g:lightline#bufferline#show_number = 1
-let g:lightline#bufferline#number_separator = '.'
-let g:lightline#bufferline#filename_modifier = ':t'
+  let g:lightline#bufferline#show_number = 1
+  let g:lightline#bufferline#number_separator = '.'
+  let g:lightline#bufferline#filename_modifier = ':t'
+end
 
 """""""""""""""""""
 " Undo tree

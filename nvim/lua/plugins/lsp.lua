@@ -43,7 +43,7 @@ local function setup_lspconfig(_, _)
     'clangd',
     'gopls',
     "jdtls",
-    'pylsp',
+    'pyright',
     'rust_analyzer',
     'lua_ls',
   }

@@ -94,7 +94,7 @@ local function setup_dapui(_, _)
       },
     }
   })
-  dap = require("dap")
+  local dap = require("dap")
   dap.listeners.after.event_initialized["dapui_config"] = function()
     dapui.open({ reset = true })
   end
@@ -114,5 +114,15 @@ return {
   {
     "rcarriga/nvim-dap-ui",
     config = setup_dapui,
-  }
+  },
+  {
+    "mfussenegger/nvim-dap-python",
+    config = function(_, _)
+      local dap_python = require("dap-python")
+      dap_python.setup("~/.virtualenvs/debugpy/bin/python")
+      dap_python.resolve_python = function()
+        return 'python'
+      end
+    end,
+  },
 }

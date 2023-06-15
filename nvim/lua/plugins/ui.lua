@@ -65,6 +65,11 @@ return {
             "navic",
           },
         },
+        lualine_x = {
+          {
+            "filetype",
+          },
+        },
       },
     },
   },

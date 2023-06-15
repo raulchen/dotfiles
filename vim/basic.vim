@@ -162,7 +162,6 @@ set wrap " Wrap lines
 
 set diffopt=vertical
 set shellpipe=>
-set iskeyword+=\-
 
 """ Custom commands
 
@@ -232,8 +231,6 @@ autocmd FileType python,pyrex set foldlevel=99
 " C/C++
 " Use "//"-style comments
 autocmd FileType c,cpp setlocal commentstring=//\ %s
-" Don't treat "-" as a keyword
-autocmd FileType c,cpp setlocal iskeyword-=\-
 
 """ Key mappings
 

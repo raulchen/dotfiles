@@ -3,9 +3,9 @@ local function setup_lspconfig(_, _)
 
   -- Mappings.
   -- See `:help vim.diagnostic.*` for documentation on any of the below functions
-  local opts = { noremap = true, silent = true }
-  vim.keymap.set('n', '<leader>cp', vim.diagnostic.goto_prev, opts)
-  vim.keymap.set('n', '<leader>cn', vim.diagnostic.goto_next, opts)
+  local keymap = vim.keymap.set
+  keymap('n', '<leader>cp', vim.diagnostic.goto_prev, { desc = "Go to previous diagnostic" })
+  keymap('n', '<leader>cn', vim.diagnostic.goto_next, { desc = "Go to next diagnostic" })
 
   -- Use an on_attach function to only map the following keys
   -- after the language server attaches to the current buffer
@@ -15,23 +15,30 @@ local function setup_lspconfig(_, _)
 
     -- Mappings.
     -- See `:help vim.lsp.*` for documentation on any of the below functions
-    local bufopts = { noremap = true, silent = false, buffer = bufnr }
-    vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, bufopts)
-    vim.keymap.set('n', 'gd', vim.lsp.buf.definition, bufopts)
-    vim.keymap.set('n', 'K', vim.lsp.buf.hover, bufopts)
-    vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, bufopts)
-    vim.keymap.set({ 'n', 'i' }, '<C-k>', vim.lsp.buf.signature_help, bufopts)
-    vim.keymap.set('n', '<leader>cwa', vim.lsp.buf.add_workspace_folder, bufopts)
-    vim.keymap.set('n', '<leader>cwr', vim.lsp.buf.remove_workspace_folder, bufopts)
-    vim.keymap.set('n', '<leader>cwl', function()
+    keymap('n', 'gD', vim.lsp.buf.declaration, { buffer = bufnr, desc = "Go to declaration", })
+    keymap('n', 'gd', vim.lsp.buf.definition, { buffer = bufnr, desc = "Go to declaration", })
+    keymap('n', 'gi', vim.lsp.buf.implementation, { buffer = bufnr, desc = "Go to implementation", })
+    keymap('n', 'K', vim.lsp.buf.hover, { buffer = bufnr, desc = "Display hover information", })
+    keymap({ 'n', 'i' }, '<C-k>', vim.lsp.buf.signature_help, { buffer = bufnr, desc = "Show signature", })
+
+    keymap('n', '<leader>ct', vim.lsp.buf.type_definition, { buffer = bufnr, desc = "Go to type definition", })
+    keymap('n', '<leader>cr', vim.lsp.buf.rename, { buffer = bufnr, desc = "Rename symbol under cursor", })
+    keymap('n', '<leader>ca', vim.lsp.buf.code_action, { buffer = bufnr, desc = "Code action", })
+    keymap('n', '<leader>cu', vim.lsp.buf.references, { buffer = bufnr, desc = "Show usage", })
+    keymap('n', '<leader>ci', vim.lsp.buf.incoming_calls, { buffer = bufnr, desc = "Show incoming calls", })
+    keymap('n', '<leader>co', vim.lsp.buf.outgoing_calls, { buffer = bufnr, desc = "Show outgoing calls", })
+
+    keymap('n', '<leader>cf', vim.lsp.buf.format, { buffer = bufnr, desc = "Format code", })
+    keymap('v', '<leader>cf', ":lua vim.lsp.buf.format()<CR>", { buffer = bufnr, desc = "Format selected code", })
+
+    keymap('n', '<leader>cs', vim.lsp.buf.document_symbol, { buffer = bufnr, desc = "List symbols in current buffer", })
+    keymap('n', '<leader>cS', vim.lsp.buf.workspace_symbol, { buffer = bufnr, desc = "Search symbols in workspace", })
+
+    keymap('n', '<leader>cwa', vim.lsp.buf.add_workspace_folder, { buffer = bufnr, desc = "Add workspace folder", })
+    keymap('n', '<leader>cwr', vim.lsp.buf.remove_workspace_folder, { buffer = bufnr, desc = "Remove workspace folder", })
+    keymap('n', '<leader>cwl', function()
       print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
-    end, bufopts)
-    vim.keymap.set('n', '<leader>cd', vim.lsp.buf.type_definition, bufopts)
-    vim.keymap.set('n', '<leader>cr', vim.lsp.buf.rename, bufopts)
-    vim.keymap.set('n', '<leader>ca', vim.lsp.buf.code_action, bufopts)
-    vim.keymap.set('n', '<leader>cu', vim.lsp.buf.references, bufopts)
-    vim.keymap.set('n', '<leader>cf', vim.lsp.buf.format, bufopts)
-    vim.keymap.set('v', '<leader>cf', ":lua vim.lsp.buf.format()<CR>", bufopts)
+    end, { buffer = bufnr, desc = "List workspace folders", })
   end
 
   -- Add additional capabilities supported by nvim-cmp

@@ -274,7 +274,7 @@ noremap <leader>us :set spell! spell?<cr>
 "" Navigation
 
 " delete buffer
-noremap <leader>d :bd<cr>
+noremap <leader>x :bd<cr>
 " switch to last edited buffer
 noremap <leader>bl <c-^>
 

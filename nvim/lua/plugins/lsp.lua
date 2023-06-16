@@ -4,6 +4,7 @@ local function setup_lspconfig(_, _)
   -- Mappings.
   -- See `:help vim.diagnostic.*` for documentation on any of the below functions
   local keymap = vim.keymap.set
+  keymap('n', '<leader>cq', vim.diagnostic.setqflist, { desc = "Show diagnostic in quickfix list" })
   keymap('n', '<leader>cp', vim.diagnostic.goto_prev, { desc = "Go to previous diagnostic" })
   keymap('n', '<leader>cn', vim.diagnostic.goto_next, { desc = "Go to next diagnostic" })
 

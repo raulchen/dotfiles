@@ -91,26 +91,7 @@ end
 
 local function setup_dapui(_, _)
   local dapui = require("dapui")
-  dapui.setup({
-    icons = {
-      expanded = "▾",
-      cuurent_frame = "●",
-      collapsed = "▸",
-    },
-    controls = {
-      icons = {
-        disconnect = "🚫",
-        pause = "⏸️",
-        play = "▶️",
-        run_last = "🔂",
-        step_back = "↩️",
-        step_into = "⬇️",
-        step_out = "⬆️",
-        step_over = "➡️",
-        terminate = "⏹️",
-      },
-    }
-  })
+  dapui.setup()
   local dap = require("dap")
   dap.listeners.after.event_initialized["dapui_config"] = function()
     dapui.open({ reset = true })

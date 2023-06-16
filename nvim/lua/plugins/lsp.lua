@@ -25,7 +25,7 @@ local function setup_lspconfig(_, _)
     keymap('n', '<leader>ct', vim.lsp.buf.type_definition, { buffer = bufnr, desc = "Go to type definition", })
     keymap('n', '<leader>cr', vim.lsp.buf.rename, { buffer = bufnr, desc = "Rename symbol under cursor", })
     keymap('n', '<leader>ca', vim.lsp.buf.code_action, { buffer = bufnr, desc = "Code action", })
-    keymap('n', '<leader>cu', vim.lsp.buf.references, { buffer = bufnr, desc = "Show usage", })
+    keymap('n', '<leader>cu', vim.lsp.buf.references, { buffer = bufnr, desc = "Show usages", })
     keymap('n', '<leader>ci', vim.lsp.buf.incoming_calls, { buffer = bufnr, desc = "Show incoming calls", })
     keymap('n', '<leader>co', vim.lsp.buf.outgoing_calls, { buffer = bufnr, desc = "Show outgoing calls", })
 

@@ -83,4 +83,11 @@ return {
       },
     },
   },
+  {
+    "nyngwang/NeoZoom.lua",
+    config = function ()
+      require("neo-zoom").setup()
+      vim.keymap.set('n', '<leader>uz', function () vim.cmd('NeoZoomToggle') end, { desc = "Toggle zoom" })
+    end
+  },
 }

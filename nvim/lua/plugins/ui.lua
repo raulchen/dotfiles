@@ -5,6 +5,25 @@ local function setup_neotree(_, opts)
   require("neo-tree").setup(opts)
 end
 
+local lualine_opts = {
+  sections = {
+    lualine_c = {
+      {
+        "filename",
+        path = 1,
+      },
+      {
+        "navic",
+      },
+    },
+    lualine_x = {
+      {
+        "filetype",
+      },
+    },
+  },
+}
+
 return {
   {
     "nvim-neo-tree/neo-tree.nvim",
@@ -54,24 +73,7 @@ return {
   {
     "nvim-lualine/lualine.nvim",
     dependencies = "nvim-tree/nvim-web-devicons",
-    opts = {
-      sections = {
-        lualine_c = {
-          {
-            "filename",
-            path = 1,
-          },
-          {
-            "navic",
-          },
-        },
-        lualine_x = {
-          {
-            "filetype",
-          },
-        },
-      },
-    },
+    opts = lualine_opts,
   },
   {
     "akinsho/bufferline.nvim",
@@ -85,9 +87,9 @@ return {
   },
   {
     "nyngwang/NeoZoom.lua",
-    config = function ()
+    config = function()
       require("neo-zoom").setup()
-      vim.keymap.set('n', '<leader>uz', function () vim.cmd('NeoZoomToggle') end, { desc = "Toggle zoom" })
+      vim.keymap.set('n', '<leader>uz', function() vim.cmd('NeoZoomToggle') end, { desc = "Toggle zoom" })
     end
   },
 }

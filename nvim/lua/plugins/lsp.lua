@@ -75,6 +75,15 @@ local function setup_lspconfig(_, _)
         },
       },
     },
+    pyright = {
+      python = {
+        analysis = {
+          autoSearchPaths = true,
+          useLibraryCodeForTypes = true,
+          diagnosticMode = 'openFilesOnly',
+        },
+      },
+    },
     lua_ls = {
       Lua = {
         workspace = {

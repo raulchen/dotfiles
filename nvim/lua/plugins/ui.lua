@@ -92,4 +92,7 @@ return {
       vim.keymap.set('n', '<leader>uz', function() vim.cmd('NeoZoomToggle') end, { desc = "Toggle zoom" })
     end
   },
+  {
+    'kevinhwang91/nvim-bqf',
+  },
 }

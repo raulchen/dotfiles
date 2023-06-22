@@ -130,4 +130,9 @@ return {
       "nvim-lua/plenary.nvim",
     },
   },
+  {
+    'j-hui/fidget.nvim',
+    tag = 'legacy',
+    opts = {},
+  },
 }

@@ -5,6 +5,19 @@ local function setup_neotree(_, opts)
   require("neo-tree").setup(opts)
 end
 
+local function setup_whichkey(_, _)
+  local wk = require("which-key")
+  wk.setup()
+  wk.register({
+    b = { name = "code" },
+    c = { name = "code" },
+    d = { name = "debug" },
+    f = { name = "find" },
+    t = { name = "terminal" },
+    u = { name = "ui" },
+  }, { prefix = "<leader>" })
+end
+
 local lualine_opts = {
   sections = {
     lualine_c = {
@@ -87,7 +100,7 @@ return {
   },
   {
     "folke/which-key.nvim",
-    opts = {},
+    config = setup_whichkey,
   },
   {
     "lewis6991/gitsigns.nvim",

@@ -80,7 +80,7 @@ local function setup_dap(_, _)
   keymap('n', '<leader>do', dap.step_out, { desc = 'Step out', })
   keymap('n', '<leader>dB', dap.step_back, { desc = 'Step back', })
 
-  keymap('n', '<leader>dc', dap.goto_, { desc = 'Continue execution until current cursor', })
+  keymap('n', '<leader>dc', dap.run_to_cursor, { desc = 'Continue execution until current cursor', })
   keymap('n', '<leader>dF', dap.restart_frame, { desc = 'Restart curent frame', })
 
   keymap('n', '<leader>dU', dap.up, { desc = 'Go up in stacktrace', })

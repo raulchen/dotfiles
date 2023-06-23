@@ -17,8 +17,9 @@ local function setup_lspconfig(_, _)
     -- Mappings.
     -- See `:help vim.lsp.*` for documentation on any of the below functions
     keymap('n', 'gD', vim.lsp.buf.declaration, { buffer = bufnr, desc = "Go to declaration", })
-    keymap('n', 'gd', vim.lsp.buf.definition, { buffer = bufnr, desc = "Go to declaration", })
+    keymap('n', 'gd', vim.lsp.buf.definition, { buffer = bufnr, desc = "Go to definition", })
     keymap('n', 'gi', vim.lsp.buf.implementation, { buffer = bufnr, desc = "Go to implementation", })
+    keymap('n', 'gt', vim.lsp.buf.type_definition, { buffer = bufnr, desc = "Go to type definition", })
     keymap('n', 'K', vim.lsp.buf.hover, { buffer = bufnr, desc = "Display hover information", })
     keymap({ 'n', 'i' }, '<C-k>', vim.lsp.buf.signature_help, { buffer = bufnr, desc = "Show signature", })
 

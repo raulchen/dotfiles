@@ -155,15 +155,6 @@ vnoremap <leader>y :OSCYankVisual<CR>
 let g:oscyank_term = 'default'
 
 """""""""""""""""""
-" vim-floaterm
-"""""""""""""""""""
-let g:floaterm_keymap_toggle = '<C-T>'
-let g:floaterm_opener = 'edit'
-let g:floaterm_width = 0.9
-let g:floaterm_height = 0.9
-command! Ranger FloatermNew ranger
-
-"""""""""""""""""""
 " vim-tmux-navigator
 """""""""""""""""""
 " Disable tmux navigator when zooming the Vim pane

@@ -11,10 +11,6 @@ call extend(g:vim_plugins, [
 \  "christoomey/vim-tmux-navigator",
 \])
 
-if has("nvim") || has("terminal")
-    call add(g:vim_plugins, "voldikss/vim-floaterm")
-endif
-
 " Editing
 call extend(g:vim_plugins, [
 \  "tpope/vim-surround",

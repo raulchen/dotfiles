@@ -24,6 +24,42 @@ local lualine_opts = {
   },
 }
 
+local function setup_toggleterm(_, _)
+  local opts = {
+    open_mapping = [[<c-t>]],
+    size = function(term)
+      if term.direction == "horizontal" then
+        return vim.o.lines * 0.3
+      elseif term.direction == "vertical" then
+        return vim.o.columns * 0.3
+      end
+    end,
+    float_opts = {
+      border = 'curved',
+    },
+  }
+  require("toggleterm").setup(opts)
+
+  -- Keymaps
+  local keymap = vim.keymap.set
+  keymap("n", "<leader>tt", "<cmd>ToggleTerm<cr>", { desc = "Toggle terminal" })
+  keymap("n", "<leader>th", "<cmd>ToggleTerm direction=horizontal<cr>", { desc = "Toggle horizontal terminal" })
+  keymap("n", "<leader>tv", "<cmd>ToggleTerm direction=vertical<cr>", { desc = "Toggle vertical terminal" })
+
+  function _G.set_terminal_keymaps()
+    local keymap_opts = { buffer = 0 }
+    keymap('t', '<esc>', [[<C-\><C-n>]], keymap_opts)
+    keymap('t', '<C-M-h>', [[<Cmd>wincmd h<CR>]], keymap_opts)
+    keymap('t', '<C-M-j>', [[<Cmd>wincmd j<CR>]], keymap_opts)
+    keymap('t', '<C-M-k>', [[<Cmd>wincmd k<CR>]], keymap_opts)
+    keymap('t', '<C-M-l>', [[<Cmd>wincmd l<CR>]], keymap_opts)
+    keymap('t', '<C-w>', [[<C-\><C-n><C-w>]], keymap_opts)
+  end
+
+  -- if you only want these mappings for toggle term use term://*toggleterm#* instead
+  vim.cmd('autocmd! TermOpen term://* lua set_terminal_keymaps()')
+end
+
 return {
   {
     "nvim-neo-tree/neo-tree.nvim",
@@ -95,4 +131,9 @@ return {
   {
     'kevinhwang91/nvim-bqf',
   },
+  {
+    'akinsho/toggleterm.nvim',
+    version = '*',
+    config = setup_toggleterm,
+  }
 }

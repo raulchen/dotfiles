@@ -59,18 +59,17 @@ local function setup_toggleterm(_, _)
   keymap("n", "<leader>th", "<cmd>ToggleTerm direction=horizontal<cr>", { desc = "Toggle horizontal terminal" })
   keymap("n", "<leader>tv", "<cmd>ToggleTerm direction=vertical<cr>", { desc = "Toggle vertical terminal" })
 
-  function _G.set_terminal_keymaps()
-    local keymap_opts = { buffer = 0 }
-    keymap('t', '<esc>', [[<C-\><C-n>]], keymap_opts)
-    keymap('t', '<C-M-h>', [[<Cmd>wincmd h<CR>]], keymap_opts)
-    keymap('t', '<C-M-j>', [[<Cmd>wincmd j<CR>]], keymap_opts)
-    keymap('t', '<C-M-k>', [[<Cmd>wincmd k<CR>]], keymap_opts)
-    keymap('t', '<C-M-l>', [[<Cmd>wincmd l<CR>]], keymap_opts)
-    keymap('t', '<C-w>', [[<C-\><C-n><C-w>]], keymap_opts)
-  end
-
-  -- if you only want these mappings for toggle term use term://*toggleterm#* instead
-  vim.cmd('autocmd! TermOpen term://* lua set_terminal_keymaps()')
+  vim.api.nvim_create_autocmd({ 'TermOpen' }, {
+    -- Use term://*toggleterm#* if only for toggleterm.nvim
+    pattern = "term://*",
+    callback = function()
+      local keymap_opts = { buffer = 0 }
+      keymap('t', '<C-M-h>', [[<Cmd>TmuxNavigateLeft<CR>]], keymap_opts)
+      keymap('t', '<C-M-j>', [[<Cmd>TmuxNavigateDown<CR>]], keymap_opts)
+      keymap('t', '<C-M-k>', [[<Cmd>TmuxNavigateUp<CR>]], keymap_opts)
+      keymap('t', '<C-M-l>', [[<Cmd>TmuxNavigateRight<CR>]], keymap_opts)
+    end
+  })
 end
 
 return {
@@ -149,5 +148,5 @@ return {
     'akinsho/toggleterm.nvim',
     version = '*',
     config = setup_toggleterm,
-  }
+  },
 }

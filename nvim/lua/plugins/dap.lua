@@ -104,6 +104,7 @@ local function setup_dapui(_, _)
   end
   local keymap = vim.keymap.set
   keymap({'n', 'v'}, '<leader>de', dapui.eval, { desc = 'Evaluate', })
+  keymap({'n', 'v'}, '<leader>du', function() dapui.toggle({reset = true}) end, { desc = 'Toggle dap-ui', })
 end
 
 return {

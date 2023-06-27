@@ -96,12 +96,6 @@ local function setup_dapui(_, _)
   dap.listeners.after.event_initialized["dapui_config"] = function()
     dapui.open({ reset = true })
   end
-  dap.listeners.before.event_terminated["dapui_config"] = function()
-    dapui.close()
-  end
-  dap.listeners.before.event_exited["dapui_config"] = function()
-    dapui.close()
-  end
   local keymap = vim.keymap.set
   keymap({'n', 'v'}, '<leader>de', dapui.eval, { desc = 'Evaluate', })
   keymap({'n', 'v'}, '<leader>du', function() dapui.toggle({reset = true}) end, { desc = 'Toggle dap-ui', })

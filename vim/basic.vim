@@ -277,6 +277,10 @@ noremap <leader>us :set spell! spell?<cr>
 noremap <leader>x :bd<cr>
 " switch to last edited buffer
 noremap <leader>bl <c-^>
+" Only keep the current buffer, close all others.
+" %bd = delete all buffers; e# = edit the last buffer; bd# = delete the last buffer with "[No Name]".
+command! BufOnly silent! execute "%bd|e#|bd#"
+noremap <leader>bo :BufOnly<cr>
 
 " switch buffers and tabs
 nnoremap <tab> :bn<cr>

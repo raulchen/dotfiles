@@ -57,6 +57,7 @@ end
 
 local function setup_toggleterm(_, _)
   local opts = {
+    direction = 'float',
     open_mapping = [[<c-t>]],
     size = function(term)
       if term.direction == "horizontal" then

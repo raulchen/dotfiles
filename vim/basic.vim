@@ -292,14 +292,6 @@ nnoremap <silent> <c-l> <c-w>l
 nnoremap <silent> <c-j> <c-w>j
 nnoremap <silent> <c-k> <c-w>k
 
-" Opens a new buffer with the current buffer's path
-noremap <leader>e :edit <c-r>=expand("%:p:h")<cr>/
-
-" Switch CWD to the directory of the open buffer
-noremap <leader>cd :cd %:p:h<cr>:pwd<cr>
-
-"" Editing
-
 " Move a line of text
 vnoremap <c-j> :m'>+<cr>`<my`>mzgv`yo`z
 vnoremap <c-k> :m'<-2<cr>`>my`<mzgv`yo`z
@@ -315,3 +307,8 @@ cnoremap <c-e> <end>
 cnoremap <c-k> <c-u>
 cnoremap <c-p> <up>
 cnoremap <c-n> <down>
+
+" Insert the path of the current file's directory.
+cnoremap <c-d> <C-R>=expand('%:p:h')<CR>
+" Insert the path of the current file.
+cnoremap <c-f> <C-R>=expand('%:p')<CR>

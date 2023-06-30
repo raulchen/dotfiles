@@ -137,13 +137,19 @@ return {
   {
     "nyngwang/NeoZoom.lua",
     config = function()
+      vim.keymap.set('n', '<c-w>z', function() vim.cmd('NeoZoomToggle') end, { desc = "Toggle zoom" })
       require("neo-zoom").setup()
       vim.keymap.set('n', '<leader>uz', function() vim.cmd('NeoZoomToggle') end, { desc = "Toggle zoom" })
-      vim.keymap.set('n', '<c-w>z', function() vim.cmd('NeoZoomToggle') end, { desc = "Toggle zoom" })
     end
   },
   {
     'kevinhwang91/nvim-bqf',
+    opts = {
+      preview = {
+        -- Do not make the preview window transparent.
+        winblend = 0,
+      },
+    },
   },
   {
     'akinsho/toggleterm.nvim',

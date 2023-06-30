@@ -44,14 +44,36 @@ function FilesOrGFiles()
   endif
 endfunction
 
+function! RgWithWordUnderCursor()
+    " Get the word under the cursor
+    let l:word = expand("<cword>")
+    " Escape special characters
+    let l:escaped_word = escape(l:word, '\/.*$^~[]')
+    " Execute Rg with the word under the cursor
+    execute 'Rg' l:escaped_word
+endfunction
+
+function! RgWithSelection()
+    " Yank the visual selection into the unnamed register
+    normal! gvy
+    " Get the yanked text from the unnamed register
+    let l:text = getreg('"')
+    " Escape special characters
+    let l:escaped_text = escape(l:text, '\/.*$^~[]')
+    " Execute Rg with the selected text
+    execute 'Rg' l:escaped_text
+endfunction
+
 " Find files.
 nnoremap <leader>ff :execute FilesOrGFiles()<cr>
 " Find files under the directory of the current file.
 nnoremap <leader>fd :Files <c-r>=expand("%:p:h")<cr>/<cr>
 " Find a buffer.
 nnoremap <leader>fb :Buffers<cr>
-" Find with Rg
-nnoremap <leader>fr :Rg<space>
+" Find word under cursor.
+nnoremap <leader>fs :call RgWithWordUnderCursor()<cr>
+" Find selected text.
+vnoremap <leader>fs :<c-u>call RgWithSelection()<cr>
 " Find tag for the current buffer.
 nnoremap <leader>ft :BTags<cr>
 nnoremap <leader>fT :Tags<cr>

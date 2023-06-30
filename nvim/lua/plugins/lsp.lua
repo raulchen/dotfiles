@@ -16,14 +16,13 @@ local function setup_lspconfig(_, _)
 
     -- Mappings.
     -- See `:help vim.lsp.*` for documentation on any of the below functions
-    keymap('n', 'gD', vim.lsp.buf.declaration, { buffer = bufnr, desc = "Go to declaration", })
     keymap('n', 'gd', vim.lsp.buf.definition, { buffer = bufnr, desc = "Go to definition", })
     keymap('n', 'gi', vim.lsp.buf.implementation, { buffer = bufnr, desc = "Go to implementation", })
     keymap('n', 'gt', vim.lsp.buf.type_definition, { buffer = bufnr, desc = "Go to type definition", })
     keymap('n', 'K', vim.lsp.buf.hover, { buffer = bufnr, desc = "Display hover information", })
     keymap({ 'n', 'i' }, '<C-k>', vim.lsp.buf.signature_help, { buffer = bufnr, desc = "Show signature", })
 
-    keymap('n', '<leader>ct', vim.lsp.buf.type_definition, { buffer = bufnr, desc = "Go to type definition", })
+    keymap('n', '<leader>cd', vim.lsp.buf.declaration, { buffer = bufnr, desc = "Go to declaration", })
     keymap('n', '<leader>cr', vim.lsp.buf.rename, { buffer = bufnr, desc = "Rename symbol under cursor", })
     keymap('n', '<leader>ca', vim.lsp.buf.code_action, { buffer = bufnr, desc = "Code action", })
     keymap('n', '<leader>cu', vim.lsp.buf.references, { buffer = bufnr, desc = "Show usages", })
@@ -41,6 +40,11 @@ local function setup_lspconfig(_, _)
     keymap('n', '<leader>cwl', function()
       print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
     end, { buffer = bufnr, desc = "List workspace folders", })
+
+    local gp = require('goto-preview')
+    keymap('n', 'gD', gp.goto_preview_definition, { buffer = bufnr, desc = "Preview definition", })
+    keymap('n', 'gT', gp.goto_preview_type_definition, { buffer = bufnr, desc = "Preview type definition", })
+    keymap('n', 'gI', gp.goto_preview_implementation, { buffer = bufnr, desc = "Preview implementation", })
   end
 
   -- Add additional capabilities supported by nvim-cmp
@@ -125,6 +129,21 @@ local function null_ls_opts()
   }
 end
 
+local function setup_goto_preview()
+  require('goto-preview').setup({
+    default_mappings = false,
+    height = 30,
+    post_open_hook = function(_, win)
+      -- Close the current preview window with <Esc> or 'q'.
+      local function close_window()
+        vim.api.nvim_win_close(win, true)
+      end
+      vim.keymap.set('n', '<Esc>', close_window, { buffer = true })
+      vim.keymap.set('n', 'q', close_window, { buffer = true })
+    end,
+  })
+end
+
 return {
   {
     'hrsh7th/cmp-nvim-lsp',
@@ -144,5 +163,9 @@ return {
     'j-hui/fidget.nvim',
     tag = 'legacy',
     opts = {},
+  },
+  {
+    'rmagatti/goto-preview',
+    config = setup_goto_preview,
   },
 }

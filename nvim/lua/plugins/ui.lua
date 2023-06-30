@@ -49,6 +49,12 @@ local function setup_indent_blankline(_, _)
   require("indent_blankline").setup(opts)
 end
 
+local function setup_neozoom()
+  require("neo-zoom").setup()
+  vim.keymap.set('n', '<c-w>z', function() vim.cmd('NeoZoomToggle') end, { desc = "Toggle zoom" })
+  vim.keymap.set('n', '<leader>uz', function() vim.cmd('NeoZoomToggle') end, { desc = "Toggle zoom" })
+end
+
 local function setup_toggleterm(_, _)
   local opts = {
     open_mapping = [[<c-t>]],
@@ -145,11 +151,7 @@ return {
   },
   {
     "nyngwang/NeoZoom.lua",
-    config = function()
-      vim.keymap.set('n', '<c-w>z', function() vim.cmd('NeoZoomToggle') end, { desc = "Toggle zoom" })
-      require("neo-zoom").setup()
-      vim.keymap.set('n', '<leader>uz', function() vim.cmd('NeoZoomToggle') end, { desc = "Toggle zoom" })
-    end
+    config = setup_neozoom,
   },
   {
     'kevinhwang91/nvim-bqf',

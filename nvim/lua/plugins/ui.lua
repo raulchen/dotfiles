@@ -1,8 +1,8 @@
-local function setup_neotree(_, opts)
+local function setup_nvimtree(_, _)
   vim.g.loaded_netrw = 1
   vim.g.loaded_netrwPlugin = 1
-  vim.keymap.set("n", "<leader>n", "<cmd>Neotree toggle<cr>", { noremap = true, desc = "Toggle Neotree" })
-  require("neo-tree").setup(opts)
+  vim.keymap.set("n", "<leader>n", "<cmd>NvimTreeFindFileToggle!<cr>", { noremap = true, desc = "Toggle nvim-tree" })
+  require("nvim-tree").setup()
 end
 
 local function setup_whichkey(_, _)
@@ -94,21 +94,11 @@ end
 
 return {
   {
-    "nvim-neo-tree/neo-tree.nvim",
-    branch = "v2.x",
+    "nvim-tree/nvim-tree.lua",
     dependencies = {
-      "nvim-lua/plenary.nvim",
       "nvim-tree/nvim-web-devicons",
-      "MunifTanjim/nui.nvim",
     },
-    opts = {
-      enable_diagnostics = false,
-      filesystem = {
-        follow_current_file = true,
-        use_libuv_file_watcher = true,
-      },
-    },
-    config = setup_neotree,
+    config = setup_nvimtree,
   },
   {
     "lukas-reineke/indent-blankline.nvim",

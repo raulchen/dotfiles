@@ -309,6 +309,6 @@ cnoremap <c-p> <up>
 cnoremap <c-n> <down>
 
 " Insert the path of the current file's directory.
-cnoremap <c-d> <C-R>=expand('%:p:h')<CR>
+cnoremap <c-d> <C-R>=expand('%:p:h')."/"<CR>
 " Insert the path of the current file.
 cnoremap <c-f> <C-R>=expand('%:p')<CR>

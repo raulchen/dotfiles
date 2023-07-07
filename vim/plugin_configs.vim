@@ -50,7 +50,7 @@ function! RgWithWordUnderCursor()
     " Escape special characters
     let l:escaped_word = escape(l:word, '\/.*$^~[]')
     " Execute Rg with the word under the cursor
-    execute 'Rg' l:escaped_word
+    call feedkeys(':Rg '.l:escaped_word, 'n')
 endfunction
 
 function! RgWithSelection()
@@ -61,7 +61,7 @@ function! RgWithSelection()
     " Escape special characters
     let l:escaped_text = escape(l:text, '\/.*$^~[]')
     " Execute Rg with the selected text
-    execute 'Rg' l:escaped_text
+    call feedkeys(':Rg '.l:escaped_text, 'n')
 endfunction
 
 " Find files.

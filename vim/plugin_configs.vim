@@ -162,7 +162,7 @@ let g:tagbar_sort = 0
 " vim-rooter
 """""""""""""""""""
 let g:rooter_silent_chdir = 0
-let g:rooter_patterns = [".git", "WORKSPACE", "Makefile"]
+let g:rooter_patterns = [".git", "WORKSPACE"]
 
 """""""""""""""""""
 " vim-oscyank

@@ -158,4 +158,14 @@ return {
     version = '*',
     config = setup_toggleterm,
   },
+  {
+    'simrat39/symbols-outline.nvim',
+    opts = {},
+    keys = {
+      {'<leader>uo', '<cmd>SymbolsOutline<cr>', desc = "Toggle symbols outline" },
+    },
+    cmd = {
+      'SymbolsOutline',
+    },
+  },
 }

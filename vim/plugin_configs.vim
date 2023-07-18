@@ -153,12 +153,6 @@ let g:togglecursor_leave="blinking_block"
 let g:togglecursor_replace="blinking_block"
 
 """""""""""""""""""
-" Tagbar
-"""""""""""""""""""
-nnoremap <leader>ut :TagbarToggle<CR>
-let g:tagbar_sort = 0
-
-"""""""""""""""""""
 " vim-rooter
 """""""""""""""""""
 let g:rooter_silent_chdir = 0

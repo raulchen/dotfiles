@@ -28,7 +28,6 @@ call extend(g:vim_plugins, [
 \  "mhinz/vim-startify",
 \  "connorholyday/vim-snazzy",
 \  "jszakmeister/vim-togglecursor",
-\  "majutsushi/tagbar",
 \])
 
 " Source control

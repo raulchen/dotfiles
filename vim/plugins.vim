@@ -28,6 +28,7 @@ call extend(g:vim_plugins, [
 \  "mhinz/vim-startify",
 \  "connorholyday/vim-snazzy",
 \  "jszakmeister/vim-togglecursor",
+\  "powerman/vim-plugin-AnsiEsc",
 \])
 
 " Source control

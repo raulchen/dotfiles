@@ -45,6 +45,11 @@ local function setup_lspconfig(_, _)
     keymap('n', 'gD', gp.goto_preview_definition, { buffer = bufnr, desc = "Preview definition", })
     keymap('n', 'gT', gp.goto_preview_type_definition, { buffer = bufnr, desc = "Preview type definition", })
     keymap('n', 'gI', gp.goto_preview_implementation, { buffer = bufnr, desc = "Preview implementation", })
+
+    if client.name == "clangd" then
+      -- Like "a.vim", use command "A" for switching between source/header files.
+      vim.api.nvim_create_user_command('A', "ClangdSwitchSourceHeader", { nargs = 0 })
+    end
   end
 
   -- Add additional capabilities supported by nvim-cmp

@@ -1,5 +1,5 @@
 local function setup_lspconfig(_, _)
-  -- vim.lsp.set_log_level("debug")
+  vim.lsp.set_log_level("warn")
 
   -- Mappings.
   -- See `:help vim.diagnostic.*` for documentation on any of the below functions

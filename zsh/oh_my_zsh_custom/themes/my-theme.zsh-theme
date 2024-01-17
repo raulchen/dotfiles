@@ -3,8 +3,8 @@
 
 local PROMPT_SEPARATOR="$FG[240]|"
 
-PROMPT_PREFIX='%{$fg[yellow]%}%(?,,%{${fg[red]}%})$'
-PROMPT_SUFFIX=' %{$reset_color%}'
+PROMPT_PREFIX='%{$fg[yellow]%}%(?,,%{${fg[red]}%})\$$PROMPT_SEPARATOR'
+PROMPT_SUFFIX='%{$reset_color%}'
 RPROMPT='%{$fg[green]%}%~$PROMPT_SEPARATOR%{$fg[yellow]%}%*%{$reset_color%}'
 
 _prompt_precmd() {
@@ -26,7 +26,7 @@ _prompt_precmd() {
     if [[ -n "$root" ]]; then
         async_flush_jobs "my_prompt"
 	    async_job "my_prompt" _get_source_control_prompt_info "$root"
-        source_control_info="$PROMPT_SEPARATOR%{$fg[blue]%}..."
+        source_control_info="%{$fg[blue]%}...$PROMPT_SEPARATOR"
     fi
 
    PROMPT="$PROMPT_PREFIX$source_control_info$PROMPT_SUFFIX"
@@ -63,9 +63,9 @@ _get_source_control_prompt_info() {
     fi
 
     if [[ -n "$dirty" ]]; then
-        echo -n "$PROMPT_SEPARATOR%{$fg[red]%}$branch*"
+        echo -n "%{$fg[red]%}$branch*$PROMPT_SEPARATOR"
     else
-        echo -n "$PROMPT_SEPARATOR%{$fg[blue]%}$branch"
+        echo -n "%{$fg[blue]%}$branch$PROMPT_SEPARATOR"
     fi
 }
 

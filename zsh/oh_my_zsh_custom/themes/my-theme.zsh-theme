@@ -3,9 +3,9 @@
 
 local PROMPT_SEPARATOR="$FG[240]|"
 
-PROMPT_PREFIX='%{$fg[yellow]%}%(?,,%{${fg[red]}%})\$$PROMPT_SEPARATOR'
-PROMPT_SUFFIX='%{$reset_color%}'
-RPROMPT='%{$fg[green]%}%~$PROMPT_SEPARATOR%{$fg[yellow]%}%*%{$reset_color%}'
+PROMPT='%{$fg[yellow]%}%(?,,%{${fg[red]}%})\$$PROMPT_SEPARATOR%{$reset_color%}'
+RPROMPT_PREFIX='$PROMPT_SEPARATOR'
+RPROMPT_SUFFIX='%{$fg[yellow]%}%~$PROMPT_SEPARATOR%{$fg[green]%}%*%{$reset_color%}'
 
 _prompt_precmd() {
     local d root
@@ -29,7 +29,7 @@ _prompt_precmd() {
         source_control_info="%{$fg[blue]%}...$PROMPT_SEPARATOR"
     fi
 
-   PROMPT="$PROMPT_PREFIX$source_control_info$PROMPT_SUFFIX"
+   RPROMPT="$RPROMPT_PREFIX$source_control_info$RPROMPT_SUFFIX"
 }
 
 _get_hg_branch() {
@@ -62,10 +62,6 @@ _get_source_control_prompt_info() {
         dirty=$(command hg status 2> /dev/null | head -n1)
     fi
 
-    if [ ${#branch} -gt 15 ]; then
-        branch="${branch:0:6}...${branch: -6}"
-    fi
-
     if [[ -n "$dirty" ]]; then
         echo -n "%{$fg[red]%}$branch*$PROMPT_SEPARATOR"
     else
@@ -75,7 +71,7 @@ _get_source_control_prompt_info() {
 
 _prompt_callback() {
     if [[ -n "$3" ]]; then
-        PROMPT="$PROMPT_PREFIX$3$PROMPT_SUFFIX"
+        RPROMPT="$RPROMPT_PREFIX$3$RPROMPT_SUFFIX"
         zle && zle reset-prompt
     fi
 }

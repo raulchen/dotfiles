@@ -23,6 +23,9 @@ set ttimeoutlen=10
 " Enable mouse
 set mouse=a
 
+" Enable spell checking
+set spell
+
 """ User Interface
 
 " Set 7 lines to the cursor - when moving vertically using j/k

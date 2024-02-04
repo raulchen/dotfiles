@@ -75,6 +75,7 @@ typeset -A commands_to_plugins=(
     "mvn" "mvn"
     "pyenv" "pyenv"
     "scala" "scala"
+    "zoxide" "zoxide"
 )
 
 for cmd in ${(@k)commands_to_plugins}; do

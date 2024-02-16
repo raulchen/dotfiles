@@ -4,7 +4,12 @@ local module = {}
 
 local TIMEOUT = 5
 
-local modal = hs.hotkey.modal.new({'ctrl'}, '`')
+-- Assign an impossible hotkey for the modal. And use another hotkey to trigger the modal.
+-- Because we want to temporarily disable the modal hotkey in the "ctrl+`" callback, which
+-- isn't supported by hs.hotkey.modal.
+local modal = hs.hotkey.modal.new({ "ctrl" }, "F19")
+trigger_modal = hs.hotkey.new({ "ctrl" }, "`", function() modal:enter() end)
+trigger_modal:enable()
 
 function modal:entered()
     modal.alertId = hs.alert.show("Prefix Mode", 9999)
@@ -29,7 +34,9 @@ function module.cancelTimeout()
 end
 
 function module.bind(mod, key, fn)
-    modal:bind(mod, key, nil, function() fn(); module.exit() end)
+    modal:bind(mod, key, nil, function()
+        fn(); module.exit()
+    end)
 end
 
 function module.bindMultiple(mod, key, pressedFn, releasedFn, repeatFn)
@@ -37,7 +44,13 @@ function module.bindMultiple(mod, key, pressedFn, releasedFn, repeatFn)
 end
 
 module.bind('', 'escape', module.exit)
-module.bind({'ctrl'}, '`', module.exit)
+-- "ctrl+`" again to exit the modal and send the "ctrl+`" key event.
+module.bind({ 'ctrl' }, '`', function()
+    modal:exit()
+    trigger_modal:disable()
+    hs.eventtap.keyStroke({ 'ctrl' }, '`')
+    hs.timer.doAfter(1, function() trigger_modal:enable() end)
+end)
 
 module.bind('', 'd', hs.toggleConsole)
 module.bind('', 'r', hs.reload)

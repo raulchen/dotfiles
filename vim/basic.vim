@@ -20,8 +20,8 @@ filetype indent on
 set timeoutlen=1000
 set ttimeoutlen=10
 
-" Enable mouse
-set mouse=a
+" Disable mouse by default.
+set mouse=
 
 " Enable spell checking
 set spell

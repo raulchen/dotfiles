@@ -37,16 +37,10 @@ local lualine_opts = {
   },
 }
 local function setup_indent_blankline(_, _)
-  vim.opt.list = true
-  -- vim.opt.listchars:append "space:⋅"
-  vim.opt.listchars:append "eol:↴"
-  local opts = {
-    show_current_context = true,
-    show_current_context_start = false,
-    show_end_of_line = true,
-    -- space_char_blankline = " ",
+  require("ibl").setup {
+    indent = {char = "▏"},
+    scope = {enabled = true},
   }
-  require("indent_blankline").setup(opts)
 end
 
 local function setup_neozoom()

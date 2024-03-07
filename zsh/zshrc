@@ -71,10 +71,8 @@ fi
 typeset -A commands_to_plugins=(
     "bazel" "bazel"
     "docker" "docker"
-    "fasd" "fasd"
     "mvn" "mvn"
     "pyenv" "pyenv"
-    "scala" "scala"
     "zoxide" "zoxide"
 )
 

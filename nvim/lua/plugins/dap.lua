@@ -114,7 +114,7 @@ return {
     "mfussenegger/nvim-dap-python",
     config = function(_, _)
       local dap_python = require("dap-python")
-      dap_python.setup("~/.virtualenvs/debugpy/bin/python")
+      dap_python.setup("~/.local/share/nvim/mason/packages/debugpy/venv/bin/python")
       dap_python.resolve_python = function()
         return 'python'
       end

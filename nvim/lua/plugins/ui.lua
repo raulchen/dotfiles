@@ -38,8 +38,8 @@ local lualine_opts = {
 }
 local function setup_indent_blankline(_, _)
   require("ibl").setup {
-    indent = {char = "▏"},
-    scope = {enabled = true},
+    indent = { char = "▏" },
+    scope = { enabled = true },
   }
 end
 
@@ -156,10 +156,38 @@ return {
     'simrat39/symbols-outline.nvim',
     opts = {},
     keys = {
-      {'<leader>uo', '<cmd>SymbolsOutline<cr>', desc = "Toggle symbols outline" },
+      { '<leader>uo', '<cmd>SymbolsOutline<cr>', desc = "Toggle symbols outline" },
     },
     cmd = {
       'SymbolsOutline',
     },
+  },
+  {
+    "olimorris/onedarkpro.nvim",
+    priority = 1000,
+    config = function(_, _)
+      local color = require("onedarkpro.helpers")
+      local colors = {
+        bg = color.darken("bg", 3, "onedark"),
+        blue = color.brighten("blue", 40, "onedark"),
+        cyan = color.brighten("cyan", 30, "onedark"),
+        fg = color.lighten("fg", 10, "onedark"),
+        gray = color.lighten("gray", 10, "onedark"),
+        green = color.brighten("green", 20, "onedark"),
+        orange = color.brighten("orange", 20, "onedark"),
+        purple = color.lighten("purple", 15, "onedark"),
+        red = color.brighten("red", 20, "onedark"),
+        yellow = color.brighten("yellow", 20, "onedark"),
+      }
+      require("onedarkpro").setup({
+        colors = colors,
+        options = {
+          cursorline = true,
+          transparency = true,
+          highlight_inactive_windows = false,
+        }
+      })
+      vim.cmd [[colorscheme onedark]]
+    end,
   },
 }

@@ -81,7 +81,7 @@ nnoremap <leader>fT :Tags<cr>
 nnoremap <leader>fm :Marks<cr>
 " Find file history.
 nnoremap <leader>fh :History<cr>
-" FInd search history.
+" Find search history.
 nnoremap <leader>f/ :History/<cr>
 " Find command history.
 nnoremap <leader>f: :History:<cr>
@@ -91,6 +91,10 @@ nnoremap <leader>fc  :BCommits<cr>
 nnoremap <leader>fC :Commits<cr>
 " Find key mappings.
 nnoremap <leader>fk :Maps<cr>
+" Find a line in the current buffer.
+nnoremap <leader>fl :BLines<cr>
+" Find a line in all buffers.
+nnoremap <leader>fL :Lines<cr>
 
 " Insert mode completion
 inoremap <c-g><c-w> <plug>(fzf-complete-word)

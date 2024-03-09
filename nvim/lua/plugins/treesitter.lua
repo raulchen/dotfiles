@@ -92,9 +92,13 @@ return {
   {
     "nvim-treesitter/nvim-treesitter-context",
     config = function()
-      vim.keymap.set("n", "<leader>cc", function()
+      vim.cmd([[
+        hi TreesitterContextBottom gui=underline guisp=Grey
+        hi TreesitterContextLineNumberBottom gui=underline guisp=Grey
+      ]])
+      vim.keymap.set("n", "[x", function()
         require("treesitter-context").go_to_context()
-      end, { desc = "Go to context" })
+      end, { desc = "Go to context beginning" })
     end,
   },
   {

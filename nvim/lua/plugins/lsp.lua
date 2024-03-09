@@ -158,7 +158,7 @@ return {
     config = setup_lspconfig,
   },
   {
-    'jose-elias-alvarez/null-ls.nvim',
+    'nvimtools/none-ls.nvim',
     opts = null_ls_opts,
     dependencies = {
       "nvim-lua/plenary.nvim",

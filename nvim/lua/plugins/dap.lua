@@ -97,8 +97,8 @@ local function setup_dapui(_, _)
     dapui.open({ reset = true })
   end
   local keymap = vim.keymap.set
-  keymap({'n', 'v'}, '<leader>de', dapui.eval, { desc = 'Evaluate', })
-  keymap({'n', 'v'}, '<leader>du', function() dapui.toggle({reset = true}) end, { desc = 'Toggle dap-ui', })
+  keymap({ 'n', 'v' }, '<leader>de', dapui.eval, { desc = 'Evaluate', })
+  keymap({ 'n', 'v' }, '<leader>du', function() dapui.toggle({ reset = true }) end, { desc = 'Toggle dap-ui', })
 end
 
 return {
@@ -114,7 +114,7 @@ return {
     "mfussenegger/nvim-dap-python",
     config = function(_, _)
       local dap_python = require("dap-python")
-      dap_python.setup("~/.local/share/nvim/mason/packages/debugpy/venv/bin/python")
+      dap_python.setup(vim.fn.stdpath('data') .. "/mason/packages/debugpy/venv/bin/python")
       dap_python.resolve_python = function()
         return 'python'
       end

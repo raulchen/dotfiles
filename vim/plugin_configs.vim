@@ -180,3 +180,19 @@ noremap <silent> <C-M-H> :<C-U>TmuxNavigateLeft<cr>
 noremap <silent> <C-M-J> :<C-U>TmuxNavigateDown<cr>
 noremap <silent> <C-M-K> :<C-U>TmuxNavigateUp<cr>
 noremap <silent> <C-M-L> :<C-U>TmuxNavigateRight<cr>
+
+"""""""""""""""""""
+" vim-fugitive
+"""""""""""""""""""
+" Git status
+nnoremap <leader>gg :Git<cr>
+" Open in browser
+nnoremap <leader>go :GBrowse<cr>
+" Git blame
+nnoremap <leader>gB :G blame<cr>
+" Git log of the current buffer
+nnoremap <leader>gl :0Gclog<cr>
+" Git log
+nnoremap <leader>gL :Gclog<cr>
+" Git log of the visual selection
+vnoremap <leader>gl :'<,'>Gclog<cr>

@@ -103,13 +103,6 @@ return {
     config = setup_whichkey,
   },
   {
-    "lewis6991/gitsigns.nvim",
-    opts = {
-      signcolumn = false,
-      numhl = true,
-    },
-  },
-  {
     -- Show current code context.
     "SmiteshP/nvim-navic",
     dependencies = "neovim/nvim-lspconfig",

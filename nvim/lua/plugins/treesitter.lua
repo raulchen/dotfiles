@@ -21,43 +21,55 @@ local function treesitter_opts()
   opts.textobjects = {
     select = {
       enable = true,
-
       -- Automatically jump forward to textobj, similar to targets.vim
       lookahead = true,
-
       keymaps = {
-        -- You can use the capture groups defined in textobjects.scm
-        ["af"] = "@function.outer",
-        ["if"] = "@function.inner",
-        ["ac"] = "@class.outer",
-        -- You can optionally set descriptions to the mappings (used in the desc parameter of
-        -- nvim_buf_set_keymap) which plugins like which-key display
-        ["ic"] = { query = "@class.inner", desc = "Select inner part of a class region" },
-        -- You can also use captures from other query groups like `locals.scm`
-        ["as"] = { query = "@scope", query_group = "locals", desc = "Select language scope" },
+        ["ac"] = { query = "@class.outer", desc = "class outer" },
+        ["ic"] = { query = "@class.inner", desc = "class inner" },
+        ["af"] = { query = "@function.outer", desc = "function outer" },
+        ["if"] = { query = "@function.inner", desc = "function inner" },
+        ["aa"] = { query = "@parameter.outer", desc = "parameter outer" },
+        ["ia"] = { query = "@parameter.inner", desc = "parameter inner" },
+        ["al"] = { query = "@loop.outer", desc = "loop outer" },
+        ["il"] = { query = "@loop.inner", desc = "loop inner" },
+        ["ad"] = { query = "@conditional.outer", desc = "condition outer" },
+        ["id"] = { query = "@conditional.inner", desc = "condition inner" },
+        ["i="] = { query = "@assignment.inner", desc = "assignment outer" },
+        ["a="] = { query = "@assignment.outer", desc = "assignment inner" },
+        ["a/"] = { query = "@comment.outer", desc = "comment outer" },
+        ["i/"] = { query = "@comment.inner", desc = "comment inner" },
       },
-      -- You can choose the select mode (default is charwise 'v')
-      --
-      -- Can also be a function which gets passed a table with the keys
-      -- * query_string: eg '@function.inner'
-      -- * method: eg 'v' or 'o'
-      -- and should return the mode ('v', 'V', or '<c-v>') or a table
-      -- mapping query_strings to modes.
-      selection_modes = {
-        ['@parameter.outer'] = 'v', -- charwise
-        ['@function.outer'] = 'V',  -- linewise
-        ['@class.outer'] = '<c-v>', -- blockwise
+    },
+    move = {
+      enable = true,
+      set_jumps = true, -- whether to set jumps in the jumplist
+      goto_next_start = {
+        ["]f"] = { query = "@function.outer", desc = "Next function start" },
+        ["]c"] = { query = "@class.outer", desc = "Next class start" },
+        ["]a"] = { query = "@parameter.outer", desc = "Next parameter start" },
       },
-      -- If you set this to `true` (default is `false`) then any textobject is
-      -- extended to include preceding or succeeding whitespace. Succeeding
-      -- whitespace has priority in order to act similarly to eg the built-in
-      -- `ap`.
-      --
-      -- Can also be a function which gets passed a table with the keys
-      -- * query_string: eg '@function.inner'
-      -- * selection_mode: eg 'v'
-      -- and should return true of false
-      include_surrounding_whitespace = false,
+      goto_next_end = {
+        ["]F"] = { query = "@function.outer", desc = "Next function end" },
+        ["]C"] = { query = "@class.outer", desc = "Next class end" },
+      },
+      goto_previous_start = {
+        ["[f"] = { query = "@function.outer", desc = "Previous function start" },
+        ["[c"] = { query = "@class.outer", desc = "Previous class start" },
+        ["[a"] = { query = "@parameter.outer", desc = "Previous parameter start" },
+      },
+      goto_previous_end = {
+        ["[F"] = { query = "@function.outer", desc = "Previous function end" },
+        ["[C"] = { query = "@class.outer", desc = "Previous class end" },
+      },
+      -- Below will go to either the start or the end, whichever is closer.
+      goto_next = {
+        ["]d"] = { query = "@conditional.outer", desc = "Next condition start/end" },
+        ["]l"] = { query = "@loop.outer", desc = "Next loop start/end" },
+      },
+      goto_previous = {
+        ["[d"] = { query = "@conditional.outer", desc = "Previous condition start/end" },
+        ["[l"] = { query = "@loop.outer", desc = "Previous loop start/end" },
+      }
     },
   }
   return opts

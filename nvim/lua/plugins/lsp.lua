@@ -5,8 +5,8 @@ local function setup_lspconfig(_, _)
   -- See `:help vim.diagnostic.*` for documentation on any of the below functions
   local keymap = vim.keymap.set
   keymap('n', '<leader>cq', vim.diagnostic.setqflist, { desc = "Show diagnostic in quickfix list" })
-  keymap('n', '<leader>cp', vim.diagnostic.goto_prev, { desc = "Go to previous diagnostic" })
-  keymap('n', '<leader>cn', vim.diagnostic.goto_next, { desc = "Go to next diagnostic" })
+  keymap('n', '[e', vim.diagnostic.goto_prev, { desc = "Previous error/warning" })
+  keymap('n', ']e', vim.diagnostic.goto_next, { desc = "Next error/warning" })
 
   -- Use an on_attach function to only map the following keys
   -- after the language server attaches to the current buffer

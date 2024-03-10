@@ -195,4 +195,4 @@ nnoremap <leader>gl :0Gclog<cr>
 " Git log
 nnoremap <leader>gL :Gclog<cr>
 " Git log of the visual selection
-vnoremap <leader>gl :'<,'>Gclog<cr>
+vnoremap <leader>gl :Gclog<cr>

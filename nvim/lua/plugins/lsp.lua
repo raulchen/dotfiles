@@ -85,10 +85,10 @@ local function setup_server(server)
   local capabilities = require('cmp_nvim_lsp').default_capabilities()
   local config = {
     capabilities = capabilities,
-    on_attach = function(client, _ --[[bufnr]])
+    on_attach = function(client, buf)
       if client.name == "clangd" then
         -- Like "a.vim", use command "A" for switching between source/header files.
-        vim.api.nvim_create_user_command('A', "ClangdSwitchSourceHeader", { nargs = 0 })
+        vim.api.nvim_buf_create_user_command(buf, 'A', "ClangdSwitchSourceHeader", { nargs = 0 })
       end
     end,
   }

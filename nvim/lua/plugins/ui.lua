@@ -187,7 +187,8 @@ return {
         Constant = { fg = "${green}", extend = true },
         ["@constant"] = { fg = "${green}", extend = true },
         ["@constant.builtin"] = { link = "Constant" },
-        SpellBad = { undercurl = true },
+        SpellBad = { undercurl = true, sp = "${red}" },
+        DiagnosticUnderlineError = { undercurl = true, sp = "${red}" },
       }
       require("onedarkpro").setup({
         colors = colors,

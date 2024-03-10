@@ -190,9 +190,15 @@ return {
         SpellBad = { undercurl = true, sp = "${red}" },
         DiagnosticUnderlineError = { undercurl = true, sp = "${red}" },
       }
+
+      local styles = {
+        comments = "italic",
+      }
+
       require("onedarkpro").setup({
         colors = colors,
         highlights = highlights,
+        styles = styles,
         options = {
           cursorline = true,
           highlight_inactive_windows = false,

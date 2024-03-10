@@ -26,7 +26,6 @@ call extend(g:vim_plugins, [
 " UI
 call extend(g:vim_plugins, [
 \  "mhinz/vim-startify",
-\  "connorholyday/vim-snazzy",
 \  "jszakmeister/vim-togglecursor",
 \  "powerman/vim-plugin-AnsiEsc",
 \])
@@ -42,6 +41,7 @@ call extend(g:vim_plugins, [
 " Following plugins are not enabled for neovim.
 if !has("nvim")
     call extend(g:vim_plugins, [
+    \  "connorholyday/vim-snazzy",
     \  "scrooloose/nerdtree",
     \  "itchyny/lightline.vim",
     \  "mgee/lightline-bufferline",

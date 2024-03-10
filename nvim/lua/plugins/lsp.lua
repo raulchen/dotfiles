@@ -56,25 +56,8 @@ local function setup_lspconfig(_, _)
   })
 end
 
--- NOTE: Use pip to install pylsp and its plugins, do not use Mason.
--- pip install 'python-lsp-server[all]' python-lsp-black python-lsp-isort
-
 -- Settings for each LSP server.
 local server_settings = {
-  pylsp = {
-    pylsp = {
-      plugins = {
-        autopep8 = { enabled = false },
-        black = { enabled = true },
-        flake8 = { enabled = true },
-        isort = { enabled = true },
-        mccabe = { enabled = false },
-        pycodestyle = { enabled = false },
-        pydocstyle = { enabled = false },
-        pyflakes = { enabled = false },
-      },
-    },
-  },
   pyright = {
     python = {
       analysis = {

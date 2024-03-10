@@ -2,49 +2,12 @@ DOTFILES=$HOME/dotfiles
 
 # Path to your oh-my-zsh installation.
 export ZSH=$DOTFILES/zsh/oh-my-zsh
-# Set name of the theme to load.
-# Look in ~/.oh-my-zsh/themes/
-# Optionally, if you set this to "random", it'll load a random theme each
-# time that oh-my-zsh is loaded.
-#ZSH_THEME="robbyrussell"
+
+# === oh-my-zsh settings ===
+
 ZSH_THEME="my-theme"
-
-# Uncomment the following line to use case-sensitive completion.
-# CASE_SENSITIVE="true"
-
-# Uncomment the following line to use hyphen-insensitive completion. Case
-# sensitive completion must be off. _ and - will be interchangeable.
 HYPHEN_INSENSITIVE="true"
-
-# Uncomment the following line to disable bi-weekly auto-update checks.
-# DISABLE_AUTO_UPDATE="true"
-
-# Uncomment the following line to change how often to auto-update (in days).
-# export UPDATE_ZSH_DAYS=13
-
-# Uncomment the following line to disable colors in ls.
-# DISABLE_LS_COLORS="true"
-
-# Uncomment the following line to disable auto-setting terminal title.
-# DISABLE_AUTO_TITLE="true"
-
-# Uncomment the following line to enable command auto-correction.
-# ENABLE_CORRECTION="true"
-
-# Uncomment the following line to display red dots whilst waiting for completion.
 COMPLETION_WAITING_DOTS="true"
-
-# Uncomment the following line if you want to disable marking untracked files
-# under VCS as dirty. This makes repository status check for large repositories
-# much, much faster.
-# DISABLE_UNTRACKED_FILES_DIRTY="true"
-
-# Uncomment the following line if you want to change the command execution time
-# stamp shown in the history command output.
-# The optional three formats: "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
-# HIST_STAMPS="mm/dd/yyyy"
-
-# Would you like to use another custom folder than $ZSH/custom?
 ZSH_CUSTOM=$DOTFILES/zsh/oh_my_zsh_custom
 
 # NOTE: PATH should be set before initializing oh-my-zsh plugins.
@@ -57,11 +20,15 @@ if command -v pyenv 1>/dev/null 2>&1; then
     eval "$(pyenv init -)"
 fi
 
-# Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
-# Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
-# Example format: plugins=(rails git textmate ruby lighthouse)
-# Add wisely, as too many plugins slow down shell startup.
-plugins=(git async colored-man-pages zsh-syntax-highlighting vi-mode extract git-prompt)
+plugins=(
+    async
+    colored-man-pages
+    extract
+    git
+    git-prompt
+    vi-mode
+    zsh-syntax-highlighting
+)
 
 if [[ `uname` == 'Darwin' ]]; then
     plugins+=(macos brew)
@@ -91,18 +58,12 @@ source $ZSH/oh-my-zsh.sh
 autoload bashcompinit
 bashcompinit
 
-# You may need to manually set your language environment
-# export LANG=en_US.UTF-8
+# === Environment variables ===
 
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
 
-# Preferred editor for local and remote sessions
-# if [[ -n $SSH_CONNECTION ]]; then
-#   export EDITOR='vim'
-# else
-#   export EDITOR='mvim'
-# fi
+export XDG_CONFIG_HOME=~/.config
 
 if which nvim >/dev/null 2>&1 ; then
     export EDITOR='nvim'
@@ -110,24 +71,10 @@ else
     export EDITOR='vim'
 fi
 
-# Compilation flags
-# export ARCHFLAGS="-arch x86_64"
-
-# ssh
-# export SSH_KEY_PATH="~/.ssh/dsa_id"
-
-# Set personal aliases, overriding those provided by oh-my-zsh libs,
-# plugins, and themes. Aliases can be placed here, though oh-my-zsh
-# users are encouraged to define aliases within the ZSH_CUSTOM folder.
-# For a full list of active aliases, run `alias`.
-#
-# Example aliases
-# alias zshconfig="mate ~/.zshrc"
-# alias ohmyzsh="mate ~/.oh-my-zsh"
-#
-
 HISTSIZE=130000
 SAVEHIST=130000
+
+# === fzf settings ===
 
 if type rg >/dev/null 2>&1 ; then
     export FZF_DEFAULT_COMMAND='rg --hidden --files'
@@ -135,33 +82,18 @@ if type rg >/dev/null 2>&1 ; then
 fi
 export FZF_DEFAULT_OPTS='--reverse --bind "ctrl-/:toggle-preview,ctrl-d:page-down,ctrl-u:page-up,ctrl-p:up,ctrl-n:down"'
 
-
 if [[ ! -z $TMUX ]]; then
     export FZF_TMUX=1
-fi
-
-if [[ -z $TERM_PROGRAM ]]; then
-    export TERM_PROGRAM=iTerm.app
 fi
 
 bindkey '^R' history-incremental-pattern-search-backward
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
-source $DOTFILES/zsh/alias.zsh
-source $DOTFILES/zsh/functions.zsh
-
-if test -e "$DOTFILES/zsh/zshrc.local"; then
-    source "$DOTFILES/zsh/zshrc.local"
-fi
-
-if [[ -n "$TMUX" ]]; then
-    export ZLE_RPROMPT_INDENT=0
-fi
-
-export XDG_CONFIG_HOME=~/.config
-
 # === Shell improvements ===
+
+# Remove the extra space after the right prompt.
+export ZLE_RPROMPT_INDENT=0
 
 # Set cursor shape based on vi-mode.
 VI_MODE_SET_CURSOR=true
@@ -184,3 +116,12 @@ function expand-dots {
 }
 zle -N expand-dots
 bindkey -M viins "/" expand-dots
+
+# === Load aliases, functions, and local settings ===
+
+source $DOTFILES/zsh/alias.zsh
+source $DOTFILES/zsh/functions.zsh
+
+if test -e "$DOTFILES/zsh/zshrc.local"; then
+    source "$DOTFILES/zsh/zshrc.local"
+fi

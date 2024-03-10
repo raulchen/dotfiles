@@ -1,127 +1,119 @@
 local function setup_lspconfig(_, _)
   vim.lsp.set_log_level("warn")
 
-  -- Mappings.
+  -- Global mappings.
   -- See `:help vim.diagnostic.*` for documentation on any of the below functions
   local keymap = vim.keymap.set
   keymap('n', '<leader>ce', vim.diagnostic.setloclist, { desc = "Show all errors/warnings" })
   keymap('n', '[e', vim.diagnostic.goto_prev, { desc = "Previous error/warning" })
   keymap('n', ']e', vim.diagnostic.goto_next, { desc = "Next error/warning" })
 
-  -- Use an on_attach function to only map the following keys
-  -- after the language server attaches to the current buffer
-  local on_attach = function(client, bufnr)
+  -- Buffer local mappings.
+  local on_attach = function(ev)
     -- Enable completion triggered by <c-x><c-o>
-    vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
+    vim.bo[ev.buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
+
+    local function map(mode, key, cmd, desc)
+      local opts = { buffer = ev.buf, desc = desc }
+      vim.keymap.set(mode, key, cmd, opts)
+    end
 
     -- Mappings.
     -- See `:help vim.lsp.*` for documentation on any of the below functions
-    keymap('n', 'gd', vim.lsp.buf.definition, { buffer = bufnr, desc = "Go to definition", })
-    keymap('n', 'gi', vim.lsp.buf.implementation, { buffer = bufnr, desc = "Go to implementation", })
-    keymap('n', 'gt', vim.lsp.buf.type_definition, { buffer = bufnr, desc = "Go to type definition", })
-    keymap('n', 'K', vim.lsp.buf.hover, { buffer = bufnr, desc = "Display hover information", })
-    keymap({ 'n', 'i' }, '<C-k>', vim.lsp.buf.signature_help, { buffer = bufnr, desc = "Show signature", })
+    map('n', 'gd', vim.lsp.buf.definition, "Go to definition")
+    map('n', 'gi', vim.lsp.buf.implementation, "Go to implementation")
+    map('n', 'gt', vim.lsp.buf.type_definition, "Go to type definition")
+    map('n', 'K', vim.lsp.buf.hover, "Display hover information")
+    map({ 'n', 'i' }, '<C-k>', vim.lsp.buf.signature_help, "Show signature")
 
-    keymap('n', '<leader>cd', vim.lsp.buf.declaration, { buffer = bufnr, desc = "Go to declaration", })
-    keymap('n', '<leader>cr', vim.lsp.buf.rename, { buffer = bufnr, desc = "Rename symbol under cursor", })
-    keymap('n', '<leader>ca', vim.lsp.buf.code_action, { buffer = bufnr, desc = "Code action", })
-    keymap('n', '<leader>cu', vim.lsp.buf.references, { buffer = bufnr, desc = "Show usages", })
-    keymap('n', '<leader>ci', vim.lsp.buf.incoming_calls, { buffer = bufnr, desc = "Show incoming calls", })
-    keymap('n', '<leader>co', vim.lsp.buf.outgoing_calls, { buffer = bufnr, desc = "Show outgoing calls", })
+    map('n', '<leader>cd', vim.lsp.buf.declaration, "Go to declaration")
+    map('n', '<leader>cr', vim.lsp.buf.rename, "Rename symbol under cursor")
+    map('n', '<leader>ca', vim.lsp.buf.code_action, "Code action")
+    map('n', '<leader>cu', vim.lsp.buf.references, "Show usages")
+    map('n', '<leader>ci', vim.lsp.buf.incoming_calls, "Show incoming calls")
+    map('n', '<leader>co', vim.lsp.buf.outgoing_calls, "Show outgoing calls")
 
-    keymap('n', '<leader>cf', vim.lsp.buf.format, { buffer = bufnr, desc = "Format code", })
-    keymap('v', '<leader>cf', ":lua vim.lsp.buf.format()<CR>", { buffer = bufnr, desc = "Format selected code", })
+    map('n', '<leader>cf', vim.lsp.buf.format, "Format code")
+    map('v', '<leader>cf', ":lua vim.lsp.buf.format()<CR>", "Format selected code")
 
-    keymap('n', '<leader>cs', vim.lsp.buf.document_symbol, { buffer = bufnr, desc = "List symbols in current buffer", })
-    keymap('n', '<leader>cS', vim.lsp.buf.workspace_symbol, { buffer = bufnr, desc = "Search symbols in workspace", })
+    map('n', '<leader>cs', vim.lsp.buf.document_symbol, "List symbols in current buffer")
+    map('n', '<leader>cS', vim.lsp.buf.workspace_symbol, "Search symbols in workspace")
 
-    keymap('n', '<leader>cwa', vim.lsp.buf.add_workspace_folder, { buffer = bufnr, desc = "Add workspace folder", })
-    keymap('n', '<leader>cwr', vim.lsp.buf.remove_workspace_folder, { buffer = bufnr, desc = "Remove workspace folder", })
-    keymap('n', '<leader>cwl', function()
+    map('n', '<leader>cwa', vim.lsp.buf.add_workspace_folder, "Add workspace folder")
+    map('n', '<leader>cwr', vim.lsp.buf.remove_workspace_folder, "Remove workspace folder")
+    map('n', '<leader>cwl', function()
       print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
-    end, { buffer = bufnr, desc = "List workspace folders", })
+    end, "List workspace folders")
 
     local gp = require('goto-preview')
-    keymap('n', 'gD', gp.goto_preview_definition, { buffer = bufnr, desc = "Preview definition", })
-    keymap('n', 'gT', gp.goto_preview_type_definition, { buffer = bufnr, desc = "Preview type definition", })
-    keymap('n', 'gI', gp.goto_preview_implementation, { buffer = bufnr, desc = "Preview implementation", })
-
-    if client.name == "clangd" then
-      -- Like "a.vim", use command "A" for switching between source/header files.
-      vim.api.nvim_create_user_command('A', "ClangdSwitchSourceHeader", { nargs = 0 })
-    end
+    map('n', 'gD', gp.goto_preview_definition, "Preview definition")
+    map('n', 'gT', gp.goto_preview_type_definition, "Preview type definition")
+    map('n', 'gI', gp.goto_preview_implementation, "Preview implementation")
   end
+  vim.api.nvim_create_autocmd('LspAttach', {
+    group = vim.api.nvim_create_augroup('UserLspConfig', {}),
+    callback = on_attach,
+  })
+end
 
-  -- Add additional capabilities supported by nvim-cmp
-  local capabilities = vim.lsp.protocol.make_client_capabilities()
-  capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
+-- NOTE: Use pip to install pylsp and its plugins, do not use Mason.
+-- pip install 'python-lsp-server[all]' python-lsp-black python-lsp-isort
 
-  local servers = {
-    'bashls',
-    'clangd',
-    'gopls',
-    "jdtls",
-    'pyright',
-    'rust_analyzer',
-    'lua_ls',
-  }
-
-  -- NOTE: Use pip to install pylsp and its plugins, do not use Mason.
-  -- pip install 'python-lsp-server[all]' python-lsp-black python-lsp-isort
-
-  -- Settings for each LSP server.
-  local server_settings = {
+-- Settings for each LSP server.
+local server_settings = {
+  pylsp = {
     pylsp = {
-      pylsp = {
-        plugins = {
-          autopep8 = { enabled = false },
-          black = { enabled = true },
-          flake8 = { enabled = true },
-          isort = { enabled = true },
-          mccabe = { enabled = false },
-          pycodestyle = { enabled = false },
-          pydocstyle = { enabled = false },
-          pyflakes = { enabled = false },
-        },
+      plugins = {
+        autopep8 = { enabled = false },
+        black = { enabled = true },
+        flake8 = { enabled = true },
+        isort = { enabled = true },
+        mccabe = { enabled = false },
+        pycodestyle = { enabled = false },
+        pydocstyle = { enabled = false },
+        pyflakes = { enabled = false },
       },
     },
-    pyright = {
-      python = {
-        analysis = {
-          autoSearchPaths = true,
-          useLibraryCodeForTypes = true,
-          diagnosticMode = 'openFilesOnly',
-        },
+  },
+  pyright = {
+    python = {
+      analysis = {
+        autoSearchPaths = true,
+        useLibraryCodeForTypes = true,
+        diagnosticMode = 'openFilesOnly',
       },
     },
-    lua_ls = {
-      Lua = {
-        workspace = {
-          -- Add the Neovim runtime files to the path.
-          library = vim.api.nvim_get_runtime_file('', true),
-          -- Avoid annoying prompts.
-          -- https://github.com/neovim/nvim-lspconfig/issues/1700#issuecomment-1033127328
-          checkThirdParty = false,
-        },
+  },
+  lua_ls = {
+    Lua = {
+      workspace = {
+        -- Add the Neovim runtime files to the path.
+        library = vim.api.nvim_get_runtime_file('', true),
+        -- Avoid annoying prompts.
+        -- https://github.com/neovim/nvim-lspconfig/issues/1700#issuecomment-1033127328
+        checkThirdParty = false,
       },
     },
-  }
+  },
+}
 
-  local lspconfig = require('lspconfig')
-  for _, lsp in ipairs(servers) do
-    local config = {
-      on_attach = on_attach,
-      flags = {
-        -- This will be the default in neovim 0.7+
-        debounce_text_changes = 150,
-      },
-      capabilities = capabilities,
-    }
-    if server_settings[lsp] ~= nil then
-      config.settings = server_settings[lsp]
-    end
-    lspconfig[lsp].setup(config)
+local function setup_server(server)
+  -- Add additional capabilities supported by nvim-cmp
+  local capabilities = require('cmp_nvim_lsp').default_capabilities()
+  local config = {
+    capabilities = capabilities,
+    on_attach = function(client, _ --[[bufnr]])
+      if client.name == "clangd" then
+        -- Like "a.vim", use command "A" for switching between source/header files.
+        vim.api.nvim_create_user_command('A', "ClangdSwitchSourceHeader", { nargs = 0 })
+      end
+    end,
+  }
+  if server_settings[server] ~= nil then
+    config.settings = server_settings[server]
   end
+  local lspconfig = require('lspconfig')
+  lspconfig[server].setup(config)
 end
 
 local function null_ls_opts()
@@ -156,6 +148,20 @@ return {
   {
     'neovim/nvim-lspconfig',
     config = setup_lspconfig,
+  },
+  {
+    "williamboman/mason-lspconfig.nvim",
+    opts = {
+      ensure_installed = {
+        "bashls",
+        "clangd",
+        "lua_ls",
+        "pyright",
+      },
+      handlers = {
+        setup_server,
+      },
+    },
   },
   {
     'nvimtools/none-ls.nvim',

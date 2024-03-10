@@ -61,7 +61,7 @@ fi
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git async colored-man-pages zsh-syntax-highlighting my-vim-mode extract git-prompt)
+plugins=(git async colored-man-pages zsh-syntax-highlighting vi-mode extract git-prompt)
 
 if [[ `uname` == 'Darwin' ]]; then
     plugins+=(macos brew)
@@ -161,6 +161,26 @@ fi
 
 export XDG_CONFIG_HOME=~/.config
 
-# Make Ctrl-P/N search by begining like Up/Down arrow keys do.
+# === Shell improvements ===
+
+# Set cursor shape based on vi-mode.
+VI_MODE_SET_CURSOR=true
+
+# Make Ctrl-P/N search by prefix like Up/Down arrow keys do.
 bindkey '^P' up-line-or-beginning-search
 bindkey '^N' down-line-or-beginning-search
+
+# Ctrl-V: edit in vim
+bindkey '^V' edit-command-line
+bindkey -M vicmd '^V' edit-command-line
+
+# Expand ".../"
+function expand-dots {
+   if [[ $LBUFFER =~ ".*\.\.\.$" ]]; then
+	 zle _expand_alias
+	 zle expand-word
+   fi
+   zle self-insert
+}
+zle -N expand-dots
+bindkey -M viins "/" expand-dots

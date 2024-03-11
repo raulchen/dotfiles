@@ -196,3 +196,10 @@ nnoremap <leader>gl :0Gclog<cr>
 nnoremap <leader>gL :Gclog<cr>
 " Git log of the visual selection
 vnoremap <leader>gl :Gclog<cr>
+
+"""""""""""""""""""
+" vim-plugin-AnsiEsc
+"""""""""""""""""""
+" Disable default mappings
+let g:no_cecutil_maps = 0
+

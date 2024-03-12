@@ -13,6 +13,7 @@ local function setup_whichkey(_, _)
     c = { name = "code" },
     d = { name = "debug" },
     f = { name = "find" },
+    g = { name = "git" },
     t = { name = "terminal" },
     u = { name = "ui" },
   }, { prefix = "<leader>" })

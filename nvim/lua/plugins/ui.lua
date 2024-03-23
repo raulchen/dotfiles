@@ -14,7 +14,6 @@ local function setup_whichkey(_, _)
     d = { name = "debug" },
     f = { name = "find" },
     g = { name = "git" },
-    t = { name = "terminal" },
     u = { name = "ui" },
   }, { prefix = "<leader>" })
 end
@@ -48,43 +47,6 @@ local function setup_neozoom()
   require("neo-zoom").setup()
   vim.keymap.set('n', '<c-w>z', function() vim.cmd('NeoZoomToggle') end, { desc = "Toggle zoom" })
   vim.keymap.set('n', '<leader>uz', function() vim.cmd('NeoZoomToggle') end, { desc = "Toggle zoom" })
-end
-
-local function setup_toggleterm(_, _)
-  local opts = {
-    direction = 'float',
-    open_mapping = [[<c-t>]],
-    size = function(term)
-      if term.direction == "horizontal" then
-        return vim.o.lines * 0.3
-      elseif term.direction == "vertical" then
-        return vim.o.columns * 0.3
-      end
-    end,
-    float_opts = {
-      border = 'curved',
-    },
-  }
-  require("toggleterm").setup(opts)
-
-  -- Keymaps
-  local keymap = vim.keymap.set
-  keymap("n", "<leader>tt", "<cmd>ToggleTerm<cr>", { desc = "Toggle terminal" })
-  keymap("n", "<leader>tf", "<cmd>ToggleTerm direction=float<cr>", { desc = "Toggle float terminal" })
-  keymap("n", "<leader>th", "<cmd>ToggleTerm direction=horizontal<cr>", { desc = "Toggle horizontal terminal" })
-  keymap("n", "<leader>tv", "<cmd>ToggleTerm direction=vertical<cr>", { desc = "Toggle vertical terminal" })
-
-  vim.api.nvim_create_autocmd({ 'TermOpen' }, {
-    -- Use term://*toggleterm#* if only for toggleterm.nvim
-    pattern = "term://*",
-    callback = function()
-      local keymap_opts = { buffer = 0 }
-      keymap('t', '<C-M-h>', [[<Cmd>TmuxNavigateLeft<CR>]], keymap_opts)
-      keymap('t', '<C-M-j>', [[<Cmd>TmuxNavigateDown<CR>]], keymap_opts)
-      keymap('t', '<C-M-k>', [[<Cmd>TmuxNavigateUp<CR>]], keymap_opts)
-      keymap('t', '<C-M-l>', [[<Cmd>TmuxNavigateRight<CR>]], keymap_opts)
-    end
-  })
 end
 
 return {
@@ -140,11 +102,6 @@ return {
         winblend = 0,
       },
     },
-  },
-  {
-    'akinsho/toggleterm.nvim',
-    version = '*',
-    config = setup_toggleterm,
   },
   {
     'simrat39/symbols-outline.nvim',

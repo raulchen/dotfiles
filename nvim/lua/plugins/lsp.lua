@@ -1,3 +1,15 @@
+function FormatRange()
+  local start_line = vim.fn.getpos("'<")[2]
+  local end_line = vim.fn.getpos("'>")[2]
+  local range = {
+    ['start'] = { start_line, 0 },
+    ['end'] = { end_line, 0 },
+  }
+  vim.lsp.buf.format({
+    range = range,
+  })
+end
+
 local function setup_lspconfig(_, _)
   vim.lsp.set_log_level("warn")
 
@@ -33,8 +45,8 @@ local function setup_lspconfig(_, _)
     map('n', '<leader>ci', vim.lsp.buf.incoming_calls, "Show incoming calls")
     map('n', '<leader>co', vim.lsp.buf.outgoing_calls, "Show outgoing calls")
 
-    map('n', '<leader>cf', vim.lsp.buf.format, "Format code")
-    map('v', '<leader>cf', ":lua vim.lsp.buf.format()<CR>", "Format selected code")
+    map('n', '<leader>cf', vim.lsp.buf.format, "Format buffer")
+    map('v', '<leader>cf', ":lua FormatRange()<CR>", "Format selected range")
 
     map('n', '<leader>cs', vim.lsp.buf.document_symbol, "List symbols in current buffer")
     map('n', '<leader>cS', vim.lsp.buf.workspace_symbol, "Search symbols in workspace")

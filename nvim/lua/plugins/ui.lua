@@ -119,16 +119,16 @@ return {
     config = function(_, _)
       local color = require("onedarkpro.helpers")
       local colors = {
-        red     = '#ff5c57',
-        green   = '#5af78e',
-        yellow  = '#f3f99d',
-        blue    = '#57c7ff',
+        red = '#ff5c57',
+        green = '#5af78e',
+        yellow = '#f3f99d',
+        blue = '#57c7ff',
         magenta = '#ff6ac1',
-        cyan    = '#9aedfe',
-        purple  = color.lighten("purple", 15, "onedark"),
-        orange  = color.brighten("orange", 15, "onedark"),
+        cyan = '#9aedfe',
+        purple = color.lighten("purple", 15, "onedark"),
+        orange = color.brighten("orange", 15, "onedark"),
         comment = color.lighten("comment", 5, "onedark"),
-        fg      = color.brighten("fg", 5, "onedark"),
+        fg = color.brighten("fg", 5, "onedark"),
         light_red = color.lighten("red", 15, "onedark"),
       }
 

@@ -137,6 +137,7 @@ return {
         ["@variable"] = { link = "Identifier" },
         ["@variable.parameter"] = { link = "Identifier" },
         ["@variable.member"] = { link = "Identifier" },
+        ["@odp.interpolation.python"] = { link = "Identifier" }, -- Variables in f-strings.
         ["@property"] = { fg = "${cyan}", extend = true },
         String = { fg = "${yellow}", extend = true },
         pythonString = { link = "String", extend = true },

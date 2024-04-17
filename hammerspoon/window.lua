@@ -9,7 +9,7 @@ hs.window.animationDuration = 0
 hs.hints.hintChars = utils.strToTable('ASDFGQWERTZXCVB12345')
 prefix.bind('', 'w', function() hs.hints.windowHints() end)
 
-local switcher = hs.window.switcher.new(nil, {
+local switcher = hs.window.switcher.new(hs.window.filter.new():setCurrentSpace(true):setDefaultFilter{}, {
     fontName = ".AppleSystemUIFont",
     textSize = 16,
     textColor = { white = 0, alpha = 1 },

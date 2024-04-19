@@ -82,6 +82,8 @@ if type rg >/dev/null 2>&1 ; then
 fi
 
 eval "$(fzf --zsh)"
+# https://raw.githubusercontent.com/junegunn/fzf-git.sh/main/fzf-git.sh
+source $DOTFILES/zsh/fzf-git.sh
 
 # === Shell improvements ===
 

@@ -80,6 +80,16 @@ if type rg >/dev/null 2>&1 ; then
     export FZF_DEFAULT_COMMAND='rg --hidden --files --glob="!.git"'
     export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 fi
+export FZF_CTRL_T_OPTS="
+  --preview 'bat -n --color=always {} --line-range :500 2>/dev/null || cat {}'
+  --preview-window 'right,50%,<70(down,50%)'
+  --header 'CTRL-/ to toggle preview'"
+export FZF_CTRL_R_OPTS="
+  --preview 'echo {}' --preview-window up:3:hidden:wrap
+  --bind 'ctrl-/:toggle-preview'
+  --bind 'ctrl-y:execute-silent(echo -n {2..} | pbcopy)+abort'
+  --color header:italic
+  --header 'CTRL-Y to copy command; CTRL-/ to preview full command'"
 export FZF_TMUX_OPTS='-p80%,60%'
 
 eval "$(fzf --zsh)"

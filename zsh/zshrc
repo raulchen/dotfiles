@@ -80,6 +80,7 @@ if type rg >/dev/null 2>&1 ; then
     export FZF_DEFAULT_COMMAND='rg --hidden --files --glob="!.git"'
     export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 fi
+export FZF_TMUX_OPTS='-p80%,60%'
 
 eval "$(fzf --zsh)"
 # https://raw.githubusercontent.com/junegunn/fzf-git.sh/main/fzf-git.sh

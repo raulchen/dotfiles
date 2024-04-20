@@ -1,27 +1,3 @@
-# fe [FUZZY PATTERN] - Open the selected file with the default editor
-#   - Bypass fuzzy finder if there's only one match (--select-1)
-#   - Exit if there's no match (--exit-0)
-fe() {
-    IFS=''
-    local declare files=($(fzf-tmux --query="$1" --select-1 --exit-0))
-    [[ -n "$files" ]] && ${EDITOR:-vim} "${files[@]}"
-    unset IFS
-}
-
-# fd - cd to selected directory
-fd() {
-    local dir
-    dir=$(find ${1:-*} -path '*/\.*' -prune \
-        -o -type d -print 2> /dev/null | fzf-tmux +m) &&
-        cd "$dir"
-}
-
-# fda - including hidden directories
-fda() {
-    local dir
-    dir=$(find ${1:-.} -type d 2> /dev/null | fzf-tmux +m) && cd "$dir"
-}
-
 # fu - cd upward
 fu() {
     print_parent_dirs() {
@@ -44,11 +20,6 @@ flog() {
       --delimiter=' ' \
       --preview "git show {1} | bat --color=always -l gitlog --line-range :$LINES --style plain" \
       --bind 'enter:become(git show {1})'
-}
-
-fz() {
-    local dir
-    dir="$(fasd -Rdl "$1" | fzf-tmux -1 -0 --no-sort +m)" && cd "${dir}" || return 1
 }
 
 frg() {

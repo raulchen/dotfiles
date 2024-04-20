@@ -91,11 +91,14 @@ if type fd >/dev/null 2>&1 ; then
         fd --type d --hidden --follow --exclude ".git" . "$1"
     }
 fi
-export FZF_FILE_PREVIEW_CMD="bat -n --color=always --line-range :500 {}"
+export FZF_FILE_PREVIEW_CMD="bat -n --color=always --line-range :$LINES {}"
 export FZF_DIR_PREVIEW_CMD="ls -1 --color=always {}"
+export FZF_PREVIEW_WINDOW="right,50%,<70(down,50%)"
+export FZF_TMUX_OPTS='-p90%,90%'
+
 export FZF_CTRL_T_OPTS="
   --preview '[ -f {} ] && $FZF_FILE_PREVIEW_CMD || [ -d {} ] && $FZF_DIR_PREVIEW_CMD'
-  --preview-window 'right,50%,<70(down,50%)'
+  --preview-window $FZF_PREVIEW_WINDOW
   --header 'CTRL-/ to toggle preview'"
 export FZF_CTRL_R_OPTS="
   --preview 'echo {}' --preview-window up:3:hidden:wrap
@@ -103,7 +106,6 @@ export FZF_CTRL_R_OPTS="
   --bind 'ctrl-y:execute-silent(echo -n {2..} | pbcopy)+abort'
   --color header:italic
   --header 'CTRL-Y to copy command; CTRL-/ to preview full command'"
-export FZF_TMUX_OPTS='-p80%,60%'
 
 eval "$(fzf --zsh)"
 # https://raw.githubusercontent.com/junegunn/fzf-git.sh/main/fzf-git.sh

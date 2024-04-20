@@ -76,12 +76,25 @@ SAVEHIST=130000
 
 # === fzf settings ===
 
-if type rg >/dev/null 2>&1 ; then
-    export FZF_DEFAULT_COMMAND='rg --hidden --files --glob="!.git"'
+if type fd >/dev/null 2>&1 ; then
+    export FZF_DEFAULT_COMMAND="fd --hidden --strip-cwd-prefix --exclude .git"
     export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+    export FZF_ALT_C_COMMAND="fd --type=d --hidden --strip-cwd-prefix --exclude .git"
+
+    # Use fd for listing path candidates.
+    _fzf_compgen_path() {
+        fd --hidden --follow --exclude ".git" . "$1"
+    }
+
+    # Use fd to generate the list for directory completion
+    _fzf_compgen_dir() {
+        fd --type d --hidden --follow --exclude ".git" . "$1"
+    }
 fi
+export FZF_FILE_PREVIEW_CMD="bat -n --color=always --line-range :500 {}"
+export FZF_DIR_PREVIEW_CMD="ls -1 --color=always {}"
 export FZF_CTRL_T_OPTS="
-  --preview 'bat -n --color=always {} --line-range :500 2>/dev/null || cat {}'
+  --preview '[ -f {} ] && $FZF_FILE_PREVIEW_CMD || [ -d {} ] && $FZF_DIR_PREVIEW_CMD'
   --preview-window 'right,50%,<70(down,50%)'
   --header 'CTRL-/ to toggle preview'"
 export FZF_CTRL_R_OPTS="

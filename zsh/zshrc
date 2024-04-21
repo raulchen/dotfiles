@@ -96,14 +96,12 @@ export FZF_FILE_PREVIEW_CMD="bat -n --color=always --line-range :$LINES {}"
 export FZF_DIR_PREVIEW_CMD="ls -1 --color=always {}"
 export FZF_PREVIEW_WINDOW="right,50%,<70(down,50%)"
 export FZF_TMUX_OPTS='-p90%,90%'
-
+export FZF_DEFAULT_OPTS="--reverse --bind 'ctrl-/:toggle-preview,ctrl-d:page-down,ctrl-u:page-up'"
 export FZF_CTRL_T_OPTS="
   --preview '[ -f {} ] && $FZF_FILE_PREVIEW_CMD || [ -d {} ] && $FZF_DIR_PREVIEW_CMD'
-  --preview-window $FZF_PREVIEW_WINDOW
-  --header 'CTRL-/ to toggle preview'"
+  --preview-window $FZF_PREVIEW_WINDOW"
 export FZF_CTRL_R_OPTS="
   --preview 'echo {}' --preview-window up:3:hidden:wrap
-  --bind 'ctrl-/:toggle-preview'
   --bind 'ctrl-y:execute-silent(echo -n {2..} | pbcopy)+abort'
   --color header:italic
   --header 'CTRL-Y to copy command; CTRL-/ to preview full command'"

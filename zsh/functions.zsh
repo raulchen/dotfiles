@@ -24,7 +24,7 @@ flog() {
 }
 
 frg() {
-    rg --color=always --line-number --no-heading --smart-case ${*:-} |
+    rg --color=always --line-number --no-heading --smart-case --no-context-separator --field-context-separator : ${*:-} |
       fzf --ansi \
           --color "hl:-1:underline,hl+:-1:underline:reverse" \
           --delimiter : \

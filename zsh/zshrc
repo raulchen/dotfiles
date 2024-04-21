@@ -36,6 +36,7 @@ fi
 
 # The following plugins will be loaded only when the corresponding commands exist.
 typeset -A commands_to_plugins=(
+    "eza" "eza"
     "bazel" "bazel"
     "docker" "docker"
     "mvn" "mvn"

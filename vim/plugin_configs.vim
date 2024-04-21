@@ -1,7 +1,6 @@
 """"""""""""""""""""""""""""""
 " FZF
 """"""""""""""""""""""""""""""
-let g:fzf_history_dir = g:vim_temp_dir_root."fzf-history"
 " [Buffers] Jump to the existing window if possible
 let g:fzf_buffers_jump = 1
 

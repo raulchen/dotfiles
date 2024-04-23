@@ -9,11 +9,12 @@ local function setup_whichkey(_, _)
   local wk = require("which-key")
   wk.setup()
   wk.register({
-    b = { name = "code" },
+    b = { name = "buffers" },
     c = { name = "code" },
     d = { name = "debug" },
     f = { name = "find" },
     g = { name = "git" },
+    s = { name = "sessions" },
     u = { name = "ui" },
   }, { prefix = "<leader>" })
 end

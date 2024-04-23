@@ -16,6 +16,7 @@ local function setup_whichkey(_, _)
     g = { name = "git" },
     s = { name = "sessions" },
     u = { name = "ui" },
+    w = { name = "windows" },
   }, { prefix = "<leader>" })
 end
 
@@ -47,7 +48,7 @@ end
 local function setup_neozoom()
   require("neo-zoom").setup()
   vim.keymap.set('n', '<c-w>z', function() vim.cmd('NeoZoomToggle') end, { desc = "Toggle zoom" })
-  vim.keymap.set('n', '<leader>uz', function() vim.cmd('NeoZoomToggle') end, { desc = "Toggle zoom" })
+  vim.keymap.set('n', '<leader>wz', function() vim.cmd('NeoZoomToggle') end, { desc = "Toggle zoom" })
 end
 
 return {

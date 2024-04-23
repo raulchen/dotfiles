@@ -253,11 +253,6 @@ nnoremap X "zX
 xnoremap <  <gv
 xnoremap >  >gv
 
-"" Save and quit
-
-" Fast saving
-nnoremap <leader>w :w!<cr>
-
 " Fast quit
 nnoremap <leader>q :q<cr>
 nnoremap <leader>Q :q!<cr>
@@ -273,10 +268,20 @@ noremap <leader>uw :set wrap! wrap?<cr>
 " toggle spell checking
 noremap <leader>us :set spell! spell?<cr>
 
-"" Navigation
+"" Buffers
 
+" open new buffer
+noremap <leader>bo :enew<cr>
 " delete buffer
 noremap <leader>x :bd<cr>
+noremap <leader>bx :bd<cr>
+" write buffer
+noremap <leader>bw :w<cr>
+" switch buffers
+nnoremap <tab> :bn<cr>
+nnoremap <s-tab> :bp<cr>
+noremap <leader>bn :bn<cr>
+noremap <leader>bp :bp<cr>
 " switch to last edited buffer
 noremap <leader>bl <c-^>
 " Only keep the current buffer, close all others.
@@ -284,10 +289,24 @@ noremap <leader>bl <c-^>
 command! BufOnly silent! execute "%bd|e#|bd#"
 noremap <leader>bo :BufOnly<cr>
 
-" switch buffers and tabs
-nnoremap <tab> :bn<cr>
-nnoremap <s-tab> :bp<cr>
+"" Windows
 
+" split window vertically
+noremap <leader>wv <c-w>v
+" split window horizontally
+noremap <leader>wh <c-w>s
+" make split windows equal size
+noremap <leader>we <c-w>=
+" close current window
+noremap <leader>wx <c-w>c
+" increase window height
+nnoremap <leader>w= <c-w>+
+" decrease window height
+nnoremap <leader>w- <c-w>-
+" increase window width
+nnoremap <leader>w. <c-w>>
+" decrease window width
+nnoremap <leader>w, <c-w><
 " switch windows
 nnoremap <silent> <c-h> <c-w>h
 nnoremap <silent> <c-l> <c-w>l

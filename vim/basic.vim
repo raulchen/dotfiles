@@ -207,7 +207,7 @@ function! SwitchNumber()
         set norelativenumber
         set nonumber
     else
-        set orelativenumber
+        set norelativenumber
         set number
     endif
 endfunc

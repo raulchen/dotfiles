@@ -211,3 +211,12 @@ vnoremap <leader>gl :Gclog<cr>
 " Disable default mappings
 let g:no_cecutil_maps = 0
 
+"""""""""""""""""""
+" vim-startify
+"""""""""""""""""""
+if has("nvim")
+  let g:startify_session_dir = stdpath('data').'/sessions'
+else
+  let g:startify_session_dir = g:vim_data_dir.'/sessions'
+endif
+let g:startify_session_sort = 1

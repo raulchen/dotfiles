@@ -129,16 +129,16 @@ set nobackup
 
 set undofile
 if !has("nvim")
-    let g:vim_temp_dir_root = '~/dotfiles/vim/temp_dirs/'
+    let g:vim_data_dir = '~/.local/share/vim/'
     " Create temp dirs if not exist
     for d in ['undo', 'swap']
-        let p = g:vim_temp_dir_root.d
+        let p = g:vim_data_dir.d
         if !isdirectory(p)
             execute 'silent !mkdir -p '.p.' > /dev/null 2>&1'
         endif
     endfor
-    exec "set undodir=".g:vim_temp_dir_root."/undo//"
-    exec "set directory=".g:vim_temp_dir_root."/swap//"
+    exec "set undodir=".g:vim_data_dir."/undo//"
+    exec "set directory=".g:vim_data_dir."/swap//"
 endif
 
 """ Text, tab and indent related

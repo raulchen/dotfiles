@@ -52,7 +52,7 @@ if !has("nvim")
     let g:plug_threads = 8
     let g:plug_retries = 4
     set rtp+=~/dotfiles/vim
-    call plug#begin('~/dotfiles/vim/installed_plugins')
+    call plug#begin(g:vim_data_dir.'/installed_plugins')
     for plugin in g:vim_plugins
 	execute "Plug '" . plugin . "'"
     endfor

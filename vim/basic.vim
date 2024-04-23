@@ -126,6 +126,8 @@ endif
 
 set nowritebackup
 set nobackup
+
+set undofile
 if !has("nvim")
     let g:vim_temp_dir_root = '~/dotfiles/vim/temp_dirs/'
     " Create temp dirs if not exist
@@ -136,7 +138,6 @@ if !has("nvim")
         endif
     endfor
     exec "set undodir=".g:vim_temp_dir_root."/undo//"
-    set undofile
     exec "set directory=".g:vim_temp_dir_root."/swap//"
 endif
 

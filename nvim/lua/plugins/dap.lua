@@ -68,24 +68,6 @@ local function setup_dap(_, _)
     },
   }
 
-  local keymap = vim.keymap.set
-  keymap('n', '<leader>dd', dap.continue, { desc = 'Start/conintue debugger', })
-  keymap('n', '<leader>dt', dap.terminate, { desc = 'Terminate debugger', })
-  keymap('n', '<leader>db', dap.toggle_breakpoint, { desc = 'Toggle breakpoint', })
-  keymap('n', '<leader>dB', dap.list_breakpoints, { desc = 'List breakpoints', })
-  keymap('n', '<leader>dl', dap.run_last, { desc = 'Debug last', })
-
-  keymap('n', '<leader>ds', dap.step_over, { desc = 'Step over', })
-  keymap('n', '<leader>di', dap.step_into, { desc = 'Step into', })
-  keymap('n', '<leader>do', dap.step_out, { desc = 'Step out', })
-  keymap('n', '<leader>dB', dap.step_back, { desc = 'Step back', })
-
-  keymap('n', '<leader>dc', dap.run_to_cursor, { desc = 'Continue execution until current cursor', })
-  keymap('n', '<leader>dF', dap.restart_frame, { desc = 'Restart curent frame', })
-
-  keymap('n', '<leader>dU', dap.up, { desc = 'Go up in stacktrace', })
-  keymap('n', '<leader>dD', dap.down, { desc = 'Go down in stacktrace', })
-
   vim.api.nvim_create_user_command('Debug', Debug, { nargs = '?' })
 end
 
@@ -96,31 +78,49 @@ local function setup_dapui(_, _)
   dap.listeners.after.event_initialized["dapui_config"] = function()
     dapui.open({ reset = true })
   end
-  local keymap = vim.keymap.set
-  keymap({ 'n', 'v' }, '<leader>de', dapui.eval, { desc = 'Evaluate', })
-  keymap({ 'n', 'v' }, '<leader>du', function() dapui.toggle({ reset = true }) end, { desc = 'Toggle dap-ui', })
 end
 
 return {
   {
     "mfussenegger/nvim-dap",
     config = setup_dap,
+    keys = {
+      { "<leader>dd", "<cmd>lua require('dap').continue()<cr>", desc = "Start/conintue debugger" },
+      { "<leader>dt", "<cmd>lua require('dap').terminate()<cr>", desc = "Terminate debugger" },
+      { "<leader>db", "<cmd>lua require('dap').toggle_breakpoint()<cr>", desc = "Toggle breakpoint" },
+      { "<leader>dB", "<cmd>lua require('dap').list_breakpoints()<cr>", desc = "List breakpoints" },
+      { "<leader>dl", "<cmd>lua require('dap').run_last()<cr>", desc = "Debug last" },
+      { "<leader>ds", "<cmd>lua require('dap').step_over()<cr>", desc = "Step over" },
+      { "<leader>di", "<cmd>lua require('dap').step_into()<cr>", desc = "Step into" },
+      { "<leader>do", "<cmd>lua require('dap').step_out()<cr>", desc = "Step out" },
+      { "<leader>dB", "<cmd>lua require('dap').step_back()<cr>", desc = "Step back" },
+      { "<leader>dc", "<cmd>lua require('dap').run_to_cursor()<cr>", desc = "Continue execution until current cursor" },
+      { "<leader>dF", "<cmd>lua require('dap').restart_frame()<cr>", desc = "Restart curent frame" },
+      { "<leader>dU", "<cmd>lua require('dap').up()<cr>", desc = "Go up in stacktrace" },
+      { "<leader>dD", "<cmd>lua require('dap').down()<cr>", desc = "Go down in stacktrace" },
+    },
+    dependencies = {
+      {
+        "mfussenegger/nvim-dap-python",
+        config = function(_, _)
+          local dap_python = require("dap-python")
+          dap_python.setup(vim.fn.stdpath('data') .. "/mason/packages/debugpy/venv/bin/python")
+          dap_python.resolve_python = function()
+            return 'python'
+          end
+          local keymap = vim.keymap.set
+          keymap('n', '<leader>dM', dap_python.test_method, { desc = 'Debug current method', })
+          keymap('n', '<leader>dC', dap_python.test_class, { desc = 'Debug current class', })
+        end,
+      },
+    },
   },
   {
     "rcarriga/nvim-dap-ui",
     config = setup_dapui,
-  },
-  {
-    "mfussenegger/nvim-dap-python",
-    config = function(_, _)
-      local dap_python = require("dap-python")
-      dap_python.setup(vim.fn.stdpath('data') .. "/mason/packages/debugpy/venv/bin/python")
-      dap_python.resolve_python = function()
-        return 'python'
-      end
-      local keymap = vim.keymap.set
-      keymap('n', '<leader>dM', dap_python.test_method, { desc = 'Debug current method', })
-      keymap('n', '<leader>dC', dap_python.test_class, { desc = 'Debug current class', })
-    end,
+    keys = {
+      { "<leader>du", "<cmd>lua require('dapui').toggle()<cr>", desc = "Toggle dap-ui" },
+      { "<leader>de", "<cmd>lua require('dapui').eval()<cr>", desc = "Evaluate" },
+    }
   },
 }

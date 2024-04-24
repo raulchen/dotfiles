@@ -43,17 +43,18 @@ end
 
 return {
   {
-    'L3MON4D3/LuaSnip',
-    dependencies = { 'rafamadriz/friendly-snippets' },
-    config = function()
-      require("luasnip.loaders.from_vscode").lazy_load()
-    end,
-  },
-  {
-    'saadparwaiz1/cmp_luasnip',
-  },
-  {
     'hrsh7th/nvim-cmp',
+    event = "InsertEnter",
     config = setup_cmp,
+    dependencies = {
+      {
+        'L3MON4D3/LuaSnip',
+        dependencies = { 'rafamadriz/friendly-snippets' },
+        config = function()
+          require("luasnip.loaders.from_vscode").lazy_load()
+        end,
+      },
+      'saadparwaiz1/cmp_luasnip',
+    }
   }
 }

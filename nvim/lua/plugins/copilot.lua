@@ -1,5 +1,6 @@
 return {
   "github/copilot.vim",
+  event = "InsertEnter",
   config = function()
     -- Only enable Copilot for certain filetypes.
     vim.g.copilot_filetypes = {

@@ -1,4 +1,4 @@
-local function treesitter_opts()
+local function setup_treesitter(_, _)
   local opts = {
     highlight = { enable = true },
     indent = { enable = true },
@@ -72,39 +72,40 @@ local function treesitter_opts()
       }
     },
   }
-  return opts
+  require("nvim-treesitter.configs").setup(opts)
+  -- Tree-sitter based folding.
+  vim.cmd [[
+    set foldmethod=expr
+    set foldexpr=nvim_treesitter#foldexpr()
+    set nofoldenable
+  ]]
+end
+
+local function setup_treesitter_context(_, _)
+  require("treesitter-context").setup {
+    multiline_threshold = 5,
+  }
+  vim.cmd([[
+    hi TreesitterContextBottom gui=underline guisp=Grey
+    hi TreesitterContextLineNumberBottom gui=underline guisp=Grey
+  ]])
+  vim.keymap.set("n", "[x", function()
+    require("treesitter-context").go_to_context()
+  end, { desc = "Go to context beginning" })
 end
 
 return {
   {
     "nvim-treesitter/nvim-treesitter",
+    event = { "BufReadPre", "BufNewFile" },
     build = ":TSUpdate",
-    config = function(_, _)
-      require("nvim-treesitter.configs").setup(treesitter_opts())
-      -- Tree-sitter based folding.
-      vim.cmd [[
-      set foldmethod=expr
-      set foldexpr=nvim_treesitter#foldexpr()
-      set nofoldenable
-    ]]
-    end
-  },
-  {
-    "nvim-treesitter/nvim-treesitter-context",
-    config = function()
-      require("treesitter-context").setup {
-        multiline_threshold = 5,
+    config = setup_treesitter,
+    dependencies = {
+      "nvim-treesitter/nvim-treesitter-textobjects",
+      {
+        "nvim-treesitter/nvim-treesitter-context",
+        config = setup_treesitter_context,
       }
-      vim.cmd([[
-        hi TreesitterContextBottom gui=underline guisp=Grey
-        hi TreesitterContextLineNumberBottom gui=underline guisp=Grey
-      ]])
-      vim.keymap.set("n", "[x", function()
-        require("treesitter-context").go_to_context()
-      end, { desc = "Go to context beginning" })
-    end,
-  },
-  {
-    "nvim-treesitter/nvim-treesitter-textobjects",
+    },
   },
 }

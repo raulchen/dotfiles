@@ -88,6 +88,15 @@ local server_settings = {
         -- https://github.com/neovim/nvim-lspconfig/issues/1700#issuecomment-1033127328
         checkThirdParty = false,
       },
+      format = {
+        enable = true,
+        defaultConfig = {
+          align_array_table = "false",
+          align_continuous_assign_statement = "false",
+          align_continuous_rect_table_field = "false",
+          align_if_branch = "false",
+        },
+      },
     },
   },
 }
@@ -138,14 +147,32 @@ end
 
 return {
   {
-    'hrsh7th/cmp-nvim-lsp',
-  },
-  {
     'neovim/nvim-lspconfig',
+    event = { "BufReadPre", "BufNewFile" },
     config = setup_lspconfig,
+    dependencies = {
+      'hrsh7th/cmp-nvim-lsp',
+      {
+        'nvimtools/none-ls.nvim',
+        opts = null_ls_opts,
+        dependencies = {
+          "nvim-lua/plenary.nvim",
+        },
+      },
+      {
+        'j-hui/fidget.nvim',
+        tag = 'legacy',
+        opts = {},
+      },
+      {
+        'rmagatti/goto-preview',
+        config = setup_goto_preview,
+      },
+    },
   },
   {
     "williamboman/mason-lspconfig.nvim",
+    event = { "BufReadPre", "BufNewFile" },
     opts = {
       ensure_installed = {
         "bashls",
@@ -157,21 +184,5 @@ return {
         setup_server,
       },
     },
-  },
-  {
-    'nvimtools/none-ls.nvim',
-    opts = null_ls_opts,
-    dependencies = {
-      "nvim-lua/plenary.nvim",
-    },
-  },
-  {
-    'j-hui/fidget.nvim',
-    tag = 'legacy',
-    opts = {},
-  },
-  {
-    'rmagatti/goto-preview',
-    config = setup_goto_preview,
   },
 }

@@ -177,4 +177,8 @@ return {
     priority = 1000,
     config = setup_onedarkpro,
   },
+  {
+    "stevearc/dressing.nvim",
+    event = "VeryLazy",
+  },
 }

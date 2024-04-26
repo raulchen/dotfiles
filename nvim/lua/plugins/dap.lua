@@ -121,6 +121,7 @@ return {
     keys = {
       { "<leader>du", "<cmd>lua require('dapui').toggle()<cr>", desc = "Toggle dap-ui" },
       { "<leader>de", "<cmd>lua require('dapui').eval()<cr>", desc = "Evaluate" },
-    }
+    },
+    dependencies = {"mfussenegger/nvim-dap", "nvim-neotest/nvim-nio"},
   },
 }

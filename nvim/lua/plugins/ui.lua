@@ -195,5 +195,27 @@ return {
   {
     "stevearc/dressing.nvim",
     event = "VeryLazy",
+    config = function(_, _)
+      require("dressing").setup()
+      -- Set Emacs-like keybindings for `vim.input`.
+      vim.api.nvim_create_autocmd("FileType", {
+        pattern = "DressingInput",
+        callback = function()
+          local keymap = function(lhs, rhs)
+            vim.api.nvim_buf_set_keymap(0, 'i', lhs, rhs, { noremap = true, silent = true })
+          end
+          -- start of line
+          keymap('<C-A>', '<Home>')
+          -- back one character
+          keymap('<C-B>', '<Left>')
+          -- delete character under cursor
+          keymap('<C-D>', '<Del>')
+          -- end of line
+          keymap('<C-E>', '<End>')
+          -- forward one character
+          keymap('<C-F>', '<Right>')
+        end
+      })
+    end,
   },
 }

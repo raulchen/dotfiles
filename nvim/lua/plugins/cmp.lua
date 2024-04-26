@@ -10,12 +10,11 @@ local function setup_cmp(_, _)
     mapping = cmp.mapping.preset.insert({
       ['<C-d>'] = cmp.mapping.scroll_docs(-4),
       ['<C-f>'] = cmp.mapping.scroll_docs(4),
-      ['<C-_>'] = cmp.mapping.complete(), -- "C-_" is "ctrl+/"
       ['<CR>'] = cmp.mapping.confirm {
         behavior = cmp.ConfirmBehavior.Replace,
         select = true,
       },
-      ['<C-n>'] = cmp.mapping(function(fallback)
+      ['<tab>'] = cmp.mapping(function(fallback)
         if cmp.visible() then
           cmp.select_next_item()
         elseif luasnip.expand_or_jumpable() then
@@ -24,7 +23,7 @@ local function setup_cmp(_, _)
           fallback()
         end
       end, { 'i', 's' }),
-      ['<C-p>'] = cmp.mapping(function(fallback)
+      ['<s-tab>'] = cmp.mapping(function(fallback)
         if cmp.visible() then
           cmp.select_prev_item()
         elseif luasnip.jumpable(-1) then

@@ -9,6 +9,8 @@ alias -g N="> /dev/null 2>&1 "
 alias tailf="tail -f"
 unalias d >/dev/null 2>&1
 alias d="dirs -v | head -10"
+alias v="vim"
+alias vi="vim"
 alias vh="vim -c ':History'"
 alias vf="vim -c ':execute FilesOrGFiles()'"
 alias tat="tmux new -A -s default"

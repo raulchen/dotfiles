@@ -32,6 +32,10 @@ local lualine_opts = {
     },
     lualine_x = {
       {
+        "copilot",
+        show_colors = true,
+      },
+      {
         "filetype",
       },
     },
@@ -184,4 +188,7 @@ return {
     "stevearc/dressing.nvim",
     event = "VeryLazy",
   },
+  {
+    'AndreM222/copilot-lualine',
+  }
 }

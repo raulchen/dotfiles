@@ -321,16 +321,29 @@ vnoremap <c-k> :m'<-2<cr>`>my`<mzgv`yo`z
 " <leader>r to replace selected text
 vnoremap <expr> <leader>r ReplaceSelection()
 
-"" Command mode.
+"" Command-line mode.
 
-" Bash like keys for the command line
-cnoremap <c-a> <home>
-cnoremap <c-e> <end>
-cnoremap <c-k> <c-u>
-cnoremap <c-p> <up>
-cnoremap <c-n> <down>
+" Emacs-style key mappings for the command line (`:help emacs-keys`).
+" start of line
+cnoremap <C-A> <Home>
+" back one character
+cnoremap <C-B> <Left>
+" delete character under cursor
+cnoremap <C-D> <Del>
+" end of line
+cnoremap <C-E> <End>
+" forward one character
+cnoremap <C-F> <Right>
+" recall newer command-line
+cnoremap <C-N> <Down>
+" recall previous (older) command-line
+cnoremap <C-P> <Up>
+" back one word
+cnoremap <Esc><C-B> <S-Left>
+" forward one word
+cnoremap <Esc><C-F> <S-Right>
 
 " Insert the path of the current file's directory.
-cnoremap <c-d> <C-R>=expand('%:p:h')."/"<CR>
+cnoremap <c-x><c-d> <C-R>=expand('%:p:h')."/"<CR>
 " Insert the path of the current file.
-cnoremap <c-f> <C-R>=expand('%:p')<CR>
+cnoremap <c-x><c-f> <C-R>=expand('%:p')<CR>

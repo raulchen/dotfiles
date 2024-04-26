@@ -38,6 +38,7 @@ local function setup_cmp(_, _)
       { name = 'buffer' },
       { name = 'path' },
       { name = 'luasnip' },
+      { name = 'spell' },
     },
   })
 end
@@ -51,6 +52,7 @@ return {
       {
         "hrsh7th/cmp-buffer", -- source for text in buffer
         "hrsh7th/cmp-path",   -- source for file system paths
+        'f3fora/cmp-spell',
         'L3MON4D3/LuaSnip',
         dependencies = { 'rafamadriz/friendly-snippets' },
         config = function()

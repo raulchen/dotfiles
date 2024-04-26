@@ -25,6 +25,7 @@ set mouse=
 
 " Enable spell checking
 set spell
+set spelllang=en_us
 
 """ User Interface
 

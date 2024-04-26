@@ -20,6 +20,10 @@ local function setup_whichkey(_, _)
 end
 
 local lualine_opts = {
+  options = {
+    section_separators = "",
+    component_separators = "|",
+  },
   sections = {
     lualine_c = {
       {
@@ -120,18 +124,22 @@ return {
     config = setup_whichkey,
   },
   {
-    -- Show current code context.
-    "SmiteshP/nvim-navic",
-    event = { "BufReadPre", "BufNewFile" },
-    opts = {
-      lsp = {
-        auto_attach = true,
+    "nvim-lualine/lualine.nvim",
+    dependencies = {
+      "nvim-tree/nvim-web-devicons",
+      {
+        -- Show current code context.
+        "SmiteshP/nvim-navic",
+        opts = {
+          lsp = {
+            auto_attach = true,
+          },
+        },
+      },
+      {
+        'AndreM222/copilot-lualine',
       },
     },
-  },
-  {
-    "nvim-lualine/lualine.nvim",
-    dependencies = "nvim-tree/nvim-web-devicons",
     opts = lualine_opts,
   },
   {
@@ -188,7 +196,4 @@ return {
     "stevearc/dressing.nvim",
     event = "VeryLazy",
   },
-  {
-    'AndreM222/copilot-lualine',
-  }
 }

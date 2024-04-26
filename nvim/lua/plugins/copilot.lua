@@ -16,6 +16,9 @@ return {
         next = "<c-_>",
         prev = false,
       },
+    },
+    filetypes = {
+      gitcommit = true,
     }
   },
 }

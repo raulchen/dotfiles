@@ -5,7 +5,6 @@ call extend(g:vim_plugins, [
 \  "amix/open_file_under_cursor.vim",
 \  "michaeljsmith/vim-indent-object",
 \  "google/vim-searchindex",
-\  "airblade/vim-rooter",
 \  "junegunn/fzf",
 \  "junegunn/fzf.vim",
 \  "christoomey/vim-tmux-navigator",

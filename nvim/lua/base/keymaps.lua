@@ -1,6 +1,6 @@
 local keymap = vim.keymap.set
 
-keymap('i', '<Tab>', function()
+keymap({'i', 's'}, '<Tab>', function()
   if require("copilot.suggestion").is_visible() then
     require("copilot.suggestion").accept()
   elseif require("luasnip").expand_or_jumpable() then
@@ -10,7 +10,7 @@ keymap('i', '<Tab>', function()
   end
 end, { desc = "Super Tab" })
 
-keymap('i', '<S-Tab>', function()
+keymap({'i', 's'}, '<S-Tab>', function()
   if require("luasnip").jumpable(-1) then
     require("luasnip").jump(-1)
   else

@@ -147,6 +147,7 @@ return {
         "clangd",
         "lua_ls",
         "pyright",
+        "vimls",
       },
       handlers = {
         setup_server,

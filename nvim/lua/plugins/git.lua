@@ -58,4 +58,11 @@ return {
     event = { "BufReadPre", "BufNewFile" },
     config = setup_gitsigns,
   },
+  {
+    "sindrets/diffview.nvim",
+    commands = {
+      "DiffviewOpen",
+      "DiffviewFileHistory",
+    },
+  },
 }

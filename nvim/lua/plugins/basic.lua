@@ -1,7 +1,6 @@
 return {
   {
     "nvim-lua/plenary.nvim",
-    "sindrets/diffview.nvim",
   },
   {
     "Shatur/neovim-session-manager",

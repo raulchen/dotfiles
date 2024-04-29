@@ -66,11 +66,11 @@ local server_settings = {
   },
   lua_ls = {
     Lua = {
+      -- Add the Neovim runtime files to the path.
       workspace = {
-        -- Add the Neovim runtime files to the path.
-        library = vim.api.nvim_get_runtime_file('', true),
-        -- Avoid annoying prompts.
-        -- https://github.com/neovim/nvim-lspconfig/issues/1700#issuecomment-1033127328
+        library = {
+          vim.env.VIMRUNTIME
+        },
         checkThirdParty = false,
       },
       format = {

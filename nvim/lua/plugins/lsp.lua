@@ -1,3 +1,55 @@
+-- Settings for each LSP server.
+local server_settings = {
+  pyright = {
+    python = {
+      analysis = {
+        autoSearchPaths = true,
+        useLibraryCodeForTypes = true,
+        diagnosticMode = 'openFilesOnly',
+      },
+    },
+  },
+  lua_ls = {
+    Lua = {
+      -- Add the Neovim runtime files to the path.
+      workspace = {
+        library = {
+          vim.env.VIMRUNTIME
+        },
+        checkThirdParty = false,
+      },
+      format = {
+        enable = true,
+        defaultConfig = {
+          align_array_table = "false",
+          align_continuous_assign_statement = "false",
+          align_continuous_rect_table_field = "false",
+          align_if_branch = "false",
+        },
+      },
+    },
+  },
+}
+
+local function setup_server(server)
+  -- Add additional capabilities supported by nvim-cmp
+  local capabilities = require('cmp_nvim_lsp').default_capabilities()
+  local config = {
+    capabilities = capabilities,
+    on_attach = function(client, buf)
+      if client.name == "clangd" then
+        -- Like "a.vim", use command "A" for switching between source/header files.
+        vim.api.nvim_buf_create_user_command(buf, 'A', "ClangdSwitchSourceHeader", { nargs = 0 })
+      end
+    end,
+  }
+  if server_settings[server] ~= nil then
+    config.settings = server_settings[server]
+  end
+  local lspconfig = require('lspconfig')
+  lspconfig[server].setup(config)
+end
+
 local function setup_lspconfig(_, _)
   vim.lsp.set_log_level("warn")
 
@@ -51,59 +103,12 @@ local function setup_lspconfig(_, _)
     group = vim.api.nvim_create_augroup('UserLspConfig', {}),
     callback = on_attach,
   })
+
+  require("mason-lspconfig").setup_handlers({
+    setup_server, -- default handler for installed servers
+  })
 end
 
--- Settings for each LSP server.
-local server_settings = {
-  pyright = {
-    python = {
-      analysis = {
-        autoSearchPaths = true,
-        useLibraryCodeForTypes = true,
-        diagnosticMode = 'openFilesOnly',
-      },
-    },
-  },
-  lua_ls = {
-    Lua = {
-      -- Add the Neovim runtime files to the path.
-      workspace = {
-        library = {
-          vim.env.VIMRUNTIME
-        },
-        checkThirdParty = false,
-      },
-      format = {
-        enable = true,
-        defaultConfig = {
-          align_array_table = "false",
-          align_continuous_assign_statement = "false",
-          align_continuous_rect_table_field = "false",
-          align_if_branch = "false",
-        },
-      },
-    },
-  },
-}
-
-local function setup_server(server)
-  -- Add additional capabilities supported by nvim-cmp
-  local capabilities = require('cmp_nvim_lsp').default_capabilities()
-  local config = {
-    capabilities = capabilities,
-    on_attach = function(client, buf)
-      if client.name == "clangd" then
-        -- Like "a.vim", use command "A" for switching between source/header files.
-        vim.api.nvim_buf_create_user_command(buf, 'A', "ClangdSwitchSourceHeader", { nargs = 0 })
-      end
-    end,
-  }
-  if server_settings[server] ~= nil then
-    config.settings = server_settings[server]
-  end
-  local lspconfig = require('lspconfig')
-  lspconfig[server].setup(config)
-end
 
 local function setup_goto_preview()
   require('goto-preview').setup({
@@ -135,22 +140,6 @@ return {
       {
         'rmagatti/goto-preview',
         config = setup_goto_preview,
-      },
-    },
-  },
-  {
-    "williamboman/mason-lspconfig.nvim",
-    event = { "BufReadPre", "BufNewFile" },
-    opts = {
-      ensure_installed = {
-        "bashls",
-        "clangd",
-        "lua_ls",
-        "pyright",
-        "vimls",
-      },
-      handlers = {
-        setup_server,
       },
     },
   },

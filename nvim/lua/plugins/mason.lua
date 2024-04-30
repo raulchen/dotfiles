@@ -4,6 +4,7 @@ return {
     build = ":MasonUpdate", -- :MasonUpdate updates registry contents
     dependencies = {
       "williamboman/mason-lspconfig.nvim",
+      "WhoIsSethDaniel/mason-tool-installer.nvim",
     },
     config = function(_, _)
       require("mason").setup()
@@ -16,6 +17,14 @@ return {
           "pyright",
           "vimls",
         },
+
+        require("mason-tool-installer").setup({
+          ensure_installed = {
+            "black",
+            "debugpy",
+            "isort",
+          },
+        }),
       })
     end,
   },

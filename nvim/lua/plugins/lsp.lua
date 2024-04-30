@@ -104,9 +104,13 @@ local function setup_lspconfig(_, _)
     callback = on_attach,
   })
 
-  require("mason-lspconfig").setup_handlers({
-    setup_server, -- default handler for installed servers
-  })
+  local mason_lspconfig = require("mason-lspconfig")
+  local installed_servers = mason_lspconfig.get_installed_servers()
+  local handles = {}
+  for _, server in ipairs(installed_servers) do
+    handles[server] = setup_server
+  end
+  mason_lspconfig.setup_handlers(handles)
 end
 
 

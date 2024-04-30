@@ -208,6 +208,8 @@ let g:no_cecutil_maps = 0
 """""""""""""""""""
 " vim-startify
 """""""""""""""""""
+let g:startify_change_to_vcs_root = 0
+let g:startify_change_to_dir = 0
 if has("nvim")
   let g:startify_session_dir = stdpath('data').'/sessions'
 else

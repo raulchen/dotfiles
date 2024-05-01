@@ -51,6 +51,34 @@ local function setup_gitsigns()
   }
 end
 
+local diffview_keys = {
+  {
+    '<leader>gd',
+    function()
+      if vim.g.diffview_open then
+        vim.cmd("DiffviewClose")
+      else
+        vim.api.nvim_feedkeys(":DiffviewOpen ", "c", true)
+      end
+    end,
+    mode = 'n',
+    desc = "Toggle diff view"
+  },
+  { '<leader>gh', '<cmd>DiffviewFileHistory %<CR>', mode = 'n', desc = 'Current file history' },
+  { '<leader>gH', '<cmd>DiffviewFileHistory<CR>', mode = 'n', desc = 'Repo history' },
+}
+
+local diffview_opts = {
+  hooks = {
+    view_enter = function(view)
+      -- Save the current view
+      vim.g.diffview_open = true
+    end,
+    view_leave = function(view)
+      vim.g.diffview_open = false
+    end,
+  }
+}
 
 return {
   {
@@ -64,5 +92,7 @@ return {
       "DiffviewOpen",
       "DiffviewFileHistory",
     },
+    keys = diffview_keys,
+    opts = diffview_opts,
   },
 }

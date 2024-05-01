@@ -14,6 +14,7 @@ local function setup_whichkey(_, _)
     f = { name = "find" },
     g = { name = "git" },
     s = { name = "sessions" },
+    t = { name = "tabs" },
     u = { name = "ui" },
     w = { name = "windows" },
   }, { prefix = "<leader>" })

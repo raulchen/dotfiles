@@ -272,7 +272,7 @@ noremap <leader>us :set spell! spell?<cr>
 "" Buffers
 
 " open new buffer
-noremap <leader>bo :enew<cr>
+noremap <leader>be :enew<cr>
 " delete buffer
 noremap <leader>x :bd<cr>
 noremap <leader>bx :bd<cr>
@@ -289,6 +289,17 @@ noremap <leader>bl <c-^>
 " %bd = delete all buffers; e# = edit the last buffer; bd# = delete the last buffer with "[No Name]".
 command! BufOnly silent! execute "%bd|e#|bd#"
 noremap <leader>bo :BufOnly<cr>
+
+""" Tabs
+
+" Open new tab
+noremap <leader>be :enew<cr>
+" Next tab
+noremap <leader>tn :tabn<cr>
+" Previous tab
+noremap <leader>tp :tabp<cr>
+" Close tab
+noremap <leader>tx :tabclose<cr>
 
 "" Windows
 

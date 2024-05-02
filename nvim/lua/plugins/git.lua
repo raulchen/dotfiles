@@ -88,7 +88,7 @@ return {
   },
   {
     "sindrets/diffview.nvim",
-    commands = {
+    cmd = {
       "DiffviewOpen",
       "DiffviewFileHistory",
     },

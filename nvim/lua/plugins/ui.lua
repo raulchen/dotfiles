@@ -5,10 +5,19 @@ local function setup_nvimtree(_, _)
     view = {
       float = {
         enable = true,
-        open_win_config = {
-          width = 50,
-          height = 35,
-        },
+        open_win_config = function()
+          -- Leave some space below the floating window
+          local height = math.min(40, vim.opt.lines:get()) - 5
+          height = math.max(height, 1)
+          return {
+            relative = 'editor',
+            border = 'rounded',
+            width = 50,
+            height = height,
+            row = 1,
+            col = 1,
+          }
+        end,
       },
     }
   })

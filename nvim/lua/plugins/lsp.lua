@@ -11,13 +11,6 @@ local server_settings = {
   },
   lua_ls = {
     Lua = {
-      -- Add the Neovim runtime files to the path.
-      workspace = {
-        library = {
-          vim.env.VIMRUNTIME
-        },
-        checkThirdParty = false,
-      },
       format = {
         enable = true,
         defaultConfig = {
@@ -144,6 +137,11 @@ return {
       {
         'rmagatti/goto-preview',
         config = setup_goto_preview,
+      },
+      {
+        'folke/neodev.nvim',
+        ft = { "lua", },
+        config = true,
       },
     },
   },

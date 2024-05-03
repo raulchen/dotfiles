@@ -5,8 +5,6 @@ call extend(g:vim_plugins, [
 \  "amix/open_file_under_cursor.vim",
 \  "michaeljsmith/vim-indent-object",
 \  "google/vim-searchindex",
-\  "junegunn/fzf",
-\  "junegunn/fzf.vim",
 \  "christoomey/vim-tmux-navigator",
 \])
 
@@ -40,6 +38,8 @@ call extend(g:vim_plugins, [
 " Following plugins are not enabled for neovim.
 if !has("nvim")
     call extend(g:vim_plugins, [
+    \  "junegunn/fzf",
+    \  "junegunn/fzf.vim",
     \  "connorholyday/vim-snazzy",
     \  "scrooloose/nerdtree",
     \  "itchyny/lightline.vim",

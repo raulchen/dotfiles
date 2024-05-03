@@ -1,114 +1,116 @@
 """"""""""""""""""""""""""""""
 " FZF
 """"""""""""""""""""""""""""""
-" [Buffers] Jump to the existing window if possible
-let g:fzf_buffers_jump = 1
+if !has("nvim")
+  " [Buffers] Jump to the existing window if possible
+  let g:fzf_buffers_jump = 1
 
-if has("patch-8.2.191") || has("nvim")
-  let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.9} }
-else
-  let g:fzf_layout = { 'window': 'enew' }
-endif
-let g:fzf_preview_window = ['right,50%,<70(down,50%)', 'ctrl-/']
-
-function! s:build_quickfix_list(lines)
-  call setqflist(map(copy(a:lines), '{ "filename": v:val, "lnum": 1 }'))
-  copen
-  cc
-endfunction
-
-let g:fzf_action = {
-  \ 'ctrl-q': function('s:build_quickfix_list'),
-  \ 'ctrl-x': 'split',
-  \ 'ctrl-v': 'vsplit' }
-
-" Customize fzf colors to match your color scheme
-" - fzf#wrap translates this to a set of `--color` options
-let g:fzf_colors =
-\ { 'fg':      ['fg', 'Normal'],
-  \ 'bg':      ['bg', 'Normal'],
-  \ 'hl':      ['fg', 'Comment'],
-  \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
-  \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
-  \ 'hl+':     ['fg', 'Statement'],
-  \ 'info':    ['fg', 'PreProc'],
-  \ 'border':  ['fg', 'Ignore'],
-  \ 'prompt':  ['fg', 'Conditional'],
-  \ 'pointer': ['fg', 'Exception'],
-  \ 'marker':  ['fg', 'Keyword'],
-  \ 'spinner': ['fg', 'Label'],
-  \ 'header':  ['fg', 'Comment'] }
-
-command! -bang -nargs=* GGrep
-  \ call fzf#vim#grep(
-  \   'git grep --line-number -- '.shellescape(<q-args>), 0,
-  \   fzf#vim#with_preview({'dir': systemlist('git rev-parse --show-toplevel')[0]}), <bang>0)
-
-function FilesOrGFiles()
-  if system('git rev-parse --is-inside-work-tree 2>/dev/null') =~ 'true'
-    execute 'GFiles'
+  if has("patch-8.2.191") || has("nvim")
+    let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.9} }
   else
-    execute 'Files'
+    let g:fzf_layout = { 'window': 'enew' }
   endif
-endfunction
+  let g:fzf_preview_window = ['right,50%,<70(down,50%)', 'ctrl-/']
 
-function! RgWithWordUnderCursor()
-    " Get the word under the cursor
-    let l:word = expand("<cword>")
-    " Escape special characters
-    let l:escaped_word = escape(l:word, '\/.*$^~[]')
-    " Execute Rg with the word under the cursor
-    call feedkeys(':Rg '.l:escaped_word, 'n')
-endfunction
+  function! s:build_quickfix_list(lines)
+    call setqflist(map(copy(a:lines), '{ "filename": v:val, "lnum": 1 }'))
+    copen
+    cc
+  endfunction
 
-function! RgWithSelection()
-    " Yank the visual selection into the unnamed register
-    normal! gvy
-    " Get the yanked text from the unnamed register
-    let l:text = getreg('"')
-    " Escape special characters
-    let l:escaped_text = escape(l:text, '\/.*$^~[]')
-    " Execute Rg with the selected text
-    call feedkeys(':Rg '.l:escaped_text, 'n')
-endfunction
+  let g:fzf_action = {
+    \ 'ctrl-q': function('s:build_quickfix_list'),
+    \ 'ctrl-x': 'split',
+    \ 'ctrl-v': 'vsplit' }
 
-" Find files.
-nnoremap <leader>ff :execute FilesOrGFiles()<cr>
-" Find files under the directory of the current file.
-nnoremap <leader>fd :Files <c-r>=expand("%:p:h")<cr>/<cr>
-" Find a buffer.
-nnoremap <leader>fb :Buffers<cr>
-" Find word under cursor.
-nnoremap <leader>fs :call RgWithWordUnderCursor()<cr>
-" Find selected text.
-vnoremap <leader>fs :<c-u>call RgWithSelection()<cr>
-" Find tag for the current buffer.
-nnoremap <leader>ft :BTags<cr>
-nnoremap <leader>fT :Tags<cr>
-" Find marks
-nnoremap <leader>fm :Marks<cr>
-" Find file history.
-nnoremap <leader>fh :History<cr>
-" Find search history.
-nnoremap <leader>f/ :History/<cr>
-" Find command history.
-nnoremap <leader>f: :History:<cr>
-" Find git commits for the current buffer.
-nnoremap <leader>fc  :BCommits<cr>
-" Find all git commits.
-nnoremap <leader>fC :Commits<cr>
-" Find key mappings.
-nnoremap <leader>fk :Maps<cr>
-" Find a line in the current buffer.
-nnoremap <leader>fl :BLines<cr>
-" Find a line in all buffers.
-nnoremap <leader>fL :Lines<cr>
+  " Customize fzf colors to match your color scheme
+  " - fzf#wrap translates this to a set of `--color` options
+  let g:fzf_colors =
+  \ { 'fg':      ['fg', 'Normal'],
+    \ 'bg':      ['bg', 'Normal'],
+    \ 'hl':      ['fg', 'Comment'],
+    \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
+    \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
+    \ 'hl+':     ['fg', 'Statement'],
+    \ 'info':    ['fg', 'PreProc'],
+    \ 'border':  ['fg', 'Ignore'],
+    \ 'prompt':  ['fg', 'Conditional'],
+    \ 'pointer': ['fg', 'Exception'],
+    \ 'marker':  ['fg', 'Keyword'],
+    \ 'spinner': ['fg', 'Label'],
+    \ 'header':  ['fg', 'Comment'] }
 
-" Insert mode completion
-inoremap <c-g><c-w> <plug>(fzf-complete-word)
-inoremap <c-g><c-p> <plug>(fzf-complete-path)
-inoremap <expr> <c-g><c-f> fzf#vim#complete#path('rg --files')
-inoremap <c-g><c-l> <plug>(fzf-complete-line)
+  command! -bang -nargs=* GGrep
+    \ call fzf#vim#grep(
+    \   'git grep --line-number -- '.shellescape(<q-args>), 0,
+    \   fzf#vim#with_preview({'dir': systemlist('git rev-parse --show-toplevel')[0]}), <bang>0)
+
+  function FilesOrGFiles()
+    if system('git rev-parse --is-inside-work-tree 2>/dev/null') =~ 'true'
+      execute 'GFiles'
+    else
+      execute 'Files'
+    endif
+  endfunction
+
+  function! RgWithWordUnderCursor()
+      " Get the word under the cursor
+      let l:word = expand("<cword>")
+      " Escape special characters
+      let l:escaped_word = escape(l:word, '\/.*$^~[]')
+      " Execute Rg with the word under the cursor
+      call feedkeys(':Rg '.l:escaped_word, 'n')
+  endfunction
+
+  function! RgWithSelection()
+      " Yank the visual selection into the unnamed register
+      normal! gvy
+      " Get the yanked text from the unnamed register
+      let l:text = getreg('"')
+      " Escape special characters
+      let l:escaped_text = escape(l:text, '\/.*$^~[]')
+      " Execute Rg with the selected text
+      call feedkeys(':Rg '.l:escaped_text, 'n')
+  endfunction
+
+  " Find files.
+  nnoremap <leader>ff :execute FilesOrGFiles()<cr>
+  " Find files under the directory of the current file.
+  nnoremap <leader>fd :Files <c-r>=expand("%:p:h")<cr>/<cr>
+  " Find a buffer.
+  nnoremap <leader>fb :Buffers<cr>
+  " Find word under cursor.
+  nnoremap <leader>fs :call RgWithWordUnderCursor()<cr>
+  " Find selected text.
+  vnoremap <leader>fs :<c-u>call RgWithSelection()<cr>
+  " Find tag for the current buffer.
+  nnoremap <leader>ft :BTags<cr>
+  nnoremap <leader>fT :Tags<cr>
+  " Find marks
+  nnoremap <leader>fm :Marks<cr>
+  " Find file history.
+  nnoremap <leader>fh :History<cr>
+  " Find search history.
+  nnoremap <leader>f/ :History/<cr>
+  " Find command history.
+  nnoremap <leader>f: :History:<cr>
+  " Find git commits for the current buffer.
+  nnoremap <leader>fc  :BCommits<cr>
+  " Find all git commits.
+  nnoremap <leader>fC :Commits<cr>
+  " Find key mappings.
+  nnoremap <leader>fk :Maps<cr>
+  " Find a line in the current buffer.
+  nnoremap <leader>fl :BLines<cr>
+  " Find a line in all buffers.
+  nnoremap <leader>fL :Lines<cr>
+
+  " Insert mode completion
+  inoremap <c-g><c-w> <plug>(fzf-complete-word)
+  inoremap <c-g><c-p> <plug>(fzf-complete-path)
+  inoremap <expr> <c-g><c-f> fzf#vim#complete#path('rg --files')
+  inoremap <c-g><c-l> <plug>(fzf-complete-line)
+end
 
 """"""""""""""""""""""""
 " Color scheme

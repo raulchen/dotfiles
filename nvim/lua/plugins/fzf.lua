@@ -1,4 +1,4 @@
-local opts = {
+local fzf_lua_opts = {
   "fzf-native",
   winopts = {
     height = 0.9,
@@ -61,9 +61,37 @@ local function fzf_search(defaul_query, default_cwd)
   )
 end
 
+local function fzf_oldfiles(opts)
+  opts = opts or {
+    cwd_only = true
+  }
+  local header
+  if opts.cwd_only then
+    header = "<Ctrl-G> to search global"
+  else
+    header = "<Ctrl-G> to search CWD only"
+  end
+  opts.fzf_opts = {
+    ["--header"] = header,
+  }
+  opts.actions = {
+    ["ctrl-g"] = {
+      fn = function(_, o)
+        local new_opts = {
+          cwd = o.cwd,
+          cwd_only = not o.cwd_only,
+          resume = true,
+        }
+        fzf_oldfiles(new_opts)
+      end,
+    }
+  }
+  require("fzf-lua").oldfiles(opts)
+end
+
 local function setup_fzf_lua()
   local fzf_lua = require("fzf-lua")
-  fzf_lua.setup(opts)
+  fzf_lua.setup(fzf_lua_opts)
 
   local function keymap(lhs, rhs, desc, mode)
     mode = mode or "n"
@@ -75,7 +103,7 @@ local function setup_fzf_lua()
   -- Buffers and files.
   keymap("<leader>ff", fzf_lua.files, "Find files")
   keymap("<leader>fd", function() fzf_lua.files({ cwd = vim.fn.expand("%:p:h") }) end, "Find files in current directory")
-  keymap("<leader>fh", fzf_lua.oldfiles, "Find file history")
+  keymap("<leader>fh", fzf_oldfiles, "Find file history")
   keymap("<leader>fb", fzf_lua.buffers, "Find buffers")
   -- Search
   keymap("<leader>fs", fzf_search, "Searh")

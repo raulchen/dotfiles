@@ -23,27 +23,44 @@ local fzf_lua_opts = {
 
 local function fzf_files()
   local opts = {}
+  opts.no_header = true
+  opts.fzf_opts = {
+    ["--header"] = "<C-G> to disable .gitignore",
+  }
   local fzf_lua = require('fzf-lua')
-
   local cwd = vim.loop.cwd()
   local buffer_dir = vim.fn.expand("%:p:h")
   local is_relative, relative_path = fzf_lua.path.is_relative_to(buffer_dir, cwd)
 
-  local header = "<C-G> to disable .gitignore"
-  if is_relative and relative_path ~= "." then
-    opts.keymap = {
-      fzf = {
-        ["ctrl-i"] = "change-query(" .. relative_path .. ")",
+  if is_relative then
+    -- If the buffer directory is in CWD,
+    -- use CWD as the search directory.
+    opts.cwd = cwd
+    if relative_path ~= "." then
+      -- Add <C-I> keymap to filter buffer directory.
+      opts.keymap = {
+        fzf = {
+          ["ctrl-i"] = "change-query(" .. relative_path .. ")",
+        }
       }
-    }
-    header = header .. " / <C-I> to filter buffer dir"
+      opts.fzf_opts["--header"] = opts.fzf_opts["--header"] .. " / <C-I> to filter buffer dir"
+    end
+    fzf_lua.files(opts)
+  else
+    -- If the buffer directory is not in CWD,
+    -- prompt for the directory to search in.
+    vim.ui.input({
+      prompt = "Find in directory: ",
+      default = buffer_dir,
+      completion = "dir",
+    }, function(dir)
+      if not dir then
+        return
+      end
+      opts.cwd = dir
+      fzf_lua.files(opts)
+    end)
   end
-
-  opts.no_header = true
-  opts.fzf_opts = {
-    ["--header"] = header,
-  }
-  fzf_lua.files(opts)
 end
 
 local function fzf_search(defaul_query, default_cwd)

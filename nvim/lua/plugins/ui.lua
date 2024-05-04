@@ -181,23 +181,6 @@ return {
     },
   },
   {
-    'kevinhwang91/nvim-bqf',
-    ft = "qf",
-    opts = {
-      preview = {
-        -- Do not make the preview window transparent.
-        winblend = 0,
-        should_preview_cb = function(bufnr, qwinid)
-          local bufname = vim.api.nvim_buf_get_name(bufnr)
-          if bufname:match('^fugitive://') then
-            return false
-          end
-          return true
-        end
-      },
-    },
-  },
-  {
     'simrat39/symbols-outline.nvim',
     opts = {},
     keys = {

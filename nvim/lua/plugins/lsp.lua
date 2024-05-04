@@ -63,34 +63,40 @@ local function setup_lspconfig(_, _)
       vim.keymap.set(mode, key, cmd, opts)
     end
 
+    local fzf_lua = require("fzf-lua")
+    local gp = require('goto-preview')
+
     -- Mappings.
     -- See `:help vim.lsp.*` for documentation on any of the below functions
     map('n', 'gd', vim.lsp.buf.definition, "Go to definition")
-    map('n', 'gi', vim.lsp.buf.implementation, "Go to implementation")
-    map('n', 'gt', vim.lsp.buf.type_definition, "Go to type definition")
+    map('n', 'gD', gp.goto_preview_definition, "Preview definition")
     map('n', 'K', vim.lsp.buf.hover, "Display hover information")
-    map({ 'n', 'i' }, '<C-k>', vim.lsp.buf.signature_help, "Show signature")
+    map('i', '<C-k>', vim.lsp.buf.signature_help, "Show signature")
 
-    map('n', '<leader>cd', vim.lsp.buf.declaration, "Go to declaration")
+    map('n', '<leader>cgd', vim.lsp.buf.declaration, "Go to declaration")
+    map('n', '<leader>cgi', vim.lsp.buf.implementation, "Go to implementation")
+    map('n', '<leader>cgt', vim.lsp.buf.type_definition, "Go to type definition")
+
+    map('n', '<leader>cpd', gp.goto_preview_declaration, "Preview declaration")
+    map('n', '<leader>cpi', gp.goto_preview_implementation, "Preview implementation")
+    map('n', '<leader>cpt', gp.goto_preview_type_definition, "Preview type definition")
+
     map('n', '<leader>cr', vim.lsp.buf.rename, "Rename symbol under cursor")
     map('n', '<leader>ca', vim.lsp.buf.code_action, "Code action")
-    map('n', '<leader>cu', vim.lsp.buf.references, "Show usages")
-    map('n', '<leader>ci', vim.lsp.buf.incoming_calls, "Show incoming calls")
-    map('n', '<leader>co', vim.lsp.buf.outgoing_calls, "Show outgoing calls")
 
-    map('n', '<leader>cs', vim.lsp.buf.document_symbol, "List symbols in current buffer")
-    map('n', '<leader>cS', vim.lsp.buf.workspace_symbol, "Search symbols in workspace")
+    map('n', '<leader>cf', fzf_lua.lsp_finder, "Lsp finder")
+    map('n', '<leader>cu', fzf_lua.lsp_references, "Search usages")
+    map('n', '<leader>ci', fzf_lua.lsp_incoming_calls, "Search incoming calls")
+    map('n', '<leader>co', fzf_lua.lsp_outgoing_calls, "Search outgoing calls")
+
+    map('n', '<leader>cs', fzf_lua.lsp_document_symbols, "Search current buffer symbols")
+    map('n', '<leader>cS', fzf_lua.lsp_live_workspace_symbols, "Search workspace symbols")
 
     map('n', '<leader>cwa', vim.lsp.buf.add_workspace_folder, "Add workspace folder")
     map('n', '<leader>cwr', vim.lsp.buf.remove_workspace_folder, "Remove workspace folder")
     map('n', '<leader>cwl', function()
       print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
     end, "List workspace folders")
-
-    local gp = require('goto-preview')
-    map('n', 'gD', gp.goto_preview_definition, "Preview definition")
-    map('n', 'gT', gp.goto_preview_type_definition, "Preview type definition")
-    map('n', 'gI', gp.goto_preview_implementation, "Preview implementation")
   end
   vim.api.nvim_create_autocmd('LspAttach', {
     group = vim.api.nvim_create_augroup('UserLspConfig', {}),

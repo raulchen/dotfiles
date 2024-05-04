@@ -21,6 +21,46 @@ local opts = {
   },
 }
 
+local function fzf_search(defaul_query, default_cwd)
+  if defaul_query == nil then
+    defaul_query = vim.fn.expand("<cword>")
+  end
+  if default_cwd == nil then
+    default_cwd = vim.loop.cwd()
+    local buffer_dir = vim.fn.expand("%:p:h")
+    if not default_cwd or buffer_dir:find(default_cwd, 1, true) ~= 1 then
+      -- If the current buffer is not in the current working directory,
+      -- use the buffer directory.
+      default_cwd = buffer_dir
+    end
+  end
+  vim.ui.input({
+      prompt = "Search query: ",
+      default = defaul_query,
+    },
+    function(query)
+      if not query then
+        return
+      end
+      vim.ui.input({
+          prompt = "Search in directory: ",
+          default = default_cwd,
+          completion = "dir",
+        },
+        function(cwd)
+          if not cwd then
+            return
+          end
+          require("fzf-lua").grep({
+            search = query,
+            cwd = cwd,
+          })
+        end
+      )
+    end
+  )
+end
+
 local function setup_fzf_lua()
   local fzf_lua = require("fzf-lua")
   fzf_lua.setup(opts)
@@ -38,9 +78,8 @@ local function setup_fzf_lua()
   keymap("<leader>fh", fzf_lua.oldfiles, "Find file history")
   keymap("<leader>fb", fzf_lua.buffers, "Find buffers")
   -- Search
-  keymap("<leader>fs", fzf_lua.grep, "Searh")
+  keymap("<leader>fs", fzf_search, "Searh")
   keymap("<leader>fs", fzf_lua.grep_visual, "Searh visual selection", "v")
-  keymap("<leader>fS", fzf_lua.grep_cword, "Searh word under cursor")
   -- Tags
   keymap("<leader>ft", fzf_lua.btags, "Find tags in current buffer")
   -- Misc

@@ -144,7 +144,8 @@ local function setup_fzf_lua()
   keymap("<leader>fr", fzf_lua.resume, "Resume last Fzf command")
   -- Buffers and files.
   keymap("<leader>ff", fzf_files, "Find files")
-  keymap("<leader>fh", fzf_oldfiles, "Find file history")
+  keymap("<leader>fh", fzf_oldfiles, "Find CWD file history")
+  keymap("<leader>fH", function() fzf_oldfiles({ cwd_only = false }) end, "Find global file history")
   keymap("<leader>fb", fzf_lua.buffers, "Find buffers")
   -- Search
   keymap("<leader>fs", fzf_search, "Searh")

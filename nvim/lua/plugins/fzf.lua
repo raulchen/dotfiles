@@ -21,6 +21,31 @@ local fzf_lua_opts = {
   },
 }
 
+local function fzf_files()
+  local opts = {}
+  local fzf_lua = require('fzf-lua')
+
+  local cwd = vim.loop.cwd()
+  local buffer_dir = vim.fn.expand("%:p:h")
+  local is_relative, relative_path = fzf_lua.path.is_relative_to(buffer_dir, cwd)
+
+  local header = "<C-G> to disable .gitignore"
+  if is_relative and relative_path ~= "." then
+    opts.keymap = {
+      fzf = {
+        ["ctrl-i"] = "change-query(" .. relative_path .. ")",
+      }
+    }
+    header = header .. " / <C-I> to filter buffer dir"
+  end
+
+  opts.no_header = true
+  opts.fzf_opts = {
+    ["--header"] = header,
+  }
+  fzf_lua.files(opts)
+end
+
 local function fzf_search(defaul_query, default_cwd)
   if defaul_query == nil then
     defaul_query = vim.fn.expand("<cword>")
@@ -101,8 +126,7 @@ local function setup_fzf_lua()
   keymap("<leader>fa", fzf_lua.builtin, "Search all Fzf commands")
   keymap("<leader>fr", fzf_lua.resume, "Resume last Fzf command")
   -- Buffers and files.
-  keymap("<leader>ff", fzf_lua.files, "Find files")
-  keymap("<leader>fd", function() fzf_lua.files({ cwd = vim.fn.expand("%:p:h") }) end, "Find files in current directory")
+  keymap("<leader>ff", fzf_files, "Find files")
   keymap("<leader>fh", fzf_oldfiles, "Find file history")
   keymap("<leader>fb", fzf_lua.buffers, "Find buffers")
   -- Search

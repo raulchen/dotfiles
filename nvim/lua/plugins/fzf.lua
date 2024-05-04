@@ -11,8 +11,11 @@ local opts = {
   },
   keymap = {
     fzf = {
+      ["ctrl-q"] = "toggle-all",
       ["ctrl-u"] = "half-page-up",
       ["ctrl-d"] = "half-page-down",
+      ["ctrl-k"] = "preview-up",
+      ["ctrl-j"] = "preview-down",
       ["ctrl-/"] = "toggle-preview",
     },
   },

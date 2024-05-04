@@ -128,6 +128,16 @@ local function setup_fzf_lua()
       )
     end,
   })
+
+  vim.api.nvim_create_user_command(
+    "Rg",
+    function(opts)
+      require("fzf-lua").grep({
+        search = opts.args
+      })
+    end,
+    { nargs = "?" }
+  )
 end
 
 return {

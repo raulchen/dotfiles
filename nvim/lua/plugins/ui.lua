@@ -137,16 +137,6 @@ return {
     },
   },
   {
-    'simrat39/symbols-outline.nvim',
-    opts = {},
-    keys = {
-      { '<leader>uo', '<cmd>SymbolsOutline<cr>', desc = "Toggle symbols outline" },
-    },
-    cmd = {
-      'SymbolsOutline',
-    },
-  },
-  {
     "stevearc/dressing.nvim",
     event = "VeryLazy",
     config = function(_, _)

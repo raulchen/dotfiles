@@ -22,7 +22,6 @@ call extend(g:vim_plugins, [
 
 " UI
 call extend(g:vim_plugins, [
-\  "mhinz/vim-startify",
 \  "jszakmeister/vim-togglecursor",
 \  "powerman/vim-plugin-AnsiEsc",
 \])
@@ -44,6 +43,7 @@ if !has("nvim")
     \  "scrooloose/nerdtree",
     \  "itchyny/lightline.vim",
     \  "mgee/lightline-bufferline",
+    \  "mhinz/vim-startify",
     \])
 end
 

@@ -78,6 +78,24 @@ local function setup_indent_blankline(_, _)
   }
 end
 
+local function setup_alpha()
+  local alpha = require("alpha")
+  local startify = require("alpha.themes.startify")
+  local fzf = require("plugins.fzf")
+
+  startify.section.top_buttons.val = {
+    startify.button("e", "  New file", ":ene <BAR> startinsert <CR>"),
+    ---@diagnostic disable-next-line: param-type-mismatch
+    startify.button("f", "󰈞  Find files", fzf.fzf_files),
+    ---@diagnostic disable-next-line: param-type-mismatch
+    startify.button("h", "󰋚  Find current dir file history", fzf.fzf_oldfiles),
+    startify.button("s", "  Restore current dir session", "<cmd>SessionManager load_current_dir_session<CR>"),
+    startify.button("q", "󰅚  Quit Neovim", ":qa<CR>"),
+  }
+  startify.section.bottom_buttons.val = {}
+  alpha.setup(startify.opts)
+end
+
 return {
   {
     "nvim-tree/nvim-tree.lua",
@@ -161,5 +179,11 @@ return {
         end
       })
     end,
+  },
+  {
+    'goolord/alpha-nvim',
+    event = "VimEnter",
+    dependencies = { 'nvim-tree/nvim-web-devicons' },
+    config = setup_alpha,
   },
 }

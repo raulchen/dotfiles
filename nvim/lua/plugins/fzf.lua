@@ -186,4 +186,7 @@ return {
   "ibhagwan/fzf-lua",
   dependencies = { "nvim-tree/nvim-web-devicons" },
   config = setup_fzf_lua,
+  -- Exporting following functions for other modules to use.
+  fzf_files = fzf_files,
+  fzf_oldfiles = fzf_oldfiles,
 }

@@ -1,3 +1,4 @@
 *.local
 nvim/lazy-lock.json
+nvim/spell
 hammerspoon/local.lua

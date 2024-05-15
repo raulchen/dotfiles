@@ -61,6 +61,33 @@ local lualine_opts = {
     },
     lualine_x = {
       {
+        -- Show macro recording message
+        function()
+          ---@diagnostic disable-next-line
+          local mode = require("noice").api.statusline.mode.get()
+          local substr_idx = mode:find("recording")
+          return mode:sub(substr_idx)
+        end,
+        cond = function()
+          ---@diagnostic disable-next-line
+          local mode = require("noice").api.statusline.mode.get()
+          return mode ~= nil and mode:find("recording") ~= nil
+        end,
+        color = { fg = "#ff9e64" },
+      },
+      -- Show search count
+      {
+        function()
+          ---@diagnostic disable-next-line
+          local search = require("noice").api.status.search.get()
+          -- replace multiple spaces with one space
+          return search:gsub("%s+", " ")
+        end,
+        ---@diagnostic disable-next-line
+        cond = function() return require("noice").api.status.search.has() end,
+        color = { fg = "#ff9e64" },
+      },
+      {
         "copilot",
         show_colors = true,
       },

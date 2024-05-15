@@ -134,7 +134,7 @@ if !has("nvim")
       endif
   endfunction
 
-  nnoremap <leader>n :call NerdTreeToggleFind()<CR>
+  nnoremap <silent> <leader>n :call NerdTreeToggleFind()<CR>
 end
 
 """""""""""""""""""
@@ -156,7 +156,7 @@ end
 """""""""""""""""""
 " Undo tree
 """""""""""""""""""
-nnoremap <leader>uu :UndotreeToggle<cr>
+nnoremap <silent> <leader>uu :UndotreeToggle<cr>
 
 """""""""""""""""""
 " togglecursor
@@ -170,7 +170,7 @@ let g:togglecursor_replace="blinking_block"
 " vim-oscyank
 """""""""""""""""""
 " Copy to system clipboard.
-vnoremap <leader>y :OSCYankVisual<CR>
+vnoremap <silent> <leader>y :OSCYankVisual<CR>
 let g:oscyank_term = 'default'
 
 """""""""""""""""""
@@ -189,17 +189,17 @@ noremap <silent> <C-M-L> :<C-U>TmuxNavigateRight<cr>
 " vim-fugitive
 """""""""""""""""""
 " Git status
-nnoremap <leader>gg :Git<cr>
+nnoremap <silent> <leader>gg :Git<cr>
 " Open in browser
-nnoremap <leader>go :GBrowse<cr>
+nnoremap <silent> <leader>go :GBrowse<cr>
 " Git blame
-nnoremap <leader>gB :G blame<cr>
+nnoremap <silent> <leader>gB :G blame<cr>
 " Git log of the current buffer
-nnoremap <leader>gl :0Gclog<cr>
+nnoremap <silent> <leader>gl :0Gclog<cr>
 " Git log
-nnoremap <leader>gL :Gclog<cr>
+nnoremap <silent> <leader>gL :Gclog<cr>
 " Git log of the visual selection
-vnoremap <leader>gl :Gclog<cr>
+vnoremap <silent> <leader>gl :Gclog<cr>
 
 """""""""""""""""""
 " vim-plugin-AnsiEsc

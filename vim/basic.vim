@@ -255,50 +255,50 @@ xnoremap <  <gv
 xnoremap >  >gv
 
 " Fast quit
-nnoremap <leader>q :q<cr>
-nnoremap <leader>Q :q!<cr>
+nnoremap <silent> <leader>q :q<cr>
+nnoremap <silent> <leader>Q :q!<cr>
 
 "" UI
 
 " disable highlight
-noremap <leader>uh :noh<cr>
+noremap <silent> <leader>uh :noh<cr>
 " switch between number, relative_number, no_number
-noremap <leader>un :call SwitchNumber()<cr>
+noremap <silent> <leader>un :call SwitchNumber()<cr>
 " toggle wrap
-noremap <leader>uw :set wrap! wrap?<cr>
+noremap <silent> <leader>uw :set wrap! wrap?<cr>
 " toggle spell checking
-noremap <leader>us :set spell! spell?<cr>
+noremap <silent> <leader>us :set spell! spell?<cr>
 
 "" Buffers
 
 " open new buffer
-noremap <leader>be :enew<cr>
+noremap <silent> <leader>be :enew<cr>
 " delete buffer
-noremap <leader>x :bd<cr>
-noremap <leader>bx :bd<cr>
+noremap <silent> <leader>x :bd<cr>
+noremap <silent> <leader>bx :bd<cr>
 " write buffer
-noremap <leader>bw :w<cr>
+noremap <silent> <leader>bw :w<cr>
 " switch buffers
-nnoremap <tab> :bn<cr>
-nnoremap <s-tab> :bp<cr>
-noremap <leader>bn :bn<cr>
-noremap <leader>bp :bp<cr>
+nnoremap <silent> <tab> :bn<cr>
+nnoremap <silent> <s-tab> :bp<cr>
+noremap <silent> <leader>bn :bn<cr>
+noremap <silent> <leader>bp :bp<cr>
 " switch to last edited buffer
 noremap <leader>bl <c-^>
 " Only keep the current buffer, close all others.
 " %bd = delete all buffers; e# = edit the last buffer; bd# = delete the last buffer with "[No Name]".
 command! BufOnly silent! execute "%bd|e#|bd#"
-noremap <leader>bo :BufOnly<cr>
+noremap <silent> <leader>bo :BufOnly<cr>
 
 """ Tabs
 " Open new tab
-noremap <leader>be :enew<cr>
+noremap <silent> <leader>be :enew<cr>
 " Next tab
-noremap <leader>tn :tabn<cr>
+noremap <silent> <leader>tn :tabn<cr>
 " Previous tab
-noremap <leader>tp :tabp<cr>
+noremap <silent> <leader>tp :tabp<cr>
 " Close tab
-noremap <leader>tx :tabclose<cr>
+noremap <silent> <leader>tx :tabclose<cr>
 
 "" Windows
 
@@ -325,8 +325,8 @@ nnoremap <silent> <c-j> <c-w>j
 nnoremap <silent> <c-k> <c-w>k
 
 " Move a line of text
-vnoremap <c-j> :m'>+<cr>`<my`>mzgv`yo`z
-vnoremap <c-k> :m'<-2<cr>`>my`<mzgv`yo`z
+vnoremap <silent> <c-j> :m'>+<cr>`<my`>mzgv`yo`z
+vnoremap <silent> <c-k> :m'<-2<cr>`>my`<mzgv`yo`z
 
 " <leader>r to replace selected text
 vnoremap <expr> <leader>r ReplaceSelection()

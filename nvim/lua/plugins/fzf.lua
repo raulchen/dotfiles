@@ -134,6 +134,7 @@ end
 local function setup_fzf_lua()
   local fzf_lua = require("fzf-lua")
   fzf_lua.setup(fzf_lua_opts)
+  fzf_lua.register_ui_select()
 
   local function keymap(lhs, rhs, desc, mode)
     mode = mode or "n"

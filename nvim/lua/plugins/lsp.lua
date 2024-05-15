@@ -136,11 +136,6 @@ return {
     dependencies = {
       'hrsh7th/cmp-nvim-lsp',
       {
-        'j-hui/fidget.nvim',
-        tag = 'legacy',
-        opts = {},
-      },
-      {
         'rmagatti/goto-preview',
         config = setup_goto_preview,
       },

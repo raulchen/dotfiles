@@ -4,7 +4,6 @@ let g:vim_plugins = []
 call extend(g:vim_plugins, [
 \  "amix/open_file_under_cursor.vim",
 \  "michaeljsmith/vim-indent-object",
-\  "google/vim-searchindex",
 \  "christoomey/vim-tmux-navigator",
 \])
 
@@ -44,6 +43,7 @@ if !has("nvim")
     \  "itchyny/lightline.vim",
     \  "mgee/lightline-bufferline",
     \  "mhinz/vim-startify",
+    \  "google/vim-searchindex",
     \])
 end
 

@@ -155,30 +155,29 @@ return {
     },
   },
   {
-    "stevearc/dressing.nvim",
+    "folke/noice.nvim",
     event = "VeryLazy",
-    config = function(_, _)
-      require("dressing").setup()
-      -- Set Emacs-like keybindings for `vim.input`.
-      vim.api.nvim_create_autocmd("FileType", {
-        pattern = "DressingInput",
-        callback = function()
-          local keymap = function(lhs, rhs)
-            vim.api.nvim_buf_set_keymap(0, 'i', lhs, rhs, { noremap = true, silent = true })
-          end
-          -- start of line
-          keymap('<C-A>', '<Home>')
-          -- back one character
-          keymap('<C-B>', '<Left>')
-          -- delete character under cursor
-          keymap('<C-D>', '<Del>')
-          -- end of line
-          keymap('<C-E>', '<End>')
-          -- forward one character
-          keymap('<C-F>', '<Right>')
-        end
-      })
-    end,
+    opts = {
+      lsp = {
+        override = {
+          -- override the default lsp markdown formatter with Noice
+          ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
+          -- override the lsp markdown formatter with Noice
+          ["vim.lsp.util.stylize_markdown"] = true,
+          -- override cmp documentation with Noice (requires nvim-cmp)
+          ["cmp.entry.get_documentation"] = true,
+        },
+      },
+    },
+    dependencies = {
+      "MunifTanjim/nui.nvim",
+      {
+        "rcarriga/nvim-notify",
+        opts = {
+          stages = "fade",
+        },
+      }
+    }
   },
   {
     'goolord/alpha-nvim',

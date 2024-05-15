@@ -208,8 +208,8 @@ function! SwitchNumber()
         set norelativenumber
         set nonumber
     else
-        set norelativenumber
-        set number
+        set relativenumber
+        set nonumber
     endif
 endfunc
 
@@ -291,7 +291,6 @@ command! BufOnly silent! execute "%bd|e#|bd#"
 noremap <leader>bo :BufOnly<cr>
 
 """ Tabs
-
 " Open new tab
 noremap <leader>be :enew<cr>
 " Next tab

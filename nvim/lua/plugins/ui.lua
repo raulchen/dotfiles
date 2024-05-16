@@ -185,6 +185,25 @@ return {
     "folke/noice.nvim",
     event = "VeryLazy",
     opts = {
+      routes = {
+        {
+          filter = {
+            any = {
+              {
+                event = "msg_show",
+                kind = "",
+                find = "written",
+              },
+              {
+                event = "msg_show",
+                kind = "",
+                find = "lines yanked",
+              },
+            },
+          },
+          view = "mini",
+        },
+      },
       lsp = {
         override = {
           -- override the default lsp markdown formatter with Noice

@@ -28,6 +28,7 @@ plugins=(
     git-prompt
     vi-mode
     zsh-syntax-highlighting
+    zsh-autosuggestions
 )
 
 if [[ `uname` == 'Darwin' ]]; then

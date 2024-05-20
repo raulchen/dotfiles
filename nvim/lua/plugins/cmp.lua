@@ -51,7 +51,15 @@ local function setup_cmp(_, _)
     }),
     sources = {
       { name = 'nvim_lsp' },
-      { name = 'buffer' },
+      {
+        name = 'buffer',
+        option = {
+          -- Complete text from all buffers.
+          get_bufnrs = function()
+            return vim.api.nvim_list_bufs()
+          end
+        }
+      },
       { name = 'path' },
       { name = 'luasnip' },
       { name = 'spell' },

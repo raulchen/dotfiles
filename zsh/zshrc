@@ -29,7 +29,6 @@ plugins=(
     vi-mode
     zsh-syntax-highlighting
     zsh-autosuggestions
-    zsh-autocomplete
 )
 
 if [[ `uname` == 'Darwin' ]]; then

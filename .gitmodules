@@ -15,3 +15,6 @@
 [submodule "zsh/oh_my_zsh_custom/plugins/zsh-autosuggestions"]
 	path = zsh/oh_my_zsh_custom/plugins/zsh-autosuggestions
 	url = https://github.com/zsh-users/zsh-autosuggestions
+[submodule "zsh/oh_my_zsh_custom/plugins/zsh-autocomplete"]
+	path = zsh/oh_my_zsh_custom/plugins/zsh-autocomplete
+	url = https://github.com/marlonrichert/zsh-autocomplete.git

@@ -55,6 +55,8 @@ antigen bundle vi-mode
 antigen bundle zsh-users/zsh-autosuggestions
 antigen bundle zsh-users/zsh-completions
 antigen bundle zsh-users/zsh-syntax-highlighting
+# zsh-history-substring-search should be loaded after zsh-syntax-highlighting
+antigen bundle zsh-users/zsh-history-substring-search
 
 if [[ `uname` == 'Darwin' ]]; then
     antigen bundle macos
@@ -84,10 +86,20 @@ antigen apply
 
 # === plugin configs ===
 
-# oh-my-zsh
-# Make Ctrl-P/N search by prefix like Up/Down arrow keys do.
-bindkey '^P' up-line-or-beginning-search
-bindkey '^N' down-line-or-beginning-search
+# zsh-history-substring-search
+# Up/down arrows
+bindkey '^[[A' history-substring-search-up
+bindkey '^[[B' history-substring-search-down
+# The above bindings may not work in some terminals,
+# the following bindings are also set for up/down arrows.
+bindkey "$terminfo[kcuu1]" history-substring-search-up
+bindkey "$terminfo[kcud1]" history-substring-search-down
+# Ctrl-N/P
+bindkey '^P' history-substring-search-up
+bindkey '^N' history-substring-search-down
+# k/j in vim mode
+bindkey -M vicmd 'k' history-substring-search-up
+bindkey -M vicmd 'j' history-substring-search-down
 
 # vim-mode
 # Automatically set cursor shape.

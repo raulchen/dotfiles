@@ -21,6 +21,21 @@ HISTSIZE=130000
 SAVEHIST=130000
 HYPHEN_INSENSITIVE="true"
 
+# Ctrl-V: edit in vim
+bindkey '^V' edit-command-line
+bindkey -M vicmd '^V' edit-command-line
+
+# Expand ".../"
+function expand-dots {
+   if [[ $LBUFFER =~ ".*\.\.\.$" ]]; then
+	 zle _expand_alias
+	 zle expand-word
+   fi
+   zle self-insert
+}
+zle -N expand-dots
+bindkey -M viins "/" expand-dots
+
 # === Antigen settings ===
 
 # Install Antigen if not already installed
@@ -36,9 +51,9 @@ antigen bundle extract
 antigen bundle git
 antigen bundle git-prompt
 antigen bundle vi-mode
-antigen bundle zsh-users/zsh-syntax-highlighting
 antigen bundle zsh-users/zsh-autosuggestions
 antigen bundle zsh-users/zsh-completions
+antigen bundle zsh-users/zsh-syntax-highlighting
 
 if [[ `uname` == 'Darwin' ]]; then
     antigen bundle macos
@@ -47,11 +62,11 @@ fi
 
 # The following plugins will be loaded only when the corresponding commands exist.
 typeset -A commands_to_plugins=(
-    "eza" "z-shell/zsh-eza@main"
     "bazel" "bazel"
+    "eza" "z-shell/zsh-eza@main"
     "mvn" "mvn"
-    "zoxide" "zoxide"
     "pyenv" "davidparsson/zsh-pyenv-lazy"
+    "zoxide" "zoxide"
 )
 
 for cmd in ${(@k)commands_to_plugins}; do
@@ -66,6 +81,19 @@ antigen theme $DOTFILES/zsh my-theme --no-local-clone
 # Apply antigen bundles
 antigen apply
 
+# === plugin configs ===
+
+# oh-my-zsh
+# Make Ctrl-P/N search by prefix like Up/Down arrow keys do.
+bindkey '^P' up-line-or-beginning-search
+bindkey '^N' down-line-or-beginning-search
+
+# vim-mode
+# Automatically set cursor shape.
+VI_MODE_SET_CURSOR=true
+
+# zsh-eza
+# Fix colors
 if [[ -n $eza_params ]]; then
     eza_params+=("--color-scale-mode=fixed")
 fi
@@ -113,33 +141,6 @@ export FZF_CTRL_R_OPTS="
 eval "$(fzf --zsh)"
 # https://raw.githubusercontent.com/junegunn/fzf-git.sh/main/fzf-git.sh
 source $DOTFILES/zsh/fzf-git.sh
-
-# === Shell improvements ===
-
-# Remove the extra space after the right prompt.
-export ZLE_RPROMPT_INDENT=0
-
-# Set cursor shape based on vi-mode.
-VI_MODE_SET_CURSOR=true
-
-# Make Ctrl-P/N search by prefix like Up/Down arrow keys do.
-bindkey '^P' up-line-or-beginning-search
-bindkey '^N' down-line-or-beginning-search
-
-# Ctrl-V: edit in vim
-bindkey '^V' edit-command-line
-bindkey -M vicmd '^V' edit-command-line
-
-# Expand ".../"
-function expand-dots {
-   if [[ $LBUFFER =~ ".*\.\.\.$" ]]; then
-	 zle _expand_alias
-	 zle expand-word
-   fi
-   zle self-insert
-}
-zle -N expand-dots
-bindkey -M viins "/" expand-dots
 
 # === Load aliases, functions, and local settings ===
 

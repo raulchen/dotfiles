@@ -14,3 +14,6 @@ ZSH_THEME_GIT_PROMPT_STASHED="%{$fg[blue]%}%{⚑%G%}"
 ZSH_THEME_GIT_PROMPT_CLEAN="%{$fg[green]%}%{✔%G%}"
 PROMPT='%{$fg[yellow]%}%(?,,%{${fg[red]}%})\$$PROMPT_SEPARATOR%{$reset_color%}'
 RPROMPT='$(git_super_status)%{$fg[yellow]%}%~$PROMPT_SEPARATOR%{$fg[green]%}%*%{$reset_color%}'
+
+# Remove the extra space after the right prompt.
+ZLE_RPROMPT_INDENT=0

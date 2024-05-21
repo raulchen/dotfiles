@@ -47,7 +47,7 @@ fi
 
 # The following plugins will be loaded only when the corresponding commands exist.
 typeset -A commands_to_plugins=(
-    "eza" "eza"
+    "eza" "z-shell/zsh-eza@main"
     "bazel" "bazel"
     "mvn" "mvn"
     "zoxide" "zoxide"
@@ -65,6 +65,10 @@ antigen theme $DOTFILES/zsh my-theme --no-local-clone
 
 # Apply antigen bundles
 antigen apply
+
+if [[ -n $eza_params ]]; then
+    eza_params+=("--color-scale-mode=fixed")
+fi
 
 # === fzf settings ===
 

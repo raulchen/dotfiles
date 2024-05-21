@@ -14,12 +14,6 @@ ZSH_CUSTOM=$DOTFILES/zsh/oh_my_zsh_custom
 # Because we will choose plugins based on availability of commands.
 export PATH="$HOME/bin:$DOTFILES/bin:/opt/homebrew/bin:$PATH"
 
-# NOTE: This needs to be done before "source $ZSH/oh-my-zsh.sh",
-# otherwise the "pyenv" plugin will print a warning.
-if command -v pyenv 1>/dev/null 2>&1; then
-    eval "$(pyenv init -)"
-fi
-
 plugins=(
     colored-man-pages
     extract
@@ -40,7 +34,6 @@ typeset -A commands_to_plugins=(
     "bazel" "bazel"
     "docker" "docker"
     "mvn" "mvn"
-    "pyenv" "pyenv"
     "zoxide" "zoxide"
 )
 
@@ -74,6 +67,14 @@ fi
 
 HISTSIZE=130000
 SAVEHIST=130000
+
+# === pyenv settings ===
+
+if command -v pyenv 1>/dev/null 2>&1; then
+    export PYENV_ROOT="$HOME/.pyenv"
+    export PATH="$PYENV_ROOT/bin:$PATH"
+    eval "$(pyenv init --path)"
+fi
 
 # === fzf settings ===
 

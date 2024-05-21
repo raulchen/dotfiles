@@ -51,7 +51,7 @@ antigen bundle colored-man-pages
 antigen bundle extract
 antigen bundle git
 antigen bundle git-prompt
-antigen bundle vi-mode
+antigen bundle jeffreytse/zsh-vi-mode
 antigen bundle zsh-users/zsh-autosuggestions
 antigen bundle zsh-users/zsh-completions
 antigen bundle zsh-users/zsh-syntax-highlighting
@@ -100,10 +100,6 @@ bindkey '^N' history-substring-search-down
 # k/j in vim mode
 bindkey -M vicmd 'k' history-substring-search-up
 bindkey -M vicmd 'j' history-substring-search-down
-
-# vim-mode
-# Automatically set cursor shape.
-VI_MODE_SET_CURSOR=true
 
 # zsh-eza
 # Fix colors

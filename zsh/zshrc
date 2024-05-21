@@ -50,6 +50,7 @@ typeset -A commands_to_plugins=(
     "bazel" "bazel"
     "mvn" "mvn"
     "zoxide" "zoxide"
+    "pyenv" "davidparsson/zsh-pyenv-lazy"
 )
 
 for cmd in ${(@k)commands_to_plugins}; do
@@ -63,14 +64,6 @@ antigen theme $DOTFILES/zsh my-theme --no-local-clone
 
 # Apply antigen bundles
 antigen apply
-
-# === pyenv settings ===
-
-if command -v pyenv 1>/dev/null 2>&1; then
-    export PYENV_ROOT="$HOME/.pyenv"
-    export PATH="$PYENV_ROOT/bin:$PATH"
-    eval "$(pyenv init --path)"
-fi
 
 # === fzf settings ===
 

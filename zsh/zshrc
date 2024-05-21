@@ -86,10 +86,8 @@ antigen apply
 
 # === plugin configs ===
 
-# Bind the following keys after zsh-vi-mode is loaded,
-# otherwise they will be overridden.
-function zvm_after_init() {
-    # zsh-history-substring-search
+# zsh-history-substring-search
+function _zshrc_bind_history_substring_search_keys() {
     # Up/down arrows
     bindkey '^[[A' history-substring-search-up
     bindkey '^[[B' history-substring-search-down
@@ -104,6 +102,9 @@ function zvm_after_init() {
     bindkey -M vicmd 'k' history-substring-search-up
     bindkey -M vicmd 'j' history-substring-search-down
 }
+# Postpone keybindings until zsh-vi-mode is loaded,
+# otherwise they will be overridden by zsh-vi-mode.
+zvm_after_init_commands+=(_zshrc_bind_history_substring_search_keys)
 
 # zsh-eza
 # Fix colors
@@ -166,9 +167,17 @@ export FZF_CTRL_R_OPTS="
   --color header:italic
   --header 'CTRL-Y to copy command; CTRL-/ to preview full command'"
 
-eval "$(fzf --zsh)"
-# https://raw.githubusercontent.com/junegunn/fzf-git.sh/main/fzf-git.sh
-source $DOTFILES/zsh/fzf-git.sh
+function _zshrc_init_fzf() {
+    if type fzf >/dev/null 2>&1 ; then
+        eval "$(fzf --zsh)"
+        # https://raw.githubusercontent.com/junegunn/fzf-git.sh/main/fzf-git.sh
+        source $DOTFILES/zsh/fzf-git.sh
+    fi
+}
+
+# Postpone fzf initialization until zsh-vi-mode is loaded,
+# otherwise fzf keybindings will be overridden by zsh-vi-mode.
+zvm_after_init_commands+=(_zshrc_init_fzf)
 
 # === Load aliases, functions, and local settings ===
 

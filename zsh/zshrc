@@ -46,6 +46,7 @@ source "$HOME/.antigen/antigen.zsh"
 antigen use oh-my-zsh
 
 # Load plugins
+antigen bundle Aloxaf/fzf-tab
 antigen bundle colored-man-pages
 antigen bundle extract
 antigen bundle git
@@ -97,6 +98,21 @@ VI_MODE_SET_CURSOR=true
 if [[ -n $eza_params ]]; then
     eza_params+=("--color-scale-mode=fixed")
 fi
+
+# fzf-tab
+# Disable sort when completing `git checkout`
+zstyle ':completion:*:git-checkout:*' sort false
+# set descriptions format to enable group support
+# NOTE: don't use escape sequences here, fzf-tab will ignore them
+zstyle ':completion:*:descriptions' format '[%d]'
+# set list-colors to enable filename colorizing
+zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
+# force zsh not to show completion menu, which allows fzf-tab to capture the unambiguous prefix
+zstyle ':completion:*' menu no
+# switch group using `<` and `>`
+zstyle ':fzf-tab:*' switch-group '<' '>'
+# Use tmux popup window
+zstyle ':fzf-tab:*' fzf-command ftb-tmux-popup
 
 # === fzf settings ===
 

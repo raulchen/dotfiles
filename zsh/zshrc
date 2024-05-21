@@ -1,58 +1,8 @@
 DOTFILES=$HOME/dotfiles
 
-# Path to your oh-my-zsh installation.
-export ZSH=$DOTFILES/zsh/oh-my-zsh
+# === Environmental variables ===
 
-# === oh-my-zsh settings ===
-
-ZSH_THEME="my-theme"
-HYPHEN_INSENSITIVE="true"
-COMPLETION_WAITING_DOTS="true"
-ZSH_CUSTOM=$DOTFILES/zsh/oh_my_zsh_custom
-
-# NOTE: PATH should be set before initializing oh-my-zsh plugins.
-# Because we will choose plugins based on availability of commands.
 export PATH="$HOME/bin:$DOTFILES/bin:/opt/homebrew/bin:$PATH"
-
-plugins=(
-    colored-man-pages
-    extract
-    git
-    git-prompt
-    vi-mode
-    zsh-syntax-highlighting
-    zsh-autosuggestions
-)
-
-if [[ `uname` == 'Darwin' ]]; then
-    plugins+=(macos brew)
-fi
-
-# The following plugins will be loaded only when the corresponding commands exist.
-typeset -A commands_to_plugins=(
-    "eza" "eza"
-    "bazel" "bazel"
-    "docker" "docker"
-    "mvn" "mvn"
-    "zoxide" "zoxide"
-)
-
-for cmd in ${(@k)commands_to_plugins}; do
-    if [[ $(command -v "$cmd") ]]; then
-        plugins+=($commands_to_plugins[$cmd])
-    fi
-done
-
-# Disable auto update for oh-my-zsh
-zstyle ':omz:update' mode disabled
-
-source $ZSH/oh-my-zsh.sh
-
-# Support bash completion.
-autoload bashcompinit
-bashcompinit
-
-# === Environment variables ===
 
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
@@ -65,8 +15,54 @@ else
     export EDITOR='vim'
 fi
 
+# === zsh settings ===
+
 HISTSIZE=130000
 SAVEHIST=130000
+HYPHEN_INSENSITIVE="true"
+
+# === Antigen settings ===
+
+# Install Antigen if not already installed
+[[ ! -d "$HOME/.antigen" ]] && git clone https://github.com/zsh-users/antigen.git "$HOME/.antigen"
+source "$HOME/.antigen/antigen.zsh"
+
+# Load the oh-my-zsh library
+antigen use oh-my-zsh
+
+# Load plugins
+antigen bundle colored-man-pages
+antigen bundle extract
+antigen bundle git
+antigen bundle git-prompt
+antigen bundle vi-mode
+antigen bundle zsh-users/zsh-syntax-highlighting
+antigen bundle zsh-users/zsh-autosuggestions
+
+if [[ `uname` == 'Darwin' ]]; then
+    antigen bundle macos
+    antigen bundle brew
+fi
+
+# The following plugins will be loaded only when the corresponding commands exist.
+typeset -A commands_to_plugins=(
+    "eza" "eza"
+    "bazel" "bazel"
+    "mvn" "mvn"
+    "zoxide" "zoxide"
+)
+
+for cmd in ${(@k)commands_to_plugins}; do
+    if [[ $(command -v "$cmd") ]]; then
+        plugins+=($commands_to_plugins[$cmd])
+    fi
+    antigen bundle "$commands_to_plugins[$cmd]"
+done
+
+antigen theme $DOTFILES/zsh my-theme --no-local-clone
+
+# Apply antigen bundles
+antigen apply
 
 # === pyenv settings ===
 

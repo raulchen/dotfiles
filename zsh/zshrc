@@ -86,20 +86,24 @@ antigen apply
 
 # === plugin configs ===
 
-# zsh-history-substring-search
-# Up/down arrows
-bindkey '^[[A' history-substring-search-up
-bindkey '^[[B' history-substring-search-down
-# The above bindings may not work in some terminals,
-# the following bindings are also set for up/down arrows.
-bindkey "$terminfo[kcuu1]" history-substring-search-up
-bindkey "$terminfo[kcud1]" history-substring-search-down
-# Ctrl-N/P
-bindkey '^P' history-substring-search-up
-bindkey '^N' history-substring-search-down
-# k/j in vim mode
-bindkey -M vicmd 'k' history-substring-search-up
-bindkey -M vicmd 'j' history-substring-search-down
+# Bind the following keys after zsh-vi-mode is loaded,
+# otherwise they will be overridden.
+function zvm_after_init() {
+    # zsh-history-substring-search
+    # Up/down arrows
+    bindkey '^[[A' history-substring-search-up
+    bindkey '^[[B' history-substring-search-down
+    # The above bindings may not work in some terminals,
+    # the following bindings are also set for up/down arrows.
+    bindkey "$terminfo[kcuu1]" history-substring-search-up
+    bindkey "$terminfo[kcud1]" history-substring-search-down
+    # Ctrl-N/P
+    bindkey '^P' history-substring-search-up
+    bindkey '^N' history-substring-search-down
+    # k/j in vim mode
+    bindkey -M vicmd 'k' history-substring-search-up
+    bindkey -M vicmd 'j' history-substring-search-down
+}
 
 # zsh-eza
 # Fix colors

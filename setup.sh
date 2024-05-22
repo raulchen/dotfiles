@@ -1,5 +1,5 @@
 #!/bin/bash
-base_dir=$HOME/dotfiles
+base_dir=$(cd "$(dirname "$0")" && pwd)
 backup_dir="$base_dir/.backups.local"
 backup_prefix="$backup_dir/$(date '+%Y%m%d%H%M%S')"
 
@@ -53,21 +53,19 @@ link_file() {
 }
 
 echo "Setting up zsh..."
-link_file "$base_dir/zsh/oh-my-zsh" ~/.oh-my-zsh
 link_file "$base_dir/zsh/zshrc" ~/.zshrc
 
-if which nvim >/dev/null 2>&1 ; then
-    echo "Setting up neovim..."
-    mkdir -p ~/.config
-    link_file "$base_dir/nvim" ~/.config/nvim
-fi
+echo "Setting up neovim..."
+mkdir -p ~/.config
+link_file "$base_dir/nvim" ~/.config/nvim
+
 echo "Setting up vim..."
 if link_file "$base_dir/vim/vimrc" ~/.vimrc ; then
     vim +PlugInstall +qall
 fi
 
 echo "Setting up tmux..."
-link_file "$base_dir/tmux/tmux.conf" ~/.tmux.conf
+link_file "$base_dir/tmux" ~/.config/tmux
 
 if [[ `uname` == "Darwin" ]]; then
     echo "Setting up Hammerspoon..."

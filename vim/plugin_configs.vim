@@ -184,6 +184,10 @@ noremap <silent> <C-M-H> :<C-U>TmuxNavigateLeft<cr>
 noremap <silent> <C-M-J> :<C-U>TmuxNavigateDown<cr>
 noremap <silent> <C-M-K> :<C-U>TmuxNavigateUp<cr>
 noremap <silent> <C-M-L> :<C-U>TmuxNavigateRight<cr>
+noremap <silent> <C-H> :<C-U>TmuxNavigateLeft<cr>
+noremap <silent> <C-J> :<C-U>TmuxNavigateDown<cr>
+noremap <silent> <C-K> :<C-U>TmuxNavigateUp<cr>
+noremap <silent> <C-L> :<C-U>TmuxNavigateRight<cr>
 
 """""""""""""""""""
 " vim-fugitive

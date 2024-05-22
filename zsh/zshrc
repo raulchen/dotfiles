@@ -39,7 +39,7 @@ bindkey -M viins "/" expand-dots
 # === Antigen settings ===
 
 # Install Antigen if not already installed
-[[ ! -d "$HOME/.antigen" ]] && git clone https://github.com/zsh-users/antigen.git "$HOME/.antigen"
+[[ ! -d "$HOME/.antigen" ]] && git clone --depth 1 https://github.com/zsh-users/antigen.git "$HOME/.antigen"
 source "$HOME/.antigen/antigen.zsh"
 
 # Load the oh-my-zsh library

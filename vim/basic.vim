@@ -160,6 +160,7 @@ set tw=500
 
 set ai " Auto indent
 set wrap " Wrap lines
+let &showbreak = "↪ " " Show line wrap indicator
 
 """ Misc
 

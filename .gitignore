@@ -3,3 +3,4 @@ nvim/lazy-lock.json
 nvim/spell
 hammerspoon/local.lua
 zsh/my-theme.zsh-theme.antigen-compat
+tmux/plugins

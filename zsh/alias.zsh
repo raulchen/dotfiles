@@ -28,3 +28,13 @@ if [[ `uname` == 'Darwin' ]]; then
     # Usage: `mergepdf -o output.pdf input{1,2,3}.pdf`
     alias mergepdf='/System/Library/Automator/Combine\ PDF\ Pages.action/Contents/Resources/join.py'
 fi
+
+# lsd
+if type lsd >/dev/null 2>&1 ; then
+    _lsd_params="--date +'%Y-%m-%d %H:%M:%S' --group-dirs=first"
+    alias ls="lsd $_lsd_params"
+    alias ll="lsd -l $_lsd_params"
+    alias la="lsd -la $_lsd_params"
+    alias lt="lsd --tree $_lsd_params"
+    alias tree="lsd --tree $_lsd_params"
+fi

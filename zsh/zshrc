@@ -66,7 +66,6 @@ fi
 # The following plugins will be loaded only when the corresponding commands exist.
 typeset -A commands_to_plugins=(
     "bazel" "bazel"
-    "eza" "z-shell/zsh-eza@main"
     "mvn" "mvn"
     "pyenv" "davidparsson/zsh-pyenv-lazy"
     "zoxide" "zoxide"
@@ -104,12 +103,6 @@ function _zshrc_bind_history_substring_search_keys() {
 # Postpone keybindings until zsh-vi-mode is loaded,
 # otherwise they will be overridden by zsh-vi-mode.
 zvm_after_init_commands+=(_zshrc_bind_history_substring_search_keys)
-
-# zsh-eza
-# Fix colors
-if [[ -n $eza_params ]]; then
-    eza_params+=("--color-scale-mode=fixed")
-fi
 
 # fzf-tab
 # Disable sort when completing `git checkout`

@@ -10,7 +10,6 @@ call extend(g:vim_plugins, [
 " Editing
 call extend(g:vim_plugins, [
 \  "tpope/vim-surround",
-\  "tpope/vim-commentary",
 \  "mg979/vim-visual-multi",
 \  "tpope/vim-repeat",
 \  "mbbill/undotree",
@@ -44,6 +43,7 @@ if !has("nvim")
     \  "mgee/lightline-bufferline",
     \  "mhinz/vim-startify",
     \  "google/vim-searchindex",
+    \  "tpope/vim-commentary",
     \])
 end
 

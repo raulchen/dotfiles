@@ -63,9 +63,9 @@ local function fzf_files()
   end
 end
 
-local function fzf_search(defaul_query, default_cwd)
-  if defaul_query == nil then
-    defaul_query = vim.fn.expand("<cword>")
+local function fzf_search(default_query, default_cwd)
+  if default_query == nil then
+    default_query = vim.fn.expand("<cword>")
   end
   if default_cwd == nil then
     default_cwd = vim.loop.cwd()
@@ -78,7 +78,7 @@ local function fzf_search(defaul_query, default_cwd)
   end
   vim.ui.input({
       prompt = "Search query: ",
-      default = defaul_query,
+      default = default_query,
     },
     function(query)
       if not query then
@@ -149,7 +149,7 @@ local function setup_fzf_lua()
   keymap("<leader>fH", function() fzf_oldfiles({ cwd_only = false }) end, "Find global file history")
   keymap("<leader>fb", fzf_lua.buffers, "Find buffers")
   -- Search
-  keymap("<leader>fs", fzf_search, "Searh")
+  keymap("<leader>fs", fzf_search, "Search")
   keymap("<leader>fs", fzf_lua.grep_visual, "Searh visual selection", "v")
   -- Tags
   keymap("<leader>ft", fzf_lua.btags, "Find tags in current buffer")

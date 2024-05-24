@@ -84,10 +84,7 @@ local function setup_lspconfig(_, _)
     map('n', '<leader>cr', vim.lsp.buf.rename, "Rename symbol under cursor")
     map('n', '<leader>ca', vim.lsp.buf.code_action, "Code action")
 
-    map('n', '<leader>cf', fzf_lua.lsp_finder, "Lsp finder")
-    map('n', '<leader>cu', fzf_lua.lsp_references, "Search usages")
-    map('n', '<leader>ci', fzf_lua.lsp_incoming_calls, "Search incoming calls")
-    map('n', '<leader>co', fzf_lua.lsp_outgoing_calls, "Search outgoing calls")
+    map('n', '<leader>cu', fzf_lua.lsp_finder, "Search all usages")
 
     map('n', '<leader>cs', fzf_lua.lsp_document_symbols, "Search current buffer symbols")
     map('n', '<leader>cS', fzf_lua.lsp_live_workspace_symbols, "Search workspace symbols")

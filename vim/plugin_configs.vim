@@ -205,6 +205,19 @@ nnoremap <silent> <leader>gL :Gclog<cr>
 " Git log of the visual selection
 vnoremap <silent> <leader>gl :Gclog<cr>
 
+" Command Git aliases
+command! -nargs=* Gc Git commit <args>
+command! -nargs=* Gca Git commit -a <args>
+command! -nargs=* Gcam Git commit -am <args>
+command! -nargs=* Gco Git checkout <args>
+command! -nargs=* Gd Git diff <args>
+command! -nargs=* Gm Git merge <args>
+command! -nargs=* Gpush execute 'Git push origin ' . FugitiveHead() . ' ' . <q-args>
+command! -nargs=* Grb Git rebase <args>
+command! -nargs=* Grbi Git rebase -i <args>
+command! -nargs=* Gst Git status <args>
+command! -nargs=0 Glog Git log --graph --pretty="%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ar) %C(bold blue)<%an>%Creset"
+
 """""""""""""""""""
 " vim-plugin-AnsiEsc
 """""""""""""""""""

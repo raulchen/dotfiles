@@ -38,3 +38,6 @@ if type lsd >/dev/null 2>&1 ; then
     alias lt="lsd --tree $_lsd_params"
     alias tree="lsd --tree $_lsd_params"
 fi
+
+# git
+alias gpush="git push origin $(git_current_branch)"

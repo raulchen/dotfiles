@@ -162,6 +162,8 @@ export FZF_CTRL_R_OPTS="
 function _zshrc_init_fzf() {
     if type fzf >/dev/null 2>&1 ; then
         eval "$(fzf --zsh)"
+        # Fix fzf-git.sh key bindings incompatible with zsh-vi-mode.
+        bindkey -r '^G'
         # https://raw.githubusercontent.com/junegunn/fzf-git.sh/main/fzf-git.sh
         source $DOTFILES/zsh/fzf-git.sh
     fi

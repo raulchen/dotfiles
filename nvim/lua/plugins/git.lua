@@ -65,6 +65,7 @@ local diffview_keys = {
     desc = "Toggle diff view"
   },
   { '<leader>gh', '<cmd>DiffviewFileHistory %<CR>', mode = 'n', desc = 'Current file history' },
+  { '<leader>gh', ':DiffviewFileHistory<CR>', mode = 'x', desc = 'Range history' },
   { '<leader>gH', '<cmd>DiffviewFileHistory<CR>', mode = 'n', desc = 'Repo history' },
 }
 

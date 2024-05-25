@@ -27,6 +27,7 @@ local function setup_whichkey(_, _)
   local wk = require("which-key")
   wk.setup()
   wk.register({
+    a = { name = "AI" },
     b = { name = "buffers" },
     c = {
       name = "code",

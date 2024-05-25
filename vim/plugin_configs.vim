@@ -198,12 +198,6 @@ nnoremap <silent> <leader>gg :Git<cr>
 nnoremap <silent> <leader>go :GBrowse<cr>
 " Git blame
 nnoremap <silent> <leader>gB :G blame<cr>
-" Git log of the current buffer
-nnoremap <silent> <leader>gl :0Gclog<cr>
-" Git log
-nnoremap <silent> <leader>gL :Gclog<cr>
-" Git log of the visual selection
-vnoremap <silent> <leader>gl :Gclog<cr>
 
 " Command Git aliases
 command! -nargs=* Gc Git commit <args>

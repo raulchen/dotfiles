@@ -186,8 +186,24 @@ return {
     "folke/noice.nvim",
     event = "VeryLazy",
     opts = {
-      messages = {
-        view = "mini",
+      routes = {
+        {
+          filter = {
+            any = {
+              {
+                event = "msg_show",
+                kind = "",
+                find = "written",
+              },
+              {
+                event = "msg_show",
+                kind = "",
+                find = "lines yanked",
+              },
+            },
+          },
+          view = "mini",
+        },
       },
       lsp = {
         override = {

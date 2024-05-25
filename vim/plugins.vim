@@ -28,7 +28,6 @@ call extend(g:vim_plugins, [
 call extend(g:vim_plugins, [
 \  "tpope/vim-fugitive",
 \  "tpope/vim-rhubarb",
-\  "will133/vim-dirdiff",
 \])
 
 " Following plugins are not enabled for neovim.

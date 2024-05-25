@@ -1,8 +1,8 @@
 local copilot_keys = {
   {
-    "<leader>cc",
+    "<leader>as",
     function() require("copilot.suggestion").toggle_auto_trigger() end,
-    desc = "Toggle Copilot auto trigger",
+    desc = "Copilot: Toggle auto suggestion",
   },
 }
 
@@ -10,7 +10,7 @@ local copilot_opts = {
   suggestion = {
     keymap = {
       accept = false,
-      next = "<c-_>",
+      next = "<c-s>",
       prev = false,
     },
   },

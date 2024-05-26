@@ -210,7 +210,7 @@ command! -nargs=* Gpush execute 'Git push origin ' . FugitiveHead() . ' ' . <q-a
 command! -nargs=* Grb Git rebase <args>
 command! -nargs=* Grbi Git rebase -i <args>
 command! -nargs=* Gst Git status <args>
-command! -nargs=0 Glog Git log --graph --pretty="%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ar) %C(bold blue)<%an>%Creset"
+command! -nargs=0 Glog Git -c pager.log=less log --graph --pretty="%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ar) %C(bold blue)<%an>%Creset"
 
 """""""""""""""""""
 " vim-plugin-AnsiEsc

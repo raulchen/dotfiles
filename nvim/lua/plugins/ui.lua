@@ -124,6 +124,39 @@ local function setup_alpha()
   alpha.setup(startify.opts)
 end
 
+local function setup_noice()
+  local opts = {}
+  opts.lsp = {
+    override = {
+      -- override the default lsp markdown formatter with Noice
+      ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
+      -- override the lsp markdown formatter with Noice
+      ["vim.lsp.util.stylize_markdown"] = true,
+      -- override cmp documentation with Noice (requires nvim-cmp)
+      ["cmp.entry.get_documentation"] = true,
+    },
+  }
+  opts.routes = {
+    {
+      filter = {
+        any = {},
+      },
+      view = "mini",
+    },
+  }
+  local messages = {
+    "written",
+    "lines yanked",
+  }
+  for _, msg in ipairs(messages) do
+    table.insert(opts.routes[1].filter.any, {
+      event = "msg_show",
+      find = msg,
+    })
+  end
+  require("noice").setup(opts)
+end
+
 return {
   {
     "nvim-tree/nvim-tree.lua",
@@ -185,37 +218,7 @@ return {
   {
     "folke/noice.nvim",
     event = "VeryLazy",
-    opts = {
-      routes = {
-        {
-          filter = {
-            any = {
-              {
-                event = "msg_show",
-                kind = "",
-                find = "written",
-              },
-              {
-                event = "msg_show",
-                kind = "",
-                find = "lines yanked",
-              },
-            },
-          },
-          view = "mini",
-        },
-      },
-      lsp = {
-        override = {
-          -- override the default lsp markdown formatter with Noice
-          ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
-          -- override the lsp markdown formatter with Noice
-          ["vim.lsp.util.stylize_markdown"] = true,
-          -- override cmp documentation with Noice (requires nvim-cmp)
-          ["cmp.entry.get_documentation"] = true,
-        },
-      },
-    },
+    config = setup_noice,
     dependencies = {
       "MunifTanjim/nui.nvim",
       {

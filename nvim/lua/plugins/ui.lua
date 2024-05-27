@@ -136,6 +136,17 @@ local function setup_noice()
       ["cmp.entry.get_documentation"] = true,
     },
   }
+  -- Use mini view for the following verbose messages.
+  local verbose_messages = {
+    "written",
+    "lines yanked",
+    -- lazy.nvim config change message
+    "Config Change Detected",
+    -- undo message
+    "; before #",
+    -- redo message
+    "; after #",
+  }
   opts.routes = {
     {
       filter = {
@@ -144,13 +155,8 @@ local function setup_noice()
       view = "mini",
     },
   }
-  local messages = {
-    "written",
-    "lines yanked",
-  }
-  for _, msg in ipairs(messages) do
+  for _, msg in ipairs(verbose_messages) do
     table.insert(opts.routes[1].filter.any, {
-      event = "msg_show",
       find = msg,
     })
   end

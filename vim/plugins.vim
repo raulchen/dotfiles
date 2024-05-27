@@ -15,7 +15,6 @@ call extend(g:vim_plugins, [
 \  "mbbill/undotree",
 \  "tpope/vim-sleuth",
 \  "ojroques/vim-oscyank",
-\  "justinmk/vim-sneak",
 \])
 
 " UI
@@ -42,6 +41,7 @@ if !has("nvim")
     \  "mhinz/vim-startify",
     \  "google/vim-searchindex",
     \  "tpope/vim-commentary",
+    \  "justinmk/vim-sneak",
     \])
 end
 

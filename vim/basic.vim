@@ -259,6 +259,9 @@ xnoremap >  >gv
 nnoremap <silent> <leader>q :q<cr>
 nnoremap <silent> <leader>Q :q!<cr>
 
+" Copy to system clipboard
+map <silent> <leader>y "+y
+
 "" UI
 
 " disable highlight

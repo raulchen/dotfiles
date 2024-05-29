@@ -169,9 +169,12 @@ let g:togglecursor_replace="blinking_block"
 """""""""""""""""""
 " vim-oscyank
 """""""""""""""""""
-" Copy to system clipboard.
-vnoremap <silent> <leader>y :OSCYankVisual<CR>
-let g:oscyank_term = 'default'
+let g:oscyank_silent = 1
+" Automatically copy text that was yanked to register +.
+autocmd TextYankPost *
+    \ if v:event.operator is 'y' && v:event.regname is '+' |
+    \ execute 'OSCYankRegister +' |
+    \ endif
 
 """""""""""""""""""
 " vim-tmux-navigator

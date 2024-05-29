@@ -108,10 +108,7 @@ set t_ZR=[23m
 set laststatus=2
 set showtabline=2
 
-if exists('+termguicolors')
-  " Fix termguicolors in tmux.
-  let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
-  let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+if !has("nvim") && exists('+termguicolors')
   set termguicolors
 endif
 

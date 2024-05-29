@@ -49,7 +49,7 @@ local lualine_opts = {
     lualine_c = {
       {
         "filename",
-        path = 1,
+        path = 4,
       },
       {
         "navic",

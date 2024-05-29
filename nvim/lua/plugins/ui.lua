@@ -29,12 +29,7 @@ local function setup_whichkey(_, _)
   wk.register({
     a = { name = "AI" },
     b = { name = "buffers" },
-    c = {
-      name = "code",
-      g = { "goto" },
-      p = { "prewview" },
-      w = { "workspace" },
-    },
+    c = { name = "code" },
     d = { name = "debug" },
     f = { name = "find" },
     g = { name = "git" },

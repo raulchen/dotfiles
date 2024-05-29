@@ -40,4 +40,4 @@ if type lsd >/dev/null 2>&1 ; then
 fi
 
 # git
-alias gpush="git push origin $(git_current_branch)"
+alias gpush='git push origin "$(git_current_branch)"'

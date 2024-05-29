@@ -159,6 +159,17 @@ local function setup_fzf_lua()
   keymap("<leader>f\"", fzf_lua.registers, "Find registers")
   keymap("<leader>f'", fzf_lua.marks, "Find marks")
   keymap("<leader>fj", fzf_lua.jumps, "Find jump list")
+  -- git
+  local wk = require("which-key")
+  wk.register({ ["<leader>fg"] = { name = "git" } })
+  keymap("<leader>fga", fzf_lua.git_stash, "Git stash")
+  keymap("<leader>fgb", fzf_lua.git_branches, "Git branches")
+  keymap("<leader>fgf", fzf_lua.git_files, "Git files")
+  keymap("<leader>fgh", fzf_lua.git_bcommits, "Git file history")
+  keymap("<leader>fgl", fzf_lua.git_commits, "Git log")
+  keymap("<leader>fgs", fzf_lua.git_status, "Git status")
+  keymap("<leader>fgt", fzf_lua.git_tags, "Git tags")
+
 
   vim.api.nvim_create_autocmd("FileType", {
     pattern = "qf",

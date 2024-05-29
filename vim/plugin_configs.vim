@@ -208,12 +208,14 @@ command! -nargs=* Gca Git commit -a <args>
 command! -nargs=* Gcam Git commit -am <args>
 command! -nargs=* Gco Git checkout <args>
 command! -nargs=* Gd Git diff <args>
+command! -nargs=* Gl Git pull <args>
 command! -nargs=* Gm Git merge <args>
 command! -nargs=* Gpush execute 'Git push origin ' . FugitiveHead() . ' ' . <q-args>
 command! -nargs=* Grb Git rebase <args>
 command! -nargs=* Grbi Git rebase -i <args>
 command! -nargs=* Gst Git status <args>
-command! -nargs=0 Glog Git -c pager.log=less log --graph --pretty="%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ar) %C(bold blue)<%an>%Creset"
+command! -nargs=0 Glog Git -c pager.log=less log --oneline --decorate --graph
+command! -nargs=0 Glol Git -c pager.log=less log --graph --pretty="%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ar) %C(bold blue)<%an>%Creset"
 
 """""""""""""""""""
 " vim-plugin-AnsiEsc

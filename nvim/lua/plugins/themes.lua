@@ -30,6 +30,9 @@ local function setup_onedarkpro(_, _)
     ["@constant.builtin"] = { link = "Constant" },
     SpellBad = { undercurl = true, sp = "${red}" },
     DiagnosticUnderlineError = { undercurl = true, sp = "${red}" },
+    Pmenu = { bg = "${bg}", extend = true },
+    NotifyBackground = { bg = "${bg}", extend = true },
+    NoiceMini = { bg = "${bg}", extend = true },
   }
 
   local styles = {
@@ -43,6 +46,8 @@ local function setup_onedarkpro(_, _)
     options = {
       cursorline = true,
       highlight_inactive_windows = false,
+      transparency = true,
+      lualine_transparency = true,
     }
   })
   vim.cmd [[colorscheme onedark]]

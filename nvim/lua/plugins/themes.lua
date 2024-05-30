@@ -29,11 +29,8 @@ local function setup_onedarkpro(_, _)
     ["@constant"] = { fg = "${green}", extend = true },
     ["@constant.builtin"] = { link = "Constant" },
     SpellBad = { undercurl = true, sp = "${red}" },
-    FlashCursor = { fg = "${yellow}", bg = "${black}" },
     DiagnosticUnderlineError = { undercurl = true, sp = "${red}" },
-    Pmenu = { bg = "${bg}", extend = true },
-    NotifyBackground = { bg = "${bg}", extend = true },
-    NoiceMini = { bg = "${bg}", extend = true },
+    FlashCursor = { fg = "${yellow}", bg = "${black}" },
   }
 
   local styles = {
@@ -47,7 +44,6 @@ local function setup_onedarkpro(_, _)
     options = {
       cursorline = true,
       highlight_inactive_windows = false,
-      transparency = true,
       lualine_transparency = true,
     }
   })

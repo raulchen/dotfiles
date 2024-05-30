@@ -40,4 +40,8 @@ if type lsd >/dev/null 2>&1 ; then
 fi
 
 # git
-alias gpush='git push origin "$(git_current_branch)"'
+alias g="git"
+# automatically set git alias from git config
+for al in `git --list-cmds=alias`; do
+    alias g$al="git $al"
+done

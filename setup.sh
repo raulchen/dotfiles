@@ -47,6 +47,7 @@ link_file() {
     fi
     if [[ "$link_dst" == "true" ]]; then
         ln -s "$src" "$dst"
+        echo "Linked $dst to $src"
         return 0
     fi
     return 1
@@ -71,5 +72,8 @@ if [[ `uname` == "Darwin" ]]; then
     echo "Setting up Hammerspoon..."
     link_file "$base_dir/hammerspoon" ~/.hammerspoon
 fi
+
+echo "Setting up git..."
+link_file "$base_dir/git" ~/.config/git
 
 echo "Done"

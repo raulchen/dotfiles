@@ -1,0 +1,12 @@
+# -*- mode: gitconfig; -*-
+# vim: set filetype=gitconfig:
+
+[alias]
+    cm = "commit --signoff"
+    cma = "commit --signoff -a"
+    cmam = "commit --signoff -am"
+    cmd = "commit --signoff --amend"
+    cmm = "commit --signoff -m"
+
+    c = "commit --signoff"
+    cam = "commit --signoff -am"

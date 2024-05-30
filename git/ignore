@@ -1,0 +1,4 @@
+# -*- mode: gitignore; -*-
+# vim: set filetype=gitignore:
+
+compile_commands.json

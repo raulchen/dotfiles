@@ -1,0 +1,61 @@
+# -*- mode: gitconfig; -*-
+# vim: set filetype=gitconfig:
+[user]
+    name = Hao Chen
+    email = chenh1024@gmail.com
+[url "git@github.com:"]
+    insteadOf = https://github.com/
+[core]
+    excludesfile = ~/.config/git/ignore
+[merge]
+    conflictstyle = diff3
+    tool = vimdiff
+[alias]
+    ad = "add"
+    ada = "add --all"
+    aliases = "!git config --get-regexp '^alias\\.' | cut -c 7- | sed 's/ / = /'"
+    br = "branch"
+    cl = "clean"
+    cm = "commit"
+    cma = "commit -a"
+    cmam = "commit -am"
+    cmd = "commit --amend"
+    cmm = "commit -m"
+    co = "checkout"
+    cob = "checkout -b"
+    com = "!git checkout $(git master-branch)"
+    cp = "cherry-pick"
+    cpa = "cherry-pick --abort"
+    cpc = "cherry-pick --continue"
+    df = "diff"
+    dfc = "diff --cached"
+    dfm = "!git diff $(git master-branch)"
+    fc = "fetch"
+    lg = "log"
+    lgl = "log --graph --pretty='%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ar) %C(bold blue)<%an>%Creset'"
+    lgo = "log --oneline --decorate --graph"
+    master-branch = "!git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@'"
+    mg = "merge"
+    pl = "pull"
+    plb = "!git pull origin $(git branch --show-current)"
+    ps = "push"
+    psb = "!git push origin $(git branch --show-current)"
+    psd = "push --delete origin"
+    rb = "rebase"
+    rba = "rebase --abort"
+    rbc = "rebase --continue"
+    rbi = "rebase -i"
+    rs = "reset"
+    rt = "restore"
+    rv = "revert"
+    sh = "show"
+    ss = "stash"
+    st = "status"
+
+    c = "commit"
+    cam = "commit -am"
+    d = "diff"
+[include]
+    path = ~/.config/git/delta.txt
+[include]
+    path = ~/.config/git/config.local

@@ -1,0 +1,14 @@
+# -*- mode: gitconfig; -*-
+# vim: set filetype=gitconfig:
+
+[user]
+	name = Hao Chen
+	email = chenh1024@gmail.com
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+[alias]
+	upstream-branch = "!git for-each-ref --format='%(upstream:short)' \"$(git symbolic-ref -q HEAD)\""
+	co = "checkout"

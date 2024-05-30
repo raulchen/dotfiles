@@ -72,4 +72,7 @@ if [[ `uname` == "Darwin" ]]; then
     link_file "$base_dir/hammerspoon" ~/.hammerspoon
 fi
 
+echo "Setting up git..."
+link_file "$base_dir/git" ~/.config/git
+
 echo "Done"

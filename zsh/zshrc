@@ -49,7 +49,6 @@ antigen use oh-my-zsh
 antigen bundle Aloxaf/fzf-tab
 antigen bundle colored-man-pages
 antigen bundle extract
-antigen bundle git
 antigen bundle git-prompt
 antigen bundle jeffreytse/zsh-vi-mode
 antigen bundle zsh-users/zsh-autosuggestions

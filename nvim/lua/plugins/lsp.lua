@@ -49,7 +49,7 @@ local function setup_lspconfig(_, _)
   -- Global mappings.
   -- See `:help vim.diagnostic.*` for documentation on any of the below functions
   local keymap = vim.keymap.set
-  keymap('n', '<leader>ce', vim.diagnostic.setqflist, { desc = "Show all errors/warnings" })
+  keymap('n', '<leader>cd', vim.diagnostic.setqflist, { desc = "Show all diagnostics" })
 
   -- Buffer local mappings.
   local on_attach = function(ev)

@@ -71,10 +71,12 @@ local diffview_keys = {
 
 local diffview_opts = {
   hooks = {
+    ---@diagnostic disable-next-line
     view_enter = function(view)
       -- Save the current view
       vim.g.diffview_open = true
     end,
+    ---@diagnostic disable-next-line
     view_leave = function(view)
       vim.g.diffview_open = false
     end,

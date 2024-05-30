@@ -36,7 +36,9 @@ local function Debug(opts)
     )
   end
   dap_config = vim.deepcopy(dap_config)
+  ---@diagnostic disable-next-line
   dap_config.program = program
+  ---@diagnostic disable-next-line
   dap_config.args = program_args
   dap.run(dap_config)
 end

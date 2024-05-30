@@ -30,7 +30,8 @@ return {
     formatters_by_ft = {
       python = { "isort", "black" },
     },
-    format_on_save = function(bufnr) -- luacheck: ignore
+    ---@diagnostic disable-next-line
+    format_on_save = function(bufnr)
       if not vim.g.enable_auto_format then
         return
       end

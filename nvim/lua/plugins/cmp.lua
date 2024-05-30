@@ -64,6 +64,7 @@ local function setup_cmp(_, _)
       { name = 'luasnip' },
       { name = 'spell' },
     },
+    ---@diagnostic disable-next-line
     formatting = {
       format = function(entry, vim_item)
         vim_item.kind = string.format('%s %s', kind_icons[vim_item.kind], vim_item.kind)

@@ -2,7 +2,7 @@
 # vim: set filetype=gitconfig:
 
 [core]
-    pager = delta
+    pager = delta || less
 [interactive]
     diffFilter = delta --color-only
 [delta]

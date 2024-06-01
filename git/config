@@ -30,6 +30,7 @@
     df = "diff"
     dfc = "diff --cached"
     dfm = "!git diff $(git master-branch)"
+    dfs = "!DELTA_FEATURES=+side-by-side git diff"
     fc = "fetch"
     lg = "log"
     lgl = "log --graph --pretty='%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ar) %C(bold blue)<%an>%Creset'"

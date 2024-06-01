@@ -28,12 +28,6 @@ local function setup_treesitter(_, _)
         ["ic"] = { query = "@class.inner", desc = "class inner" },
         ["af"] = { query = "@function.outer", desc = "function outer" },
         ["if"] = { query = "@function.inner", desc = "function inner" },
-        ["aa"] = { query = "@parameter.outer", desc = "parameter outer" },
-        ["ia"] = { query = "@parameter.inner", desc = "parameter inner" },
-        ["al"] = { query = "@loop.outer", desc = "loop outer" },
-        ["il"] = { query = "@loop.inner", desc = "loop inner" },
-        ["ad"] = { query = "@conditional.outer", desc = "condition outer" },
-        ["id"] = { query = "@conditional.inner", desc = "condition inner" },
         ["i="] = { query = "@assignment.inner", desc = "assignment outer" },
         ["a="] = { query = "@assignment.outer", desc = "assignment inner" },
         ["a/"] = { query = "@comment.outer", desc = "comment outer" },
@@ -46,7 +40,6 @@ local function setup_treesitter(_, _)
       goto_next_start = {
         ["]f"] = { query = "@function.outer", desc = "Next function start" },
         ["]c"] = { query = "@class.outer", desc = "Next class start" },
-        ["]a"] = { query = "@parameter.outer", desc = "Next parameter start" },
       },
       goto_next_end = {
         ["]F"] = { query = "@function.outer", desc = "Next function end" },
@@ -55,21 +48,11 @@ local function setup_treesitter(_, _)
       goto_previous_start = {
         ["[f"] = { query = "@function.outer", desc = "Previous function start" },
         ["[c"] = { query = "@class.outer", desc = "Previous class start" },
-        ["[a"] = { query = "@parameter.outer", desc = "Previous parameter start" },
       },
       goto_previous_end = {
         ["[F"] = { query = "@function.outer", desc = "Previous function end" },
         ["[C"] = { query = "@class.outer", desc = "Previous class end" },
       },
-      -- Below will go to either the start or the end, whichever is closer.
-      goto_next = {
-        ["]d"] = { query = "@conditional.outer", desc = "Next condition start/end" },
-        ["]l"] = { query = "@loop.outer", desc = "Next loop start/end" },
-      },
-      goto_previous = {
-        ["[d"] = { query = "@conditional.outer", desc = "Previous condition start/end" },
-        ["[l"] = { query = "@loop.outer", desc = "Previous loop start/end" },
-      }
     },
   }
   require("nvim-treesitter.configs").setup(opts)

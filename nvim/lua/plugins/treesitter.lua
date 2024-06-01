@@ -1,22 +1,23 @@
 local function setup_treesitter(_, _)
+  local treesitter_filetypes = {
+    "bash",
+    "c",
+    "cpp",
+    "json",
+    "lua",
+    "luadoc",
+    "luap",
+    "markdown",
+    "markdown_inline",
+    "python",
+    "vim",
+    "vimdoc",
+    "yaml",
+  }
   local opts = {
     highlight = { enable = true },
     indent = { enable = true },
-    ensure_installed = {
-      "bash",
-      "c",
-      "cpp",
-      "json",
-      "lua",
-      "luadoc",
-      "luap",
-      "markdown",
-      "markdown_inline",
-      "python",
-      "vim",
-      "vimdoc",
-      "yaml",
-    },
+    ensure_installed = treesitter_filetypes,
   }
   opts.textobjects = {
     select = {
@@ -57,11 +58,15 @@ local function setup_treesitter(_, _)
   }
   require("nvim-treesitter.configs").setup(opts)
   -- Tree-sitter based folding.
-  vim.cmd [[
-    set foldmethod=expr
-    set foldexpr=nvim_treesitter#foldexpr()
-    set nofoldenable
-  ]]
+  for _, filetype in ipairs(treesitter_filetypes) do
+    vim.api.nvim_create_autocmd(
+      'FileType',
+      {
+        pattern = filetype,
+        command = 'setlocal foldmethod=expr foldexpr=nvim_treesitter#foldexpr() nofoldenable',
+      }
+    )
+  end
 end
 
 local function setup_treesitter_context(_, _)

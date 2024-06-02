@@ -31,7 +31,7 @@ local function setup_whichkey(_, _)
     b = { name = "buffers" },
     c = { name = "code" },
     d = { name = "debug" },
-    f = { name = "find" },
+    f = { name = "find", g = { name = "git", }, },
     g = { name = "git" },
     s = { name = "sessions" },
     t = { name = "tabs" },

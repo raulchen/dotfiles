@@ -135,69 +135,56 @@ local function setup_fzf_lua()
   local fzf_lua = require("fzf-lua")
   fzf_lua.setup(fzf_lua_opts)
   fzf_lua.register_ui_select()
-
-  local function keymap(lhs, rhs, desc, mode)
-    mode = mode or "n"
-    vim.keymap.set(mode, lhs, rhs, { desc = desc })
-  end
-
-  keymap("<leader>fa", fzf_lua.builtin, "Search all Fzf commands")
-  keymap("<leader>fr", fzf_lua.resume, "Resume last Fzf command")
-  -- Buffers and files.
-  keymap("<leader>ff", fzf_files, "Find files")
-  keymap("<leader>fh", fzf_oldfiles, "Find CWD file history")
-  keymap("<leader>fH", function() fzf_oldfiles({ cwd_only = false }) end, "Find global file history")
-  keymap("<leader>fb", fzf_lua.buffers, "Find buffers")
-  -- Search
-  keymap("<leader>fs", fzf_search, "Search")
-  keymap("<leader>fs", fzf_lua.grep_visual, "Searh visual selection", "v")
-  -- Tags
-  keymap("<leader>ft", fzf_lua.btags, "Find tags in current buffer")
-  -- Misc
-  keymap("<leader>f:", fzf_lua.command_history, "Find command history")
-  keymap("<leader>f/", fzf_lua.search_history, "Find search history")
-  keymap("<leader>f\"", fzf_lua.registers, "Find registers")
-  keymap("<leader>f'", fzf_lua.marks, "Find marks")
-  keymap("<leader>fj", fzf_lua.jumps, "Find jump list")
-  -- git
   local wk = require("which-key")
   wk.register({ ["<leader>fg"] = { name = "git" } })
-  keymap("<leader>fga", fzf_lua.git_stash, "Git stash")
-  keymap("<leader>fgb", fzf_lua.git_branches, "Git branches")
-  keymap("<leader>fgf", fzf_lua.git_files, "Git files")
-  keymap("<leader>fgh", fzf_lua.git_bcommits, "Git file history")
-  keymap("<leader>fgl", fzf_lua.git_commits, "Git log")
-  keymap("<leader>fgs", fzf_lua.git_status, "Git status")
-  keymap("<leader>fgt", fzf_lua.git_tags, "Git tags")
-
-
-  vim.api.nvim_create_autocmd("FileType", {
-    pattern = "qf",
-    callback = function(ev)
-      vim.keymap.set(
-        "n",
-        "<leader>ff",
-        "<cmd>FzfLua quickfix<cr>",
-        { buffer = ev.buf, desc = "Search quickfix" }
-      )
-    end,
-  })
-
-  vim.api.nvim_create_user_command(
-    "Rg",
-    function(opts)
-      require("fzf-lua").grep({
-        search = opts.args
-      })
-    end,
-    { nargs = "?" }
-  )
 end
+
+local fzf_lua_keys = {
+  { "<leader>fa", "<cmd>FzfLua builtin<cr>", desc = "Search all Fzf commands" },
+  { "<leader>fr", "<cmd>FzfLua resume<cr>", desc = "Resume last Fzf command" },
+  -- Buffers and files.
+  { "<leader>ff", fzf_files, desc = "Find files" },
+  { "<leader>fh", fzf_oldfiles, desc = "Find CWD file history" },
+  { "<leader>fH", function() fzf_oldfiles({ cwd_only = false }) end, desc = "Find global file history" },
+  { "<leader>fb", "<cmd>FzfLua buffers<cr>", desc = "Find buffers" },
+  -- Search
+  { "<leader>fs", fzf_search, desc = "Search" },
+  { "<leader>fs", "<cmd>lua require('fzf-lua').grep_visual()<cr>", desc = "Searh visual selection", mode = "v" },
+  -- Tags
+  { "<leader>ft", "<cmd>FzfLua btags<cr>", desc = "Find tags in current buffer" },
+  -- Misc
+  { "<leader>f:", "<cmd>FzfLua command_history<cr>", desc = "Find command history" },
+  { "<leader>f/", "<cmd>FzfLua search_history<cr>", desc = "Find search history" },
+  { "<leader>f\"", "<cmd>FzfLua registers<cr>", desc = "Find registers" },
+  { "<leader>f'", "<cmd>FzfLua marks<cr>", desc = "Find marks" },
+  { "<leader>fj", "<cmd>FzfLua jumps<cr>", desc = "Find jump list" },
+  -- git
+  { "<leader>fga", "<cmd>FzfLua git_stash<cr>", desc = "Git stash" },
+  { "<leader>fgb", "<cmd>FzfLua git_branches<cr>", desc = "Git branches" },
+  { "<leader>fgf", "<cmd>FzfLua git_files<cr>", desc = "Git files" },
+  { "<leader>fgh", "<cmd>FzfLua git_bcommits<cr>", desc = "Git file history" },
+  { "<leader>fgl", "<cmd>FzfLua git_commits<cr>", desc = "Git log" },
+  { "<leader>fgs", "<cmd>FzfLua git_status<cr>", desc = "Git status" },
+  { "<leader>fgt", "<cmd>FzfLua git_tags<cr>", desc = "Git tags" },
+  --  quickfix
+  { "<leader>ff", "<cmd>FzfLua quickfix<cr>", desc = "Search quickfix", ft = "qf" },
+}
+
+vim.api.nvim_create_user_command(
+  "Rg",
+  function(opts)
+    require("fzf-lua").grep({
+      search = opts.args
+    })
+  end,
+  { nargs = "?" }
+)
 
 return {
   "ibhagwan/fzf-lua",
-  event = "VeryLazy",
   dependencies = { "nvim-tree/nvim-web-devicons" },
+  keys = fzf_lua_keys,
+  cmd = { "FzfLua", },
   config = setup_fzf_lua,
   -- Exporting following functions for other modules to use.
   fzf_files = fzf_files,

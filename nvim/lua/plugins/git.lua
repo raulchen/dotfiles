@@ -98,4 +98,19 @@ return {
     keys = diffview_keys,
     opts = diffview_opts,
   },
+  {
+    'pwntester/octo.nvim',
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+      'ibhagwan/fzf-lua',
+      'nvim-tree/nvim-web-devicons',
+    },
+    cmd = { "Octo" },
+    config = function()
+      require "octo".setup({
+        enable_builtin = true,
+        picker = "fzf-lua",
+      })
+    end
+  },
 }

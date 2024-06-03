@@ -12,6 +12,7 @@ local function setup_onedarkpro(_, _)
     comment = color.lighten("comment", 5, "onedark"),
     fg = color.brighten("fg", 5, "onedark"),
     light_red = color.lighten("red", 15, "onedark"),
+    bg_highlight = color.lighten("bg", 10, "onedark"),
   }
 
   local highlights = {
@@ -30,6 +31,9 @@ local function setup_onedarkpro(_, _)
     ["@constant.builtin"] = { link = "Constant" },
     SpellBad = { undercurl = true, sp = "${red}" },
     DiagnosticUnderlineError = { undercurl = true, sp = "${red}" },
+    CursorLine = { bg = "${bg_highlight}", extend = true, },
+    PmenuSel = { bg = "${bg_highlight}", extend = true },
+    -- Plug-ins
     FlashCursor = { fg = "${yellow}", bg = "${black}" },
   }
 

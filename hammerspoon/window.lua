@@ -45,7 +45,7 @@ local arrowKeys = {'h', 'j', 'k', 'l'}
 -- prefix + jl -> top right quarter
 -- prefix + kl -> top bottom quarter
 -- prefix + lj -> top bottom quarter
--- prefix + jk -> center
+-- prefix + jk -> maximize 70%
 -- prefix + hl -> full screen
 local rectMap = {
     ['h'] = {0, 0, 0.5, 1},
@@ -57,6 +57,7 @@ local rectMap = {
     ['jl'] = {0.5, 0.5, 0.5, 0.5},
     ['kl'] = {0.5, 0, 0.5, 0.5},
     ['hl'] = {0, 0, 1, 1},
+    ['jk'] = {0.15, 0.15, 0.7, 0.7},
 }
 local wasPressed = {false, false, false, false}
 local pressed = {false, false, false, false}
@@ -78,10 +79,9 @@ local function resizeWindow()
             end
         end
         local rect = rectMap[keys]
+        print(keys)
         if rect ~= nil then
-            win:move(rect)
-        elseif keys == 'jk' then
-            win:centerOnScreen()
+            win:moveToUnit(rect)
         end
     end
     prefix.exit()

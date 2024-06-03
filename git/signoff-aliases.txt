@@ -7,6 +7,3 @@
     cmam = "commit --signoff -am"
     cmd = "commit --signoff --amend"
     cmm = "commit --signoff -m"
-
-    c = "commit --signoff"
-    cam = "commit --signoff -am"

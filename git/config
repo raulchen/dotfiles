@@ -56,10 +56,6 @@
     sh = "show"
     ss = "stash"
     st = "status"
-
-    c = "commit"
-    cam = "commit -am"
-    d = "diff"
 [include]
     path = ~/.config/git/delta.txt
 [include]

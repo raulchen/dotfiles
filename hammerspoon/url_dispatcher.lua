@@ -28,6 +28,7 @@ chooser:choices(choices)
 
 chooser:rows(#choices)
 
+---@diagnostic disable-next-line: unused-local
 hs.urlevent.httpCallback = function(schema, host, params, fullURL)
     url = fullURL
     chooser:show()

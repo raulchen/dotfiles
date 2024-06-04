@@ -8,7 +8,7 @@ local TIMEOUT = 5
 -- Because we want to temporarily disable the modal hotkey in the "ctrl+`" callback, which
 -- isn't supported by hs.hotkey.modal.
 local modal = hs.hotkey.modal.new({ "ctrl" }, "F19")
-trigger_modal = hs.hotkey.new({ "ctrl" }, "`", function() modal:enter() end)
+local trigger_modal = hs.hotkey.new({ "ctrl" }, "`", function() modal:enter() end)
 trigger_modal:enable()
 
 function modal:entered()

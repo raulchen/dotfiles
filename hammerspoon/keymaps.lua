@@ -25,13 +25,13 @@ local function keymap(sourceKey, sourceMod, targetKey, targetMod, repeatDelay)
     sourceMod = sourceMod or {}
 
     repeatDelay = repeatDelay or REPEAT_FASTER
-    noRepeat = repeatDelay <= 0
+    local noRepeat = repeatDelay <= 0
 
     local fn = nil
     if targetMod == nil then
         fn = hs.fnutils.partial(keyStrokeSystem, string.upper(targetKey), repeatDelay)
     else
-        targetMod = utils.splitStr(targetMod, '+')
+        targetMod = require("utils").splitStr(targetMod, '+')
         fn = hs.fnutils.partial(keyStroke, targetMod, targetKey, repeatDelay)
     end
     if noRepeat then

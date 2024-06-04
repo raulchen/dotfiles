@@ -112,7 +112,7 @@ local rectMapCtrl = {
 
 for k, v in pairs(rectMapCtrl) do
     local fn = function()
-        win = hs.window.focusedWindow()
+        local win = hs.window.focusedWindow()
         if win ~= nil then
             win:move(v)
         end
@@ -145,7 +145,7 @@ end
 -- prefix + ; -> move window to the next screen
 
 local function getNextScreen(s)
-    all = hs.screen.allScreens()
+    local all = hs.screen.allScreens()
     for i = 1, #all do
         if all[i] == s then
             return all[(i - 1 + 1) % #all + 1]
@@ -157,8 +157,8 @@ end
 local function moveToNextScreen()
     local win = hs.window.focusedWindow()
     if win ~= nil then
-        currentScreen = win:screen()
-        nextScreen = getNextScreen(currentScreen)
+        local currentScreen = win:screen()
+        local nextScreen = getNextScreen(currentScreen)
         if nextScreen then
             win:moveToScreen(nextScreen)
         end
@@ -175,7 +175,7 @@ local function expandWin(ratio)
     if win == nil then
         return
     end
-    frame = win:frame()
+    local frame = win:frame()
     local cx = frame.x + frame.w / 2
     local cy = frame.y + frame.h / 2
     local nw = frame.w * ratio
@@ -197,7 +197,7 @@ local function expandEdge(edge, ratio)
     if win == nil then
         return
     end
-    frame = win:frame()
+    local frame = win:frame()
     local x, y, w, h = frame.x, frame.y, frame.w, frame.h
     if edge == 'h' then
         w = frame.w * ratio

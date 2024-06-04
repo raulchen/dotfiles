@@ -17,6 +17,7 @@ module.modifierKeyListener = hs.eventtap.new({ hs.eventtap.event.types.flagsChan
 
     local modifiers = e:getFlags()
     local count = 0
+    ---@diagnostic disable-next-line: unused-local
     for _, __ in pairs(modifiers) do
         count = count + 1
     end
@@ -54,7 +55,7 @@ module.modifierKeyListener = hs.eventtap.new({ hs.eventtap.event.types.flagsChan
 end):start()
 
 
-module.normalKeyListener = hs.eventtap.new({ hs.eventtap.event.types.keyDown }, function(e)
+module.normalKeyListener = hs.eventtap.new({ hs.eventtap.event.types.keyDown }, function(_)
     -- If a non-modifier key is pressed, reset these two flags.
     module.ctrlPressed = false
     module.shiftPressed = false

@@ -81,8 +81,8 @@ function Label:hide()
     end
 end
 
-module.new = function(message, duration)
-    return Label.new(message, duration)
+module.new = function(message)
+    return Label.new(message)
 end
 
 return module

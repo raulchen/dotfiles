@@ -1,5 +1,8 @@
 return {
   "stevearc/conform.nvim",
+  dependencies = {
+    "WhoIsSethDaniel/mason-tool-installer.nvim",
+  },
   event = { "BufWritePre" },
   cmd = { "ConformInfo" },
   keys = {

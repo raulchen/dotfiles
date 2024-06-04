@@ -133,9 +133,7 @@ return {
     event = { "BufReadPre", "BufNewFile" },
     config = setup_lspconfig,
     dependencies = {
-      -- mason.nvim config is in mason.lua, only add it
-      -- as a dependency here to make lazy loading worker correctly.
-      'williamboman/mason.nvim',
+      'williamboman/mason-lspconfig.nvim',
       'hrsh7th/cmp-nvim-lsp',
       {
         'rmagatti/goto-preview',

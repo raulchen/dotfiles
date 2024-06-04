@@ -1,32 +1,38 @@
 return {
   {
-    "williamboman/mason.nvim",
-    event = "VeryLazy",
-    build = ":MasonUpdate", -- :MasonUpdate updates registry contents
+    "williamboman/mason-lspconfig.nvim",
+    lazy = true,
     dependencies = {
-      "williamboman/mason-lspconfig.nvim",
-      "WhoIsSethDaniel/mason-tool-installer.nvim",
+      "williamboman/mason.nvim",
     },
-    config = function(_, _)
-      require("mason").setup()
-
-      require("mason-lspconfig").setup({
-        ensure_installed = {
-          "bashls",
-          "clangd",
-          "lua_ls",
-          "pyright",
-          "vimls",
-        },
-
-        require("mason-tool-installer").setup({
-          ensure_installed = {
-            "black",
-            "debugpy",
-            "isort",
-          },
-        }),
-      })
-    end,
+    opts = {
+      ensure_installed = {
+        "bashls",
+        "clangd",
+        "lua_ls",
+        "pyright",
+        "vimls",
+      },
+    },
+  },
+  {
+    "WhoIsSethDaniel/mason-tool-installer.nvim",
+    lazy = true,
+    dependencies = {
+      "williamboman/mason.nvim",
+    },
+    opts = {
+      ensure_installed = {
+        "black",
+        "debugpy",
+        "isort",
+      },
+    },
+  },
+  {
+    "williamboman/mason.nvim",
+    lazy = true,
+    build = ":MasonUpdate", -- Update registry
+    opts = {},
   },
 }

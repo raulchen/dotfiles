@@ -10,7 +10,6 @@ call extend(g:vim_plugins, [
 " Editing
 call extend(g:vim_plugins, [
 \  "tpope/vim-surround",
-\  "mg979/vim-visual-multi",
 \  "tpope/vim-repeat",
 \  "mbbill/undotree",
 \  "tpope/vim-sleuth",

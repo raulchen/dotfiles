@@ -59,14 +59,9 @@ Make the modifier keys smarter:
 - Tap `ctrl` alone: esc.
 - Tap `shift` alone: switch to next input method.
 
-# URL dispatcher
-
-When Hammerspoon is set as the default browser, a prompt will be shown to let you choose which browser to open a URL with.
-
 # Other features
 
 - `prefix - m`: switch primary monitor.
-- `prefix - c`: toggle caffeinate (disable sleep).
 - `prefix - s`: start screen saver.
 - `prefix - r`: reload Hammerspoon config.
 - `prefix - d`: toggle Hammerspoon console for debug.

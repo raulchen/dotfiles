@@ -139,11 +139,11 @@ return {
         'rmagatti/goto-preview',
         config = setup_goto_preview,
       },
-      {
-        'folke/neodev.nvim',
-        ft = { "lua", },
-        config = true,
-      },
     },
+  },
+  {
+    "folke/lazydev.nvim",
+    ft = "lua",
+    opts = {},
   },
 }

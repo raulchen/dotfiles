@@ -2,7 +2,6 @@ let g:vim_plugins = []
 
 " General
 call extend(g:vim_plugins, [
-\  "amix/open_file_under_cursor.vim",
 \  "michaeljsmith/vim-indent-object",
 \  "christoomey/vim-tmux-navigator",
 \])

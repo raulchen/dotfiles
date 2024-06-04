@@ -58,14 +58,6 @@ for k, v in pairs(arrows) do
 end
 
 -- ------------------
--- delete
--- ------------------
-keymap('d', 'alt', 'delete', '')
-keymap('f', 'alt', 'forwarddelete', '')
-keymap('d', 'alt+ctrl', 'delete', 'alt')
-keymap('f', 'alt+ctrl', 'forwarddelete', 'alt')
-
--- ------------------
 -- functionalities
 -- ------------------
 keymap('n', 'alt', 'tab', 'ctrl+shift', REPEAT_SLOWER)

@@ -8,8 +8,8 @@ module.reload = function()
 end
 
 module.configFileWatcher = hs.pathwatcher.new(
-    os.getenv("HOME") .. "/.hammerspoon/",
-    module.reload
+  os.getenv("HOME") .. "/.hammerspoon/",
+  module.reload
 )
 module.configFileWatcher:start()
 

@@ -15,7 +15,7 @@ local function toggle()
     else
         menu:delete()
     end
-    hs.alert.show('Caffeinate '.. (enabled and 'enabled' or 'disabled'), 1)
+    hs.alert.show('Caffeinate ' .. (enabled and 'enabled' or 'disabled'), 1)
 end
 
 prefix.bind('', 'c', toggle)

@@ -10,9 +10,9 @@ module.shiftPressed = false
 
 module.prevModifiers = {}
 
-module.log = hs.logger.new('smart_modifier_keys','debug')
+module.log = hs.logger.new('smart_modifier_keys', 'debug')
 
-module.modifierKeyListener = hs.eventtap.new({hs.eventtap.event.types.flagsChanged}, function(e)
+module.modifierKeyListener = hs.eventtap.new({ hs.eventtap.event.types.flagsChanged }, function(e)
     local events_to_post = nil
 
     local modifiers = e:getFlags()
@@ -42,8 +42,8 @@ module.modifierKeyListener = hs.eventtap.new({hs.eventtap.event.types.flagsChang
         if count == 0 and module.shiftPressed then
             -- Shift was tapped alone, switch input method (ctrl + space).
             events_to_post = {
-                hs.eventtap.event.newKeyEvent({"ctrl"}, "space", true),
-                hs.eventtap.event.newKeyEvent({"ctrl"}, "space", false),
+                hs.eventtap.event.newKeyEvent({ "ctrl" }, "space", true),
+                hs.eventtap.event.newKeyEvent({ "ctrl" }, "space", false),
             }
         end
         module.shiftPressed = false
@@ -54,7 +54,7 @@ module.modifierKeyListener = hs.eventtap.new({hs.eventtap.event.types.flagsChang
 end):start()
 
 
-module.normalKeyListener = hs.eventtap.new({hs.eventtap.event.types.keyDown}, function(e)
+module.normalKeyListener = hs.eventtap.new({ hs.eventtap.event.types.keyDown }, function(e)
     -- If a non-modifier key is pressed, reset these two flags.
     module.ctrlPressed = false
     module.shiftPressed = false

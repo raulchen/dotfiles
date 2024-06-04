@@ -32,4 +32,3 @@ hs.urlevent.httpCallback = function(schema, host, params, fullURL)
     url = fullURL
     chooser:show()
 end
-

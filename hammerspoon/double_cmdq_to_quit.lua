@@ -1,6 +1,6 @@
 -- Press Cmd+Q twice to quit
 
-local quitModal = hs.hotkey.modal.new('cmd','q')
+local quitModal = hs.hotkey.modal.new('cmd', 'q')
 
 function quitModal:entered()
     hs.alert.show("Press Cmd+Q again to quit", 1)

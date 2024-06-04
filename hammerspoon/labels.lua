@@ -56,14 +56,14 @@ function Label:show(duration)
     }
 
     self.bgObj = drawing.rectangle(bgDisplayFrame)
-            :setStroke(false)
-            :setFill(true)
-            :setFillColor(bgStyle.fillColor)
-            :setRoundedRectRadii(5, 5)
-            :show(0.15)
+        :setStroke(false)
+        :setFill(true)
+        :setFillColor(bgStyle.fillColor)
+        :setRoundedRectRadii(5, 5)
+        :show(0.15)
     self.textObj = drawing.text(textDisplayFrame, self.message)
-            :setTextStyle(textStyle)
-            :show(0.15)
+        :setTextStyle(textStyle)
+        :show(0.15)
 
     if duration then
         hs.timer.doAfter(duration, function() self:hide() end)

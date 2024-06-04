@@ -9,7 +9,7 @@ hs.window.animationDuration = 0
 hs.hints.hintChars = utils.strToTable('ASDFGQWERTZXCVB12345')
 prefix.bind('', 'w', function() hs.hints.windowHints() end)
 
-local switcher = hs.window.switcher.new(hs.window.filter.new():setCurrentSpace(true):setDefaultFilter{}, {
+local switcher = hs.window.switcher.new(hs.window.filter.new():setCurrentSpace(true):setDefaultFilter {}, {
     fontName = ".AppleSystemUIFont",
     textSize = 16,
     textColor = { white = 0, alpha = 1 },
@@ -34,7 +34,7 @@ hs.hotkey.bind('alt-shift', 'tab', previousWindow, nil, previousWindow)
 ----------------
 -- resize & move
 ----------------
-local arrowKeys = {'h', 'j', 'k', 'l'}
+local arrowKeys = { 'h', 'j', 'k', 'l' }
 
 -- prefix + h -> left half
 -- prefix + j -> bottom half
@@ -48,19 +48,19 @@ local arrowKeys = {'h', 'j', 'k', 'l'}
 -- prefix + jk -> maximize 70%
 -- prefix + hl -> full screen
 local rectMap = {
-    ['h'] = {0, 0, 0.5, 1},
-    ['j'] = {0, 0.5, 1, 0.5},
-    ['k'] = {0, 0, 1, 0.5},
-    ['l'] = {0.5, 0, 0.5, 1},
-    ['hj'] = {0, 0.5, 0.5, 0.5},
-    ['hk'] = {0, 0, 0.5, 0.5},
-    ['jl'] = {0.5, 0.5, 0.5, 0.5},
-    ['kl'] = {0.5, 0, 0.5, 0.5},
-    ['hl'] = {0, 0, 1, 1},
-    ['jk'] = {0.15, 0.15, 0.7, 0.7},
+    ['h'] = { 0, 0, 0.5, 1 },
+    ['j'] = { 0, 0.5, 1, 0.5 },
+    ['k'] = { 0, 0, 1, 0.5 },
+    ['l'] = { 0.5, 0, 0.5, 1 },
+    ['hj'] = { 0, 0.5, 0.5, 0.5 },
+    ['hk'] = { 0, 0, 0.5, 0.5 },
+    ['jl'] = { 0.5, 0.5, 0.5, 0.5 },
+    ['kl'] = { 0.5, 0, 0.5, 0.5 },
+    ['hl'] = { 0, 0, 1, 1 },
+    ['jk'] = { 0.15, 0.15, 0.7, 0.7 },
 }
-local wasPressed = {false, false, false, false}
-local pressed = {false, false, false, false}
+local wasPressed = { false, false, false, false }
+local pressed = { false, false, false, false }
 
 local function resizeWindow()
     for i = 1, #pressed do
@@ -104,10 +104,10 @@ end
 -- prefix + ctrl-k -> right two thirds
 -- prefix + ctrl-l -> right one third
 local rectMapCtrl = {
-    ['h'] = {0, 0, 1/3, 1},
-    ['j'] = {0, 0, 2/3, 1},
-    ['k'] = {1/3, 0, 2/3, 1},
-    ['l'] = {2/3, 0, 1/3, 1},
+    ['h'] = { 0, 0, 1 / 3, 1 },
+    ['j'] = { 0, 0, 2 / 3, 1 },
+    ['k'] = { 1 / 3, 0, 2 / 3, 1 },
+    ['l'] = { 2 / 3, 0, 1 / 3, 1 },
 }
 
 for k, v in pairs(rectMapCtrl) do
@@ -121,8 +121,8 @@ for k, v in pairs(rectMapCtrl) do
 end
 
 -- prefix + shift-hjkl -> move window
-local DX = {-1, 0, 0, 1}
-local DY = {0, 1, -1, 0}
+local DX = { -1, 0, 0, 1 }
+local DY = { 0, 1, -1, 0 }
 local DELTA = 20
 
 for i = 1, 4 do
@@ -215,8 +215,8 @@ local function expandEdge(edge, ratio)
     win:setFrame(hs.geometry.rect(x, y, w, h))
 end
 
-local edges = {'h', 'j', 'k', 'l'}
-local ratios = {0.9, 1.111111}
+local edges = { 'h', 'j', 'k', 'l' }
+local ratios = { 0.9, 1.111111 }
 
 for i = 1, #edges do
     local edge = edges[i]

@@ -57,11 +57,6 @@ for k, v in pairs(arrows) do
     keymap(k, 'alt+shift+ctrl', v, 'shift+alt')
 end
 
-keymap('y', 'alt', 'home', '')
-keymap('u', 'alt', 'end', '')
-keymap('i', 'alt', 'pageup', '')
-keymap('o', 'alt', 'pagedown', '')
-
 -- ------------------
 -- delete
 -- ------------------
@@ -76,7 +71,6 @@ keymap('f', 'alt+ctrl', 'forwarddelete', 'alt')
 keymap('n', 'alt', 'tab', 'ctrl+shift', REPEAT_SLOWER)
 keymap('m', 'alt', 'tab', 'ctrl', REPEAT_SLOWER)
 
-keymap('q', 'alt', 'escape', '', NO_REPEAT)
 keymap('[', 'ctrl', 'escape', '', NO_REPEAT)
 
 -- ------------------
@@ -89,13 +83,5 @@ keymap(']', 'alt', 'FAST', nil, NO_REPEAT)
 keymap(',', 'alt', 'SOUND_DOWN', nil)
 keymap('.', 'alt', 'SOUND_UP', nil)
 keymap('/', 'alt', 'MUTE', nil)
-
-keymap('1', 'alt', 'PLAY', nil, NO_REPEAT)
-keymap('2', 'alt', 'REWIND', nil, NO_REPEAT)
-keymap('3', 'alt', 'FAST', nil, NO_REPEAT)
-keymap('f1', 'alt', 'MUTE', nil)
-keymap('f2', 'alt', 'SOUND_DOWN', nil)
-keymap('f3', 'alt', 'SOUND_UP', nil)
-
 
 hs.hotkey.bind('alt', 'a', hs.hid.capslock.toggle, nil, nil)

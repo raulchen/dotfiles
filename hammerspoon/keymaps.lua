@@ -52,8 +52,9 @@ local arrows = {
 }
 for k, v in pairs(arrows) do
     keymap(k, 'alt', v, '')
-    keymap(k, 'alt+shift', v, 'alt')
-    keymap(k, 'alt+shift+ctrl', v, 'shift')
+    keymap(k, 'alt+shift', v, 'shift')
+    keymap(k, 'alt+ctrl', v, 'alt')
+    keymap(k, 'alt+shift+ctrl', v, 'shift+alt')
 end
 
 keymap('y', 'alt', 'home', '')
@@ -66,8 +67,8 @@ keymap('o', 'alt', 'pagedown', '')
 -- ------------------
 keymap('d', 'alt', 'delete', '')
 keymap('f', 'alt', 'forwarddelete', '')
-keymap('d', 'alt+shift', 'delete', 'alt')
-keymap('f', 'alt+shift', 'forwarddelete', 'alt')
+keymap('d', 'alt+ctrl', 'delete', 'alt')
+keymap('f', 'alt+ctrl', 'forwarddelete', 'alt')
 
 -- ------------------
 -- functionalities

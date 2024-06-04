@@ -14,3 +14,7 @@ pcall(hs.fnutils.partial(require, "local"))
 utils.tempNotify(3, hs.notify.new({
     title = "Config reloaded",
 }))
+
+if hs.fs.attributes("~/.hammerspoon/Spoons/EmmyLua.spoon/annotations", "size") == nil then
+    hs.loadSpoon("EmmyLua")
+end

@@ -1,7 +1,7 @@
 require("double_cmdq_to_quit")
 require("keymaps")
 require("window")
-require("smart_modifier_keys")
+require("modifier_key_monitor").start()
 require("switch_primary_monitor")
 ---@diagnostic disable-next-line: param-type-mismatch
 pcall(hs.fnutils.partial(require, "local"))

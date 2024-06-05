@@ -75,5 +75,3 @@ keymap(']', 'alt', 'FAST', nil, NO_REPEAT)
 keymap(',', 'alt', 'SOUND_DOWN', nil)
 keymap('.', 'alt', 'SOUND_UP', nil)
 keymap('/', 'alt', 'MUTE', nil)
-
-hs.hotkey.bind('alt', 'a', hs.hid.capslock.toggle, nil, nil)

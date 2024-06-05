@@ -55,4 +55,6 @@ end)
 module.bind('', 'd', hs.toggleConsole)
 module.bind('', 'r', hs.reload)
 
+module.bind('', 'a', hs.hid.capslock.toggle)
+
 return module

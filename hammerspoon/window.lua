@@ -6,7 +6,7 @@ hs.window.animationDuration = 0
 ----------------
 -- Switch
 ----------------
-hs.hints.hintChars = utils.strToTable('ASDFGQWERTZXCVB12345')
+hs.hints.hintChars = utils.str_to_table('ASDFGQWERTZXCVB12345')
 prefix.bind('', 'w', function() hs.hints.windowHints() end)
 
 local switcher = hs.window.switcher.new(hs.window.filter.new():setCurrentSpace(true):setDefaultFilter {}, {
@@ -20,21 +20,21 @@ local switcher = hs.window.switcher.new(hs.window.filter.new():setCurrentSpace(t
     showSelectedThumbnail = false,
 })
 
-local function nextWindow()
+local function next_window()
     switcher:next()
 end
 
-local function previousWindow()
+local function previous_window()
     switcher:previous()
 end
 
-hs.hotkey.bind('alt', 'tab', nextWindow, nil, nextWindow)
-hs.hotkey.bind('alt-shift', 'tab', previousWindow, nil, previousWindow)
+hs.hotkey.bind('alt', 'tab', next_window, nil, next_window)
+hs.hotkey.bind('alt-shift', 'tab', previous_window, nil, previous_window)
 
 ----------------
 -- resize & move
 ----------------
-local arrowKeys = { 'h', 'j', 'k', 'l' }
+local arrow_keys = { 'h', 'j', 'k', 'l' }
 
 -- prefix + h -> left half
 -- prefix + j -> bottom half
@@ -47,7 +47,7 @@ local arrowKeys = { 'h', 'j', 'k', 'l' }
 -- prefix + lj -> top bottom quarter
 -- prefix + jk -> maximize 70%
 -- prefix + hl -> full screen
-local rectMap = {
+local rect_map = {
     ['h'] = { 0, 0, 0.5, 1 },
     ['j'] = { 0, 0.5, 1, 0.5 },
     ['k'] = { 0, 0, 1, 0.5 },
@@ -59,10 +59,10 @@ local rectMap = {
     ['hl'] = { 0, 0, 1, 1 },
     ['jk'] = { 0.15, 0.15, 0.7, 0.7 },
 }
-local wasPressed = { false, false, false, false }
+local was_pressed = { false, false, false, false }
 local pressed = { false, false, false, false }
 
-local function resizeWindow()
+local function resize_window()
     for i = 1, #pressed do
         if pressed[i] then
             return
@@ -72,13 +72,13 @@ local function resizeWindow()
     local win = hs.window.focusedWindow()
     if win ~= nil then
         local keys = ''
-        for i = 1, #wasPressed do
-            if wasPressed[i] then
-                keys = keys .. arrowKeys[i]
-                wasPressed[i] = false
+        for i = 1, #was_pressed do
+            if was_pressed[i] then
+                keys = keys .. arrow_keys[i]
+                was_pressed[i] = false
             end
         end
-        local rect = rectMap[keys]
+        local rect = rect_map[keys]
         print(keys)
         if rect ~= nil then
             win:moveToUnit(rect)
@@ -87,30 +87,30 @@ local function resizeWindow()
     prefix.exit()
 end
 
-for i = 1, #arrowKeys do
-    local pressedFn = function()
-        wasPressed[i] = true
+for i = 1, #arrow_keys do
+    local pressed_fn = function()
+        was_pressed[i] = true
         pressed[i] = true
     end
-    local releasedFn = function()
+    local released_fn = function()
         pressed[i] = false
-        resizeWindow()
+        resize_window()
     end
-    prefix.bindMultiple('', arrowKeys[i], pressedFn, releasedFn, nil)
+    prefix.bind_multiple('', arrow_keys[i], pressed_fn, released_fn, nil)
 end
 
 -- prefix + ctrl-h -> left one third
 -- prefix + ctrl-j -> left two thirds
 -- prefix + ctrl-k -> right two thirds
 -- prefix + ctrl-l -> right one third
-local rectMapCtrl = {
+local rect_map_ctrl = {
     ['h'] = { 0, 0, 1 / 3, 1 },
     ['j'] = { 0, 0, 2 / 3, 1 },
     ['k'] = { 1 / 3, 0, 2 / 3, 1 },
     ['l'] = { 2 / 3, 0, 1 / 3, 1 },
 }
 
-for k, v in pairs(rectMapCtrl) do
+for k, v in pairs(rect_map_ctrl) do
     local fn = function()
         local win = hs.window.focusedWindow()
         if win ~= nil then
@@ -126,7 +126,7 @@ local DY = { 0, 1, -1, 0 }
 local DELTA = 20
 
 for i = 1, 4 do
-    local moveWin = function()
+    local move_win = function()
         local win = hs.window.focusedWindow()
         if win ~= nil then
             local p = win:topLeft()
@@ -135,12 +135,12 @@ for i = 1, 4 do
             win:setTopLeft(p)
         end
     end
-    prefix.bind('shift', arrowKeys[i], moveWin, true)
+    prefix.bind('shift', arrow_keys[i], move_win, true)
 end
 
 -- prefix + ; -> move window to the next screen
 
-local function getNextScreen(s)
+local function get_next_screen(s)
     local all = hs.screen.allScreens()
     for i = 1, #all do
         if all[i] == s then
@@ -150,23 +150,23 @@ local function getNextScreen(s)
     return nil
 end
 
-local function moveToNextScreen()
+local function move_to_next_screen()
     local win = hs.window.focusedWindow()
     if win ~= nil then
         local currentScreen = win:screen()
-        local nextScreen = getNextScreen(currentScreen)
+        local nextScreen = get_next_screen(currentScreen)
         if nextScreen then
             win:moveToScreen(nextScreen)
         end
     end
 end
 
-prefix.bind('', ';', moveToNextScreen)
+prefix.bind('', ';', move_to_next_screen)
 
 -- prefix + - -> shrink window frame
 -- prefix + = -> expand window frame
 
-local function expandWin(ratio)
+local function expand_win(ratio)
     local win = hs.window.focusedWindow()
     if win == nil then
         return
@@ -181,14 +181,14 @@ local function expandWin(ratio)
     win:setFrame(hs.geometry.rect(nx, ny, nw, nh))
 end
 
-prefix.bind('', '-', function() expandWin(0.9) end)
-prefix.bind('', '=', function() expandWin(1.1) end)
+prefix.bind('', '-', function() expand_win(0.9) end)
+prefix.bind('', '=', function() expand_win(1.1) end)
 
 
 -- prefix + cmd-hjkl -> expand window edges
 -- prefix + cmd-shift-hjkl -> shrink window edges
 --
-local function expandEdge(edge, ratio)
+local function expand_edge(edge, ratio)
     local win = hs.window.focusedWindow()
     if win == nil then
         return
@@ -218,7 +218,7 @@ for i = 1, #edges do
     local edge = edges[i]
     for j = 1, #ratios do
         local mod = (ratios[j] > 1) and 'cmd' or 'cmd+shift'
-        local fn = function() expandEdge(edge, ratios[j]) end
+        local fn = function() expand_edge(edge, ratios[j]) end
         prefix.bind(mod, edge, fn, true)
     end
 end

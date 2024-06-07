@@ -2,42 +2,42 @@ local REPEAT_FASTER = 10 * 1000
 local REPEAT_SLOWER = 100 * 1000
 local NO_REPEAT = -1
 
-local function keyStroke(mod, key, repeatDelay)
+local function key_stroke(mod, key, repeat_delay)
     hs.eventtap.event.newKeyEvent(mod, key, true):post()
-    if repeatDelay <= 0 then
-        repeatDelay = REPEAT_FASTER
+    if repeat_delay <= 0 then
+        repeat_delay = REPEAT_FASTER
     end
-    hs.timer.usleep(repeatDelay)
+    hs.timer.usleep(repeat_delay)
     hs.eventtap.event.newKeyEvent(mod, key, false):post()
 end
 
-local function keyStrokeSystem(key, repeatDelay)
+local function key_stroke_system(key, repeat_delay)
     hs.eventtap.event.newSystemKeyEvent(key, true):post()
-    if repeatDelay <= 0 then
-        repeatDelay = REPEAT_FASTER
+    if repeat_delay <= 0 then
+        repeat_delay = REPEAT_FASTER
     end
-    hs.timer.usleep(repeatDelay)
+    hs.timer.usleep(repeat_delay)
     hs.eventtap.event.newSystemKeyEvent(key, false):post()
 end
 
--- Map sourceKey + sourceMod -> targetKey + targetMod
-local function keymap(sourceKey, sourceMod, targetKey, targetMod, repeatDelay)
-    sourceMod = sourceMod or {}
+-- Map source_key + source_mod -> target_key + target_mod
+local function keymap(source_key, source_mod, target_key, target_mod, repeat_delay)
+    source_mod = source_mod or {}
 
-    repeatDelay = repeatDelay or REPEAT_FASTER
-    local noRepeat = repeatDelay <= 0
+    repeat_delay = repeat_delay or REPEAT_FASTER
+    local noRepeat = repeat_delay <= 0
 
     local fn = nil
-    if targetMod == nil then
-        fn = hs.fnutils.partial(keyStrokeSystem, string.upper(targetKey), repeatDelay)
+    if target_mod == nil then
+        fn = hs.fnutils.partial(key_stroke_system, string.upper(target_key), repeat_delay)
     else
-        targetMod = require("utils").splitStr(targetMod, '+')
-        fn = hs.fnutils.partial(keyStroke, targetMod, targetKey, repeatDelay)
+        target_mod = require("utils").split_str(target_mod, '+')
+        fn = hs.fnutils.partial(key_stroke, target_mod, target_key, repeat_delay)
     end
     if noRepeat then
-        hs.hotkey.bind(sourceMod, sourceKey, fn, nil, nil)
+        hs.hotkey.bind(source_mod, source_key, fn, nil, nil)
     else
-        hs.hotkey.bind(sourceMod, sourceKey, fn, nil, fn)
+        hs.hotkey.bind(source_mod, source_key, fn, nil, fn)
     end
 end
 

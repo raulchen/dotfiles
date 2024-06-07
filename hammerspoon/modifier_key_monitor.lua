@@ -21,7 +21,7 @@ reset_key_states()
 
 local last_toggle_caps_lock_time = 0.0
 
-local modifierKeyListener = hs.eventtap.new({ hs.eventtap.event.types.flagsChanged }, function(e)
+local mod_key_listener = hs.eventtap.new({ hs.eventtap.event.types.flagsChanged }, function(e)
     local now = hs.timer.secondsSinceEpoch() or 0
 
     local modifiers = e:getFlags()
@@ -74,7 +74,7 @@ local modifierKeyListener = hs.eventtap.new({ hs.eventtap.event.types.flagsChang
 end)
 
 module.start = function()
-    modifierKeyListener:start()
+    mod_key_listener:start()
 end
 
 return module

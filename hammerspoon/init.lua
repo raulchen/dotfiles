@@ -2,11 +2,10 @@ require("double_cmdq_to_quit")
 require("keymaps")
 require("window")
 require("modifier_key_monitor").start()
-require("switch_primary_monitor")
 ---@diagnostic disable-next-line: param-type-mismatch
 pcall(hs.fnutils.partial(require, "local"))
 
-require("utils").tempNotify(3, hs.notify.new({
+require("utils").temp_notify(3, hs.notify.new({
     title = "Config reloaded",
 }))
 

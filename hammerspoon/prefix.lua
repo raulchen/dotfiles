@@ -57,8 +57,8 @@ function module.bind(mod, key, fn, can_repeat)
     end
 end
 
-function module.bindMultiple(mod, key, pressedFn, releasedFn, repeatFn)
-    modal:bind(mod, key, pressedFn, releasedFn, repeatFn)
+function module.bind_multiple(mod, key, pressed_fn, released_fn, repeat_fn)
+    modal:bind(mod, key, pressed_fn, released_fn, repeat_fn)
 end
 
 module.bind('', 'escape', module.exit)
@@ -67,5 +67,11 @@ module.bind('', 'd', hs.toggleConsole)
 module.bind('', 'r', hs.reload)
 
 module.bind('', 'a', hs.hid.capslock.toggle)
+
+local function switch_primary_monitor()
+    hs.screen.primaryScreen():next():setPrimary()
+end
+
+module.bind('', 'm', switch_primary_monitor)
 
 return module

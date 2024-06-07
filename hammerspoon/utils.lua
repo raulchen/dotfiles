@@ -1,11 +1,11 @@
 local module = {}
 
-function module.tempNotify(timeout, notif)
+function module.temp_notify(timeout, notif)
     notif:send()
     hs.timer.doAfter(timeout, function() notif:withdraw() end)
 end
 
-function module.splitStr(str, sep)
+function module.split_str(str, sep)
     if sep == nil then
         sep = "%s"
     end
@@ -18,7 +18,7 @@ function module.splitStr(str, sep)
     return t
 end
 
-function module.strToTable(str)
+function module.str_to_table(str)
     local t = {}
     for i = 1, #str do
         t[i] = str:sub(i, i)

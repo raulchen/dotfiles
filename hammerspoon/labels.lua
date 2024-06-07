@@ -4,18 +4,18 @@ local module = {}
 
 local drawing = hs.drawing
 
-local screenMargin = { x = 10, y = 10 }
-local textPadding = { x = 4, y = 0 }
-local bgMargin = { x = 7, y = 5 }
+local screen_margin = { x = 10, y = 10 }
+local text_padding = { x = 4, y = 0 }
+local bg_margin = { x = 7, y = 5 }
 
-local textStyle = {
+local text_style = {
     size = 17,
     color = { white = 0.2, alpha = 1 },
     klignment = "center",
     lineBreak = "truncateTail",
 }
 
-local bgStyle = {
+local bg_style = {
     fillColor = { white = 1, alpha = 0.7 },
 }
 
@@ -26,43 +26,43 @@ function Label.new(message)
     local label = {}
     setmetatable(label, Label)
     label.message = message
-    label.textFrame = drawing.getTextDrawingSize(message, textStyle)
-    label.textFrame.w = label.textFrame.w + textPadding.x
-    label.textFrame.h = label.textFrame.h + textPadding.y
+    label.textFrame = drawing.getTextDrawingSize(message, text_style)
+    label.textFrame.w = label.textFrame.w + text_padding.x
+    label.textFrame.h = label.textFrame.h + text_padding.y
     return label
 end
 
 function Label:show(duration)
-    if self.textObj then
+    if self.text_obj then
         return
     end
     local screen = hs.screen.mainScreen()
-    local screenFrame = screen:fullFrame()
+    local screen_frame = screen:fullFrame()
 
-    local right = screenFrame.w - screenMargin.x
-    local bottom = screenFrame.h - screenMargin.y
+    local right = screen_frame.w - screen_margin.x
+    local bottom = screen_frame.h - screen_margin.y
 
-    local bgDisplayFrame = {
-        x = right - self.textFrame.w - bgMargin.x * 2,
-        y = bottom - self.textFrame.h - bgMargin.y * 2,
-        w = self.textFrame.w + bgMargin.x * 2,
-        h = self.textFrame.h + bgMargin.y * 2,
+    local bg_display_frame = {
+        x = right - self.textFrame.w - bg_margin.x * 2,
+        y = bottom - self.textFrame.h - bg_margin.y * 2,
+        w = self.textFrame.w + bg_margin.x * 2,
+        h = self.textFrame.h + bg_margin.y * 2,
     }
-    local textDisplayFrame = {
-        x = right - self.textFrame.w - bgMargin.x,
-        y = bottom - self.textFrame.h - bgMargin.y,
+    local text_display_frame = {
+        x = right - self.textFrame.w - bg_margin.x,
+        y = bottom - self.textFrame.h - bg_margin.y,
         w = self.textFrame.w,
         h = self.textFrame.h,
     }
 
-    self.bgObj = drawing.rectangle(bgDisplayFrame)
+    self.bg_obj = drawing.rectangle(bg_display_frame)
         :setStroke(false)
         :setFill(true)
-        :setFillColor(bgStyle.fillColor)
+        :setFillColor(bg_style.fillColor)
         :setRoundedRectRadii(5, 5)
         :show(0.15)
-    self.textObj = drawing.text(textDisplayFrame, self.message)
-        :setTextStyle(textStyle)
+    self.text_obj = drawing.text(text_display_frame, self.message)
+        :setTextStyle(text_style)
         :show(0.15)
 
     if duration then
@@ -71,13 +71,13 @@ function Label:show(duration)
 end
 
 function Label:hide()
-    if self.bgObj then
-        self.bgObj:delete()
-        self.bgObj = nil
+    if self.bg_obj then
+        self.bg_obj:delete()
+        self.bg_obj = nil
     end
-    if self.textObj then
-        self.textObj:delete()
-        self.textObj = nil
+    if self.text_obj then
+        self.text_obj:delete()
+        self.text_obj = nil
     end
 end
 

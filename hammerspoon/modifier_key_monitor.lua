@@ -57,8 +57,7 @@ local mod_key_listener = hs.eventtap.new({ hs.eventtap.event.types.flagsChanged 
                 -- `hs.hid.capslock.toggle()` will also trigger this callback,
                 -- need the following check to avoid infinite callbacks.
                 if now - last_toggle_caps_lock_time > MIN_INTERVAL_S then
-                    ---@diagnostic disable-next-line: undefined-field
-                    hs.hid.capslock.toggle()
+                    require("utils").toggle_caps_lock()
                     last_toggle_caps_lock_time = now
                 end
             end

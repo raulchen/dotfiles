@@ -26,4 +26,15 @@ function module.str_to_table(str)
     return t
 end
 
+function module.toggle_caps_lock()
+    hs.hid.capslock.toggle()
+    local msg = "Caps lock"
+    if hs.hid.capslock.get() then
+        msg = msg .. " on"
+    else
+        msg = msg .. " off"
+    end
+    require("labels").show(msg, 1)
+end
+
 return module

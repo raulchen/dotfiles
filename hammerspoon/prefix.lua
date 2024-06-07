@@ -66,7 +66,7 @@ module.bind('', 'escape', module.exit)
 module.bind('', 'd', hs.toggleConsole)
 module.bind('', 'r', hs.reload)
 
-module.bind('', 'a', hs.hid.capslock.toggle)
+module.bind('', 'a', require("utils").toggle_caps_lock)
 
 local function switch_primary_monitor()
     hs.screen.primaryScreen():next():setPrimary()

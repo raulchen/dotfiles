@@ -4,7 +4,7 @@ local module = {}
 
 local drawing = hs.drawing
 
-local screen_margin = { x = 10, y = 10 }
+local screen_margin = { x = 50, y = 10 }
 local text_padding = { x = 4, y = 0 }
 local bg_margin = { x = 7, y = 5 }
 
@@ -83,6 +83,10 @@ end
 
 module.new = function(message)
     return Label.new(message)
+end
+
+module.show = function(message, duration)
+    Label.new(message):show(duration)
 end
 
 return module

@@ -135,11 +135,7 @@ for i = 1, 4 do
             win:setTopLeft(p)
         end
     end
-    local pressedFn = function()
-        prefix.cancelTimeout()
-        moveWin()
-    end
-    prefix.bindMultiple('shift', arrowKeys[i], pressedFn, nil, moveWin)
+    prefix.bind('shift', arrowKeys[i], moveWin, true)
 end
 
 -- prefix + ; -> move window to the next screen
@@ -223,10 +219,6 @@ for i = 1, #edges do
     for j = 1, #ratios do
         local mod = (ratios[j] > 1) and 'cmd' or 'cmd+shift'
         local fn = function() expandEdge(edge, ratios[j]) end
-        local pressedFn = function()
-            prefix.cancelTimeout()
-            fn()
-        end
-        prefix.bindMultiple(mod, edge, pressedFn, nil, fn)
+        prefix.bind(mod, edge, fn, true)
     end
 end

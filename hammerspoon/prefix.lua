@@ -18,6 +18,12 @@ end
 local alert_id = nil
 local timer = nil
 
+local function cancel_timeout()
+    if timer then
+        timer:stop()
+    end
+end
+
 function modal:entered()
     module.enabled = true
     alert_id = hs.alert.show("Prefix Mode", 9999)
@@ -29,24 +35,26 @@ function modal:exited()
     if alert_id then
         hs.alert.closeSpecific(alert_id)
     end
-    module.cancelTimeout()
+    cancel_timeout()
 end
 
 function module.exit()
     modal:exit()
 end
 
-function module.cancelTimeout()
-    if timer then
-        timer:stop()
+function module.bind(mod, key, fn, can_repeat)
+    if can_repeat ~= true then
+        modal:bind(mod, key, nil, function()
+            module.exit()
+            fn()
+        end, nil)
+    else
+        local pressed_fn = function()
+            fn()
+            cancel_timeout()
+        end
+        modal:bind(mod, key, pressed_fn, nil, fn)
     end
-end
-
-function module.bind(mod, key, fn)
-    modal:bind(mod, key, nil, function()
-        module.exit()
-        fn()
-    end, nil)
 end
 
 function module.bindMultiple(mod, key, pressedFn, releasedFn, repeatFn)

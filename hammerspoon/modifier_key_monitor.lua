@@ -63,20 +63,18 @@ local modifierKeyListener = hs.eventtap.new({ hs.eventtap.event.types.flagsChang
                 end
             end
         end
+        if key_states["ctrl"].repeats == 2 then
+            if now - key_states["ctrl"].last_press_time < MIN_INTERVAL_S then
+                require("prefix").toggle()
+            end
+        end
     end
 
     return false, nil
 end)
 
-
-local normalKeyListener = hs.eventtap.new({ hs.eventtap.event.types.keyDown }, function(_)
-    -- If a non-modifier key is pressed, reset key states.
-    reset_key_states()
-end)
-
 module.start = function()
     modifierKeyListener:start()
-    normalKeyListener:start()
 end
 
 return module

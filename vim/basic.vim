@@ -334,6 +334,8 @@ vnoremap <expr> <leader>r ReplaceSelection()
 
 "" Command-line mode.
 
+set cedit=\<C-Y>
+
 " Emacs-style key mappings for the command line (`:help emacs-keys`).
 " start of line
 cnoremap <C-A> <Home>

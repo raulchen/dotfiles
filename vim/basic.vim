@@ -341,6 +341,8 @@ set cedit=\<C-Y>
 cnoremap <C-A> <Home>
 " back one character
 cnoremap <C-B> <Left>
+" also bind <C-V> to <Left> because <C-B> is tmux prefix
+cnoremap <C-V> <Left>
 " delete character under cursor
 cnoremap <C-D> <Del>
 " end of line

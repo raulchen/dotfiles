@@ -21,9 +21,12 @@ HISTSIZE=130000
 SAVEHIST=130000
 HYPHEN_INSENSITIVE="true"
 
-# Ctrl-V: edit in vim
-bindkey '^V' edit-command-line
-bindkey -M vicmd '^V' edit-command-line
+# Also bind C-V to backward-char because C-B is Tmux prefix
+bindkey '^V' backward-char
+
+# Ctrl-Y: edit in vim
+bindkey '^Y' edit-command-line
+bindkey -M vicmd '^Y' edit-command-line
 
 # Expand ".../"
 function expand-dots {

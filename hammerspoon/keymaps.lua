@@ -63,7 +63,7 @@ end
 keymap('n', 'alt', 'tab', 'ctrl+shift', REPEAT_SLOWER)
 keymap('m', 'alt', 'tab', 'ctrl', REPEAT_SLOWER)
 
-keymap('[', 'ctrl', 'escape', '', NO_REPEAT)
+-- keymap('[', 'ctrl', 'escape', '', NO_REPEAT)
 
 -- ------------------
 -- system

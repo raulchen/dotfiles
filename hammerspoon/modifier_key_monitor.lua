@@ -72,8 +72,14 @@ local mod_key_listener = hs.eventtap.new({ hs.eventtap.event.types.flagsChanged 
     return false, nil
 end)
 
+local normal_key_listener = hs.eventtap.new({ hs.eventtap.event.types.keyDown }, function(_)
+    -- If a non-modifier key is pressed, reset key states.
+    reset_key_states()
+end)
+
 module.start = function()
     mod_key_listener:start()
+    normal_key_listener:start()
 end
 
 return module

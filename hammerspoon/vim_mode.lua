@@ -1,6 +1,6 @@
 local module = {}
 
-local logger = hs.logger.new('vim_mode', 'debug')
+local logger = hs.logger.new('vim_mode', 'info')
 
 local current_mode = nil
 
@@ -79,7 +79,7 @@ hs.window.filter.new('kitty')
 local key_stroke_fn = require("utils").key_stroke_fn
 local system_key_stroke_fn = require("utils").system_key_stroke_fn
 
-local bind_fn = function(mode, source_mod, source_key, fn, can_repeat)
+local bind_fn = function(mode, mod, key, fn, can_repeat)
     local pressed_fn = nil
     local released_fn = nil
     local repeat_fn = nil
@@ -90,7 +90,7 @@ local bind_fn = function(mode, source_mod, source_key, fn, can_repeat)
         pressed_fn = fn
         repeat_fn = fn
     end
-    mode.modal:bind(source_mod, source_key, pressed_fn, released_fn, repeat_fn)
+    mode.modal:bind(mod, key, pressed_fn, released_fn, repeat_fn)
 end
 
 local bind_key = function(mode, source_mod, source_key, target_mod, target_key, can_repeat)
@@ -188,9 +188,9 @@ for _, op in ipairs({ 'c', 'd' }) do
 end
 
 -- u -> undo
-bind_key(normal, {}, 'u', { 'cmd' }, 'z', false)
+bind_key(normal, {}, 'u', { 'cmd' }, 'z', true)
 -- ctrl + r -> redo
-bind_key(normal, { 'ctrl' }, 'r', { 'shift', 'cmd' }, 'z', false)
+bind_key(normal, { 'ctrl' }, 'r', { 'shift', 'cmd' }, 'z', true)
 
 -- i/I/a/A/o/O -> switch to insert mode
 bind_fn(normal, {}, 'i', function()
@@ -254,29 +254,36 @@ end, false)
 -- G -> move to the end of the file
 bind_key(visual, { 'shift' }, 'g', { 'shift', 'cmd' }, 'down', false)
 
+local visual_to_normal = function()
+    -- TODO: cancel visual selection
+    switch_to_mode(normal)
+end
+
 -- y -> copy
-bind_key(visual, {}, 'y', { 'cmd' }, 'c', false)
+bind_fn(visual, {}, 'y', function()
+    key_stroke_fn({ 'cmd' }, 'c')()
+    visual_to_normal()
+end, false)
 -- p -> paste
-bind_key(visual, {}, 'p', { 'cmd' }, 'v', false)
+bind_fn(visual, {}, 'p', function()
+    key_stroke_fn({ 'cmd' }, 'v')()
+    visual_to_normal()
+end, false)
 
 -- x/d -> delete visual selection
-bind_key(visual, {}, 'x', {}, 'delete', false)
-bind_key(visual, {}, 'd', {}, 'delete', false)
-
--- u -> undo
-bind_key(visual, {}, 'u', { 'cmd' }, 'z', false)
--- ctrl + r -> redo
-bind_key(visual, { 'ctrl' }, 'r', { 'shift', 'cmd' }, 'z', false)
-
--- v/esc -> switch to normal mode
-bind_fn(visual, {}, 'v', function()
-    -- TODO: cancel visual selection
-    switch_to_mode(normal)
+bind_fn(visual, {}, 'x', function()
+    key_stroke_fn({ '' }, 'forwarddelete')()
+    visual_to_normal()
 end, false)
-bind_fn(visual, {}, 'escape', function()
-    -- TODO: cancel visual selection
-    switch_to_mode(normal)
+bind_fn(visual, {}, 'd', function()
+    key_stroke_fn({ '' }, 'forwarddelete')()
+    visual_to_normal()
 end, false)
+
+-- v/esc/ctrl-[ -> switch to normal mode
+bind_fn(visual, {}, 'v', visual_to_normal, false)
+bind_fn(visual, {}, 'escape', visual_to_normal, false)
+bind_fn(visual, { 'ctrl' }, '[', visual_to_normal, false)
 
 -- ==== Insert mode ====
 

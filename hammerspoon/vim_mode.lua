@@ -4,28 +4,35 @@ local logger = hs.logger.new('vim_mode', 'info')
 
 local current_mode = nil
 
+local mode_entered = function(mode)
+    logger.d("Entered " .. mode.name)
+    current_mode = mode.name
+    if mode.name ~= "insert" then
+        mode.label:show()
+    end
+end
+
+local mode_exited = function(mode)
+    logger.d("Exited " .. mode.name)
+    current_mode = nil
+    mode.label:hide()
+end
+
 local function new_mode(name)
-    local modal = hs.hotkey.modal.new()
-    local label = require("labels").new(name, "bottom_right")
-
-    function modal:entered()
-        logger.d("Entered " .. name)
-        current_mode = name
-        if name ~= "insert" then
-            label:show()
-        end
-    end
-
-    function modal:exited()
-        logger.d("Exited " .. name)
-        current_mode = nil
-        label:hide()
-    end
-
-    return {
+    local mode = {
         name = name,
-        modal = modal,
+        modal = hs.hotkey.modal.new(),
+        label = require("labels").new(name, "bottom_right"),
     }
+
+    mode.modal.entered = function()
+        mode_entered(mode)
+    end
+    mode.modal.exited = function()
+        mode_exited(mode)
+    end
+
+    return mode
 end
 
 local insert = new_mode("insert")
@@ -227,21 +234,39 @@ end, false)
 
 -- ==== Visual mode ====
 
+-- Whether the cursor is on the right side of
+-- the visual selection start.
+visual.is_cursor_right_to_start = nil
+
+visual.modal.entered = function()
+    mode_entered(visual)
+    visual.is_cursor_right_to_start = nil
+end
+
+local visual_bind_key = function(source_mod, source_key, target_mod, target_key, right)
+    table.insert(target_mod, 'shift')
+    local fn = function()
+        key_stroke_fn(target_mod, target_key)()
+        visual.is_cursor_right_to_start = right
+    end
+    bind_fn(visual, source_mod, source_key, fn, true)
+end
+
 -- hjkl movements
-bind_key(visual, {}, 'h', { 'shift' }, 'left', true)
-bind_key(visual, {}, 'j', { 'shift' }, 'down', true)
-bind_key(visual, {}, 'k', { 'shift' }, 'up', true)
-bind_key(visual, {}, 'l', { 'shift' }, 'right', true)
+visual_bind_key({}, 'h', {}, 'left', false)
+visual_bind_key({}, 'j', {}, 'down', true)
+visual_bind_key({}, 'k', {}, 'up', false)
+visual_bind_key({}, 'l', {}, 'right', true)
 
 -- w/e -> move forward by word
-bind_key(visual, {}, 'w', { 'shift', 'alt' }, 'right', true)
-bind_key(visual, {}, 'e', { 'shift', 'alt' }, 'right', true)
+visual_bind_key({}, 'w', { 'alt' }, 'right', true)
+visual_bind_key({}, 'e', { 'alt' }, 'right', true)
 -- b -> move backward by word
-bind_key(visual, {}, 'b', { 'shift', 'alt' }, 'left', true)
+visual_bind_key({}, 'b', { 'alt' }, 'left', false)
 
 -- 0/$ -> move to the beginning/end of the line
-bind_key(visual, {}, '0', { 'shift', 'cmd' }, 'left', false)
-bind_key(visual, { 'shift' }, '4', { 'shift', 'cmd' }, 'right', false)
+visual_bind_key({}, '0', { 'cmd' }, 'left', false)
+visual_bind_key({ 'shift' }, '4', { 'cmd' }, 'right', true)
 
 -- gg -> move to the beginning of the file
 bind_fn(visual, {}, 'g', function()
@@ -249,13 +274,22 @@ bind_fn(visual, {}, 'g', function()
 end, false)
 bind_fn(visual_g, {}, 'g', function()
     key_stroke_fn({ 'shift', 'cmd' }, 'up')()
+    visual.is_cursor_right_to_start = false
     switch_to_mode(visual)
 end, false)
 -- G -> move to the end of the file
-bind_key(visual, { 'shift' }, 'g', { 'shift', 'cmd' }, 'down', false)
+visual_bind_key({ 'shift' }, 'g', { 'shift', 'cmd' }, 'down', true)
 
 local visual_to_normal = function()
-    -- TODO: cancel visual selection
+    -- Cancel visual selection and move the cursor to
+    -- the visual selection start position.
+    if visual.is_cursor_right_to_start ~= nil then
+        if visual.is_cursor_right_to_start then
+            key_stroke_fn({}, 'left')()
+        else
+            key_stroke_fn({}, 'right')()
+        end
+    end
     switch_to_mode(normal)
 end
 
@@ -273,10 +307,12 @@ end, false)
 -- x/d -> delete visual selection
 bind_fn(visual, {}, 'x', function()
     key_stroke_fn({ '' }, 'forwarddelete')()
+    visual.is_cursor_right_to_start = nil
     visual_to_normal()
 end, false)
 bind_fn(visual, {}, 'd', function()
     key_stroke_fn({ '' }, 'forwarddelete')()
+    visual.is_cursor_right_to_start = nil
     visual_to_normal()
 end, false)
 

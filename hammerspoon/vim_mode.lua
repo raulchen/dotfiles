@@ -241,6 +241,14 @@ end, false)
 bind_fn(normal, {}, 'v', function()
     switch_to_mode(visual)
 end, false)
+-- V -> select current line and switch to visual mode
+-- TODO: implement real line-wise visual mode.
+bind_fn(normal, { 'shift' }, 'v', function()
+    key_stroke_fn({ 'cmd' }, 'left')()
+    key_stroke_fn({ 'shift', 'cmd' }, 'right')()
+    switch_to_mode(visual)
+    visual.is_cursor_right_to_start = true
+end, false)
 
 -- ==== Visual mode ====
 

@@ -135,9 +135,19 @@ end, false)
 -- G -> move to the end of the file
 bind_key(normal, { 'shift' }, 'g', { 'cmd' }, 'down', false)
 
--- ctrl + u/d -> page up/down
-bind_key(normal, { 'ctrl' }, 'u', {}, 'pageup', true)
-bind_key(normal, { 'ctrl' }, 'd', {}, 'pagedown', true)
+-- ctrl + u/d -> move up/down N lines
+local CTRL_UD_NUM_LINES = 20
+local CTRL_UD_KEY_PRESS_DELAY = 500
+bind_fn(normal, { 'ctrl' }, 'u', function()
+    for _ = 1, CTRL_UD_NUM_LINES do
+        key_stroke_fn({}, 'up', CTRL_UD_KEY_PRESS_DELAY)()
+    end
+end, true)
+bind_fn(normal, { 'ctrl' }, 'd', function()
+    for _ = 1, CTRL_UD_NUM_LINES do
+        key_stroke_fn({}, 'down', CTRL_UD_KEY_PRESS_DELAY)()
+    end
+end, true)
 
 -- p -> paste
 bind_key(normal, {}, 'p', { 'cmd' }, 'v', false)
@@ -268,6 +278,18 @@ visual_bind_key({}, 'b', { 'alt' }, 'left', false)
 visual_bind_key({}, '0', { 'cmd' }, 'left', false)
 visual_bind_key({ 'shift' }, '4', { 'cmd' }, 'right', true)
 
+-- ctrl-u/d -> move up/down N lines
+bind_fn(visual, { 'ctrl' }, 'u', function()
+    for _ = 1, CTRL_UD_NUM_LINES do
+        key_stroke_fn({ 'shift' }, 'up', CTRL_UD_KEY_PRESS_DELAY)()
+    end
+end, true)
+bind_fn(visual, { 'ctrl' }, 'd', function()
+    for _ = 1, CTRL_UD_NUM_LINES do
+        key_stroke_fn({ 'shift' }, 'down', CTRL_UD_KEY_PRESS_DELAY)()
+    end
+end, true)
+
 -- gg -> move to the beginning of the file
 bind_fn(visual, {}, 'g', function()
     switch_to_mode(visual_g)
@@ -278,7 +300,7 @@ bind_fn(visual_g, {}, 'g', function()
     switch_to_mode(visual)
 end, false)
 -- G -> move to the end of the file
-visual_bind_key({ 'shift' }, 'g', { 'shift', 'cmd' }, 'down', true)
+visual_bind_key({ 'shift' }, 'g', { 'cmd' }, 'down', true)
 
 local visual_to_normal = function()
     -- Cancel visual selection and move the cursor to

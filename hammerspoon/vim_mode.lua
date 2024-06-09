@@ -285,9 +285,9 @@ local visual_to_normal = function()
     -- the visual selection start position.
     if visual.is_cursor_right_to_start ~= nil then
         if visual.is_cursor_right_to_start then
-            key_stroke_fn({}, 'left')()
-        else
             key_stroke_fn({}, 'right')()
+        else
+            key_stroke_fn({}, 'left')()
         end
     end
     switch_to_mode(normal)

@@ -1,5 +1,4 @@
 require("double_cmdq_to_quit")
-require("keymaps")
 require("window")
 require("modifier_key_monitor").start()
 require("vim_mode")

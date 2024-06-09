@@ -37,4 +37,20 @@ function module.toggle_caps_lock()
     require("labels").show(msg, 1)
 end
 
+module.key_stroke_fn = function(mod, key, delay)
+    delay = delay or (10 * 1000)
+    return function()
+        hs.eventtap.keyStroke(mod, key, delay)
+    end
+end
+
+module.system_key_stroke_fn = function(key, delay)
+    delay = delay or (10 * 1000)
+    return function()
+        hs.eventtap.event.newSystemKeyEvent(key, true):post()
+        hs.timer.usleep(delay)
+        hs.eventtap.event.newSystemKeyEvent(key, false):post()
+    end
+end
+
 return module

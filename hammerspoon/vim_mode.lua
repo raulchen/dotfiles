@@ -53,8 +53,6 @@ local function switch_to_mode(mode)
     mode.modal:enter()
 end
 
-switch_to_mode(insert)
-
 module.toggle = function()
     if current_mode ~= "insert" then
         switch_to_mode(insert)
@@ -78,11 +76,8 @@ hs.window.filter.new('kitty')
         toggler:enable()
     end)
 
-local key_stroke_fn = function(mod, key)
-    return function()
-        hs.eventtap.keyStroke(mod, key, 20 * 1000)
-    end
-end
+local key_stroke_fn = require("utils").key_stroke_fn
+local system_key_stroke_fn = require("utils").system_key_stroke_fn
 
 local bind_fn = function(mode, source_mod, source_key, fn, can_repeat)
     local pressed_fn = nil
@@ -230,7 +225,6 @@ bind_fn(normal, {}, 'v', function()
     switch_to_mode(visual)
 end, false)
 
-
 -- ==== Visual mode ====
 
 -- hjkl movements
@@ -284,4 +278,21 @@ bind_fn(visual, {}, 'escape', function()
     switch_to_mode(normal)
 end, false)
 
+-- ==== Insert mode ====
+
+-- alt-hjkl -> arrow keys
+bind_key(insert, { 'alt' }, 'h', {}, 'left', true)
+bind_key(insert, { 'alt' }, 'j', {}, 'down', true)
+bind_key(insert, { 'alt' }, 'k', {}, 'up', true)
+bind_key(insert, { 'alt' }, 'l', {}, 'right', true)
+
+-- alt-m/n -> ctrl-tab and ctrl-shift-tab
+bind_key(insert, { 'alt' }, 'm', { 'ctrl' }, 'tab', true)
+bind_key(insert, { 'alt' }, 'n', { 'ctrl', 'shift' }, 'tab', true)
+
+bind_fn(insert, { 'alt' }, ',', system_key_stroke_fn('SOUND_DOWN'), true)
+bind_fn(insert, { 'alt' }, '.', system_key_stroke_fn('SOUND_UP'), true)
+bind_fn(insert, { 'alt' }, '/', system_key_stroke_fn('MUTE'), false)
+
+switch_to_mode(insert)
 return module

@@ -74,4 +74,10 @@ end
 
 module.bind('', 'm', switch_primary_monitor)
 
+local system_key_stroke_fn = require("utils").system_key_stroke_fn
+
+module.bind({}, 'p', system_key_stroke_fn('PLAY'))
+module.bind({}, '[', system_key_stroke_fn('REWIND'))
+module.bind({}, ']', system_key_stroke_fn('FAST'))
+
 return module

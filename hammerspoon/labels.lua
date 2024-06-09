@@ -8,7 +8,6 @@ local Label = {}
 Label.__index = Label
 
 local screen_margin = { x = 50, y = 10 }
-local text_padding = { x = 4, y = 0 }
 local bg_margin = { x = 7, y = 5 }
 
 function Label.new(message, position)
@@ -26,8 +25,6 @@ function Label.new(message, position)
 
     label.bg_color = { white = 1, alpha = 0.8 }
     label.textFrame = drawing.getTextDrawingSize(message, label.text_style)
-    label.textFrame.w = label.textFrame.w + text_padding.x
-    label.textFrame.h = label.textFrame.h + text_padding.y
     return label
 end
 

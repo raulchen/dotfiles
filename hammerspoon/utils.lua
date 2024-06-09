@@ -26,15 +26,21 @@ function module.str_to_table(str)
     return t
 end
 
+local caps_lock_on_label = require("labels").new("Caps lock on", "bottom_left")
+local caps_lock_off_label = require("labels").new("Caps lock off", "bottom_left")
+
 function module.toggle_caps_lock()
     hs.hid.capslock.toggle()
     local msg = "Caps lock"
     if hs.hid.capslock.get() then
         msg = msg .. " on"
+        caps_lock_off_label:hide()
+        caps_lock_on_label:show(1)
     else
         msg = msg .. " off"
+        caps_lock_on_label:hide()
+        caps_lock_off_label:show(1)
     end
-    require("labels").show(msg, "bottom_left", 1)
 end
 
 module.key_stroke_fn = function(mod, key, delay)

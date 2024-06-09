@@ -15,7 +15,7 @@ module.toggle = function()
     end
 end
 
-local alert_id = nil
+local label = require("labels").new("Prefix Mode", "center")
 local timer = nil
 
 local function cancel_timeout()
@@ -26,15 +26,13 @@ end
 
 function modal:entered()
     module.enabled = true
-    alert_id = hs.alert.show("Prefix Mode", 9999)
+    label:show()
     timer = hs.timer.doAfter(TIMEOUT, function() modal:exit() end)
 end
 
 function modal:exited()
     module.enabled = false
-    if alert_id then
-        hs.alert.closeSpecific(alert_id)
-    end
+    label:hide()
     cancel_timeout()
 end
 

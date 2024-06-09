@@ -34,7 +34,7 @@ function module.toggle_caps_lock()
     else
         msg = msg .. " off"
     end
-    require("labels").show(msg, 1)
+    require("labels").show(msg, "bottom_left", 1)
 end
 
 module.key_stroke_fn = function(mod, key, delay)

@@ -6,7 +6,7 @@ local current_mode = nil
 
 local function new_mode(name)
     local modal = hs.hotkey.modal.new()
-    local label = require("labels").new(name)
+    local label = require("labels").new(name, "bottom_right")
 
     function modal:entered()
         logger.d("Entered " .. name)

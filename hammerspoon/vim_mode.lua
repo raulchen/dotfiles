@@ -31,6 +31,7 @@ end
 local insert = new_mode("insert")
 local normal = new_mode("normal")
 local normal_g = new_mode("normal:g")
+local normal_c = new_mode("normal:c")
 local normal_d = new_mode("normal:d")
 local visual = new_mode("visual")
 local visual_g = new_mode("visual:g")
@@ -39,6 +40,7 @@ local modes = {
     insert = insert,
     normal = normal,
     ["normal:g"] = normal_g,
+    ["normal:c"] = normal_c,
     ["normal:d"] = normal_d,
     visual = visual,
     ["visual:g"] = visual_g,
@@ -141,42 +143,54 @@ bind_key(normal, {}, 'p', { 'cmd' }, 'v', false)
 -- x -> delete character forward
 bind_key(normal, {}, 'x', {}, 'forwarddelete', true)
 
--- dw/de -> delete word forward
+-- Implement c_ d_ commands
+bind_fn(normal, {}, 'c', function()
+    switch_to_mode(normal_c)
+end, false)
 bind_fn(normal, {}, 'd', function()
     switch_to_mode(normal_d)
 end, false)
-bind_fn(normal_d, {}, 'w', function()
-    key_stroke_fn({ 'alt' }, 'forwarddelete')()
-    switch_to_mode(normal)
-end, false)
-bind_fn(normal_d, {}, 'e', function()
-    key_stroke_fn({ 'alt' }, 'forwarddelete')()
-    switch_to_mode(normal)
-end, false)
--- db -> delete word backwards
-bind_fn(normal_d, {}, 'b', function()
-    key_stroke_fn({ 'alt' }, 'delete')()
-    switch_to_mode(normal)
-end, false)
--- d0/d$ -> delete to the beginning/end of the line
-bind_fn(normal_d, {}, '0', function()
-    key_stroke_fn({ 'cmd' }, 'delete')()
-    switch_to_mode(normal)
-end, false)
-bind_fn(normal_d, { 'shift' }, '4', function()
-    key_stroke_fn({ 'ctrl' }, 'k')()
-    switch_to_mode(normal)
-end, false)
--- dd -> delete the whole line
-bind_fn(normal_d, {}, 'd', function()
-    key_stroke_fn({ 'cmd' }, 'right')()
-    key_stroke_fn({ 'cmd' }, 'delete')()
-    key_stroke_fn({ '' }, 'delete')()
-    switch_to_mode(normal)
-end, false)
-
--- D -> delete to the end of the line
-bind_key(normal, { 'shift' }, 'd', { 'ctrl' }, 'k', false)
+for _, op in ipairs({ 'c', 'd' }) do
+    local mode = op == 'c' and normal_c or normal_d
+    local target_mode = op == 'c' and insert or normal
+    -- w/e -> delete word forward
+    bind_fn(mode, {}, 'w', function()
+        key_stroke_fn({ 'alt' }, 'forwarddelete')()
+        switch_to_mode(target_mode)
+    end, false)
+    bind_fn(mode, {}, 'e', function()
+        key_stroke_fn({ 'alt' }, 'forwarddelete')()
+        switch_to_mode(target_mode)
+    end, false)
+    -- b -> delete word backwards
+    bind_fn(mode, {}, 'b', function()
+        key_stroke_fn({ 'alt' }, 'delete')()
+        switch_to_mode(target_mode)
+    end, false)
+    -- 0/$ -> delete to the beginning/end of the line
+    bind_fn(mode, {}, '0', function()
+        key_stroke_fn({ 'cmd' }, 'delete')()
+        switch_to_mode(target_mode)
+    end, false)
+    bind_fn(mode, { 'shift' }, '4', function()
+        key_stroke_fn({ 'ctrl' }, 'k')()
+        switch_to_mode(target_mode)
+    end, false)
+    -- cc/dd -> delete the whole line
+    bind_fn(mode, {}, op, function()
+        key_stroke_fn({ 'cmd' }, 'right')()
+        key_stroke_fn({ 'cmd' }, 'delete')()
+        if op == 'd' then
+            key_stroke_fn({ '' }, 'forwarddelete')()
+        end
+        switch_to_mode(target_mode)
+    end, false)
+    -- C/D -> delete to the end of the line
+    bind_fn(normal, { 'shift' }, op, function()
+        key_stroke_fn({ 'ctrl' }, 'k')()
+        switch_to_mode(target_mode)
+    end, false)
+end
 
 -- u -> undo
 bind_key(normal, {}, 'u', { 'cmd' }, 'z', false)

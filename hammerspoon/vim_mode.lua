@@ -310,14 +310,19 @@ end, false)
 -- G -> move to the end of the file
 visual_bind_key({ 'shift' }, 'g', { 'cmd' }, 'down', true)
 
-local visual_to_normal = function()
-    -- Cancel visual selection and move the cursor to
-    -- the visual selection start position.
-    if visual.is_cursor_right_to_start ~= nil then
-        if visual.is_cursor_right_to_start then
-            key_stroke_fn({}, 'right')()
-        else
-            key_stroke_fn({}, 'left')()
+local visual_to_normal = function(clear_selection)
+    if clear_selection == nil then
+        clear_selection = true
+    end
+    if clear_selection then
+        -- Clear visual selection and move the cursor to
+        -- the visual selection start position.
+        if visual.is_cursor_right_to_start ~= nil then
+            if visual.is_cursor_right_to_start then
+                key_stroke_fn({}, 'right')()
+            else
+                key_stroke_fn({}, 'left')()
+            end
         end
     end
     switch_to_mode(normal)
@@ -337,13 +342,17 @@ end, false)
 -- x/d -> delete visual selection
 bind_fn(visual, {}, 'x', function()
     key_stroke_fn({ '' }, 'forwarddelete')()
-    visual.is_cursor_right_to_start = nil
-    visual_to_normal()
+    visual_to_normal(false)
 end, false)
 bind_fn(visual, {}, 'd', function()
     key_stroke_fn({ '' }, 'forwarddelete')()
-    visual.is_cursor_right_to_start = nil
-    visual_to_normal()
+    visual_to_normal(false)
+end, false)
+
+-- c -> delete visual selection and switch to insert mode
+bind_fn(visual, {}, 'c', function()
+    key_stroke_fn({ '' }, 'forwarddelete')()
+    switch_to_mode(insert)
 end, false)
 
 -- v/esc/ctrl-[ -> switch to normal mode

@@ -3,7 +3,7 @@
 
 [alias]
     cm = "commit --signoff"
-    cma = "commit --signoff -a"
+    cma = "commit --signoff -a --verbose"
     cmam = "commit --signoff -am"
-    cmd = "commit --signoff --amend"
+    cmd = "commit --signoff --amend --verbose"
     cmm = "commit --signoff -m"

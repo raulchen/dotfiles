@@ -18,12 +18,12 @@ function Label.new(message, position)
     local size = label.position == "center" and 22 or 17
     label.text_style = {
         size = size,
-        color = { white = 0.2, alpha = 1 },
+        color = { white = 1, alpha = 1 },
         klignment = "center",
         lineBreak = "truncateTail",
     }
 
-    label.bg_color = { white = 1, alpha = 0.8 }
+    label.bg_color = { white = 0.2, alpha = 0.9 }
     label.textFrame = drawing.getTextDrawingSize(message, label.text_style)
     return label
 end

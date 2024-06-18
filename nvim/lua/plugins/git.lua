@@ -109,6 +109,8 @@ local function setup_octo()
     mappings[buf_type].select_next_entry.lhs = "<tab>"
     mappings[buf_type].select_prev_entry.lhs = "<s-tab>"
   end
+  mappings.review_thread.add_suggestion.lhs = "<leader>oSa"
+  mappings.review_diff.add_review_suggestion.lhs = "<leader>oSa"
 
   require("octo").setup({
     enable_builtin = true,
@@ -126,7 +128,6 @@ local function setup_octo()
     callback = function(ev)
       local wk = require('which-key')
       local keys = {
-        name = "octo",
         a = { name = "assignee", },
         c = { name = "comment", },
         g = { name = "goto", },
@@ -135,7 +136,8 @@ local function setup_octo()
         o = { name = "operation", },
         r = { name = "react", },
         v = { name = "review", },
-        s = { name = "suggest", },
+        s = { name = "search", },
+        S = { name = "suggest", },
       }
       if string.match(ev.file, "pull") then
         keys.p = {
@@ -154,6 +156,49 @@ local function setup_octo()
     end,
   })
 end
+
+local octo_keys = {
+  {
+    "<leader>osp",
+    "<cmd>Octo pr search author:@me<CR>",
+    desc = "Search repo: my PRs",
+  },
+  {
+    "<leader>osr",
+    "<cmd>Octo pr search is:open assignee:@me<CR>",
+    desc = "Search repo: PRs to review",
+  },
+  {
+    "<leader>osi",
+    "<cmd>Octo issue search author:@me<CR>",
+    desc = "Search repo: issues created by me",
+  },
+  {
+    "<leader>osa",
+    "<cmd>Octo issue search is:open assignee:@me<CR>",
+    desc = "Search repo: open issues assigned to me",
+  },
+  {
+    "<leader>osP",
+    "<cmd>Octo search is:pr author:@me<CR>",
+    desc = "Search global: my PRs",
+  },
+  {
+    "<leader>osR",
+    "<cmd>Octo search is:pr is:open assignee:@me<CR>",
+    desc = "Search global: PRs to review",
+  },
+  {
+    "<leader>osI",
+    "<cmd>Octo search is:issue author:@me<CR>",
+    desc = "Search global: issues created by me",
+  },
+  {
+    "<leader>osA",
+    "<cmd>Octo search is:issue is:open assignee:@me<CR>",
+    desc = "Search global: open issues assigned to me",
+  },
+}
 
 return {
   {
@@ -178,6 +223,7 @@ return {
       'nvim-tree/nvim-web-devicons',
     },
     cmd = { "Octo" },
+    keys = octo_keys,
     config = setup_octo,
   },
 }

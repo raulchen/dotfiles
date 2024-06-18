@@ -33,6 +33,7 @@ local function setup_whichkey(_, _)
     d = { name = "debug" },
     f = { name = "find", g = { name = "git", }, },
     g = { name = "git" },
+    o = { name = "octo", s = { name = "search" }, },
     s = { name = "sessions" },
     t = { name = "tabs" },
     u = { name = "ui" },

@@ -68,6 +68,10 @@ local function setup_copilot_chat()
       close = {
         insert = '', -- disable <ctrl-c> to close window
       },
+      reset = {      -- disable <c-l> to reset chat.
+        normal = '',
+        insert = ''
+      },
     },
     prompts = {
       BetterNamings = "Please provide better names for the following variables and functions.",

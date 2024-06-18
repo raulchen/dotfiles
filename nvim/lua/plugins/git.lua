@@ -83,6 +83,70 @@ local diffview_opts = {
   }
 }
 
+local function setup_octo()
+  -- Replace "<leader>" with "<leader>o" in the predefined mappings.
+  local mappings = require("octo.config").get_default_values().mappings
+  for _, func_mappings in pairs(mappings) do
+    for _, mapping in pairs(func_mappings) do
+      mapping.lhs = string.gsub(mapping.lhs, "^<space>", "<leader>")
+      mapping.lhs = string.gsub(mapping.lhs, "^<leader>", "<leader>o")
+    end
+  end
+  -- Update some mappings.
+  mappings.issue.reload.lhs = "<leader>oor"
+  mappings.issue.open_in_browser.lhs = "<leader>oob"
+  mappings.issue.copy_url.lhs = "<leader>ooy"
+  mappings.pull_request.reload.lhs = "<leader>oor"
+  mappings.pull_request.open_in_browser.lhs = "<leader>oob"
+  mappings.pull_request.copy_url.lhs = "<leader>ooy"
+  mappings.pull_request.squash_and_merge_pr.lhs = "<leader>opms"
+  mappings.pull_request.rebase_and_merge_pr.lhs = "<leader>opmr"
+  -- Disable closing review tabs with ctrl-c.
+  mappings.review_thread.close_review_tab.lhs = ""
+  mappings.review_diff.close_review_tab.lhs = ""
+
+  require("octo").setup({
+    enable_builtin = true,
+    picker = "fzf-lua",
+    default_merge_method = "squash",
+    mappings_disable_default = true,
+    mappings = mappings,
+  })
+  -- Set which-key hints.
+  vim.api.nvim_create_autocmd("FileType", {
+    pattern = "octo",
+    callback = function(ev)
+      local wk = require('which-key')
+      local keys = {
+        name = "octo",
+        a = { name = "assignee", },
+        c = { name = "comment", },
+        g = { name = "goto", },
+        i = { name = "issue", },
+        l = { name = "label", },
+        o = { name = "operation", },
+        r = { name = "react", },
+        v = { name = "review", },
+        s = { name = "suggest", },
+      }
+      if string.match(ev.file, "pull") then
+        keys.p = {
+          name = "pr",
+          m = { name = "merge" },
+        }
+      end
+      wk.register(
+        {
+          ['<leader>o'] = keys,
+        },
+        {
+          buffer = ev.buf,
+        }
+      )
+    end,
+  })
+end
+
 return {
   {
     "lewis6991/gitsigns.nvim",
@@ -106,11 +170,6 @@ return {
       'nvim-tree/nvim-web-devicons',
     },
     cmd = { "Octo" },
-    config = function()
-      require "octo".setup({
-        enable_builtin = true,
-        picker = "fzf-lua",
-      })
-    end
+    config = setup_octo,
   },
 }

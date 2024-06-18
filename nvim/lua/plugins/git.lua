@@ -93,17 +93,22 @@ local function setup_octo()
     end
   end
   -- Update some mappings.
-  mappings.issue.reload.lhs = "<leader>oor"
-  mappings.issue.open_in_browser.lhs = "<leader>oob"
-  mappings.issue.copy_url.lhs = "<leader>ooy"
-  mappings.pull_request.reload.lhs = "<leader>oor"
-  mappings.pull_request.open_in_browser.lhs = "<leader>oob"
-  mappings.pull_request.copy_url.lhs = "<leader>ooy"
   mappings.pull_request.squash_and_merge_pr.lhs = "<leader>opms"
   mappings.pull_request.rebase_and_merge_pr.lhs = "<leader>opmr"
-  -- Disable closing review tabs with ctrl-c.
-  mappings.review_thread.close_review_tab.lhs = ""
-  mappings.review_diff.close_review_tab.lhs = ""
+
+  for _, buf_type in pairs({ "issue", "pull_request" }) do
+    mappings[buf_type].reload.lhs = "<leader>oor"
+    mappings[buf_type].open_in_browser.lhs = "<leader>oob"
+    mappings[buf_type].copy_url.lhs = "<leader>ooy"
+  end
+
+  for _, buf_type in pairs({ "review_thread", "review_diff", "file_panel" }) do
+    -- Disable closing review tabs with ctrl-c.
+    mappings[buf_type].close_review_tab.lhs = ""
+    -- Use "tab" and "s-tab" to navigate between files.
+    mappings[buf_type].select_next_entry.lhs = "<tab>"
+    mappings[buf_type].select_prev_entry.lhs = "<s-tab>"
+  end
 
   require("octo").setup({
     enable_builtin = true,
@@ -111,6 +116,9 @@ local function setup_octo()
     default_merge_method = "squash",
     mappings_disable_default = true,
     mappings = mappings,
+    suppress_missing_scope = {
+      projects_v2 = true,
+    },
   })
   -- Set which-key hints.
   vim.api.nvim_create_autocmd("FileType", {

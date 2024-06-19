@@ -122,6 +122,7 @@ local function setup_octo()
       projects_v2 = true,
     },
   })
+  vim.treesitter.language.register('markdown', 'octo')
   -- Set which-key hints.
   vim.api.nvim_create_autocmd("FileType", {
     pattern = "octo",

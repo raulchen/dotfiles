@@ -28,7 +28,7 @@ local function fzf_files()
     ["--header"] = "<C-G> to disable .gitignore",
   }
   local fzf_lua = require('fzf-lua')
-  local cwd = vim.loop.cwd()
+  local cwd = vim.uv.cwd()
   local buffer_dir = vim.fn.expand("%:p:h")
   local is_relative, relative_path = fzf_lua.path.is_relative_to(buffer_dir, cwd)
 
@@ -68,7 +68,7 @@ local function fzf_search(default_query, default_cwd)
     default_query = vim.fn.expand("<cword>")
   end
   if default_cwd == nil then
-    default_cwd = vim.loop.cwd()
+    default_cwd = vim.uv.cwd()
     local buffer_dir = vim.fn.expand("%:p:h")
     if buffer_dir:sub(1, 1) == "/" and buffer_dir:find(default_cwd, 1, true) ~= 1 then
       -- If the current buffer is a normal file, and is not in the

@@ -70,9 +70,9 @@ local function fzf_search(default_query, default_cwd)
   if default_cwd == nil then
     default_cwd = vim.loop.cwd()
     local buffer_dir = vim.fn.expand("%:p:h")
-    if not default_cwd or buffer_dir:find(default_cwd, 1, true) ~= 1 then
-      -- If the current buffer is not in the current working directory,
-      -- use the buffer directory.
+    if buffer_dir:sub(1, 1) == "/" and buffer_dir:find(default_cwd, 1, true) ~= 1 then
+      -- If the current buffer is a normal file, and is not in the
+      -- current working directory, use the buffer directory.
       default_cwd = buffer_dir
     end
   end

@@ -29,11 +29,28 @@ local function setup_cmp(_, _)
     TypeParameter = "󰅲",
   }
   local source_display_names = {
-    nvim_lsp = "LSP",
     buffer = "Buffer",
+    cmdline = "CMD",
+    luasnip = "Snip",
+    nvim_lsp = "LSP",
     path = "Path",
-    luasnip = "LuaSnip",
     spell = "Spell",
+  }
+  local format_opts = {
+    format = function(entry, vim_item)
+      vim_item.kind = string.format('%s %s', kind_icons[vim_item.kind], vim_item.kind)
+      vim_item.menu = string.format('[%s]', source_display_names[entry.source.name])
+      return vim_item
+    end
+  }
+  local source_all_buffers = {
+    name = 'buffer',
+    option = {
+      -- Complete text from all buffers.
+      get_bufnrs = function()
+        return vim.api.nvim_list_bufs()
+      end
+    }
   }
   cmp.setup({
     snippet = {
@@ -51,27 +68,36 @@ local function setup_cmp(_, _)
     }),
     sources = {
       { name = 'nvim_lsp' },
-      {
-        name = 'buffer',
-        option = {
-          -- Complete text from all buffers.
-          get_bufnrs = function()
-            return vim.api.nvim_list_bufs()
-          end
-        }
-      },
-      { name = 'path' },
       { name = 'luasnip' },
+      source_all_buffers,
+      { name = 'path' },
       { name = 'spell' },
     },
     ---@diagnostic disable-next-line
-    formatting = {
-      format = function(entry, vim_item)
-        vim_item.kind = string.format('%s %s', kind_icons[vim_item.kind], vim_item.kind)
-        vim_item.menu = string.format('[%s]', source_display_names[entry.source.name])
-        return vim_item
-      end
+    formatting = format_opts,
+  })
+
+  -- Set up search completion.
+  cmp.setup.cmdline({ '/', '?' }, {
+    mapping = cmp.mapping.preset.cmdline(),
+    sources = {
+      source_all_buffers,
     },
+    ---@diagnostic disable-next-line
+    formatting = format_opts,
+  })
+
+  -- Set up command-line completion.
+  cmp.setup.cmdline(':', {
+    mapping = cmp.mapping.preset.cmdline(),
+    sources = {
+      { name = 'cmdline' },
+      { name = 'path' },
+      source_all_buffers,
+      { name = 'spell' },
+    },
+    ---@diagnostic disable-next-line
+    formatting = format_opts,
   })
 end
 
@@ -84,6 +110,7 @@ return {
       {
         "hrsh7th/cmp-buffer", -- source for text in buffer
         "hrsh7th/cmp-path",   -- source for file system paths
+        'hrsh7th/cmp-cmdline',
         'f3fora/cmp-spell',
         {
           'L3MON4D3/LuaSnip',

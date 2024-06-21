@@ -21,18 +21,28 @@ local fzf_lua_opts = {
   },
 }
 
+local function is_relative_to(buffer_dir, cwd)
+  local fzf_lua = require('fzf-lua')
+  if not fzf_lua.path.is_absolute(buffer_dir) then
+    -- If buffer directory is not absolute (e.g., plugin-specific paths),
+    -- treat it as CWD.
+    return true, "."
+  end
+  return fzf_lua.path.is_relative_to(buffer_dir, cwd)
+end
+
 local function fzf_files()
   local opts = {}
   opts.no_header = true
   opts.fzf_opts = {
     ["--header"] = "<C-G> to disable .gitignore",
   }
-  local fzf_lua = require('fzf-lua')
   ---@diagnostic disable-next-line: undefined-field
   local cwd = vim.uv.cwd()
   local buffer_dir = vim.fn.expand("%:p:h")
-  local is_relative, relative_path = fzf_lua.path.is_relative_to(buffer_dir, cwd)
+  local is_relative, relative_path = is_relative_to(buffer_dir, cwd)
 
+  local fzf_lua = require('fzf-lua')
   if is_relative then
     -- If the buffer directory is in CWD,
     -- use CWD as the search directory.
@@ -72,9 +82,10 @@ local function fzf_search(default_query, default_cwd)
     ---@diagnostic disable-next-line: undefined-field
     default_cwd = vim.uv.cwd()
     local buffer_dir = vim.fn.expand("%:p:h")
-    if buffer_dir:sub(1, 1) == "/" and buffer_dir:find(default_cwd, 1, true) ~= 1 then
-      -- If the current buffer is a normal file, and is not in the
-      -- current working directory, use the buffer directory.
+    local is_relative, _ = is_relative_to(buffer_dir, default_cwd)
+    if not is_relative then
+      -- If the buffer directory is not in CWD,
+      -- use buffer directory as the search directory.
       default_cwd = buffer_dir
     end
   end

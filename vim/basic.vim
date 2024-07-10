@@ -261,8 +261,8 @@ map <silent> <leader>y "+y
 
 "" UI
 
-" disable highlight
-noremap <silent> <leader>uh :noh<cr>
+" toggle highlight search
+noremap <silent> <leader>uh :set hlsearch! hlsearch?<cr>
 " switch between number, relative_number, no_number
 noremap <silent> <leader>un :call SwitchNumber()<cr>
 " toggle wrap

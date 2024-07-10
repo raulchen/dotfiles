@@ -62,7 +62,7 @@ local function fzf_files()
     -- prompt for the directory to search in.
     vim.ui.input({
       prompt = "Find in directory: ",
-      default = buffer_dir,
+      default = buffer_dir .. "/",
       completion = "dir",
     }, function(dir)
       if not dir then
@@ -99,7 +99,7 @@ local function fzf_search(default_query, default_cwd)
       end
       vim.ui.input({
           prompt = "Search in directory: ",
-          default = default_cwd,
+          default = default_cwd .. "/",
           completion = "dir",
         },
         function(cwd)

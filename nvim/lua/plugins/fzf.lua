@@ -92,7 +92,6 @@ local function fzf_search(default_query, default_cwd)
   vim.ui.input({
       prompt = "Search query: ",
       default = default_query,
-      completion = "dir",
     },
     function(query)
       if not query then

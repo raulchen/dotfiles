@@ -1,26 +1,55 @@
-local function setup_nvimtree(_, _)
-  vim.g.loaded_netrw = 1
-  vim.g.loaded_netrwPlugin = 1
-  require("nvim-tree").setup({
-    view = {
-      float = {
-        enable = true,
-        open_win_config = function()
-          -- Leave some space below the floating window
-          local height = math.min(40, vim.opt.lines:get()) - 5
-          height = math.max(height, 1)
-          return {
-            relative = 'editor',
-            border = 'rounded',
-            width = 50,
-            height = height,
-            row = 1,
-            col = 1,
-          }
-        end,
-      },
-    }
-  })
+local function setup_oil()
+  local opts = {
+    columns = {
+      "icon",
+      "permissions",
+      "size",
+      "mtime",
+    },
+    view_options = {
+      show_hidden = true,
+    },
+    constrain_cursor = "name",
+    use_default_keymaps = false,
+    keymaps = {
+      ["g?"] = "actions.show_help",
+      ["<CR>"] = "actions.select",
+      ["<C-v>"] = { "actions.select", opts = { vertical = true }, desc = "Open the entry in a vertical split" },
+      ["<C-s>"] = { "actions.select", opts = { horizontal = true }, desc = "Open the entry in a horizontal split" },
+      ["<C-t>"] = { "actions.select", opts = { tab = true }, desc = "Open the entry in new tab" },
+      ["<C-p>"] = "actions.preview",
+      ["<leader>x"] = "actions.close",
+      ["<leader>r"] = "actions.refresh",
+      ["-"] = "actions.parent",
+      ["_"] = "actions.open_cwd",
+      ["`"] = "actions.cd",
+      ["~"] = { "actions.cd", opts = { scope = "tab" }, desc = ":tcd to the current oil directory" },
+      ["gs"] = "actions.change_sort",
+      ["gx"] = "actions.open_external",
+      ["g."] = "actions.toggle_hidden",
+      ["g\\"] = "actions.toggle_trash",
+    },
+  }
+  local oil = require("oil")
+  oil.setup(opts)
+
+  vim.keymap.set("n", "<leader>uf", function()
+    oil.toggle_float()
+  end, { desc = "Toggle file explorer on buffer dir" })
+
+  vim.keymap.set("n", "<leader>uF", function()
+    local cwd = vim.uv.cwd() .. "/"
+    vim.ui.input({
+      prompt = "Toggle file explorer: ",
+      default = cwd,
+      completion = "dir",
+    }, function(dir)
+      if not dir then
+        return
+      end
+      oil.toggle_float(dir)
+    end)
+  end, { desc = "Toggle file explorer on selected dir" })
 end
 
 local function setup_whichkey(_, _)
@@ -161,14 +190,9 @@ end
 
 return {
   {
-    "nvim-tree/nvim-tree.lua",
-    dependencies = {
-      "nvim-tree/nvim-web-devicons",
-    },
-    config = setup_nvimtree,
-    keys = {
-      { "<leader>n", "<cmd>NvimTreeFindFileToggle!<cr>", desc = "Toggle nvim-tree" },
-    },
+    'stevearc/oil.nvim',
+    config = setup_oil,
+    dependencies = { "nvim-tree/nvim-web-devicons" },
   },
   {
     "lukas-reineke/indent-blankline.nvim",

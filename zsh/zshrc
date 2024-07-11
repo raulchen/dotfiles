@@ -21,23 +21,29 @@ HISTSIZE=130000
 SAVEHIST=130000
 HYPHEN_INSENSITIVE="true"
 
-# Also bind C-V to backward-char because C-B is Tmux prefix
-bindkey '^V' backward-char
+function _custom_keybinds ()
+{
+    # Also bind C-V to backward-char because C-B is Tmux prefix
+    bindkey '^V' backward-char
 
-# Ctrl-Y: edit in vim
-bindkey '^Y' edit-command-line
-bindkey -M vicmd '^Y' edit-command-line
+    # Ctrl-Y: edit in vim
+    bindkey '^Y' edit-command-line
+    bindkey -M vicmd '^Y' edit-command-line
 
-# Expand ".../"
-function expand-dots {
-   if [[ $LBUFFER =~ ".*\.\.\.$" ]]; then
-	 zle _expand_alias
-	 zle expand-word
-   fi
-   zle self-insert
+    # Expand ".../"
+    function expand-dots {
+       if [[ $LBUFFER =~ ".*\.\.\.$" ]]; then
+             zle _expand_alias
+             zle expand-word
+       fi
+       zle self-insert
+    }
+    zle -N expand-dots
+    bindkey -M viins "/" expand-dots
 }
-zle -N expand-dots
-bindkey -M viins "/" expand-dots
+# Postpone keybindings until zsh-vi-mode is loaded,
+# otherwise they will be overridden by zsh-vi-mode.
+zvm_after_init_commands+=(_custom_keybinds)
 
 # === Antigen settings ===
 

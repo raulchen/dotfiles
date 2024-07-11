@@ -31,9 +31,24 @@ local function is_relative_to(buffer_dir, cwd)
   return fzf_lua.path.is_relative_to(buffer_dir, cwd)
 end
 
+local function format_header_str(bind, text, cur_header)
+  local utils = require("fzf-lua.utils")
+  if cur_header then
+    cur_header = cur_header .. ", "
+  else
+    cur_header = ":: "
+  end
+  local bind_hl = not utils.is_hl_cleared("FzfLuaHeaderBind") and "FzfLuaHeaderBind" or nil
+  local bind_str = utils.ansi_from_hl(bind_hl, bind)
+
+  local text_hl = not utils.is_hl_cleared("FzfLuaHeaderText") and "FzfLuaHeaderText" or nil
+  local text_str = utils.ansi_from_hl(text_hl, text)
+  return cur_header .. string.format("<%s> to %s", bind_str, text_str)
+end
+
 local function fzf_files()
   local opts = {}
-  opts.header = "<C-G> to toggle .gitignore"
+  opts.header = format_header_str("ctrl-g", "toggle gitignore")
   ---@diagnostic disable-next-line: undefined-field
   local cwd = vim.uv.cwd()
   local buffer_dir = vim.fn.expand("%:p:h")
@@ -51,7 +66,7 @@ local function fzf_files()
           ["ctrl-i"] = "change-query(" .. relative_path .. "/)",
         }
       }
-      opts.header = opts.header .. " / <C-I> to filter buffer dir"
+      opts.header = format_header_str("ctrl-i", "filter buffer dir", opts.header)
     end
     fzf_lua.files(opts)
   else
@@ -118,9 +133,9 @@ local function fzf_oldfiles(opts)
     cwd_only = true
   }
   if opts.cwd_only then
-    opts.header = "<C-G> to search global"
+    opts.header = format_header_str("ctrl-g", "search global")
   else
-    opts.header = "<C-G> to search CWD only"
+    opts.header = format_header_str("ctrl-g", "search CWD")
   end
   opts.actions = {
     ["ctrl-g"] = {

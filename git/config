@@ -51,6 +51,8 @@
     rbi = "rebase -i"
     rbm = "!git rebase $(git master-branch)"
     rs = "reset"
+    rsh = "reset --hard"
+    rsho = "!git reset --hard origin/$(git branch --show-current)"
     rt = "restore"
     rv = "revert"
     sh = "show"

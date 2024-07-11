@@ -46,11 +46,31 @@ local function format_header_str(bind, text, cur_header)
   return cur_header .. string.format("<%s> to %s", bind_str, text_str)
 end
 
-local function fzf_files()
-  local opts = {}
+local function fzf_files(opts)
+  opts = opts or {}
   opts.header = format_header_str("ctrl-g", "toggle gitignore")
+
+  -- Support switching to search directories.
+  local search_dirs_bind = "ctrl-r"
+  if opts.search_dirs then
+    opts.fd_opts = [[--color=never --type d --hidden --follow --exclude .git]]
+    opts.find_opts = [[-type d -not -path '*/\.git/*' -printf '%P\n']]
+    opts.header = format_header_str(search_dirs_bind, "search files", opts.header)
+  else
+    opts.header = format_header_str(search_dirs_bind, "search dirs", opts.header)
+  end
+  opts.actions = {
+    [search_dirs_bind] = function(_, o)
+      local new_opts = {
+        cwd = o.cwd,
+        search_dirs = not o.search_dirs,
+      }
+      fzf_files(new_opts)
+    end
+  }
+
   ---@diagnostic disable-next-line: undefined-field
-  local cwd = vim.uv.cwd()
+  local cwd = opts.cwd or vim.uv.cwd()
   local buffer_dir = vim.fn.expand("%:p:h")
   local is_relative, relative_path = is_relative_to(buffer_dir, cwd)
 

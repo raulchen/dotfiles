@@ -33,10 +33,7 @@ end
 
 local function fzf_files()
   local opts = {}
-  opts.no_header = true
-  opts.fzf_opts = {
-    ["--header"] = "<C-G> to disable .gitignore",
-  }
+  opts.header = "<C-G> to toggle .gitignore"
   ---@diagnostic disable-next-line: undefined-field
   local cwd = vim.uv.cwd()
   local buffer_dir = vim.fn.expand("%:p:h")
@@ -51,10 +48,10 @@ local function fzf_files()
       -- Add <C-I> keymap to filter buffer directory.
       opts.keymap = {
         fzf = {
-          ["ctrl-i"] = "change-query(" .. relative_path .. ")",
+          ["ctrl-i"] = "change-query(" .. relative_path .. "/)",
         }
       }
-      opts.fzf_opts["--header"] = opts.fzf_opts["--header"] .. " / <C-I> to filter buffer dir"
+      opts.header = opts.header .. " / <C-I> to filter buffer dir"
     end
     fzf_lua.files(opts)
   else
@@ -120,15 +117,11 @@ local function fzf_oldfiles(opts)
   opts = opts or {
     cwd_only = true
   }
-  local header
   if opts.cwd_only then
-    header = "<Ctrl-G> to search global"
+    opts.header = "<C-G> to search global"
   else
-    header = "<Ctrl-G> to search CWD only"
+    opts.header = "<C-G> to search CWD only"
   end
-  opts.fzf_opts = {
-    ["--header"] = header,
-  }
   opts.actions = {
     ["ctrl-g"] = {
       fn = function(_, o)

@@ -205,6 +205,15 @@ return {
     "folke/which-key.nvim",
     event = "VeryLazy",
     config = setup_whichkey,
+    keys = {
+      {
+        "<leader>?",
+        function()
+          require("which-key").show({ global = false })
+        end,
+        desc = "List buffer local keymaps",
+      },
+    },
   },
   {
     "nvim-lualine/lualine.nvim",

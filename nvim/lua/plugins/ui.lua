@@ -14,13 +14,16 @@ local function setup_oil()
     keymaps = {
       ["g?"] = "actions.show_help",
       ["<CR>"] = "actions.select",
+      ["L"] = "actions.select",
       ["<C-v>"] = { "actions.select", opts = { vertical = true }, desc = "Open the entry in a vertical split" },
       ["<C-s>"] = { "actions.select", opts = { horizontal = true }, desc = "Open the entry in a horizontal split" },
       ["<C-t>"] = { "actions.select", opts = { tab = true }, desc = "Open the entry in new tab" },
       ["<C-p>"] = "actions.preview",
+      ["<c-c>"] = "actions.close",
       ["<leader>x"] = "actions.close",
       ["<leader>r"] = "actions.refresh",
       ["-"] = "actions.parent",
+      ["H"] = "actions.parent",
       ["_"] = "actions.open_cwd",
       ["`"] = "actions.cd",
       ["~"] = { "actions.cd", opts = { scope = "tab" }, desc = ":tcd to the current oil directory" },
@@ -28,6 +31,9 @@ local function setup_oil()
       ["gx"] = "actions.open_external",
       ["g."] = "actions.toggle_hidden",
       ["g\\"] = "actions.toggle_trash",
+    },
+    float = {
+      max_width = 160,
     },
   }
   local oil = require("oil")
@@ -38,6 +44,7 @@ local function setup_oil()
   end, { desc = "Toggle file explorer on buffer dir" })
 
   vim.keymap.set("n", "<leader>uF", function()
+    ---@diagnostic disable-next-line: undefined-field
     local cwd = vim.uv.cwd() .. "/"
     vim.ui.input({
       prompt = "Toggle file explorer: ",

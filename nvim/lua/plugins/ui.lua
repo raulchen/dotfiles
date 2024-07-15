@@ -54,7 +54,9 @@ end
 
 local function setup_whichkey(_, _)
   local wk = require("which-key")
-  wk.setup()
+  wk.setup({
+    preset = "modern",
+  })
   wk.add({
     { "<leader>a", group = "ai" },
     { "<leader>b", group = "buffers" },

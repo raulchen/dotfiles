@@ -129,31 +129,23 @@ local function setup_octo()
     callback = function(ev)
       local wk = require('which-key')
       local keys = {
-        a = { name = "assignee", },
-        c = { name = "comment", },
-        g = { name = "goto", },
-        i = { name = "issue", },
-        l = { name = "label", },
-        o = { name = "operation", },
-        r = { name = "react", },
-        v = { name = "review", },
-        s = { name = "search", },
-        S = { name = "suggest", },
+        buffer = ev.buf,
+        { "<leader>oa", group = "assignee" },
+        { "<leader>oc", group = "comment" },
+        { "<leader>og", group = "goto" },
+        { "<leader>oi", group = "issue" },
+        { "<leader>ol", group = "label" },
+        { "<leader>oo", group = "operation" },
+        { "<leader>or", group = "react" },
+        { "<leader>ov", group = "review" },
+        { "<leader>os", group = "search" },
+        { "<leader>oS", group = "suggest" },
       }
       if string.match(ev.file, "pull") then
-        keys.p = {
-          name = "pr",
-          m = { name = "merge" },
-        }
+        table.insert(keys, { "<leader>op", group = "pr" })
+        table.insert(keys, { "<leader>om", group = "merge" })
       end
-      wk.register(
-        {
-          ['<leader>o'] = keys,
-        },
-        {
-          buffer = ev.buf,
-        }
-      )
+      wk.add(keys)
     end,
   })
 end

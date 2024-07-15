@@ -176,8 +176,6 @@ local function setup_fzf_lua()
   local fzf_lua = require("fzf-lua")
   fzf_lua.setup(fzf_lua_opts)
   fzf_lua.register_ui_select()
-  local wk = require("which-key")
-  wk.register({ ["<leader>fg"] = { name = "git" } })
 end
 
 local fzf_lua_keys = {

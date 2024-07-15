@@ -55,19 +55,21 @@ end
 local function setup_whichkey(_, _)
   local wk = require("which-key")
   wk.setup()
-  wk.register({
-    a = { name = "AI" },
-    b = { name = "buffers" },
-    c = { name = "code" },
-    d = { name = "debug" },
-    f = { name = "find", g = { name = "git", }, },
-    g = { name = "git" },
-    o = { name = "octo", s = { name = "search" }, },
-    s = { name = "sessions" },
-    t = { name = "tabs" },
-    u = { name = "ui" },
-    w = { name = "windows" },
-  }, { prefix = "<leader>" })
+  wk.add({
+    { "<leader>a", group = "ai" },
+    { "<leader>b", group = "buffers" },
+    { "<leader>c", group = "code" },
+    { "<leader>d", group = "debug" },
+    { "<leader>f", group = "find" },
+    { "<leader>fg", group = "git" },
+    { "<leader>g", group = "git" },
+    { "<leader>o", group = "octo", icon = { icon = " ", color = "blue" } },
+    { "<leader>os", group = "search" },
+    { "<leader>s", group = "sessions" },
+    { "<leader>t", group = "tabs" },
+    { "<leader>u", group = "ui" },
+    { "<leader>w", group = "windows" },
+  })
 end
 
 local lualine_opts = {

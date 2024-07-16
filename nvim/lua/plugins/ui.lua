@@ -106,8 +106,12 @@ local lualine_opts = {
           return mode:sub(substr_idx)
         end,
         cond = function()
+          local exist, noice = pcall(require, "noice")
+          if not exist then
+            return false
+          end
           ---@diagnostic disable-next-line
-          local mode = require("noice").api.statusline.mode.get()
+          local mode = noice.api.statusline.mode.get()
           return mode ~= nil and mode:find("recording") ~= nil
         end,
         color = { fg = "#ff9e64" },
@@ -120,8 +124,11 @@ local lualine_opts = {
           -- replace multiple spaces with one space
           return search:gsub("%s+", " ")
         end,
-        ---@diagnostic disable-next-line
-        cond = function() return require("noice").api.status.search.has() end,
+        cond = function()
+          local exist, noice = pcall(require, "noice")
+          ---@diagnostic disable-next-line
+          return exist and noice.api.status.search.has()
+        end,
         color = { fg = "#ff9e64" },
       },
       {

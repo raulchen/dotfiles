@@ -51,12 +51,7 @@ local function oil_current_dir()
   if not exists then
     return nil
   end
-  local res = oil.get_current_dir()
-  -- Remove trailing /
-  if res and res:sub(-1) == "/" then
-    res = res:sub(1, -2)
-  end
-  return res
+  return oil.get_current_dir()
 end
 
 local function fzf_files(opts)
@@ -119,13 +114,26 @@ local function fzf_files(opts)
   end
 end
 
-local function fzf_search(default_query, default_cwd)
-  if default_query == nil then
-    default_query = vim.fn.expand("<cword>")
+local function fzf_search(opts)
+  opts = opts or {}
+
+  -- If search query is not provided, prompt for it.
+  if opts.search == nil then
+    local default_query = vim.fn.expand("<cword>")
+    vim.ui.input({ prompt = "Search query: ", default = default_query, },
+      function(query)
+        if not query then return end
+        opts.search = query
+        fzf_search(opts)
+      end)
+    return
   end
-  if default_cwd == nil then
+
+  -- If cwd is not provided, prompt for it.
+  if opts.cwd == nil then
+    assert(opts.cwd == nil)
     ---@diagnostic disable-next-line: undefined-field
-    default_cwd = oil_current_dir() or vim.uv.cwd()
+    local default_cwd = oil_current_dir() or vim.uv.cwd()
     local buffer_dir = vim.fn.expand("%:p:h")
     local is_relative, _ = is_relative_to(buffer_dir, default_cwd)
     if not is_relative then
@@ -133,32 +141,21 @@ local function fzf_search(default_query, default_cwd)
       -- use buffer directory as the search directory.
       default_cwd = buffer_dir
     end
-  end
-  vim.ui.input({
-      prompt = "Search query: ",
-      default = default_query,
-    },
-    function(query)
-      if not query then
-        return
-      end
-      vim.ui.input({
-          prompt = "Search in directory: ",
-          default = default_cwd .. "/",
-          completion = "dir",
-        },
-        function(cwd)
-          if not cwd then
-            return
-          end
-          require("fzf-lua").grep({
-            search = query,
-            cwd = cwd,
-          })
-        end
-      )
+    if default_cwd:sub(-1) ~= "/" then
+      default_cwd = default_cwd .. "/"
     end
-  )
+    vim.ui.input({ prompt = "Search in directory: ", default = default_cwd, completion = "dir", },
+      function(cwd)
+        if not cwd then return end
+        opts.cwd = cwd
+        fzf_search(opts)
+      end)
+    return
+  end
+
+  assert(opts.search ~= nil)
+  assert(opts.cwd ~= nil)
+  require("fzf-lua").grep(opts)
 end
 
 local function fzf_oldfiles(opts)
@@ -226,9 +223,8 @@ local fzf_lua_keys = {
 vim.api.nvim_create_user_command(
   "Rg",
   function(opts)
-    require("fzf-lua").grep({
+    fzf_search({
       search = opts.args,
-      cwd = oil_current_dir(),
     })
   end,
   { nargs = "?" }

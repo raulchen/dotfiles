@@ -46,6 +46,19 @@ local function format_header_str(bind, text, cur_header)
   return cur_header .. string.format("<%s> to %s", bind_str, text_str)
 end
 
+local function oil_current_dir()
+  local exists, oil = pcall(require, "oil")
+  if not exists then
+    return nil
+  end
+  local res = oil.get_current_dir()
+  -- Remove trailing /
+  if res and res:sub(-1) == "/" then
+    res = res:sub(1, -2)
+  end
+  return res
+end
+
 local function fzf_files(opts)
   opts = opts or {}
   opts.header = format_header_str("ctrl-g", "toggle gitignore")
@@ -70,7 +83,7 @@ local function fzf_files(opts)
   }
 
   ---@diagnostic disable-next-line: undefined-field
-  local cwd = opts.cwd or vim.uv.cwd()
+  local cwd = opts.cwd or oil_current_dir() or vim.uv.cwd()
   local buffer_dir = vim.fn.expand("%:p:h")
   local is_relative, relative_path = is_relative_to(buffer_dir, cwd)
 
@@ -112,7 +125,7 @@ local function fzf_search(default_query, default_cwd)
   end
   if default_cwd == nil then
     ---@diagnostic disable-next-line: undefined-field
-    default_cwd = vim.uv.cwd()
+    default_cwd = oil_current_dir() or vim.uv.cwd()
     local buffer_dir = vim.fn.expand("%:p:h")
     local is_relative, _ = is_relative_to(buffer_dir, default_cwd)
     if not is_relative then
@@ -214,7 +227,8 @@ vim.api.nvim_create_user_command(
   "Rg",
   function(opts)
     require("fzf-lua").grep({
-      search = opts.args
+      search = opts.args,
+      cwd = oil_current_dir(),
     })
   end,
   { nargs = "?" }

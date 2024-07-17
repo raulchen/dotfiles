@@ -183,6 +183,7 @@ local fzf_lua_keys = {
   { "<leader>fr", "<cmd>FzfLua resume<cr>", desc = "Resume last Fzf command" },
   -- Buffers and files.
   { "<leader>ff", fzf_files, desc = "Find files" },
+  { "<leader>fF", function() fzf_files({ search_dirs = true }) end, desc = "Find directories" },
   { "<leader>fh", fzf_oldfiles, desc = "Find CWD file history" },
   { "<leader>fH", function() fzf_oldfiles({ cwd_only = false }) end, desc = "Find global file history" },
   { "<leader>fb", "<cmd>FzfLua buffers<cr>", desc = "Find buffers" },

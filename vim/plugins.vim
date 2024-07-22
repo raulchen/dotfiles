@@ -8,8 +8,6 @@ call extend(g:vim_plugins, [
 
 " Editing
 call extend(g:vim_plugins, [
-\  "tpope/vim-surround",
-\  "tpope/vim-repeat",
 \  "mbbill/undotree",
 \  "tpope/vim-sleuth",
 \  "ojroques/vim-oscyank",
@@ -30,6 +28,8 @@ call extend(g:vim_plugins, [
 " Following plugins are not enabled for neovim.
 if !has("nvim")
     call extend(g:vim_plugins, [
+    \  "tpope/vim-surround",
+    \  "tpope/vim-repeat",
     \  "junegunn/fzf",
     \  "junegunn/fzf.vim",
     \  "connorholyday/vim-snazzy",

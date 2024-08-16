@@ -7,3 +7,4 @@
     cmam = "commit --signoff -am"
     cmd = "commit --signoff --amend --verbose"
     cmm = "commit --signoff -m"
+    rv = "revert --signoff"

@@ -2,3 +2,4 @@
 # vim: set filetype=gitignore:
 
 compile_commands.json
+/_tmp/

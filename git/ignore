@@ -2,4 +2,6 @@
 # vim: set filetype=gitignore:
 
 compile_commands.json
+pyrightconfig.json
+
 /_tmp/

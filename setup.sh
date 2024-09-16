@@ -76,4 +76,7 @@ fi
 echo "Setting up git..."
 link_file "$base_dir/git" ~/.config/git
 
+echo "Setting up WezTerm..."
+link_file "$base_dir/wezterm" ~/.config/wezterm
+
 echo "Done"

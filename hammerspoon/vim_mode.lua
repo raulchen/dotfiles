@@ -73,8 +73,8 @@ local toggler = hs.hotkey.bind({ "ctrl" }, "[", function()
     module.toggle()
 end)
 
--- Disable vim mode for kitty.
-hs.window.filter.new('kitty')
+-- Disable vim mode for terminal apps.
+hs.window.filter.new({ "kitty", "WezTerm" })
     :subscribe(hs.window.filter.windowFocused, function()
         switch_to_mode(insert)
         toggler:disable()

@@ -251,16 +251,19 @@ return {
     opts = lualine_opts,
   },
   {
-    "akinsho/bufferline.nvim",
-    version = "*",
-    dependencies = "nvim-tree/nvim-web-devicons",
+    'romgrk/barbar.nvim',
+    version = '*',
+    event = "VeryLazy",
+    dependencies = {
+      'lewis6991/gitsigns.nvim',
+      'nvim-tree/nvim-web-devicons',
+    },
+    init = function() vim.g.barbar_auto_setup = false end,
     opts = {
-      options = {
-        numbers = "ordinal",
-        show_close_icon = false,
-        show_buffer_close_icons = false,
-        separator_style = "thick",
-      },
+      focus_on_close = 'right',
+      icons = {
+        buffer_index = true,
+      }
     },
   },
   {

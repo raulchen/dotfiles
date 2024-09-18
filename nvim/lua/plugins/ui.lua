@@ -206,6 +206,8 @@ local function setup_noice()
   require("noice").setup(opts)
 end
 
+local dot_repeatable_keymap = require("base.utils").dot_repeatable_keymap
+
 local barbar_keys = {
   { "<tab>", "<cmd>BufferNext<cr>", desc = "Next buffer" },
   { "<s-tab>", "<cmd>BufferPrevious<cr>", desc = "Previous buffer" },
@@ -214,8 +216,8 @@ local barbar_keys = {
   { "<leader>bo", "<cmd>BufferCloseAllButCurrent<cr>", desc = "Only keep current buffer" },
   { "<leader>bb", "<cmd>BufferPick<cr>", desc = "Pick buffer" },
   { "<leader>bx", "<cmd>BufferPickDelete<cr>", desc = "Pick buffer to delete" },
-  { "<leader>bn", "<cmd>BufferMoveNext<cr>", desc = "Move buffer to next" },
-  { "<leader>bp", "<cmd>BufferMovePrevious<cr>", desc = "Move buffer to previous" },
+  dot_repeatable_keymap({ "<leader>bn", function() vim.cmd("BufferMoveNext") end, desc = "Move buffer to next" }),
+  dot_repeatable_keymap({ "<leader>bp", function() vim.cmd("BufferMovePrevious") end, desc = "Move buffer to previous" }),
   {
     "<leader>bs",
     function()

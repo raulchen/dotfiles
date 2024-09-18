@@ -82,6 +82,8 @@ local function setup_dapui(_, _)
   end
 end
 
+local dot_repeatable_keymap = require("base.utils").dot_repeatable_keymap
+
 return {
   {
     "mfussenegger/nvim-dap",
@@ -92,14 +94,14 @@ return {
       { "<leader>db", "<cmd>lua require('dap').toggle_breakpoint()<cr>", desc = "Toggle breakpoint" },
       { "<leader>dB", "<cmd>lua require('dap').list_breakpoints()<cr>", desc = "List breakpoints" },
       { "<leader>dl", "<cmd>lua require('dap').run_last()<cr>", desc = "Debug last" },
-      { "<leader>ds", "<cmd>lua require('dap').step_over()<cr>", desc = "Step over" },
-      { "<leader>di", "<cmd>lua require('dap').step_into()<cr>", desc = "Step into" },
-      { "<leader>do", "<cmd>lua require('dap').step_out()<cr>", desc = "Step out" },
-      { "<leader>dB", "<cmd>lua require('dap').step_back()<cr>", desc = "Step back" },
+      dot_repeatable_keymap({ "<leader>ds", function() require('dap').step_over() end, desc = "Step over" }),
+      dot_repeatable_keymap({ "<leader>di", function() require('dap').step_into() end, desc = "Step into" }),
+      dot_repeatable_keymap({ "<leader>do", function() require('dap').step_out() end, desc = "Step out" }),
+      dot_repeatable_keymap({ "<leader>dB", function() require('dap').step_back() end, desc = "Step back" }),
       { "<leader>dc", "<cmd>lua require('dap').run_to_cursor()<cr>", desc = "Continue execution until current cursor" },
       { "<leader>dF", "<cmd>lua require('dap').restart_frame()<cr>", desc = "Restart curent frame" },
-      { "<leader>dU", "<cmd>lua require('dap').up()<cr>", desc = "Go up in stacktrace" },
-      { "<leader>dD", "<cmd>lua require('dap').down()<cr>", desc = "Go down in stacktrace" },
+      dot_repeatable_keymap({ "<leader>dU", function() require('dap').up() end, desc = "Go up in stacktrace" }),
+      dot_repeatable_keymap({ "<leader>dD", function() require('dap').down() end, desc = "Go down in stacktrace" }),
     },
     dependencies = {
       {

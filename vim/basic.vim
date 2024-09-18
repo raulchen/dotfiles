@@ -276,14 +276,11 @@ noremap <silent> <leader>us :set spell! spell?<cr>
 noremap <silent> <leader>be :enew<cr>
 " delete buffer
 noremap <silent> <leader>x :bd<cr>
-noremap <silent> <leader>bx :bd<cr>
 " write buffer
 noremap <silent> <leader>bw :w<cr>
 " switch buffers
 nnoremap <silent> <tab> :bn<cr>
 nnoremap <silent> <s-tab> :bp<cr>
-noremap <silent> <leader>bn :bn<cr>
-noremap <silent> <leader>bp :bp<cr>
 " switch to last edited buffer
 noremap <leader>bl <c-^>
 " Only keep the current buffer, close all others.
@@ -293,7 +290,7 @@ noremap <silent> <leader>bo :BufOnly<cr>
 
 """ Tabs
 " Open new tab
-noremap <silent> <leader>be :enew<cr>
+noremap <silent> <leader>te :tabnew<cr>
 " Next tab
 noremap <silent> <leader>tn :tabn<cr>
 " Previous tab

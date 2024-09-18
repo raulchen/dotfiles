@@ -206,6 +206,43 @@ local function setup_noice()
   require("noice").setup(opts)
 end
 
+local barbar_keys = {
+  { "<tab>", "<cmd>BufferNext<cr>", desc = "Next buffer" },
+  { "<s-tab>", "<cmd>BufferPrevious<cr>", desc = "Previous buffer" },
+  { "<leader>x", "<cmd>BufferClose<cr>", desc = "Close buffer" },
+  { "<leader>br", "<cmd>BufferRestore<cr>", desc = "Restore buffer" },
+  { "<leader>bo", "<cmd>BufferCloseAllButCurrent<cr>", desc = "Only keep current buffer" },
+  { "<leader>bb", "<cmd>BufferPick<cr>", desc = "Pick buffer" },
+  { "<leader>bx", "<cmd>BufferPickDelete<cr>", desc = "Pick buffer to delete" },
+  { "<leader>bn", "<cmd>BufferMoveNext<cr>", desc = "Move buffer to next" },
+  { "<leader>bp", "<cmd>BufferMovePrevious<cr>", desc = "Move buffer to previous" },
+  {
+    "<leader>bs",
+    function()
+      vim.ui.select(
+        {
+          "BufferNumber",
+          "Directory",
+          "Language",
+          "Name",
+          "WindowNumber",
+        },
+        {
+          prompt = 'Sort buffers by:',
+        },
+        function(selected)
+          if selected == nil then
+            return
+          end
+          local cmd = "BufferOrderBy" .. selected
+          vim.cmd(cmd)
+        end
+      )
+    end,
+    desc = "Sort buffers",
+  }
+}
+
 return {
   {
     'stevearc/oil.nvim',
@@ -255,7 +292,6 @@ return {
     version = '*',
     event = "VeryLazy",
     dependencies = {
-      'lewis6991/gitsigns.nvim',
       'nvim-tree/nvim-web-devicons',
     },
     init = function() vim.g.barbar_auto_setup = false end,
@@ -265,6 +301,7 @@ return {
         buffer_index = true,
       }
     },
+    keys = barbar_keys,
   },
   {
     "nyngwang/NeoZoom.lua",

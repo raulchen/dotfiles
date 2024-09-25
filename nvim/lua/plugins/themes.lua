@@ -35,7 +35,7 @@ local function setup_onedarkpro(_, _)
     PmenuSel = { bg = "${bg_highlight}", extend = true },
     -- Plug-ins
     -- flash.nvim
-    FlashCursor = { fg = "${yellow}", bg = "${black}" },
+    FlashLabel = { fg = "#e0b5ec", bg = "${bg}", extend = true },
     -- which-key.nvim
     WhichKeyBorder = { bg = "${bg}", extend = true },
     WhichKeyNormal = { bg = "${bg}", extend = true },

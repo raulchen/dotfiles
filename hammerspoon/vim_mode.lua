@@ -7,7 +7,7 @@ local current_mode = nil
 local mode_entered = function(mode)
     logger.d("Entered " .. mode.name)
     current_mode = mode.name
-    if mode.name ~= "insert" then
+    if mode.name ~= "off" then
         mode.label:show()
     end
 end
@@ -35,6 +35,7 @@ local function new_mode(name)
     return mode
 end
 
+local off = new_mode("off")
 local insert = new_mode("insert")
 local normal = new_mode("normal")
 local normal_g = new_mode("normal:g")
@@ -44,6 +45,7 @@ local visual = new_mode("visual")
 local visual_g = new_mode("visual:g")
 
 local modes = {
+    off = off,
     insert = insert,
     normal = normal,
     ["normal:g"] = normal_g,
@@ -61,27 +63,15 @@ local function switch_to_mode(mode)
 end
 
 module.toggle = function()
-    if current_mode ~= "insert" then
-        switch_to_mode(insert)
-    else
+    if current_mode == "off" then
         switch_to_mode(normal)
+    else
+        switch_to_mode(off)
     end
 end
 
--- Use ctrl + [ to toggle insert/normal modes
-local toggler = hs.hotkey.bind({ "ctrl" }, "[", function()
-    module.toggle()
-end)
-
--- Disable vim mode for terminal apps.
-hs.window.filter.new({ "kitty", "WezTerm" })
-    :subscribe(hs.window.filter.windowFocused, function()
-        switch_to_mode(insert)
-        toggler:disable()
-    end)
-    :subscribe(hs.window.filter.windowUnfocused, function()
-        toggler:enable()
-    end)
+local prefix = require("prefix")
+prefix.bind({}, "v", module.toggle)
 
 local key_stroke_fn = require("utils").key_stroke_fn
 local system_key_stroke_fn = require("utils").system_key_stroke_fn
@@ -362,19 +352,26 @@ bind_fn(visual, { 'ctrl' }, '[', visual_to_normal, false)
 
 -- ==== Insert mode ====
 
--- alt-hjkl -> arrow keys
-bind_key(insert, { 'alt' }, 'h', {}, 'left', true)
-bind_key(insert, { 'alt' }, 'j', {}, 'down', true)
-bind_key(insert, { 'alt' }, 'k', {}, 'up', true)
-bind_key(insert, { 'alt' }, 'l', {}, 'right', true)
+bind_fn(insert, {}, 'escape', function() switch_to_mode(normal) end, false)
+bind_fn(insert, { 'ctrl' }, '[', function() switch_to_mode(normal) end, false)
 
--- alt-m/n -> ctrl-tab and ctrl-shift-tab
-bind_key(insert, { 'alt' }, 'm', { 'ctrl' }, 'tab', true)
-bind_key(insert, { 'alt' }, 'n', { 'ctrl', 'shift' }, 'tab', true)
+-- ==== Addtional bindings for both off/insert modes ====
 
-bind_fn(insert, { 'alt' }, ',', system_key_stroke_fn('SOUND_DOWN'), true)
-bind_fn(insert, { 'alt' }, '.', system_key_stroke_fn('SOUND_UP'), true)
-bind_fn(insert, { 'alt' }, '/', system_key_stroke_fn('MUTE'), false)
+for _, mode in ipairs({ off, insert }) do
+    -- alt-hjkl -> arrow keys
+    bind_key(mode, { 'alt' }, 'h', {}, 'left', true)
+    bind_key(mode, { 'alt' }, 'j', {}, 'down', true)
+    bind_key(mode, { 'alt' }, 'k', {}, 'up', true)
+    bind_key(mode, { 'alt' }, 'l', {}, 'right', true)
 
-switch_to_mode(insert)
+    -- alt-m/n -> ctrl-tab and ctrl-shift-tab
+    bind_key(mode, { 'alt' }, 'm', { 'ctrl' }, 'tab', true)
+    bind_key(mode, { 'alt' }, 'n', { 'ctrl', 'shift' }, 'tab', true)
+
+    bind_fn(mode, { 'alt' }, ',', system_key_stroke_fn('SOUND_DOWN'), true)
+    bind_fn(mode, { 'alt' }, '.', system_key_stroke_fn('SOUND_UP'), true)
+    bind_fn(mode, { 'alt' }, '/', system_key_stroke_fn('MUTE'), false)
+end
+
+switch_to_mode(off)
 return module

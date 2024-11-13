@@ -195,3 +195,11 @@ fi
 if type bat >/dev/null 2>&1 ; then
     export BAT_THEME="ansi"
 fi
+
+if [ -n "$TMUX" ]; then
+    # Hook function to update tmux window name
+    function tmux_update_window_name() {
+        tmux_update_window_name.sh
+    }
+    precmd_functions+=(tmux_update_window_name)
+fi

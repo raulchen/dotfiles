@@ -25,7 +25,7 @@ return {
       ensure_installed = {
         "black",
         "debugpy",
-        "isort",
+        "ruff",
       },
     },
   },

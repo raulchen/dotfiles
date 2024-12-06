@@ -31,7 +31,7 @@ return {
   },
   opts = {
     formatters_by_ft = {
-      python = { "isort", "black" },
+      python = { "black", "ruff" },
     },
     ---@diagnostic disable-next-line
     format_on_save = function(bufnr)
@@ -40,6 +40,7 @@ return {
       end
       return { timeout_ms = 1000, lsp_fallback = true }
     end,
+    log_level = vim.log.levels.DEBUG,
   },
   init = function()
     vim.g.enable_auto_format = true

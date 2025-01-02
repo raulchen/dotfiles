@@ -1,3 +1,28 @@
+local function setup_nvimtree(_, _)
+  vim.g.loaded_netrw = 1
+  vim.g.loaded_netrwPlugin = 1
+  require("nvim-tree").setup({
+    view = {
+      float = {
+        enable = true,
+        open_win_config = function()
+          -- Leave some space below the floating window
+          local height = math.min(40, vim.opt.lines:get()) - 5
+          height = math.max(height, 1)
+          return {
+            relative = 'editor',
+            border = 'rounded',
+            width = 50,
+            height = height,
+            row = 1,
+            col = 1,
+          }
+        end,
+      },
+    }
+  })
+end
+
 local function setup_oil()
   local opts = {
     columns = {
@@ -246,6 +271,16 @@ local barbar_keys = {
 }
 
 return {
+  {
+    "nvim-tree/nvim-tree.lua",
+    dependencies = {
+      "nvim-tree/nvim-web-devicons",
+    },
+    config = setup_nvimtree,
+    keys = {
+      { "<leader>ut", "<cmd>NvimTreeFindFileToggle!<cr>", desc = "Toggle nvim-tree" },
+    },
+  },
   {
     'stevearc/oil.nvim',
     config = setup_oil,

@@ -4,52 +4,49 @@ local function setup_nvimtree(_, _)
   require("nvim-tree").setup({})
 end
 
-local function setup_oil()
-  local opts = {
-    columns = {
-      "icon",
-      "permissions",
-      "size",
-      "mtime",
-    },
-    view_options = {
-      show_hidden = true,
-    },
-    constrain_cursor = "name",
-    use_default_keymaps = false,
-    keymaps = {
-      ["g?"] = "actions.show_help",
-      ["<CR>"] = "actions.select",
-      ["L"] = "actions.select",
-      ["<C-v>"] = { "actions.select", opts = { vertical = true }, desc = "Open the entry in a vertical split" },
-      ["<C-s>"] = { "actions.select", opts = { horizontal = true }, desc = "Open the entry in a horizontal split" },
-      ["<C-t>"] = { "actions.select", opts = { tab = true }, desc = "Open the entry in new tab" },
-      ["<C-p>"] = "actions.preview",
-      ["<c-c>"] = "actions.close",
-      ["<leader>x"] = "actions.close",
-      ["<leader>r"] = "actions.refresh",
-      ["-"] = "actions.parent",
-      ["H"] = "actions.parent",
-      ["_"] = "actions.open_cwd",
-      ["`"] = "actions.cd",
-      ["~"] = { "actions.cd", opts = { scope = "tab" }, desc = ":tcd to the current oil directory" },
-      ["gs"] = "actions.change_sort",
-      ["gx"] = "actions.open_external",
-      ["g."] = "actions.toggle_hidden",
-      ["g\\"] = "actions.toggle_trash",
-    },
-    float = {
-      max_width = 160,
-    },
-  }
+local oil_opts = {
+  columns = {
+    "icon",
+    "permissions",
+    "size",
+    "mtime",
+  },
+  view_options = {
+    show_hidden = true,
+  },
+  constrain_cursor = "name",
+  use_default_keymaps = false,
+  keymaps = {
+    ["g?"] = "actions.show_help",
+    ["<CR>"] = "actions.select",
+    ["L"] = "actions.select",
+    ["<C-v>"] = { "actions.select", opts = { vertical = true }, desc = "Open the entry in a vertical split" },
+    ["<C-s>"] = { "actions.select", opts = { horizontal = true }, desc = "Open the entry in a horizontal split" },
+    ["<C-t>"] = { "actions.select", opts = { tab = true }, desc = "Open the entry in new tab" },
+    ["<C-p>"] = "actions.preview",
+    ["<c-c>"] = "actions.close",
+    ["<leader>x"] = "actions.close",
+    ["<leader>r"] = "actions.refresh",
+    ["-"] = "actions.parent",
+    ["H"] = "actions.parent",
+    ["_"] = "actions.open_cwd",
+    ["`"] = "actions.cd",
+    ["~"] = { "actions.cd", opts = { scope = "tab" }, desc = ":tcd to the current oil directory" },
+    ["gs"] = "actions.change_sort",
+    ["gx"] = "actions.open_external",
+    ["g."] = "actions.toggle_hidden",
+    ["g\\"] = "actions.toggle_trash",
+  },
+  float = {
+    max_width = 160,
+  },
+}
+
+local function toggle_oil(prompt_for_dir)
   local oil = require("oil")
-  oil.setup(opts)
-
-  vim.keymap.set("n", "<leader>uf", function()
+  if not prompt_for_dir then
     oil.toggle_float()
-  end, { desc = "Toggle file explorer on buffer dir" })
-
-  vim.keymap.set("n", "<leader>uF", function()
+  else
     ---@diagnostic disable-next-line: undefined-field
     local cwd = vim.uv.cwd() .. "/"
     vim.ui.input({
@@ -62,7 +59,7 @@ local function setup_oil()
       end
       oil.toggle_float(dir)
     end)
-  end, { desc = "Toggle file explorer on selected dir" })
+  end
 end
 
 local function setup_whichkey(_, _)
@@ -264,8 +261,12 @@ return {
   },
   {
     'stevearc/oil.nvim',
-    config = setup_oil,
+    opts = oil_opts,
     dependencies = { "nvim-tree/nvim-web-devicons" },
+    keys = {
+      { "<leader>uf", function() toggle_oil(false) end, desc = "Toggle file explorer on buffer dir" },
+      { "<leader>uF", function() toggle_oil(true) end, desc = "Toggle file explorer on selected dir" },
+    },
   },
   {
     "lukas-reineke/indent-blankline.nvim",

@@ -11,7 +11,8 @@ local copilot_opts = {
     keymap = {
       accept = false,
       next = "<c-s>",
-      prev = false,
+      prev = "<c-s-s>",
+      accept_line = "<c-e>",
     },
   },
   filetypes = {

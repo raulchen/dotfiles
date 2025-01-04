@@ -43,8 +43,14 @@ local function setup_cmp(_, _)
       return vim_item
     end
   }
-  local source_all_buffers = {
+
+  -- Define sources.
+  local source_lsp = { name = 'nvim_lsp', priority = 10, max_item_count = 10 }
+  local source_luasnip = { name = 'luasnip', priority = 10, max_item_count = 10 }
+  local source_buffer = {
     name = 'buffer',
+    priority = 5,
+    max_item_count = 10,
     option = {
       -- Complete text from all buffers.
       get_bufnrs = function()
@@ -52,6 +58,10 @@ local function setup_cmp(_, _)
       end
     }
   }
+  local source_path = { name = 'path', priority = 5, max_item_count = 15 }
+  local source_spell = { name = 'luasnip', priority = 1, max_item_count = 10 }
+  local source_cmdline = { name = 'cmdline', priority = 10, max_item_count = 15 }
+
   cmp.setup({
     snippet = {
       expand = function(args)
@@ -67,11 +77,11 @@ local function setup_cmp(_, _)
       },
     }),
     sources = {
-      { name = 'nvim_lsp' },
-      { name = 'luasnip' },
-      source_all_buffers,
-      { name = 'path' },
-      { name = 'spell' },
+      source_lsp,
+      source_luasnip,
+      source_buffer,
+      source_path,
+      source_path,
     },
     ---@diagnostic disable-next-line
     formatting = format_opts,
@@ -81,7 +91,7 @@ local function setup_cmp(_, _)
   cmp.setup.cmdline({ '/', '?' }, {
     mapping = cmp.mapping.preset.cmdline(),
     sources = {
-      source_all_buffers,
+      source_buffer,
     },
     ---@diagnostic disable-next-line
     formatting = format_opts,
@@ -91,10 +101,10 @@ local function setup_cmp(_, _)
   cmp.setup.cmdline(':', {
     mapping = cmp.mapping.preset.cmdline(),
     sources = {
-      { name = 'cmdline' },
-      { name = 'path' },
-      source_all_buffers,
-      { name = 'spell' },
+      source_cmdline,
+      source_path,
+      source_buffer,
+      source_spell,
     },
     ---@diagnostic disable-next-line
     formatting = format_opts,

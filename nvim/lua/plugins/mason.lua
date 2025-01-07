@@ -1,7 +1,7 @@
 local function setup_mason_tool_installer()
   require("mason-tool-installer").setup({
     ensure_installed = {
-      "black",
+      { "black", version = "22.10.0" },
       "ruff",
       "debugpy",
     },

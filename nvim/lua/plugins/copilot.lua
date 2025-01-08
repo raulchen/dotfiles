@@ -95,7 +95,7 @@ return {
   },
   {
     "CopilotC-Nvim/CopilotChat.nvim",
-    branch = "canary",
+    version = "*",
     keys = copilot_chat_keys,
     config = setup_copilot_chat,
   },

@@ -88,8 +88,7 @@ local function setup_octo()
   local mappings = require("octo.config").get_default_values().mappings
   for _, func_mappings in pairs(mappings) do
     for _, mapping in pairs(func_mappings) do
-      mapping.lhs = string.gsub(mapping.lhs, "^<space>", "<leader>")
-      mapping.lhs = string.gsub(mapping.lhs, "^<leader>", "<leader>o")
+      mapping.lhs = string.gsub(mapping.lhs, "^<localleader>", "<leader>o")
     end
   end
   -- Update some mappings.

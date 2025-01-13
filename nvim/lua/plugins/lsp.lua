@@ -43,6 +43,8 @@ local function setup_server(server)
   lspconfig[server].setup(config)
 end
 
+
+
 local function setup_lspconfig(_, _)
   vim.lsp.set_log_level("warn")
 
@@ -51,6 +53,9 @@ local function setup_lspconfig(_, _)
   local keymap = vim.keymap.set
   keymap('n', '<leader>cd', vim.diagnostic.open_float, { desc = "Show diagnostics in a floating window." })
   keymap('n', '<leader>cD', vim.diagnostic.setqflist, { desc = "Show all diagnostics" })
+
+  keymap('n', '[d', vim.diagnostic.goto_prev, { desc = "Go to previous diagnostic" })
+  keymap('n', ']d', vim.diagnostic.goto_next, { desc = "Go to next diagnostic" })
 
   -- Buffer local mappings.
   local on_attach = function(ev)

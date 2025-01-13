@@ -49,7 +49,8 @@ local function setup_lspconfig(_, _)
   -- Global mappings.
   -- See `:help vim.diagnostic.*` for documentation on any of the below functions
   local keymap = vim.keymap.set
-  keymap('n', '<leader>cd', vim.diagnostic.setqflist, { desc = "Show all diagnostics" })
+  keymap('n', '<leader>cd', vim.diagnostic.open_float, { desc = "Show diagnostics in a floating window." })
+  keymap('n', '<leader>cD', vim.diagnostic.setqflist, { desc = "Show all diagnostics" })
 
   -- Buffer local mappings.
   local on_attach = function(ev)

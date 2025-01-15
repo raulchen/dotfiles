@@ -1,17 +1,19 @@
 local function setup_onedarkpro(_, _)
   local color = require("onedarkpro.helpers")
   local colors = {
+    black = '#000000',
+    white = '#f1f1f0',
+    gray = '#686868',
     red = '#ff5c57',
     green = '#5af78e',
     yellow = '#f3f99d',
     blue = '#57c7ff',
-    magenta = '#ff6ac1',
+    purple = color.lighten('#ff6ac1', 15),
     cyan = '#9aedfe',
-    purple = color.lighten("purple", 15, "onedark"),
     orange = color.brighten("orange", 15, "onedark"),
-    comment = color.lighten("comment", 5, "onedark"),
+    bg = '#282A36',
     fg = color.brighten("fg", 5, "onedark"),
-    light_red = color.lighten("red", 15, "onedark"),
+    comment = color.lighten("comment", 5, "onedark"),
     bg_highlight = color.lighten("bg", 10, "onedark"),
   }
 
@@ -35,7 +37,7 @@ local function setup_onedarkpro(_, _)
     PmenuSel = { bg = "${bg_highlight}", extend = true },
     -- Plug-ins
     -- flash.nvim
-    FlashLabel = { fg = "#e0b5ec", bg = "${bg}", extend = true },
+    FlashLabel = { fg = "${black}", bg = "${yellow}", extend = true },
     -- which-key.nvim
     WhichKeyBorder = { bg = "${bg}", extend = true },
     WhichKeyNormal = { bg = "${bg}", extend = true },

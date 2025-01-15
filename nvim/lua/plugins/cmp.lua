@@ -109,6 +109,14 @@ local function setup_cmp(_, _)
     ---@diagnostic disable-next-line
     formatting = format_opts,
   })
+
+  cmp.setup.cmdline("@", {
+    mapping = cmp.mapping.preset.cmdline(),
+    sources = {
+      source_path,
+      source_buffer,
+    },
+  })
 end
 
 return {

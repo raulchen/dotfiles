@@ -79,4 +79,7 @@ link_file "$base_dir/git" ~/.config/git
 echo "Setting up WezTerm..."
 link_file "$base_dir/wezterm" ~/.config/wezterm
 
+echo "Setting up Ghostty..."
+link_file "$base_dir/ghostty" ~/.config/ghostty
+
 echo "Done"

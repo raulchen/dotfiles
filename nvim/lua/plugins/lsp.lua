@@ -54,8 +54,8 @@ local function setup_lspconfig(_, _)
   keymap('n', '<leader>cd', vim.diagnostic.open_float, { desc = "Show diagnostics in a floating window." })
   keymap('n', '<leader>cD', vim.diagnostic.setqflist, { desc = "Show all diagnostics" })
 
-  keymap('n', '[d', vim.diagnostic.goto_prev, { desc = "Go to previous diagnostic" })
-  keymap('n', ']d', vim.diagnostic.goto_next, { desc = "Go to next diagnostic" })
+  keymap('n', '[d', function() vim.diagnostic.goto_prev({ float = false }) end, { desc = "Go to previous diagnostic" })
+  keymap('n', ']d', function() vim.diagnostic.goto_next({ float = false }) end, { desc = "Go to next diagnostic" })
 
   -- Buffer local mappings.
   local on_attach = function(ev)
@@ -142,6 +142,25 @@ local function setup_goto_preview()
   })
 end
 
+local function setup_tiny_inline_diagnostic()
+  vim.diagnostic.config({
+    -- Disable signs.
+    signs = false,
+    virtual_text = {
+      -- Disable messages, only show markers.
+      format = function(_) return "" end,
+      prefix = "󰊠",
+      spacing = 0,
+    },
+  })
+  require('tiny-inline-diagnostic').setup({
+    preset = "ghost",
+    options = {
+      multiple_diag_under_cursor = true,
+    },
+  })
+end
+
 return {
   {
     'neovim/nvim-lspconfig',
@@ -164,5 +183,11 @@ return {
         "~/.hammerspoon/Spoons/EmmyLua.spoon/annotations",
       },
     },
+  },
+  {
+    "rachartier/tiny-inline-diagnostic.nvim",
+    event = "LspAttach",
+    priority = 1000, -- needs to be loaded in first
+    config = setup_tiny_inline_diagnostic,
   },
 }

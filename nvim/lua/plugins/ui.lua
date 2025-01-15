@@ -264,6 +264,8 @@ return {
     'stevearc/oil.nvim',
     opts = oil_opts,
     dependencies = { "nvim-tree/nvim-web-devicons" },
+    -- Disable lazy loading so that `vim <dir>` and `:e <dir>` will use oil.
+    lazy = false,
     keys = {
       { "<leader>uf", function() toggle_oil(false) end, desc = "Toggle file explorer on buffer dir" },
       { "<leader>uF", function() toggle_oil(true) end, desc = "Toggle file explorer on selected dir" },

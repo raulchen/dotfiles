@@ -25,7 +25,6 @@ local oil_opts = {
     ["<C-t>"] = { "actions.select", opts = { tab = true }, desc = "Open the entry in new tab" },
     ["<C-p>"] = "actions.preview",
     ["<c-c>"] = "actions.close",
-    ["<leader>x"] = "actions.close",
     ["q"] = "actions.close",
     ["<leader>r"] = "actions.refresh",
     ["-"] = "actions.parent",

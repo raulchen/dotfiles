@@ -157,6 +157,9 @@ local function setup_tiny_inline_diagnostic()
     preset = "ghost",
     options = {
       multiple_diag_under_cursor = true,
+      virt_texts = {
+        priority = 9999,
+      },
     },
   })
 end

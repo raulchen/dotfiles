@@ -14,7 +14,8 @@ local function setup_onedarkpro(_, _)
     bg = '#282A36',
     fg = color.brighten("fg", 5, "onedark"),
     comment = color.lighten("comment", 5, "onedark"),
-    bg_highlight = color.lighten("bg", 10, "onedark"),
+    bg_light = color.lighten("#282A36", 5),
+    bg_lighter = color.lighten("#282A36", 10),
   }
 
   local highlights = {
@@ -33,8 +34,9 @@ local function setup_onedarkpro(_, _)
     ["@constant.builtin"] = { link = "Constant" },
     SpellBad = { undercurl = true, sp = "${red}" },
     DiagnosticUnderlineError = { undercurl = true, sp = "${red}" },
-    CursorLine = { bg = "${bg_highlight}", extend = true, },
-    PmenuSel = { bg = "${bg_highlight}", extend = true },
+    CursorLine = { bg = "${bg_lighter}", extend = true, },
+    PmenuSel = { bg = "${bg_lighter}", extend = true },
+    NormalFloat = { bg = "${bg_light}", extend = true },
     -- Plug-ins
     -- flash.nvim
     FlashLabel = { fg = "${black}", bg = "${yellow}", extend = true },

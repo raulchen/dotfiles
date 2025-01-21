@@ -35,6 +35,7 @@ local function setup_onedarkpro(_, _)
     SpellBad = { undercurl = true, sp = "${red}" },
     DiagnosticUnderlineError = { undercurl = true, sp = "${red}" },
     CursorLine = { bg = "${bg_lighter}", extend = true, },
+    Pmenu = { bg = "${bg_light}", extend = true },
     PmenuSel = { bg = "${bg_lighter}", extend = true },
     NormalFloat = { bg = "${bg_light}", extend = true },
     -- Plug-ins

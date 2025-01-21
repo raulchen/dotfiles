@@ -71,7 +71,7 @@ end
 
 local function setup_treesitter_context(_, _)
   require("treesitter-context").setup {
-    multiline_threshold = 5,
+    multiline_threshold = 1,
   }
   vim.cmd([[
     hi TreesitterContextBottom gui=underline guisp=Grey

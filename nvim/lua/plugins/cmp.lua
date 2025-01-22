@@ -81,7 +81,6 @@ local function setup_cmp(_, _)
       source_luasnip,
       source_buffer,
       source_path,
-      source_path,
     },
     ---@diagnostic disable-next-line
     formatting = format_opts,

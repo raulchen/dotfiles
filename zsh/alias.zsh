@@ -32,11 +32,11 @@ fi
 # lsd
 if type lsd >/dev/null 2>&1 ; then
     _lsd_params="--date +'%Y-%m-%d %H:%M:%S' --group-dirs=first"
-    alias ls="LS_COLORS='' lsd $_lsd_params"
-    alias ll="LS_COLORS='' lsd -l $_lsd_params"
-    alias la="LS_COLORS='' lsd -la $_lsd_params"
-    alias lt="LS_COLORS='' lsd --tree $_lsd_params"
-    alias tree="LS_COLORS='' lsd --tree $_lsd_params"
+    alias ls="lsd $_lsd_params"
+    alias ll="lsd -l $_lsd_params"
+    alias la="lsd -la $_lsd_params"
+    alias lt="lsd --tree $_lsd_params"
+    alias tree="lsd --tree $_lsd_params"
 fi
 
 # git

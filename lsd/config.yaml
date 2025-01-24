@@ -1,0 +1,7 @@
+color:
+  when: auto
+  theme: custom
+date: +%Y-%m-%d %H:%M:%S
+size: short
+sorting:
+  dir-grouping: first

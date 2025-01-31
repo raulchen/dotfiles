@@ -3,8 +3,6 @@
 [user]
     name = Hao Chen
     email = chenh1024@gmail.com
-[url "git@github.com:"]
-    insteadOf = https://github.com/
 [core]
     excludesfile = ~/.config/git/ignore
 [merge]

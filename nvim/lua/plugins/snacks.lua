@@ -74,15 +74,10 @@ return {
   ---@type snacks.Config
   opts = {
     picker = picker_opts,
-    ---@class snacks.indent.Config
     indent = {},
-    ---@class snacks.notifier.Config
     notifier = {},
-    ---@class snacks.bigfile.Config
     bigfile = {},
-    ---@class snacks.scroll.Config
     scroll = {},
-    --@class snacks.gitbrowse.Config
     gitbrowse = {},
   },
   keys = snacks_keys,

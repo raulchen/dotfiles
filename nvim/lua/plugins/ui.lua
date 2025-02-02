@@ -1,9 +1,3 @@
-local function setup_nvimtree(_, _)
-  vim.g.loaded_netrw = 1
-  vim.g.loaded_netrwPlugin = 1
-  require("nvim-tree").setup({})
-end
-
 local oil_opts = {
   columns = {
     "icon",
@@ -242,16 +236,6 @@ local barbar_keys = {
 }
 
 return {
-  {
-    "nvim-tree/nvim-tree.lua",
-    dependencies = {
-      "nvim-tree/nvim-web-devicons",
-    },
-    config = setup_nvimtree,
-    keys = {
-      { "<leader>ut", "<cmd>NvimTreeFindFileToggle!<cr>", desc = "Toggle nvim-tree" },
-    },
-  },
   {
     'stevearc/oil.nvim',
     opts = oil_opts,

@@ -66,6 +66,13 @@ for _, key in ipairs(gitbrowse_keys) do
   table.insert(snacks_keys, key)
 end
 
+local explorer_keys = {
+  { "<leader>ut", function() Snacks.explorer() end, desc = "Toggle file explorer" },
+}
+
+for _, key in ipairs(explorer_keys) do
+  table.insert(snacks_keys, key)
+end
 
 return {
   "folke/snacks.nvim",
@@ -79,6 +86,7 @@ return {
     bigfile = {},
     scroll = {},
     gitbrowse = {},
+    explorer = {},
   },
   keys = snacks_keys,
 }

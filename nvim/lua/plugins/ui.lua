@@ -326,13 +326,6 @@ return {
     config = setup_noice,
     dependencies = {
       "MunifTanjim/nui.nvim",
-      {
-        "rcarriga/nvim-notify",
-        opts = {
-          stages = "fade",
-          timeout = 2000,
-        },
-      }
     }
   },
   {

@@ -63,6 +63,8 @@ return {
     picker = picker_opts,
     ---@class snacks.indent.Config
     indent = {},
+    ---@class snacks.notifier.Config
+    notifier = {},
   },
   keys = picker_keys,
 }

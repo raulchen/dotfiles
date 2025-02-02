@@ -36,16 +36,6 @@ local oil_opts = {
     ["gx"] = "actions.open_external",
     ["g."] = "actions.toggle_hidden",
     ["g\\"] = "actions.toggle_trash",
-    ["<leader>ff"] = {
-      function()
-        require("plugins.fzf").fzf_files({
-          cwd = require("oil").get_current_dir()
-        })
-      end,
-      mode = "n",
-      nowait = true,
-      desc = "Find files in the current directory"
-    },
   },
   float = {
     max_width = 160,

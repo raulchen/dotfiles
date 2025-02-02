@@ -65,6 +65,10 @@ return {
     indent = {},
     ---@class snacks.notifier.Config
     notifier = {},
+    ---@class snacks.bigfile.Config
+    bigfile = {},
+    ---@class snacks.scroll.Config
+    scroll = {},
   },
   keys = picker_keys,
 }

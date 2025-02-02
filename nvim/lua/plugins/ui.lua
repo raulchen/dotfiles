@@ -145,13 +145,6 @@ local lualine_opts = {
   },
 }
 
-local function setup_indent_blankline(_, _)
-  require("ibl").setup {
-    indent = { char = "▏" },
-    scope = { enabled = true },
-  }
-end
-
 local function setup_alpha()
   local alpha = require("alpha")
   local startify = require("alpha.themes.startify")
@@ -269,11 +262,6 @@ return {
       { "<leader>uf", function() toggle_oil(false) end, desc = "Toggle file explorer on buffer dir" },
       { "<leader>uF", function() toggle_oil(true) end, desc = "Toggle file explorer on selected dir" },
     },
-  },
-  {
-    "lukas-reineke/indent-blankline.nvim",
-    event = { "BufReadPre", "BufNewFile" },
-    config = setup_indent_blankline,
   },
   {
     "folke/which-key.nvim",

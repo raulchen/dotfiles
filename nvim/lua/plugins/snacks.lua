@@ -61,6 +61,8 @@ return {
   ---@type snacks.Config
   opts = {
     picker = picker_opts,
+    ---@class snacks.indent.Config
+    indent = {},
   },
   keys = picker_keys,
 }

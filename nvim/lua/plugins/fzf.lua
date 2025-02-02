@@ -237,7 +237,7 @@ vim.api.nvim_create_user_command(
 return {
     "ibhagwan/fzf-lua",
     dependencies = { "nvim-tree/nvim-web-devicons" },
-    keys = fzf_lua_keys,
+    -- keys = fzf_lua_keys,
     cmd = { "FzfLua", },
     config = setup_fzf_lua,
     -- Exporting following functions for other modules to use.

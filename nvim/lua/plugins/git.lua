@@ -1,12 +1,3 @@
--- Needed for the "GBrowse" command from "vim-fugitive".
-vim.api.nvim_create_user_command(
-  'Browse',
-  function(opts)
-    vim.fn.system { 'open', opts.fargs[1] }
-  end,
-  { nargs = 1 }
-)
-
 local function setup_gitsigns()
   require('gitsigns').setup {
     signcolumn = false,

@@ -193,8 +193,6 @@ noremap <silent> <C-M-L> :<C-U>TmuxNavigateRight<cr>
 """""""""""""""""""
 " Git status
 nnoremap <silent> <leader>gg :Git<cr>
-" Open in browser
-nnoremap <silent> <leader>go :GBrowse<cr>
 " Git blame
 nnoremap <silent> <leader>gB :G blame<cr>
 

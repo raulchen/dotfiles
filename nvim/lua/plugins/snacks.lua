@@ -2,6 +2,7 @@ local function picker()
   return require("snacks").picker
 end
 
+local snacks_keys = {}
 
 local function oil_current_dir()
   local exists, oil = pcall(require, "oil")
@@ -49,9 +50,21 @@ local picker_keys = {
   --  quickfix
   { "<leader>ff", function() picker().qflist() end, desc = "Search quickfix", ft = "qf" },
 }
+for _, key in ipairs(picker_keys) do
+  table.insert(snacks_keys, key)
+end
+
 
 ---@class snacks.picker.Config
 local picker_opts = {}
+
+local gitbrowse_keys = {
+  { "<leader>go", function() Snacks.gitbrowse.open() end, desc = "Browse git files" },
+}
+
+for _, key in ipairs(gitbrowse_keys) do
+  table.insert(snacks_keys, key)
+end
 
 
 return {
@@ -69,6 +82,8 @@ return {
     bigfile = {},
     ---@class snacks.scroll.Config
     scroll = {},
+    --@class snacks.gitbrowse.Config
+    gitbrowse = {},
   },
-  keys = picker_keys,
+  keys = snacks_keys,
 }

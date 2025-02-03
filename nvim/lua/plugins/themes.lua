@@ -1,6 +1,6 @@
 local function setup_onedarkpro(_, _)
   local color = require("onedarkpro.helpers")
-  local colors = {
+  local dark_colors = {
     black = '#000000',
     white = '#f1f1f0',
     gray = '#686868',
@@ -14,26 +14,43 @@ local function setup_onedarkpro(_, _)
     bg = '#282A36',
     fg = color.brighten("fg", 5, "onedark"),
     comment = color.lighten("comment", 5, "onedark"),
-    bg_lighter = color.lighten("#282A36", 10),
+    cursorline = color.lighten("#282A36", 10),
   }
 
+  local light_colors = {
+    bg = color.darken("bg", 5, "onelight"),
+  }
+
+  -- highlights only for the dark theme
+  local dark_highlights = {
+    Identifier = { fg = "${cyan}" },
+    ["@property"] = { fg = "${cyan}" },
+    String = { fg = "${yellow}" },
+    Character = { fg = "${yellow}" },
+    ["@string"] = { fg = "${yellow}" },
+    Constant = { fg = "${green}" },
+    ["@constant"] = { fg = "${green}" },
+  }
+
+  for _, highlight in pairs(dark_highlights) do
+    for k, v in pairs(highlight) do
+      ---@diagnostic disable-next-line: assign-type-mismatch
+      highlight[k] = {
+        onedark = v,
+      }
+    end
+  end
+
+  -- common highlights for both dark and light themes
   local highlights = {
-    Identifier = { fg = "${cyan}", extend = true },
     ["@variable"] = { link = "Identifier" },
     ["@variable.parameter"] = { link = "Identifier" },
     ["@variable.member"] = { link = "Identifier" },
     ["@odp.interpolation.python"] = { link = "Identifier" }, -- Variables in f-strings.
-    ["@property"] = { fg = "${cyan}", extend = true },
-    String = { fg = "${yellow}", extend = true },
-    pythonString = { link = "String", extend = true },
-    Character = { fg = "${yellow}", extend = true },
-    ["@string"] = { fg = "${yellow}", extend = true },
-    Constant = { fg = "${green}", extend = true },
-    ["@constant"] = { fg = "${green}", extend = true },
     ["@constant.builtin"] = { link = "Constant" },
+    pythonString = { link = "String" },
     SpellBad = { undercurl = true, sp = "${red}" },
     DiagnosticUnderlineError = { undercurl = true, sp = "${red}" },
-    CursorLine = { bg = "${bg_lighter}", extend = true, },
     Title = { fg = "${cyan}", extend = true },
     -- Plug-ins
     -- flash.nvim
@@ -43,12 +60,19 @@ local function setup_onedarkpro(_, _)
     WhichKeyNormal = { bg = "${bg}", extend = true },
   }
 
+  for k, v in pairs(dark_highlights) do
+    highlights[k] = v
+  end
+
   local styles = {
     comments = "italic",
   }
 
   require("onedarkpro").setup({
-    colors = colors,
+    colors = {
+      onedark = dark_colors,
+      onelight = light_colors,
+    },
     highlights = highlights,
     styles = styles,
     options = {

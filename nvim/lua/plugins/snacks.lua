@@ -1,11 +1,10 @@
+local snacks_keys = {}
+
+-- snacks.picker configurations --
+
 local function picker()
   return require("snacks").picker
 end
-
-local snacks_keys = {}
-
-
--- snacks.picker configurations --
 
 local function oil_current_dir()
   local exists, oil = pcall(require, "oil")
@@ -18,9 +17,29 @@ end
 local function picker_files(opts)
   opts = opts or {}
 
-  local oil_dir = oil_current_dir()
-  if oil_dir then
-    opts.dirs = { oil_dir }
+  if not opts.dirs then
+    local oil_dir = oil_current_dir()
+    if oil_dir then
+      opts.dirs = { oil_dir }
+    else
+      local buffer_dir = vim.fn.expand("%:p:h")
+      local cwd = vim.fn.getcwd()
+      -- If buffer is not under cwd, prompt for the search directory.
+      if vim.startswith(buffer_dir, "/") and not vim.startswith(buffer_dir, cwd) then
+        vim.ui.input({
+          prompt = "Find in directory: ",
+          default = buffer_dir .. "/",
+          completion = "dir",
+        }, function(dir)
+          if not dir then
+            return
+          end
+          opts.dirs = { dir }
+          picker_files(opts)
+        end)
+        return
+      end
+    end
   end
   picker().files(opts)
 end

@@ -4,6 +4,9 @@ end
 
 local snacks_keys = {}
 
+
+-- snacks.picker configurations --
+
 local function oil_current_dir()
   local exists, oil = pcall(require, "oil")
   if not exists then
@@ -15,10 +18,10 @@ end
 local function picker_files(opts)
   opts = opts or {}
 
-  -- If cwd is not provided, use oil current dir or vim cwd.
-  ---@diagnostic disable-next-line: undefined-field
-  local cwd = opts.cwd or oil_current_dir() or vim.uv.cwd()
-  opts.cwd = cwd
+  local oil_dir = oil_current_dir()
+  if oil_dir then
+    opts.dirs = { oil_dir }
+  end
   picker().files(opts)
 end
 
@@ -27,7 +30,9 @@ local picker_keys = {
   { "<leader>fr", function() picker().resume() end, desc = "Resume last snacks.picker command" },
   -- Buffers and files.
   { "<leader>ff", function() picker_files() end, desc = "Find files" },
-  { "<leader>fh", function() picker().recent() end, desc = "Find file history" },
+  { "<leader>fm", function() picker().smart() end, desc = "Smart jump" },
+  { "<leader>fh", function() picker().recent({ filter = { cwd = true } }) end, desc = "Find CWD file history" },
+  { "<leader>fH", function() picker().recent() end, desc = "Find file history" },
   { "<leader>fb", function() picker().buffers() end, desc = "Find buffers" },
   -- Search
   { "<leader>fs", function() picker().grep() end, desc = "Search" },
@@ -54,9 +59,22 @@ for _, key in ipairs(picker_keys) do
   table.insert(snacks_keys, key)
 end
 
+vim.api.nvim_create_user_command(
+  "Rg",
+  function(opts)
+    Snacks.picker.grep({
+      search = opts.args,
+      live = false,
+      supports_live = true,
+    })
+  end,
+  { nargs = "?" }
+)
 
 ---@class snacks.picker.Config
 local picker_opts = {}
+
+-- End of snacks.picker configurations --
 
 local gitbrowse_keys = {
   { "<leader>go", function() Snacks.gitbrowse.open() end, desc = "Browse git files" },

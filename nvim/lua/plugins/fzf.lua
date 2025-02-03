@@ -224,15 +224,15 @@ local fzf_lua_keys = {
     { "<leader>ff", "<cmd>FzfLua quickfix<cr>", desc = "Search quickfix", ft = "qf" },
 }
 
-vim.api.nvim_create_user_command(
-    "Rg",
-    function(opts)
-        fzf_search({
-            search = opts.args,
-        })
-    end,
-    { nargs = "?" }
-)
+-- vim.api.nvim_create_user_command(
+--     "Rg",
+--     function(opts)
+--         fzf_search({
+--             search = opts.args,
+--         })
+--     end,
+--     { nargs = "?" }
+-- )
 
 return {
     "ibhagwan/fzf-lua",

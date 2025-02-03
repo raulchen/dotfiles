@@ -76,7 +76,16 @@ vim.api.nvim_create_user_command(
 )
 
 ---@class snacks.picker.Config
-local picker_opts = {}
+local picker_opts = {
+  layouts = {
+    default = {
+      layout = {
+        width = 0.9,
+        height = 0.9,
+      },
+    },
+  },
+}
 
 -- End of snacks.picker configurations --
 

@@ -67,7 +67,6 @@ local function setup_lspconfig(_, _)
       vim.keymap.set(mode, key, cmd, opts)
     end
 
-    local fzf_lua = require("fzf-lua")
     local gp = require('goto-preview')
 
     -- Mappings.
@@ -98,9 +97,6 @@ local function setup_lspconfig(_, _)
     map('n', '<leader>ca', vim.lsp.buf.code_action, "Code action")
 
     map('n', '<leader>cu', vim.lsp.buf.references, "List usages")
-
-    map('n', '<leader>cs', fzf_lua.lsp_document_symbols, "Search current buffer symbols")
-    map('n', '<leader>cS', fzf_lua.lsp_live_workspace_symbols, "Search workspace symbols")
 
     wk.add({
       buffer = ev.buf,

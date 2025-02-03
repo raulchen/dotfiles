@@ -54,6 +54,9 @@ local picker_keys = {
   { "<leader>fgd", function() picker().git_diff() end, desc = "Git diffs" },
   --  quickfix
   { "<leader>ff", function() picker().qflist() end, desc = "Search quickfix", ft = "qf" },
+  -- LSP
+  { "<leader>ft", function() picker().lsp_symbols() end, desc = "Search LSP symbols" },
+  { "<leader>fT", function() picker().lsp_workspace_symbols() end, desc = "Search LSP symbols in workspace" },
 }
 for _, key in ipairs(picker_keys) do
   table.insert(snacks_keys, key)

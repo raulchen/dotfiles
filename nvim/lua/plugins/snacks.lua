@@ -67,6 +67,7 @@ local picker_keys = {
   { "<leader>fgb", function() picker().git_branches() end, desc = "Git branches" },
   { "<leader>fgf", function() picker().git_files() end, desc = "Git files" },
   { "<leader>fgh", function() picker().git_log_file() end, desc = "Git file history" },
+  { "<leader>fgH", function() picker().git_log_line() end, desc = "Git line history" },
   { "<leader>fgl", function() picker().git_log() end, desc = "Git log" },
   { "<leader>fgs", function() picker().git_status() end, desc = "Git status" },
   { "<leader>fgd", function() picker().git_diff() end, desc = "Git diffs" },

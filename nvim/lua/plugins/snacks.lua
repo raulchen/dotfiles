@@ -57,6 +57,9 @@ local picker_keys = {
   { "<leader>fs", function() picker().grep() end, desc = "Search" },
   { "<leader>fw", function() picker().grep_word() end, desc = "Search word or visual selection", mode = { "n", "x" } },
   { "<leader>fs", function() picker().grep_word() end, desc = "Search visual selection", mode = { "x" } },
+  -- Lines
+  { "<leader>fl", function() picker().lines() end, desc = "Search lines" },
+  { "<leader>fL", function() picker().grep_buffers() end, desc = "Search lines from all buffers" },
   --  Misc
   { "<leader>f:", function() picker().command_history() end, desc = "Find command history" },
   { "<leader>f/", function() picker().search_history() end, desc = "Find search history" },

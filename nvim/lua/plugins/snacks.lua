@@ -149,10 +149,10 @@ local dashboard_opts = {
         return Snacks.git.get_root() ~= nil
       end,
       cmd = "git status --short --branch --renames",
-      height = 5,
+      indent = 2,
       padding = 1,
-      ttl = 5 * 60,
-      indent = 3,
+      height = 5,
+      ttl = 10,
     },
     { section = "startup" },
   },

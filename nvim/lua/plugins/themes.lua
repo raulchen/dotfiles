@@ -14,7 +14,6 @@ local function setup_onedarkpro(_, _)
     bg = '#282A36',
     fg = color.brighten("fg", 5, "onedark"),
     comment = color.lighten("comment", 5, "onedark"),
-    bg_light = color.lighten("#282A36", 5),
     bg_lighter = color.lighten("#282A36", 10),
   }
 
@@ -35,10 +34,6 @@ local function setup_onedarkpro(_, _)
     SpellBad = { undercurl = true, sp = "${red}" },
     DiagnosticUnderlineError = { undercurl = true, sp = "${red}" },
     CursorLine = { bg = "${bg_lighter}", extend = true, },
-    Pmenu = { bg = "${bg_light}", extend = true },
-    PmenuSel = { bg = "${bg_lighter}", extend = true },
-    NormalFloat = { bg = "${bg_light}", extend = true },
-    FloatBorder = { bg = "${bg_light}", extend = true },
     Title = { fg = "${cyan}", extend = true },
     -- Plug-ins
     -- flash.nvim

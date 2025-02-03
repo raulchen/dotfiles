@@ -4,7 +4,6 @@ end
 
 local snacks_keys = {}
 
-
 -- snacks.picker configurations --
 
 local function oil_current_dir()
@@ -25,6 +24,25 @@ local function picker_files(opts)
   picker().files(opts)
 end
 
+local function picker_buffers()
+  picker().buffers({
+    -- Start in normal mode
+    on_show = function()
+      vim.cmd.stopinsert()
+    end,
+    finder = "buffers",
+    format = "buffer",
+    hidden = false,
+    unloaded = true,
+    current = true,
+    sort_lastused = true,
+    win = {
+      input = { keys = { ["x"] = "bufdelete", } },
+      list = { keys = { ["x"] = "bufdelete" } },
+    },
+  })
+end
+
 local picker_keys = {
   { "<leader>fa", function() picker().pickers() end, desc = "Search all snacks.picker commands" },
   { "<leader>fr", function() picker().resume() end, desc = "Resume last snacks.picker command" },
@@ -33,7 +51,7 @@ local picker_keys = {
   { "<leader>fm", function() picker().smart() end, desc = "Smart jump" },
   { "<leader>fh", function() picker().recent({ filter = { cwd = true } }) end, desc = "Find CWD file history" },
   { "<leader>fH", function() picker().recent() end, desc = "Find file history" },
-  { "<leader>fb", function() picker().buffers() end, desc = "Find buffers" },
+  { "<leader>fb", picker_buffers, desc = "Find buffers" },
   -- Search
   { "<leader>fs", function() picker().grep() end, desc = "Search" },
   { "<leader>fw", function() picker().grep_word() end, desc = "Search word or visual selection", mode = { "n", "x" } },
@@ -162,6 +180,7 @@ return {
     gitbrowse = {},
     explorer = {},
     dashboard = dashboard_opts,
+    words = {},
   },
   keys = snacks_keys,
 }

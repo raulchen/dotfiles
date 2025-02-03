@@ -39,6 +39,7 @@ local function setup_onedarkpro(_, _)
     PmenuSel = { bg = "${bg_lighter}", extend = true },
     NormalFloat = { bg = "${bg_light}", extend = true },
     FloatBorder = { bg = "${bg_light}", extend = true },
+    Title = { fg = "${cyan}", extend = true },
     -- Plug-ins
     -- flash.nvim
     FlashLabel = { fg = "${black}", bg = "${yellow}", extend = true },

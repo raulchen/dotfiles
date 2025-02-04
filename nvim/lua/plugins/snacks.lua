@@ -48,9 +48,43 @@ local function picker_files(opts)
       end
       if prompt_for_search_dir(callback) then
         return
+      else
+        opts.dirs = { vim.fn.getcwd() }
       end
     end
   end
+  -- Search dirs to cycle through.
+  local search_dirs = {
+    dirs = {
+      opts.dirs,
+    },
+    current_index = 0
+  }
+  local buffer_dir = { vim.fn.expand("%:p:h") }
+  if vim.startswith(buffer_dir[1], "/") and not vim.deep_equal(buffer_dir, opts.dirs) then
+    table.insert(search_dirs.dirs, buffer_dir)
+  end
+
+  opts.win = {
+    input = {
+      keys = {
+        ["<c-g>"] = { "cycle_search_dirs", mode = { "i", "n" } },
+      },
+    },
+  }
+  opts.actions = {
+    cycle_search_dirs = function(p)
+      if #search_dirs.dirs == 1 then
+        return
+      end
+      search_dirs.current_index = (search_dirs.current_index + 1) % #search_dirs.dirs
+      p.opts.dirs = search_dirs.dirs[search_dirs.current_index + 1]
+      local search_dirs_str = table.concat(p.opts.dirs, ", ")
+      vim.notify("Searching " .. search_dirs_str)
+      p:find()
+    end,
+  }
+
   picker().files(opts)
 end
 

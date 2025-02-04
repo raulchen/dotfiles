@@ -58,6 +58,9 @@ local function setup_onedarkpro(_, _)
     -- which-key.nvim
     WhichKeyBorder = { bg = "${bg}", extend = true },
     WhichKeyNormal = { bg = "${bg}", extend = true },
+    -- snacks.nvim
+    SnacksPicker = { bg = "${bg}", extend = true },
+    SnacksPickerBorder = { bg = "${bg}", extend = true },
   }
 
   for k, v in pairs(dark_highlights) do

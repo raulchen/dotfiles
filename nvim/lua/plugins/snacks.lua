@@ -88,6 +88,28 @@ local function picker_files(opts)
   picker().files(opts)
 end
 
+local function picker_recent(opts)
+  opts.win = {
+    input = {
+      keys = {
+        ["<c-g>"] = { "toggle_cwd", mode = { "i", "n" } },
+      },
+    },
+  }
+  opts.actions = {
+    toggle_cwd = function(p)
+      p.opts.filter.cwd = not p.opts.filter.cwd
+      if p.opts.filter.cwd then
+        vim.notify("Searching " .. vim.fn.getcwd())
+      else
+        vim.notify("Searching global")
+      end
+      p:find()
+    end,
+  }
+  picker().recent(opts)
+end
+
 local function picker_grep(opts)
   opts = opts or {}
   if not opts.dirs then
@@ -122,8 +144,7 @@ local picker_keys = {
   -- Buffers and files.
   { "<leader>ff", function() picker_files() end, desc = "Find files" },
   { "<leader>fm", function() picker().smart() end, desc = "Smart jump" },
-  { "<leader>fh", function() picker().recent({ filter = { cwd = true } }) end, desc = "Find CWD file history" },
-  { "<leader>fH", function() picker().recent() end, desc = "Find file history" },
+  { "<leader>fh", function() picker_recent({ filter = { cwd = true } }) end, desc = "Find CWD file history" },
   { "<leader>fb", function() picker().buffers() end, desc = "Find buffers" },
   -- Search
   { "<leader>fs", function() picker_grep() end, desc = "Search" },
@@ -204,7 +225,7 @@ local dashboard_opts = {
   preset = {
     keys = {
       { icon = " ", key = "f", desc = "Find File", action = function() picker_files() end },
-      { icon = " ", key = "h", desc = "Recent Files", action = function() picker().recent({ filter = { cwd = true } }) end },
+      { icon = " ", key = "h", desc = "Recent Files", action = function() picker_recent({ filter = { cwd = true } }) end },
       { icon = " ", key = "n", desc = "New File", action = ":ene | startinsert" },
       { icon = " ", key = "S", desc = "Search Text", action = function() picker_grep() end },
       { icon = " ", key = "s", desc = "Restore Session", section = "session" },

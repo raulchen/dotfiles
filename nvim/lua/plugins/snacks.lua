@@ -169,10 +169,10 @@ end
 local dashboard_opts = {
   preset = {
     keys = {
-      { icon = " ", key = "f", desc = "Find File", action = ":lua Snacks.dashboard.pick('files')" },
+      { icon = " ", key = "f", desc = "Find File", action = function() picker_files() end },
+      { icon = " ", key = "h", desc = "Recent Files", action = function() picker().recent({ filter = { cwd = true } }) end },
       { icon = " ", key = "n", desc = "New File", action = ":ene | startinsert" },
-      { icon = " ", key = "g", desc = "Find Text", action = ":lua Snacks.dashboard.pick('live_grep')" },
-      { icon = " ", key = "h", desc = "Recent Files", action = ":lua Snacks.dashboard.pick('oldfiles')" },
+      { icon = " ", key = "S", desc = "Search Text", action = function() picker_grep() end },
       { icon = " ", key = "s", desc = "Restore Session", section = "session" },
       { icon = "󰒲 ", key = "L", desc = "Lazy", action = ":Lazy", enabled = package.loaded.lazy ~= nil },
       { icon = " ", key = "q", desc = "Quit", action = ":qa" },

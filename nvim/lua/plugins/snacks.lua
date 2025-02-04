@@ -14,34 +14,72 @@ local function oil_current_dir()
   return oil.get_current_dir()
 end
 
+local function prompt_for_search_dir(callback)
+  -- If buffer is not under cwd, prompt for the search directory.
+  local buffer_dir = vim.fn.expand("%:p:h")
+  local cwd = vim.fn.getcwd()
+  if vim.startswith(buffer_dir, "/") and not vim.startswith(buffer_dir, cwd) then
+    vim.ui.input({
+      prompt = "Search directory: ",
+      default = buffer_dir .. "/",
+      completion = "dir",
+    }, function(dir)
+      if not dir then
+        return
+      end
+      callback(dir)
+    end)
+    return true
+  else
+    return false
+  end
+end
+
 local function picker_files(opts)
   opts = opts or {}
-
   if not opts.dirs then
     local oil_dir = oil_current_dir()
     if oil_dir then
       opts.dirs = { oil_dir }
     else
-      local buffer_dir = vim.fn.expand("%:p:h")
-      local cwd = vim.fn.getcwd()
-      -- If buffer is not under cwd, prompt for the search directory.
-      if vim.startswith(buffer_dir, "/") and not vim.startswith(buffer_dir, cwd) then
-        vim.ui.input({
-          prompt = "Find in directory: ",
-          default = buffer_dir .. "/",
-          completion = "dir",
-        }, function(dir)
-          if not dir then
-            return
-          end
-          opts.dirs = { dir }
-          picker_files(opts)
-        end)
+      local callback = function(dir)
+        opts.dirs = { dir }
+        picker_files(opts)
+      end
+      if prompt_for_search_dir(callback) then
         return
       end
     end
   end
   picker().files(opts)
+end
+
+local function picker_grep(opts)
+  opts = opts or {}
+  if not opts.dirs then
+    local callback = function(dir)
+      opts.dirs = { dir }
+      picker_grep(opts)
+    end
+    if prompt_for_search_dir(callback) then
+      return
+    end
+  end
+  picker().grep(opts)
+end
+
+local function picker_grep_word(opts)
+  opts = opts or {}
+  if not opts.dirs then
+    local callback = function(dir)
+      opts.dirs = { dir }
+      picker_grep_word(opts)
+    end
+    if prompt_for_search_dir(callback) then
+      return
+    end
+  end
+  picker().grep_word(opts)
 end
 
 local picker_keys = {
@@ -54,9 +92,9 @@ local picker_keys = {
   { "<leader>fH", function() picker().recent() end, desc = "Find file history" },
   { "<leader>fb", function() picker().buffers() end, desc = "Find buffers" },
   -- Search
-  { "<leader>fs", function() picker().grep() end, desc = "Search" },
-  { "<leader>fw", function() picker().grep_word() end, desc = "Search word or visual selection", mode = { "n", "x" } },
-  { "<leader>fs", function() picker().grep_word() end, desc = "Search visual selection", mode = { "x" } },
+  { "<leader>fs", function() picker_grep() end, desc = "Search" },
+  { "<leader>fw", function() picker_grep_word() end, desc = "Search word or visual selection", mode = { "n", "x" } },
+  { "<leader>fs", function() picker_grep_word() end, desc = "Search visual selection", mode = { "x" } },
   -- Lines
   { "<leader>fl", function() picker().lines() end, desc = "Search lines" },
   { "<leader>fL", function() picker().grep_buffers() end, desc = "Search lines from all buffers" },

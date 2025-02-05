@@ -232,6 +232,14 @@ local dashboard_opts = {
       { icon = "󰒲 ", key = "L", desc = "Lazy", action = ":Lazy", enabled = package.loaded.lazy ~= nil },
       { icon = " ", key = "q", desc = "Quit", action = ":qa" },
     },
+    header = table.concat({
+      [[                               __                ]],
+      [[  ___     ___    ___   __  __ /\_\    ___ ___    ]],
+      [[ / _ `\  / __`\ / __`\/\ \/\ \\/\ \  / __` __`\  ]],
+      [[/\ \/\ \/\  __//\ \_\ \ \ \_/ |\ \ \/\ \/\ \/\ \ ]],
+      [[\ \_\ \_\ \____\ \____/\ \___/  \ \_\ \_\ \_\ \_\]],
+      [[ \/_/\/_/\/____/\/___/  \/__/    \/_/\/_/\/_/\/_/]],
+    }, "\n"),
   },
   sections = {
     { section = "header" },

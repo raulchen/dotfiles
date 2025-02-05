@@ -140,11 +140,11 @@ end
 
 local picker_keys = {
   { "<leader>fa", function() picker().pickers() end, desc = "Search all snacks.picker commands" },
-  { "<leader>fr", function() picker().resume() end, desc = "Resume last snacks.picker command" },
+  { "<leader>fR", function() picker().resume() end, desc = "Resume last snacks.picker command" },
   -- Buffers and files.
   { "<leader>ff", function() picker_files() end, desc = "Find files" },
   { "<leader>fm", function() picker().smart() end, desc = "Smart jump" },
-  { "<leader>fh", function() picker_recent({ filter = { cwd = true } }) end, desc = "Find CWD file history" },
+  { "<leader>fr", function() picker_recent({ filter = { cwd = true } }) end, desc = "Find recent files" },
   { "<leader>fb", function() picker().buffers() end, desc = "Find buffers" },
   -- Search
   { "<leader>fs", function() picker_grep() end, desc = "Search" },
@@ -225,7 +225,7 @@ local dashboard_opts = {
   preset = {
     keys = {
       { icon = " ", key = "f", desc = "Find File", action = function() picker_files() end },
-      { icon = " ", key = "h", desc = "Recent Files", action = function() picker_recent({ filter = { cwd = true } }) end },
+      { icon = " ", key = "r", desc = "Recent Files", action = function() picker_recent({ filter = { cwd = true } }) end },
       { icon = " ", key = "n", desc = "New File", action = ":ene | startinsert" },
       { icon = " ", key = "S", desc = "Search Text", action = function() picker_grep() end },
       { icon = " ", key = "s", desc = "Restore Session", section = "session" },

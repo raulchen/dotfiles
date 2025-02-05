@@ -92,6 +92,13 @@ local function picker_smart_files(opts)
 end
 
 local function picker_recent(opts)
+  opts = opts or {}
+  if not opts.filter then
+    opts.filter = { cwd = false, }
+  end
+  if not opts.matcher then
+    opts.matcher = { cwd_bonus = true, sort_empty = true }
+  end
   opts.win = {
     input = {
       keys = {
@@ -147,7 +154,7 @@ local picker_keys = {
   -- Buffers and files.
   { "<leader>ff", function() picker_smart_files() end, desc = "Smart find files" },
   { "<leader>fF", function() picker().files() end, desc = "Find files" },
-  { "<leader>fr", function() picker_recent({ filter = { cwd = true } }) end, desc = "Find recent files" },
+  { "<leader>fr", function() picker_recent() end, desc = "Find recent files" },
   { "<leader>fb", function() picker().buffers() end, desc = "Find buffers" },
   -- Search
   { "<leader>fs", function() picker_grep() end, desc = "Search" },
@@ -228,7 +235,7 @@ local dashboard_opts = {
   preset = {
     keys = {
       { icon = " ", key = "f", desc = "Find File", action = function() picker_smart_files() end },
-      { icon = " ", key = "r", desc = "Recent Files", action = function() picker_recent({ filter = { cwd = true } }) end },
+      { icon = " ", key = "r", desc = "Recent Files", action = function() picker_recent() end },
       { icon = " ", key = "n", desc = "New File", action = ":ene | startinsert" },
       { icon = " ", key = "S", desc = "Search Text", action = function() picker_grep() end },
       { icon = " ", key = "s", desc = "Restore Session", section = "session" },

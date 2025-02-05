@@ -35,33 +35,36 @@ local function prompt_for_search_dir(callback)
   end
 end
 
-local function picker_files(opts)
+local function picker_smart_files(opts)
   opts = opts or {}
-  if not opts.dirs then
+  if not opts.cwd then
     local oil_dir = oil_current_dir()
     if oil_dir then
-      opts.dirs = { oil_dir }
+      opts.cwd = oil_dir
     else
       local callback = function(dir)
-        opts.dirs = { dir }
-        picker_files(opts)
+        opts.cwd = dir
+        picker_smart_files(opts)
       end
       if prompt_for_search_dir(callback) then
         return
       else
-        opts.dirs = { vim.fn.getcwd() }
+        opts.cwd = vim.fn.getcwd()
       end
     end
+  end
+  if not opts.filter then
+    opts.filter = { cwd = true, }
   end
   -- Search dirs to cycle through.
   local search_dirs = {
     dirs = {
-      opts.dirs,
+      opts.cwd,
     },
     current_index = 0
   }
-  local buffer_dir = { vim.fn.expand("%:p:h") }
-  if vim.startswith(buffer_dir[1], "/") and not vim.deep_equal(buffer_dir, opts.dirs) then
+  local buffer_dir = vim.fn.expand("%:p:h")
+  if vim.startswith(buffer_dir, "/") and buffer_dir ~= opts.cwd then
     table.insert(search_dirs.dirs, buffer_dir)
   end
 
@@ -78,14 +81,14 @@ local function picker_files(opts)
         return
       end
       search_dirs.current_index = (search_dirs.current_index + 1) % #search_dirs.dirs
-      p.opts.dirs = search_dirs.dirs[search_dirs.current_index + 1]
-      local search_dirs_str = table.concat(p.opts.dirs, ", ")
-      vim.notify("Searching " .. search_dirs_str)
+      p.opts.cwd = search_dirs.dirs[search_dirs.current_index + 1]
+      vim.notify("Searching " .. p.opts.cwd)
       p:find()
     end,
   }
 
-  picker().files(opts)
+  ---@diagnostic disable-next-line: undefined-field
+  picker().smart(opts)
 end
 
 local function picker_recent(opts)
@@ -142,8 +145,8 @@ local picker_keys = {
   { "<leader>fa", function() picker().pickers() end, desc = "Search all snacks.picker commands" },
   { "<leader>fR", function() picker().resume() end, desc = "Resume last snacks.picker command" },
   -- Buffers and files.
-  { "<leader>ff", function() picker_files() end, desc = "Find files" },
-  { "<leader>fm", function() picker().smart({ filter = { cwd = true } }) end, desc = "Smart find files" },
+  { "<leader>ff", function() picker_smart_files() end, desc = "Smart find files" },
+  { "<leader>fF", function() picker().files() end, desc = "Find files" },
   { "<leader>fr", function() picker_recent({ filter = { cwd = true } }) end, desc = "Find recent files" },
   { "<leader>fb", function() picker().buffers() end, desc = "Find buffers" },
   -- Search
@@ -224,7 +227,7 @@ end
 local dashboard_opts = {
   preset = {
     keys = {
-      { icon = " ", key = "f", desc = "Find File", action = function() picker_files() end },
+      { icon = " ", key = "f", desc = "Find File", action = function() picker_smart_files() end },
       { icon = " ", key = "r", desc = "Recent Files", action = function() picker_recent({ filter = { cwd = true } }) end },
       { icon = " ", key = "n", desc = "New File", action = ":ene | startinsert" },
       { icon = " ", key = "S", desc = "Search Text", action = function() picker_grep() end },

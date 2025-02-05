@@ -191,7 +191,7 @@ end
 vim.api.nvim_create_user_command(
   "Rg",
   function(opts)
-    Snacks.picker.grep({
+    picker_grep({
       search = opts.args,
       live = false,
       supports_live = true,

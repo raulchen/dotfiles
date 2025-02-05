@@ -143,7 +143,7 @@ local picker_keys = {
   { "<leader>fR", function() picker().resume() end, desc = "Resume last snacks.picker command" },
   -- Buffers and files.
   { "<leader>ff", function() picker_files() end, desc = "Find files" },
-  { "<leader>fm", function() picker().smart() end, desc = "Smart jump" },
+  { "<leader>fm", function() picker().smart({ filter = { cwd = true } }) end, desc = "Smart find files" },
   { "<leader>fr", function() picker_recent({ filter = { cwd = true } }) end, desc = "Find recent files" },
   { "<leader>fb", function() picker().buffers() end, desc = "Find buffers" },
   -- Search

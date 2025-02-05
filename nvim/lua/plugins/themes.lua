@@ -53,8 +53,6 @@ local function setup_onedarkpro(_, _)
     DiagnosticUnderlineError = { undercurl = true, sp = "${red}" },
     Title = { fg = "${cyan}", extend = true },
     -- Plug-ins
-    -- flash.nvim
-    FlashLabel = { fg = "${black}", bg = "${yellow}", extend = true },
     -- which-key.nvim
     WhichKeyBorder = { bg = "${bg}", extend = true },
     WhichKeyNormal = { bg = "${bg}", extend = true },

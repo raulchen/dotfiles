@@ -157,9 +157,8 @@ local picker_keys = {
   { "<leader>fr", function() picker_recent() end, desc = "Find recent files" },
   { "<leader>fb", function() picker().buffers() end, desc = "Find buffers" },
   -- Search
-  { "<leader>fs", function() picker_grep() end, desc = "Search" },
-  { "<leader>fw", function() picker_grep_word() end, desc = "Search word or visual selection", mode = { "n", "x" } },
-  { "<leader>fs", function() picker_grep_word() end, desc = "Search visual selection", mode = { "x" } },
+  { "<leader>fS", function() picker_grep() end, desc = "Search" },
+  { "<leader>fs", function() picker_grep_word() end, desc = "Search word or visual selection", mode = { "n", "x" } },
   -- Lines
   { "<leader>fl", function() picker().lines() end, desc = "Search lines" },
   { "<leader>fL", function() picker().grep_buffers() end, desc = "Search lines from all buffers" },

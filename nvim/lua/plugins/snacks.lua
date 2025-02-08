@@ -209,6 +209,43 @@ local picker_opts = {
       },
     },
   },
+  win = {
+    input = {
+      keys = {
+        ["<c-a>"] = {
+          "go_to_beginning_or_select_all",
+          mode = { "n", "i" },
+        },
+        ["<c-e>"] = {
+          "go_to_end",
+          mode = { "i" },
+        },
+      },
+    },
+  },
+  actions = {
+    go_to_beginning_or_select_all = function(p)
+      -- If in insert mode, go to beginning of line.
+      -- Otherwise, select all.
+      local m = vim.api.nvim_get_mode().mode
+      if m == "i" then
+        vim.api.nvim_feedkeys(
+          vim.api.nvim_replace_termcodes("<Home>", true, false, true),
+          "i",
+          true
+        )
+      else
+        p:action("select_all")
+      end
+    end,
+    go_to_end = function(p)
+      vim.api.nvim_feedkeys(
+        vim.api.nvim_replace_termcodes("<End>", true, false, true),
+        "i",
+        true
+      )
+    end,
+  }
 }
 
 -- End of snacks.picker configurations --

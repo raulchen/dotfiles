@@ -251,7 +251,7 @@ local picker_opts = {
 -- End of snacks.picker configurations --
 
 local gitbrowse_keys = {
-  { "<leader>go", function() Snacks.gitbrowse.open() end, desc = "Browse git files" },
+  { "<leader>go", function() Snacks.gitbrowse.open() end, desc = "Git browse", mode = { "n", "x" }, },
 }
 
 for _, key in ipairs(gitbrowse_keys) do

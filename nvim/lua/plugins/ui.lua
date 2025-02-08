@@ -279,14 +279,6 @@ return {
     keys = barbar_keys,
   },
   {
-    "nyngwang/NeoZoom.lua",
-    opts = {},
-    keys = {
-      { '<c-w>z', '<cmd>NeoZoomToggle<cr>', desc = "Toggle zoom" },
-      { '<leader>wz', '<cmd>NeoZoomToggle<cr>', desc = "Toggle zoom" },
-    },
-  },
-  {
     "folke/noice.nvim",
     event = "VeryLazy",
     config = setup_noice,

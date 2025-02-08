@@ -322,6 +322,10 @@ nnoremap <silent> <c-l> <c-w>l
 nnoremap <silent> <c-j> <c-w>j
 nnoremap <silent> <c-k> <c-w>k
 
+" Switch quicklist
+nnoremap [q :cprev<cr>
+nnoremap ]q :cnext<cr>
+
 " Move a line of text
 vnoremap <silent> <c-j> :m'>+<cr>`<my`>mzgv`yo`z
 vnoremap <silent> <c-k> :m'<-2<cr>`>my`<mzgv`yo`z

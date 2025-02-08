@@ -24,10 +24,11 @@ local copilot_chat_keys = {
   {
     "<leader>aa",
     function()
-      local input = vim.fn.input("Ask AI: ")
-      if input ~= "" then
-        require("CopilotChat").ask(input)
-      end
+      vim.ui.input({ prompt = "Ask AI: " }, function(input)
+        if input ~= nil and input ~= "" then
+          require("CopilotChat").ask(input)
+        end
+      end)
     end,
     desc = "CopilotChat: Ask AI",
     mode = { "n", "x" },
@@ -39,23 +40,10 @@ local copilot_chat_keys = {
     mode = { "n", "x" },
   },
   {
-    "<leader>ad",
-    function()
-      local actions = require("CopilotChat.actions").help_actions()
-      if actions == nil then
-        vim.notify("No help actions found.", "warn")
-      else
-        require("CopilotChat.integrations.fzflua").pick(actions)
-      end
-    end,
-    desc = "CopilotChat: Diagnostic help actions",
-    mode = { "n", "x" },
-  },
-  {
     "<leader>ap",
     function()
-      local actions = require("CopilotChat.actions").prompt_actions()
-      require("CopilotChat.integrations.fzflua").pick(actions)
+      local actions = require("CopilotChat.actions")
+      require("CopilotChat.integrations.snacks").pick(actions.prompt_actions())
     end,
     desc = "CopilotChat: Prompt actions",
     mode = { "n", "x" },
@@ -64,6 +52,7 @@ local copilot_chat_keys = {
 
 local function setup_copilot_chat()
   local opts = {
+    model = "o1",
     context = "buffer",
     mappings = {
       close = {
@@ -97,6 +86,9 @@ return {
     "CopilotC-Nvim/CopilotChat.nvim",
     version = "*",
     keys = copilot_chat_keys,
+    cmd = {
+      "CopilotChat",
+    },
     config = setup_copilot_chat,
   },
 }

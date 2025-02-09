@@ -53,7 +53,6 @@ local copilot_chat_keys = {
 local function setup_copilot_chat()
   local opts = {
     model = "o1",
-    context = "buffer",
     mappings = {
       close = {
         insert = '', -- disable <ctrl-c> to close window

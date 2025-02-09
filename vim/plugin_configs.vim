@@ -156,7 +156,9 @@ end
 """""""""""""""""""
 " Undo tree
 """""""""""""""""""
-nnoremap <silent> <leader>uu :UndotreeToggle<cr>
+if !has("nvim")
+  nnoremap <silent> <leader>uu :UndotreeToggle<cr>
+end
 
 """""""""""""""""""
 " togglecursor

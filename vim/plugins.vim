@@ -8,7 +8,6 @@ call extend(g:vim_plugins, [
 
 " Editing
 call extend(g:vim_plugins, [
-\  "mbbill/undotree",
 \  "tpope/vim-sleuth",
 \  "ojroques/vim-oscyank",
 \])
@@ -40,6 +39,7 @@ if !has("nvim")
     \  "google/vim-searchindex",
     \  "tpope/vim-commentary",
     \  "justinmk/vim-sneak",
+    \  "mbbill/undotree",
     \])
 end
 

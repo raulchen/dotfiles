@@ -163,6 +163,7 @@ local picker_keys = {
   { "<leader>fl", function() picker().lines() end, desc = "Search lines" },
   { "<leader>fL", function() picker().grep_buffers() end, desc = "Search lines from all buffers" },
   --  Misc
+  { "<leader>fu", function() picker().undo() end, desc = "Find undo history" },
   { "<leader>f:", function() picker().command_history() end, desc = "Find command history" },
   { "<leader>f/", function() picker().search_history() end, desc = "Find search history" },
   { "<leader>f\"", function() picker().registers() end, desc = "Find registers" },

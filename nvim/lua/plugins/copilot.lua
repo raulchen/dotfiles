@@ -21,8 +21,15 @@ local copilot_opts = {
 }
 
 local copilot_chat_keys = {
+  { "<c-s>", "<CR>", ft = "copilot-chat", desc = "Submit prompt", remap = true },
   {
     "<leader>aa",
+    "<cmd>CopilotChatToggle<cr>",
+    desc = "CopilotChat: Toggle chat window",
+    mode = { "n", "x" },
+  },
+  {
+    "<leader>aq",
     function()
       vim.ui.input({ prompt = "Ask AI: " }, function(input)
         if input ~= nil and input ~= "" then
@@ -30,14 +37,16 @@ local copilot_chat_keys = {
         end
       end)
     end,
-    desc = "CopilotChat: Ask AI",
+    desc = "CopilotChat: Quick chat",
     mode = { "n", "x" },
   },
   {
-    "<leader>aw",
-    "<cmd>CopilotChatToggle<cr>",
-    desc = "CopilotChat: Toggle chat window.",
-    mode = { "n", "x" },
+    "<leader>ax",
+    function()
+      return require("CopilotChat").reset()
+    end,
+    desc = "CopilotChat: Reset",
+    mode = { "n", "v" },
   },
   {
     "<leader>ap",
@@ -53,6 +62,8 @@ local copilot_chat_keys = {
 local function setup_copilot_chat()
   local opts = {
     model = "o1",
+    question_header = "  User ",
+    answer_header = "  Copilot ",
     mappings = {
       close = {
         insert = '', -- disable <ctrl-c> to close window
@@ -71,6 +82,14 @@ local function setup_copilot_chat()
     },
   }
   require("CopilotChat").setup(opts)
+
+  vim.api.nvim_create_autocmd("BufEnter", {
+    pattern = "copilot-chat",
+    callback = function()
+      vim.opt_local.relativenumber = false
+      vim.opt_local.number = false
+    end,
+  })
 end
 
 return {

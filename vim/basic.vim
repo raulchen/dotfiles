@@ -280,7 +280,9 @@ noremap <silent> <leader>x :bd<cr>
 noremap <silent> <leader>bw :w<cr>
 " switch buffers
 nnoremap <silent> <tab> :bn<cr>
+nnoremap <silent> ]b :bn<cr>
 nnoremap <silent> <s-tab> :bp<cr>
+nnoremap <silent> [b :bp<cr>
 " switch to last edited buffer
 noremap <leader>bl <c-^>
 " Only keep the current buffer, close all others.
@@ -293,8 +295,10 @@ noremap <silent> <leader>bo :BufOnly<cr>
 noremap <silent> <leader>te :tabnew<cr>
 " Next tab
 noremap <silent> <leader>tn :tabn<cr>
+noremap <silent> ]t :tabn<cr>
 " Previous tab
 noremap <silent> <leader>tp :tabp<cr>
+noremap <silent> [t :tabp<cr>
 " Close tab
 noremap <silent> <leader>tx :tabclose<cr>
 

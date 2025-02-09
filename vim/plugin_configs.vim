@@ -116,7 +116,9 @@ end
 " Color scheme
 """"""""""""""""""""""""
 " colorscheme snazzy
-hi CursorLine cterm=underline
+if !has("nvim")
+  hi CursorLine cterm=underline
+end
 
 """"""""""""""""""""""""
 " Nerd Tree

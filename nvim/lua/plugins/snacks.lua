@@ -56,6 +56,7 @@ local function picker_smart_files(opts)
   if not opts.filter then
     opts.filter = { cwd = true, }
   end
+  opts.title = opts.cwd
   -- Search dirs to cycle through.
   local search_dirs = {
     dirs = {

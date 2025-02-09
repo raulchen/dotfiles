@@ -104,7 +104,6 @@ local function setup_octo()
 
   require("octo").setup({
     enable_builtin = true,
-    picker = "fzf-lua",
     default_merge_method = "squash",
     mappings_disable_default = true,
     mappings = mappings,
@@ -202,7 +201,6 @@ return {
     'pwntester/octo.nvim',
     dependencies = {
       'nvim-lua/plenary.nvim',
-      'ibhagwan/fzf-lua',
       'nvim-tree/nvim-web-devicons',
     },
     cmd = { "Octo" },

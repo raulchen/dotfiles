@@ -64,7 +64,7 @@ module.bind('', 'escape', module.exit)
 module.bind('', 'd', hs.toggleConsole)
 module.bind('', 'r', hs.reload)
 
-module.bind('', 'a', require("utils").toggle_caps_lock)
+module.bind({ 'shift' }, 'a', require("utils").toggle_caps_lock)
 
 local function switch_primary_monitor()
     hs.screen.primaryScreen():next():setPrimary()
@@ -86,10 +86,22 @@ local raycast_shortcuts = {
     [{ {}, 'e' }] = "raycast://extensions/raycast/emoji-symbols/search-emoji-symbols",
     [{ {}, 's' }] = "raycast://extensions/raycast/snippets/search-snippets",
     [{ {}, 'w' }] = "raycast://extensions/raycast/navigation/switch-windows",
+    -- Window management
+    [{ {}, 'h' }] = "raycast://extensions/raycast/window-management/left-half",
+    [{ {}, 'j' }] = "raycast://extensions/raycast/window-management/almost-maximize",
+    [{ {}, 'k' }] = "raycast://extensions/raycast/window-management/maximize",
+    [{ {}, 'l' }] = "raycast://extensions/raycast/window-management/right-half",
+    [{ { 'ctrl' }, 'h' }] = "raycast://extensions/raycast/window-management/top-left-quarter",
+    [{ { 'ctrl' }, 'j' }] = "raycast://extensions/raycast/window-management/bottom-left-quarter",
+    [{ { 'ctrl' }, 'k' }] = "raycast://extensions/raycast/window-management/top-right-quarter",
+    [{ { 'ctrl' }, 'l' }] = "raycast://extensions/raycast/window-management/bottom-right-quarter",
+    [{ { 'shift' }, 'h' }] = "raycast://extensions/raycast/window-management/previous-desktop",
+    [{ { 'shift' }, 'l' }] = "raycast://extensions/raycast/window-management/next-desktop",
+    [{ {}, ';' }] = "raycast://extensions/raycast/window-management/next-display",
 }
 
 for k, v in pairs(raycast_shortcuts) do
-    module.bind(k[1], k[2], function() hs.urlevent.openURL(v) end)
+    module.bind(k[1], k[2], function() hs.execute("open -g " .. v) end)
 end
 
 return module

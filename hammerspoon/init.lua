@@ -1,3 +1,4 @@
+require("prefix")
 require("double_cmdq_to_quit")
 require("window")
 require("modifier_key_monitor").start()

@@ -34,27 +34,23 @@ hs.hotkey.bind('alt-shift', 'tab', previous_window, nil, previous_window)
 local arrow_keys = { 'h', 'j', 'k', 'l' }
 
 -- prefix + h -> left half
--- prefix + j -> bottom half
--- prefix + k -> top half
+-- prefix + j -> maximize 70%
+-- prefix + k -> maximize
 -- prefix + l -> right half
 -- prefix + hj -> bottom left quarter
 -- prefix + hk -> top left quarter
 -- prefix + jl -> top right quarter
 -- prefix + kl -> top bottom quarter
 -- prefix + lj -> top bottom quarter
--- prefix + jk -> maximize 70%
--- prefix + hl -> full screen
 local rect_map = {
     ['h'] = { 0, 0, 0.5, 1 },
-    ['j'] = { 0, 0.5, 1, 0.5 },
-    ['k'] = { 0, 0, 1, 0.5 },
+    ['j'] = { 0.15, 0.15, 0.7, 0.7 },
+    ['k'] = { 0, 0, 1, 1 },
     ['l'] = { 0.5, 0, 0.5, 1 },
     ['hj'] = { 0, 0.5, 0.5, 0.5 },
     ['hk'] = { 0, 0, 0.5, 0.5 },
     ['jl'] = { 0.5, 0.5, 0.5, 0.5 },
     ['kl'] = { 0.5, 0, 0.5, 0.5 },
-    ['hl'] = { 0, 0, 1, 1 },
-    ['jk'] = { 0.15, 0.15, 0.7, 0.7 },
 }
 local was_pressed = { false, false, false, false }
 local pressed = { false, false, false, false }

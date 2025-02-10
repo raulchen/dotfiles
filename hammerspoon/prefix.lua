@@ -80,12 +80,16 @@ module.bind({}, ']', system_key_stroke_fn('FAST'))
 
 -- Raycast shortcuts
 
-local open_url = hs.urlevent.openURL
+local raycast_shortcuts = {
+    [{ {}, 'a' }] = "raycast://extensions/raycast/raycast-ai/ai-chat",
+    [{ {}, 'c' }] = "raycast://extensions/raycast/clipboard-history/clipboard-history",
+    [{ {}, 'e' }] = "raycast://extensions/raycast/emoji-symbols/search-emoji-symbols",
+    [{ {}, 's' }] = "raycast://extensions/raycast/snippets/search-snippets",
+    [{ {}, 'w' }] = "raycast://extensions/raycast/navigation/switch-windows",
+}
 
-module.bind({}, 'a', function() open_url("raycast://extensions/raycast/raycast-ai/ai-chat") end)
-module.bind({}, 'c', function() open_url("raycast://extensions/raycast/clipboard-history/clipboard-history") end)
-module.bind({}, 'e', function() open_url("raycast://extensions/raycast/emoji-symbols/search-emoji-symbols") end)
-module.bind({}, 's', function() open_url("raycast://extensions/raycast/snippets/search-snippets") end)
-module.bind({}, 'w', function() open_url("raycast://extensions/raycast/navigation/switch-windows") end)
+for k, v in pairs(raycast_shortcuts) do
+    module.bind(k[1], k[2], function() hs.urlevent.openURL(v) end)
+end
 
 return module

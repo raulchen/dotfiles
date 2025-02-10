@@ -95,6 +95,7 @@ local raycast_shortcuts = {
     [{ { 'ctrl' }, 'l' }] = "raycast://extensions/raycast/window-management/bottom-right-quarter",
     [{ { 'shift' }, 'h' }] = "raycast://extensions/raycast/window-management/previous-desktop",
     [{ { 'shift' }, 'l' }] = "raycast://extensions/raycast/window-management/next-desktop",
+    [{ {}, ';' }] = "raycast://extensions/raycast/window-management/next-display",
 }
 
 for k, v in pairs(raycast_shortcuts) do

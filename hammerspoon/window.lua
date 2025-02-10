@@ -1,13 +1,10 @@
 local prefix = require("prefix")
-local utils = require("utils")
 
 hs.window.animationDuration = 0
 
 ----------------
 -- Switch
 ----------------
-hs.hints.hintChars = utils.str_to_table('ASDFGQWERTZXCVB12345')
-prefix.bind('', 'w', function() hs.hints.windowHints() end)
 
 local switcher = hs.window.switcher.new(hs.window.filter.new():setCurrentSpace(true):setDefaultFilter {}, {
     fontName = ".AppleSystemUIFont",

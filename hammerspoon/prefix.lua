@@ -78,4 +78,14 @@ module.bind({}, 'p', system_key_stroke_fn('PLAY'))
 module.bind({}, '[', system_key_stroke_fn('REWIND'))
 module.bind({}, ']', system_key_stroke_fn('FAST'))
 
+-- Raycast shortcuts
+
+local open_url = hs.urlevent.openURL
+
+module.bind({}, 'a', function() open_url("raycast://extensions/raycast/raycast-ai/ai-chat") end)
+module.bind({}, 'c', function() open_url("raycast://extensions/raycast/clipboard-history/clipboard-history") end)
+module.bind({}, 'e', function() open_url("raycast://extensions/raycast/emoji-symbols/search-emoji-symbols") end)
+module.bind({}, 's', function() open_url("raycast://extensions/raycast/snippets/search-snippets") end)
+module.bind({}, 'w', function() open_url("raycast://extensions/raycast/navigation/switch-windows") end)
+
 return module

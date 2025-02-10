@@ -70,8 +70,8 @@ module.toggle = function()
     end
 end
 
-local prefix = require("prefix")
-prefix.bind({}, "v", module.toggle)
+local leader_key = require("leader_key")
+leader_key.bind({}, "v", module.toggle)
 
 local key_stroke_fn = require("utils").key_stroke_fn
 local system_key_stroke_fn = require("utils").system_key_stroke_fn

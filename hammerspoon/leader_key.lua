@@ -1,5 +1,3 @@
--- Tmux style hotkey binding: prefix + hotkey
-
 local module = {}
 
 local TIMEOUT = 5
@@ -15,7 +13,7 @@ module.toggle = function()
     end
 end
 
-local label = require("labels").new("Prefix Mode", "center")
+local label = require("labels").new("Leader Key", "center")
 local timer = nil
 
 local function cancel_timeout()

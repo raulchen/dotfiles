@@ -1,4 +1,4 @@
-local prefix = require("prefix")
+local leader_key = require("leader_key")
 
 hs.window.animationDuration = 0
 
@@ -28,7 +28,7 @@ end
 hs.hotkey.bind('alt', 'tab', next_window, nil, next_window)
 hs.hotkey.bind('alt-shift', 'tab', previous_window, nil, previous_window)
 
--- prefix + ; -> move window to the next screen
+-- leader_key + ; -> move window to the next screen
 
 local function get_next_screen(s)
     local all = hs.screen.allScreens()
@@ -51,4 +51,4 @@ local function move_to_next_screen()
     end
 end
 
-prefix.bind('', ';', move_to_next_screen)
+leader_key.bind('', ';', move_to_next_screen)

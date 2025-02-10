@@ -64,7 +64,7 @@ local mod_key_listener = hs.eventtap.new({ hs.eventtap.event.types.flagsChanged 
         end
         if key_states["ctrl"].repeats == 2 then
             if now - key_states["ctrl"].last_press_time < MIN_INTERVAL_S then
-                require("prefix").toggle()
+                require("leader_key").toggle()
             end
         end
     end

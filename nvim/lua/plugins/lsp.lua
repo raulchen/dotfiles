@@ -62,6 +62,7 @@ local function setup_lspconfig(_, _)
     -- Enable completion triggered by <c-x><c-o>
     vim.bo[ev.buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
 
+    -- Mappings.
     local function map(mode, key, cmd, desc)
       local opts = { buffer = ev.buf, desc = desc }
       vim.keymap.set(mode, key, cmd, opts)
@@ -69,34 +70,42 @@ local function setup_lspconfig(_, _)
 
     local gp = require('goto-preview')
 
-    -- Mappings.
-    -- See `:help vim.lsp.*` for documentation on any of the below functions
-    map('n', 'gd', vim.lsp.buf.definition, "Go to definition")
-    map('n', 'gD', gp.goto_preview_definition, "Preview definition")
-    map('n', 'K', vim.lsp.buf.hover, "Display hover information")
-    map('i', '<C-k>', vim.lsp.buf.signature_help, "Show signature")
+    local has_picker, picker = pcall(require, "snacks.picker")
 
     local wk = require("which-key")
     wk.add({
       buffer = ev.buf,
       { "<leader>cg", name = "goto" },
     })
-    map('n', '<leader>cgd', vim.lsp.buf.declaration, "Go to declaration")
-    map('n', '<leader>cgi', vim.lsp.buf.implementation, "Go to implementation")
-    map('n', '<leader>cgt', vim.lsp.buf.type_definition, "Go to type definition")
 
     wk.add({
       buffer = ev.buf,
       { "<leader>cp", name = "preview" },
     })
+    -- See `:help vim.lsp.*` for documentation on any of the below functions
+    if has_picker then
+      map('n', 'gd', picker.lsp_definitions, "Go to definition")
+      map('n', '<leader>cu', picker.lsp_references, "List usages")
+      map('n', '<leader>cgd', picker.lsp_declarations, "Go to declaration")
+      map('n', '<leader>cgi', picker.lsp_implementations, "Go to implementation")
+      map('n', '<leader>cgt', picker.lsp_type_definitions, "Go to type definition")
+    else
+      map('n', 'gd', vim.lsp.buf.definition, "Go to definition")
+      map('n', '<leader>cu', vim.lsp.buf.references, "List usages")
+      map('n', '<leader>cgd', vim.lsp.buf.declaration, "Go to declaration")
+      map('n', '<leader>cgi', vim.lsp.buf.implementation, "Go to implementation")
+      map('n', '<leader>cgt', vim.lsp.buf.type_definition, "Go to type definition")
+    end
+    map('n', 'gD', gp.goto_preview_definition, "Preview definition")
+    map('n', 'K', vim.lsp.buf.hover, "Display hover information")
+    map('i', '<C-k>', vim.lsp.buf.signature_help, "Show signature")
+
     map('n', '<leader>cpd', gp.goto_preview_declaration, "Preview declaration")
     map('n', '<leader>cpi', gp.goto_preview_implementation, "Preview implementation")
     map('n', '<leader>cpt', gp.goto_preview_type_definition, "Preview type definition")
 
     map('n', '<leader>cr', vim.lsp.buf.rename, "Rename symbol under cursor")
     map('n', '<leader>ca', vim.lsp.buf.code_action, "Code action")
-
-    map('n', '<leader>cu', vim.lsp.buf.references, "List usages")
 
     wk.add({
       buffer = ev.buf,

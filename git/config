@@ -56,6 +56,10 @@
     sh = "show"
     ss = "stash"
     st = "status"
+    sw = "switch"
+    swc = "switch -c"
+    swm = "!git switch $(git master-branch)"
+    swl = "switch -"  -- switch to last branch
 [include]
     path = ~/.config/git/delta.txt
 [include]

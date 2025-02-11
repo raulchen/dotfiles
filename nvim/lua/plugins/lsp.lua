@@ -85,7 +85,7 @@ local function setup_lspconfig(_, _)
     -- See `:help vim.lsp.*` for documentation on any of the below functions
     if has_picker then
       map('n', 'gd', picker.lsp_definitions, "Go to definition")
-      map('n', '<leader>cu', picker.lsp_references, "List usages")
+      map('n', 'gr', picker.lsp_references, "Search references")
       map('n', '<leader>cgd', picker.lsp_declarations, "Go to declaration")
       map('n', '<leader>cgi', picker.lsp_implementations, "Go to implementation")
       map('n', '<leader>cgt', picker.lsp_type_definitions, "Go to type definition")
@@ -93,7 +93,7 @@ local function setup_lspconfig(_, _)
       map('n', '<leader>cS', picker.lsp_workspace_symbols, "Search LSP symbols in workspace")
     else
       map('n', 'gd', vim.lsp.buf.definition, "Go to definition")
-      map('n', '<leader>cu', vim.lsp.buf.references, "List usages")
+      map('n', 'gr', vim.lsp.buf.references, "Search references")
       map('n', '<leader>cgd', vim.lsp.buf.declaration, "Go to declaration")
       map('n', '<leader>cgi', vim.lsp.buf.implementation, "Go to implementation")
       map('n', '<leader>cgt', vim.lsp.buf.type_definition, "Go to type definition")

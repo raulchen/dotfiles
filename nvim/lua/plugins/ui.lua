@@ -56,28 +56,6 @@ local function toggle_oil(prompt_for_dir)
   end
 end
 
-local function setup_whichkey(_, _)
-  local wk = require("which-key")
-  wk.setup({
-    preset = "modern",
-  })
-  wk.add({
-    { "<leader>a", group = "ai" },
-    { "<leader>b", group = "buffers" },
-    { "<leader>c", group = "code" },
-    { "<leader>d", group = "debug" },
-    { "<leader>f", group = "find" },
-    { "<leader>fg", group = "git" },
-    { "<leader>g", group = "git" },
-    { "<leader>o", group = "octo", icon = { icon = " ", color = "blue" } },
-    { "<leader>os", group = "search" },
-    { "<leader>s", group = "sessions" },
-    { "<leader>t", group = "tabs" },
-    { "<leader>u", group = "ui" },
-    { "<leader>w", group = "windows" },
-  })
-end
-
 local lualine_opts = {
   options = {
     section_separators = "",
@@ -227,20 +205,6 @@ return {
     keys = {
       { "<leader>uf", function() toggle_oil(false) end, desc = "Toggle file explorer on buffer dir" },
       { "<leader>uF", function() toggle_oil(true) end, desc = "Toggle file explorer on selected dir" },
-    },
-  },
-  {
-    "folke/which-key.nvim",
-    event = "VeryLazy",
-    config = setup_whichkey,
-    keys = {
-      {
-        "<leader>?",
-        function()
-          require("which-key").show({ global = false })
-        end,
-        desc = "List buffer local keymaps",
-      },
     },
   },
   {

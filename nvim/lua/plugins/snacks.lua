@@ -343,6 +343,7 @@ return {
     gitbrowse = {},
     explorer = {},
     dashboard = dashboard_opts,
+    scope = {},
   },
   keys = snacks_keys,
   init = function()

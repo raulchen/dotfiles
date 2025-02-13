@@ -2,7 +2,6 @@ let g:vim_plugins = []
 
 " General
 call extend(g:vim_plugins, [
-\  "michaeljsmith/vim-indent-object",
 \  "christoomey/vim-tmux-navigator",
 \])
 
@@ -39,6 +38,7 @@ if !has("nvim")
     \  "tpope/vim-commentary",
     \  "justinmk/vim-sneak",
     \  "mbbill/undotree",
+    \  "michaeljsmith/vim-indent-object",
     \])
 end
 

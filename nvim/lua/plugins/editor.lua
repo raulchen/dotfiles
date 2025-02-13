@@ -65,4 +65,9 @@ return {
       modes = { insert = true, command = true, terminal = false },
     }
   },
+  {
+    'echasnovski/mini.cursorword',
+    version = '*',
+    opts = {},
+  },
 }

@@ -57,4 +57,12 @@ return {
     event = "VeryLazy",
     opts = {},
   },
+  {
+    "echasnovski/mini.pairs",
+    version = '*',
+    event = { "InsertEnter", "CmdlineEnter" },
+    opts = {
+      modes = { insert = true, command = true, terminal = false },
+    }
+  },
 }

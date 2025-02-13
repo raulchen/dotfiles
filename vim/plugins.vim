@@ -21,7 +21,6 @@ call extend(g:vim_plugins, [
 " Source control
 call extend(g:vim_plugins, [
 \  "tpope/vim-fugitive",
-\  "tpope/vim-rhubarb",
 \])
 
 " Following plugins are not enabled for neovim.

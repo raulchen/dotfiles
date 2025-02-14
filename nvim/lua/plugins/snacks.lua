@@ -350,6 +350,14 @@ return {
         wo = { winhighlight = "NormalFloat:Normal" },
       },
     },
+    image = {
+      markdown = {
+        inline = false,
+        float = true,
+        max_width = 200,
+        max_height = 200,
+      }
+    }
   },
   keys = snacks_keys,
   init = function()

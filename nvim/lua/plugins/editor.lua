@@ -29,6 +29,18 @@ local flash_keys = {
   { "<c-s>", mode = { "c" }, function() require("flash").toggle() end, desc = "Toggle Flash Search" },
 }
 
+local mini_surround_opts = {
+  mappings = {
+    add = "gsa",            -- Add surrounding in Normal and Visual modes
+    delete = "gsd",         -- Delete surrounding
+    find = "gsf",           -- Find surrounding (to the right)
+    find_left = "gsF",      -- Find surrounding (to the left)
+    highlight = "gsh",      -- Highlight surrounding
+    replace = "gsr",        -- Replace surrounding
+    update_n_lines = "gsn", -- Update `n_lines`
+  },
+}
+
 return {
   {
     "folke/which-key.nvim",
@@ -52,12 +64,6 @@ return {
     keys = flash_keys,
   },
   {
-    "kylechui/nvim-surround",
-    version = "*",
-    event = "VeryLazy",
-    opts = {},
-  },
-  {
     "echasnovski/mini.pairs",
     version = '*',
     event = { "InsertEnter", "CmdlineEnter" },
@@ -74,5 +80,11 @@ return {
     'echasnovski/mini.splitjoin',
     version = '*',
     opts = {},
+  },
+  {
+    "echasnovski/mini.surround",
+    version = "*",
+    event = "VeryLazy",
+    opts = mini_surround_opts,
   },
 }

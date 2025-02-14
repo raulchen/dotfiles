@@ -1,40 +1,51 @@
-local oil_opts = {
-  columns = {
-    "icon",
-    "permissions",
-    "size",
-    "mtime",
-  },
-  view_options = {
-    show_hidden = true,
-  },
-  constrain_cursor = "name",
-  use_default_keymaps = false,
-  keymaps = {
-    ["g?"] = "actions.show_help",
-    ["<CR>"] = "actions.select",
-    ["L"] = "actions.select",
-    ["<C-v>"] = { "actions.select", opts = { vertical = true }, desc = "Open the entry in a vertical split" },
-    ["<C-s>"] = { "actions.select", opts = { horizontal = true }, desc = "Open the entry in a horizontal split" },
-    ["<C-t>"] = { "actions.select", opts = { tab = true }, desc = "Open the entry in new tab" },
-    ["<C-p>"] = "actions.preview",
-    ["<c-c>"] = "actions.close",
-    ["q"] = "actions.close",
-    ["<leader>r"] = "actions.refresh",
-    ["-"] = "actions.parent",
-    ["H"] = "actions.parent",
-    ["_"] = "actions.open_cwd",
-    ["`"] = "actions.cd",
-    ["~"] = { "actions.cd", opts = { scope = "tab" }, desc = ":tcd to the current oil directory" },
-    ["gs"] = "actions.change_sort",
-    ["gx"] = "actions.open_external",
-    ["g."] = "actions.toggle_hidden",
-    ["g\\"] = "actions.toggle_trash",
-  },
-  float = {
-    max_width = 160,
-  },
-}
+local function setup_oil()
+  require("oil").setup({
+    columns = {
+      "icon",
+      "permissions",
+      "size",
+      "mtime",
+    },
+    view_options = {
+      show_hidden = true,
+    },
+    constrain_cursor = "name",
+    use_default_keymaps = false,
+    keymaps = {
+      ["g?"] = "actions.show_help",
+      ["<CR>"] = "actions.select",
+      ["L"] = "actions.select",
+      ["<C-v>"] = { "actions.select", opts = { vertical = true }, desc = "Open the entry in a vertical split" },
+      ["<C-s>"] = { "actions.select", opts = { horizontal = true }, desc = "Open the entry in a horizontal split" },
+      ["<C-t>"] = { "actions.select", opts = { tab = true }, desc = "Open the entry in new tab" },
+      ["<C-p>"] = "actions.preview",
+      ["<c-c>"] = "actions.close",
+      ["q"] = "actions.close",
+      ["<leader>r"] = "actions.refresh",
+      ["-"] = "actions.parent",
+      ["H"] = "actions.parent",
+      ["_"] = "actions.open_cwd",
+      ["`"] = "actions.cd",
+      ["~"] = { "actions.cd", opts = { scope = "tab" }, desc = ":tcd to the current oil directory" },
+      ["gs"] = "actions.change_sort",
+      ["gx"] = "actions.open_external",
+      ["g."] = "actions.toggle_hidden",
+      ["g\\"] = "actions.toggle_trash",
+    },
+    float = {
+      max_width = 160,
+    },
+  })
+
+  vim.api.nvim_create_autocmd("User", {
+    pattern = "OilActionsPost",
+    callback = function(event)
+      if event.data.actions.type == "move" then
+        Snacks.rename.on_rename_file(event.data.actions.src_url, event.data.actions.dest_url)
+      end
+    end,
+  })
+end
 
 local function toggle_oil(prompt_for_dir)
   local oil = require("oil")
@@ -55,6 +66,11 @@ local function toggle_oil(prompt_for_dir)
     end)
   end
 end
+
+local oil_keys = {
+  { "<leader>uf", function() toggle_oil(false) end, desc = "Toggle file explorer on buffer dir" },
+  { "<leader>uF", function() toggle_oil(true) end, desc = "Toggle file explorer on selected dir" },
+}
 
 local lualine_opts = {
   options = {
@@ -198,14 +214,11 @@ local barbar_keys = {
 return {
   {
     'stevearc/oil.nvim',
-    opts = oil_opts,
     dependencies = { "nvim-tree/nvim-web-devicons" },
     -- Disable lazy loading so that `vim <dir>` and `:e <dir>` will use oil.
     lazy = false,
-    keys = {
-      { "<leader>uf", function() toggle_oil(false) end, desc = "Toggle file explorer on buffer dir" },
-      { "<leader>uF", function() toggle_oil(true) end, desc = "Toggle file explorer on selected dir" },
-    },
+    keys = oil_keys,
+    config = setup_oil,
   },
   {
     "nvim-lualine/lualine.nvim",

@@ -70,4 +70,9 @@ return {
     version = '*',
     opts = {},
   },
+  {
+    'echasnovski/mini.splitjoin',
+    version = '*',
+    opts = {},
+  },
 }

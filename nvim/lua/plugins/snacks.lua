@@ -334,6 +334,7 @@ return {
   priority = 1000,
   lazy = false,
   ---@type snacks.Config
+  ---@diagnostic disable-next-line: missing-fields
   opts = {
     picker = picker_opts,
     indent = {},
@@ -344,6 +345,11 @@ return {
     explorer = {},
     dashboard = dashboard_opts,
     scope = {},
+    terminal = {
+      win = {
+        wo = { winhighlight = "NormalFloat:Normal" },
+      },
+    },
   },
   keys = snacks_keys,
   init = function()
@@ -363,5 +369,12 @@ return {
         Snacks.toggle.zen():map("<leader>uz")
       end,
     })
+
+    local map = vim.keymap.set
+    map("n", "<c-/>", function() Snacks.terminal() end, { desc = "Terminal" })
+    map("n", "<c-_>", function() Snacks.terminal() end, { desc = "which_key_ignore" })
+    map("t", "<C-/>", "<cmd>close<cr>", { desc = "Hide Terminal" })
+    map("t", "<c-_>", "<cmd>close<cr>", { desc = "which_key_ignore" })
+    map("n", "<leader>bt", function() Snacks.terminal.colorize() end, { desc = "Parse terminal color codes" })
   end,
 }

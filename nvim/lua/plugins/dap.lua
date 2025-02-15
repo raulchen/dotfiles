@@ -73,6 +73,27 @@ local function setup_dap(_, _)
   vim.api.nvim_create_user_command('Debug', Debug, { nargs = '?' })
 end
 
+local function dap_keys()
+  local _repeatable = require("base.utils").dot_repeatable_keymap
+  local _dap = function() return require("dap") end
+  return {
+    { "<leader>dd", function() _dap().continue() end, desc = "Start/conintue debugger" },
+    { "<leader>dt", function() _dap().terminate() end, desc = "Terminate debugger" },
+    { "<leader>db", function() _dap().toggle_breakpoint() end, desc = "Toggle breakpoint" },
+    { "<leader>dB", function() _dap().set_breakpoint(vim.fn.input('Breakpoint condition: ')) end, desc = "Conditional breakpoint" },
+    { "<leader>dE", function() _dap().set_exception_breakpoints() end, desc = "Exception breakpoint" },
+    { "<leader>dl", function() _dap().run_last() end, desc = "Debug last" },
+    _repeatable({ "<leader>ds", function() _dap().step_over() end, desc = "Step over" }),
+    _repeatable({ "<leader>di", function() _dap().step_into() end, desc = "Step into" }),
+    _repeatable({ "<leader>do", function() _dap().step_out() end, desc = "Step out" }),
+    { "<leader>dc", function() _dap().run_to_cursor() end, desc = "Continue execution until current cursor" },
+    { "<leader>dF", function() _dap().restart_frame() end, desc = "Restart curent frame" },
+    _repeatable({ "<leader>dU", function() _dap().up() end, desc = "Go up in stacktrace" }),
+    _repeatable({ "<leader>dD", function() _dap().down() end, desc = "Go down in stacktrace" }),
+    { "<leader>dp", function() _dap().pause() end, desc = "Pause" },
+  }
+end
+
 local function setup_dapui(_, _)
   local dapui = require("dapui")
   dapui.setup()
@@ -82,49 +103,39 @@ local function setup_dapui(_, _)
   end
 end
 
-local dot_repeatable_keymap = require("base.utils").dot_repeatable_keymap
+local dapui_keys = {
+  { "<leader>du", function() require('dapui').toggle() end, desc = "Toggle dap-ui" },
+  { "<leader>de", function() require('dapui').eval() end, desc = "Evaluate" },
+}
+
+local function setup_dap_python()
+  local dap_python = require("dap-python")
+  dap_python.setup(vim.fn.stdpath('data') .. "/mason/packages/debugpy/venv/bin/python")
+  dap_python.resolve_python = function()
+    return 'python'
+  end
+end
+
+local dap_python_keys = {
+  { "<leader>dM", function() require('dap-python').test_method() end, desc = "Debug current method", ft = "python" },
+  { "<leader>dC", function() require('dap-python').test_class() end, desc = "Debug current class", ft = "python" },
+}
 
 return {
   {
     "mfussenegger/nvim-dap",
     config = setup_dap,
-    keys = {
-      { "<leader>dd", function() require('dap').continue() end, desc = "Start/conintue debugger" },
-      { "<leader>dt", function() require('dap').terminate() end, desc = "Terminate debugger" },
-      { "<leader>db", function() require('dap').toggle_breakpoint() end, desc = "Toggle breakpoint" },
-      { "<leader>dB", function() require("dap").set_breakpoint(vim.fn.input('Breakpoint condition: ')) end, desc = "Conditional breakpoint" },
-      { "<leader>dE", function() require("dap").set_exception_breakpoints() end, desc = "Exception breakpoint" },
-      { "<leader>dl", function() require('dap').run_last() end, desc = "Debug last" },
-      dot_repeatable_keymap({ "<leader>ds", function() require('dap').step_over() end, desc = "Step over" }),
-      dot_repeatable_keymap({ "<leader>di", function() require('dap').step_into() end, desc = "Step into" }),
-      dot_repeatable_keymap({ "<leader>do", function() require('dap').step_out() end, desc = "Step out" }),
-      { "<leader>dc", function() require('dap').run_to_cursor() end, desc = "Continue execution until current cursor" },
-      { "<leader>dF", function() require('dap').restart_frame() end, desc = "Restart curent frame" },
-      dot_repeatable_keymap({ "<leader>dU", function() require('dap').up() end, desc = "Go up in stacktrace" }),
-      dot_repeatable_keymap({ "<leader>dD", function() require('dap').down() end, desc = "Go down in stacktrace" }),
-      { "<leader>dp", function() require("dap").pause() end, desc = "Pause" },
-    },
+    keys = dap_keys,
     dependencies = {
       {
         "mfussenegger/nvim-dap-python",
-        config = function(_, _)
-          local dap_python = require("dap-python")
-          dap_python.setup(vim.fn.stdpath('data') .. "/mason/packages/debugpy/venv/bin/python")
-          dap_python.resolve_python = function()
-            return 'python'
-          end
-          local keymap = vim.keymap.set
-          keymap('n', '<leader>dM', dap_python.test_method, { desc = 'Debug current method', })
-          keymap('n', '<leader>dC', dap_python.test_class, { desc = 'Debug current class', })
-        end,
+        config = setup_dap_python,
+        keys = dap_python_keys,
       },
       {
         "rcarriga/nvim-dap-ui",
         config = setup_dapui,
-        keys = {
-          { "<leader>du", function() require('dapui').toggle() end, desc = "Toggle dap-ui" },
-          { "<leader>de", function() require('dapui').eval() end, desc = "Evaluate" },
-        },
+        keys = dapui_keys,
         dependencies = { "mfussenegger/nvim-dap", "nvim-neotest/nvim-nio" },
       },
     },

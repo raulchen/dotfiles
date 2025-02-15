@@ -80,7 +80,8 @@ local function dap_keys()
     { "<leader>dd", function() _dap().continue() end, desc = "Start/conintue debugger" },
     { "<leader>dt", function() _dap().terminate() end, desc = "Terminate debugger" },
     { "<leader>db", function() _dap().toggle_breakpoint() end, desc = "Toggle breakpoint" },
-    { "<leader>dB", function() _dap().set_breakpoint(vim.fn.input('Breakpoint condition: ')) end, desc = "Conditional breakpoint" },
+    { "<leader>dB", function() _dap().list_breakpoints(true) end, desc = "List breakpoints" },
+    { "<leader>dC", function() _dap().set_breakpoint(vim.fn.input('Breakpoint condition: ')) end, desc = "Conditional breakpoint" },
     { "<leader>dE", function() _dap().set_exception_breakpoints() end, desc = "Exception breakpoint" },
     { "<leader>dl", function() _dap().run_last() end, desc = "Debug last" },
     _repeatable({ "<leader>ds", function() _dap().step_over() end, desc = "Step over" }),
@@ -117,8 +118,9 @@ local function setup_dap_python()
 end
 
 local dap_python_keys = {
-  { "<leader>dM", function() require('dap-python').test_method() end, desc = "Debug current method", ft = "python" },
-  { "<leader>dC", function() require('dap-python').test_class() end, desc = "Debug current class", ft = "python" },
+  { "<localleader>d", "", desc = "+debug", ft = "python" },
+  { "<localleader>dm", function() require('dap-python').test_method() end, desc = "Debug current method", ft = "python" },
+  { "<localleader>dc", function() require('dap-python').test_class() end, desc = "Debug current class", ft = "python" },
 }
 
 return {

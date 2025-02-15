@@ -2,10 +2,6 @@ local snacks_keys = {}
 
 -- snacks.picker configurations --
 
-local function picker()
-  return require("snacks").picker
-end
-
 local function oil_current_dir()
   local exists, oil = pcall(require, "oil")
   if not exists then
@@ -77,19 +73,19 @@ local function picker_smart_files(opts)
     },
   }
   opts.actions = {
-    cycle_search_dirs = function(p)
+    cycle_search_dirs = function(picker)
       if #search_dirs.dirs == 1 then
         return
       end
       search_dirs.current_index = (search_dirs.current_index + 1) % #search_dirs.dirs
-      p.opts.cwd = search_dirs.dirs[search_dirs.current_index + 1]
-      vim.notify("Searching " .. p.opts.cwd)
-      p:find()
+      picker.opts.cwd = search_dirs.dirs[search_dirs.current_index + 1]
+      vim.notify("Searching " .. picker.opts.cwd)
+      picker:find()
     end,
   }
 
   ---@diagnostic disable-next-line: undefined-field
-  picker().smart(opts)
+  require("snacks.picker").smart(opts)
 end
 
 local function picker_recent(opts)
@@ -108,17 +104,17 @@ local function picker_recent(opts)
     },
   }
   opts.actions = {
-    toggle_cwd = function(p)
-      p.opts.filter.cwd = not p.opts.filter.cwd
-      if p.opts.filter.cwd then
+    toggle_cwd = function(picker)
+      picker.opts.filter.cwd = not picker.opts.filter.cwd
+      if picker.opts.filter.cwd then
         vim.notify("Searching " .. vim.fn.getcwd())
       else
         vim.notify("Searching global")
       end
-      p:find()
+      picker:find()
     end,
   }
-  picker().recent(opts)
+  require("snacks.picker").recent(opts)
 end
 
 local function picker_grep(opts)
@@ -132,7 +128,7 @@ local function picker_grep(opts)
       return
     end
   end
-  picker().grep(opts)
+  require("snacks.picker").grep(opts)
 end
 
 local function picker_grep_word(opts)
@@ -146,46 +142,52 @@ local function picker_grep_word(opts)
       return
     end
   end
-  picker().grep_word(opts)
+  require("snacks.picker").grep_word(opts)
 end
 
-local picker_keys = {
-  { "<leader>fa", function() picker().pickers() end, desc = "Search all snacks.picker commands" },
-  { "<leader>fR", function() picker().resume() end, desc = "Resume last snacks.picker command" },
-  -- Buffers and files.
-  { "<leader>ff", function() picker_smart_files() end, desc = "Smart find files" },
-  { "<leader>fF", function() picker().files() end, desc = "Find files" },
-  { "<leader>fr", function() picker_recent() end, desc = "Find recent files" },
-  { "<leader>fb", function() picker().buffers() end, desc = "Find buffers" },
-  -- Search
-  { "<leader>fS", function() picker_grep() end, desc = "Search" },
-  { "<leader>fs", function() picker_grep_word() end, desc = "Search word or visual selection", mode = { "n", "x" } },
-  -- Lines
-  { "<leader>fl", function() picker().lines() end, desc = "Search lines" },
-  { "<leader>fL", function() picker().grep_buffers() end, desc = "Search lines from all buffers" },
-  --  Misc
-  { "<leader>fu", function() picker().undo() end, desc = "Find undo history" },
-  { "<leader>f:", function() picker().command_history() end, desc = "Find command history" },
-  { "<leader>f/", function() picker().search_history() end, desc = "Find search history" },
-  { "<leader>f\"", function() picker().registers() end, desc = "Find registers" },
-  { "<leader>f'", function() picker().marks() end, desc = "Find marks" },
-  { "<leader>fj", function() picker().jumps() end, desc = "Find jump list" },
-  -- git
-  { "<leader>fga", function() picker().git_stash() end, desc = "Git stash" },
-  { "<leader>fgb", function() picker().git_branches() end, desc = "Git branches" },
-  { "<leader>fgf", function() picker().git_files() end, desc = "Git files" },
-  { "<leader>fgh", function() picker().git_log_file() end, desc = "Git file history" },
-  { "<leader>fgH", function() picker().git_log_line() end, desc = "Git line history" },
-  { "<leader>fgl", function() picker().git_log() end, desc = "Git log" },
-  { "<leader>fgs", function() picker().git_status() end, desc = "Git status" },
-  { "<leader>fgd", function() picker().git_diff() end, desc = "Git diffs" },
-  --  quickfix
-  { "<leader>ff", function() picker().qflist() end, desc = "Search quickfix", ft = "qf" },
-  -- LSP
-  { "<leader>ft", function() picker().lsp_symbols() end, desc = "Search LSP symbols" },
-  { "<leader>fT", function() picker().lsp_workspace_symbols() end, desc = "Search LSP symbols in workspace" },
-}
-for _, key in ipairs(picker_keys) do
+local function picker_keys()
+  local function p()
+    return require("snacks.picker")
+  end
+  return {
+    { "<leader>fa", function() p().pickers() end, desc = "Search all snacks.picker commands" },
+    { "<leader>fR", function() p().resume() end, desc = "Resume last snacks.picker command" },
+    -- Buffers and files.
+    { "<leader>ff", function() picker_smart_files() end, desc = "Smart find files" },
+    { "<leader>fF", function() p().files() end, desc = "Find files" },
+    { "<leader>fr", function() picker_recent() end, desc = "Find recent files" },
+    { "<leader>fb", function() p().buffers() end, desc = "Find buffers" },
+    -- Search
+    { "<leader>fS", function() picker_grep() end, desc = "Search" },
+    { "<leader>fs", function() picker_grep_word() end, desc = "Search word or visual selection", mode = { "n", "x" } },
+    -- Lines
+    { "<leader>fl", function() p().lines() end, desc = "Search lines" },
+    { "<leader>fL", function() p().grep_buffers() end, desc = "Search lines from all buffers" },
+    --  Misc
+    { "<leader>fu", function() p().undo() end, desc = "Find undo history" },
+    { "<leader>f:", function() p().command_history() end, desc = "Find command history" },
+    { "<leader>f/", function() p().search_history() end, desc = "Find search history" },
+    { "<leader>f\"", function() p().registers() end, desc = "Find registers" },
+    { "<leader>f'", function() p().marks() end, desc = "Find marks" },
+    { "<leader>fj", function() p().jumps() end, desc = "Find jump list" },
+    -- git
+    { "<leader>fga", function() p().git_stash() end, desc = "Git stash" },
+    { "<leader>fgb", function() p().git_branches() end, desc = "Git branches" },
+    { "<leader>fgf", function() p().git_files() end, desc = "Git files" },
+    { "<leader>fgh", function() p().git_log_file() end, desc = "Git file history" },
+    { "<leader>fgH", function() p().git_log_line() end, desc = "Git line history" },
+    { "<leader>fgl", function() p().git_log() end, desc = "Git log" },
+    { "<leader>fgs", function() p().git_status() end, desc = "Git status" },
+    { "<leader>fgd", function() p().git_diff() end, desc = "Git diffs" },
+    --  quickfix
+    { "<leader>ff", function() p().qflist() end, desc = "Search quickfix", ft = "qf" },
+    -- LSP
+    { "<leader>ft", function() p().lsp_symbols() end, desc = "Search LSP symbols" },
+    { "<leader>fT", function() p().lsp_workspace_symbols() end, desc = "Search LSP symbols in workspace" },
+  }
+end
+
+for _, key in ipairs(picker_keys()) do
   table.insert(snacks_keys, key)
 end
 
@@ -226,7 +228,7 @@ local picker_opts = {
     },
   },
   actions = {
-    go_to_beginning_or_select_all = function(p)
+    go_to_beginning_or_select_all = function(picker)
       -- If in insert mode, go to beginning of line.
       -- Otherwise, select all.
       local m = vim.api.nvim_get_mode().mode
@@ -237,10 +239,10 @@ local picker_opts = {
           true
         )
       else
-        p:action("select_all")
+        picker:action("select_all")
       end
     end,
-    go_to_end = function(p)
+    go_to_end = function(picker)
       vim.api.nvim_feedkeys(
         vim.api.nvim_replace_termcodes("<End>", true, false, true),
         "i",

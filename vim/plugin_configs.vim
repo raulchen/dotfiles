@@ -203,8 +203,10 @@ nnoremap <silent> <leader>gB :G blame<cr>
 """""""""""""""""""
 " vim-plugin-AnsiEsc
 """""""""""""""""""
-" Disable default mappings
-let g:no_cecutil_maps = 0
+if !has("nvim")
+  " Disable default mappings
+  let g:no_cecutil_maps = 0
+endif
 
 """""""""""""""""""
 " vim-startify

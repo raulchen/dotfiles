@@ -14,7 +14,6 @@ call extend(g:vim_plugins, [
 " UI
 call extend(g:vim_plugins, [
 \  "jszakmeister/vim-togglecursor",
-\  "powerman/vim-plugin-AnsiEsc",
 \])
 
 " Source control
@@ -39,6 +38,7 @@ if !has("nvim")
     \  "justinmk/vim-sneak",
     \  "mbbill/undotree",
     \  "michaeljsmith/vim-indent-object",
+    \  "powerman/vim-plugin-AnsiEsc",
     \])
 end
 

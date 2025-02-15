@@ -329,6 +329,22 @@ local dashboard_opts = {
   },
 }
 
+local terminal_keys = {
+  { "<c-/>", function() Snacks.terminal.toggle() end, desc = "Toggle terminal", mode = { "n", "t" } },
+  { "<c-_>", function() Snacks.terminal.toggle() end, desc = "Toggle terminal", mode = { "n", "t" } },
+  { "<c-h>", [[<c-\><c-n><c-w>h]], desc = "Window movement: left", mode = "t" },
+  { "<c-j>", [[<c-\><c-n><c-w>j]], desc = "Window movement: down", mode = "t" },
+  { "<c-k>", [[<c-\><c-n><c-w>k]], desc = "Window movement: up", mode = "t" },
+  { "<c-l>", [[<c-\><c-n><c-w>l]], desc = "Window movement: right", mode = "t" },
+  -- <c-\><c-n>: return to normal mode, <c-w>z: zoom, i: enter insert mode
+  { "<c-z><c-z>", [[<c-\><c-n><c-w>zi]], desc = "Zoom", mode = "t", remap = true },
+  { "<leader>bt", function() Snacks.terminal.colorize() end, desc = "Parse terminal color codes" },
+}
+
+for _, key in ipairs(terminal_keys) do
+  table.insert(snacks_keys, key)
+end
+
 return {
   "folke/snacks.nvim",
   priority = 1000,
@@ -377,12 +393,5 @@ return {
         Snacks.toggle.zen():map("<leader>uz")
       end,
     })
-
-    local map = vim.keymap.set
-    map("n", "<c-/>", function() Snacks.terminal() end, { desc = "Terminal" })
-    map("n", "<c-_>", function() Snacks.terminal() end, { desc = "which_key_ignore" })
-    map("t", "<C-/>", "<cmd>close<cr>", { desc = "Hide Terminal" })
-    map("t", "<c-_>", "<cmd>close<cr>", { desc = "which_key_ignore" })
-    map("n", "<leader>bt", function() Snacks.terminal.colorize() end, { desc = "Parse terminal color codes" })
   end,
 }

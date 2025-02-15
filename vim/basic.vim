@@ -235,8 +235,8 @@ autocmd FileType c,cpp setlocal commentstring=//\ %s
 
 """ Key mappings
 
-let mapleader = " "
 let g:mapleader = " "
+let g:maplocalleader = "\\"
 
 "" Override builtins
 

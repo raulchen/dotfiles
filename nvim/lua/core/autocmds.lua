@@ -52,6 +52,14 @@ vim.api.nvim_create_autocmd({ "BufWritePre" }, {
   end,
 })
 
+vim.api.nvim_create_autocmd({ "VimResized" }, {
+  desc = "Equalize window sizes when vim is resized",
+  group = general_group,
+  callback = function()
+    vim.cmd("tabdo wincmd =")
+  end,
+})
+
 -- Filetype specific settings
 -- Python/Pyrex: Fold based on indentation
 api.nvim_create_autocmd('FileType', {

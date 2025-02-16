@@ -33,6 +33,10 @@ map('n', '<c-l>', '<c-w>l', { desc = 'Move to right window' })
 map('n', '<c-j>', '<c-w>j', { desc = 'Move to lower window' })
 map('n', '<c-k>', '<c-w>k', { desc = 'Move to upper window' })
 
+-- Switch quickfix
+map("n", "[q", vim.cmd.cprev, { desc = "Previous quickfix" })
+map("n", "]q", vim.cmd.cnext, { desc = "Next quickfix" })
+
 -- UI toggles
 map('n', '<leader>uh', '<cmd>set hlsearch!<cr>', { desc = 'Toggle search highlight' })
 map('n', '<leader>un', function()

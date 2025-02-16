@@ -3,8 +3,8 @@ local api = vim.api
 local general_group = api.nvim_create_augroup('GeneralSettings', { clear = true })
 local filetype_group = api.nvim_create_augroup('FileTypeSettings', { clear = true })
 
--- Return to last edit position
 api.nvim_create_autocmd('BufReadPost', {
+  desc = 'Return to last cursor position',
   group = general_group,
   pattern = '*',
   callback = function()
@@ -12,11 +12,10 @@ api.nvim_create_autocmd('BufReadPost', {
       vim.cmd('normal! g`"')
     end
   end,
-  desc = 'Restore last cursor position'
 })
 
--- Delete trailing whitespace on save
 api.nvim_create_autocmd('BufWritePre', {
+  desc = 'Trim trailing whitespaces on save',
   group = general_group,
   pattern = '*',
   callback = function()
@@ -24,7 +23,6 @@ api.nvim_create_autocmd('BufWritePre', {
     vim.cmd([[keepjumps keeppatterns %s/\s\+$//e]])
     vim.fn.winrestview(save)
   end,
-  desc = 'Trim trailing whitespace'
 })
 
 vim.api.nvim_create_autocmd("TextYankPost", {
@@ -80,8 +78,8 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
 })
 
--- Python/Pyrex: Fold based on indentation
 api.nvim_create_autocmd('FileType', {
+  desc = 'Python/Pyrex: Fold based on indentation',
   group = filetype_group,
   pattern = { 'python', 'pyrex' },
   callback = function()
@@ -90,8 +88,8 @@ api.nvim_create_autocmd('FileType', {
   end
 })
 
--- C/C++: Use //-style comments
 api.nvim_create_autocmd('FileType', {
+  desc = 'C/C++: Use //-style comments',
   group = filetype_group,
   pattern = { 'c', 'cpp' },
   callback = function()

@@ -17,7 +17,7 @@ filetype indent on
 " Set to auto read when a file is changed from the outside
 "set autoread
 
-set timeoutlen=1000
+set timeoutlen=500
 set ttimeoutlen=10
 
 " Disable mouse by default.
@@ -88,7 +88,6 @@ set mat=2
 set noerrorbells
 set novisualbell
 set t_vb=
-set tm=500
 
 " Enable syntax highlighting
 syntax enable

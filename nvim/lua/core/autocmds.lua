@@ -35,6 +35,23 @@ vim.api.nvim_create_autocmd("TextYankPost", {
   end,
 })
 
+vim.api.nvim_create_autocmd({ "BufWritePre" }, {
+  desc = "Auto create parent dir when saving a file",
+  group = general_group,
+  callback = function(event)
+    if event.match:match("^%w%w+://") then
+      return
+    end
+    local file = vim.loop.fs_realpath(event.match) or event.match
+    local dir = vim.fn.fnamemodify(file, ":p:h")
+    if vim.fn.isdirectory(dir) == 0 then
+      if vim.fn.confirm("Create directory: " .. dir .. "?", "&Yes\n&No") == 1 then
+        vim.fn.mkdir(dir, "p")
+      end
+    end
+  end,
+})
+
 -- Filetype specific settings
 -- Python/Pyrex: Fold based on indentation
 api.nvim_create_autocmd('FileType', {

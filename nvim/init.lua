@@ -1,5 +1,5 @@
 vim.cmd [[
-source ~/.vimrc
+source ~/dotfiles/vim/basic.vim
 ]]
 
 require("base.options")

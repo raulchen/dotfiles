@@ -1,3 +1,14 @@
+local tmux_navigator_keys = {
+  { "<C-M-H>", "<cmd>TmuxNavigateLeft<cr>", desc = "TmuxNavigateLeft" },
+  { "<C-M-J>", "<cmd>TmuxNavigateDown<cr>", desc = "TmuxNavigateDown" },
+  { "<C-M-K>", "<cmd>TmuxNavigateUp<cr>", desc = "TmuxNavigateUp" },
+  { "<C-M-L>", "<cmd>TmuxNavigateRight<cr>", desc = "TmuxNavigateRight" },
+  { "<C-M-H>", "<c-\\><c-n><cmd>TmuxNavigateLeft<cr>", mode = "t", desc = "TmuxNavigateLeft" },
+  { "<C-M-J>", "<c-\\><c-n><cmd>TmuxNavigateDown<cr>", mode = "t", desc = "TmuxNavigateDown" },
+  { "<C-M-K>", "<c-\\><c-n><cmd>TmuxNavigateUp<cr>", mode = "t", desc = "TmuxNavigateUp" },
+  { "<C-M-L>", "<c-\\><c-n><cmd>TmuxNavigateRight<cr>", mode = "t", desc = "TmuxNavigateRight" },
+}
+
 local function setup_whichkey(_, _)
   local wk = require("which-key")
   ---@diagnostic disable-next-line: missing-fields
@@ -42,6 +53,33 @@ local mini_surround_opts = {
 }
 
 return {
+  {
+    "christoomey/vim-tmux-navigator",
+    keys = tmux_navigator_keys,
+    init = function()
+      vim.cmd([[
+        let g:tmux_navigator_no_mappings = 1
+      ]])
+    end,
+  },
+  {
+    "tpope/vim-sleuth",
+    event = "VeryLazy",
+  },
+  {
+    "ojroques/vim-oscyank",
+    event = "VeryLazy",
+    init = function()
+      vim.cmd([[
+        let g:oscyank_silent = 1
+        " Automatically copy text that was yanked to register +.
+        autocmd TextYankPost *
+            \ if v:event.operator is 'y' && v:event.regname is '+' |
+            \ execute 'OSCYankRegister +' |
+            \ endif
+      ]])
+    end,
+  },
   {
     "folke/which-key.nvim",
     event = "VeryLazy",

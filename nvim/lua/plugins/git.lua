@@ -1,3 +1,8 @@
+local fugitive_keys = {
+  { "<leader>gg", "<cmd>Git<CR>", desc = "Git status" },
+  { "<leader>gB", "<cmd>G blame<CR>", desc = "Git blame" },
+}
+
 local function setup_gitsigns()
   require('gitsigns').setup {
     signcolumn = false,
@@ -183,6 +188,11 @@ local octo_keys = {
 }
 
 return {
+  {
+    "tpope/vim-fugitive",
+    cmd = { "Git", "G" },
+    keys = fugitive_keys,
+  },
   {
     "lewis6991/gitsigns.nvim",
     event = { "BufReadPre", "BufNewFile" },

@@ -30,7 +30,7 @@ set spelllang=en_us
 """ User Interface
 
 " Set 7 lines to the cursor - when moving vertically using j/k
-set so=7
+set scrolloff=7
 
 " Turn on the wild menu
 set wildmenu
@@ -54,7 +54,7 @@ set cursorline
 set cmdheight=1
 
 " A buffer becomes hidden when it is abandoned
-set hid
+set hidden
 
 " Configure backspace so it acts as it should act
 set backspace=eol,start,indent
@@ -82,7 +82,7 @@ set magic
 " Show matching brackets when text indicator is over them
 set showmatch
 " How many tenths of a second to blink when matching brackets
-set mat=2
+set matchtime=2
 
 " No annoying sound on errors
 set noerrorbells
@@ -97,7 +97,7 @@ set background=dark
 set encoding=utf8
 
 " Use Unix as the standard file type
-set ffs=unix,dos,mac
+set fileformats=unix,dos,mac
 
 " Support italic
 set t_ZH=[3m
@@ -148,10 +148,10 @@ set shiftwidth=4
 set tabstop=4
 
 " Linebreak on 500 characters
-set lbr
-set tw=500
+set linebreak
+set textwidth=500
 
-set ai " Auto indent
+set autoindent
 set wrap " Wrap lines
 let &showbreak = "↪ " " Show line wrap indicator
 

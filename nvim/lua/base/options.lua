@@ -11,14 +11,8 @@ opt.relativenumber = true
 -- Show incomplete commands at bottom
 opt.showcmd = true
 
--- Sets how many lines of history VIM has to remember
-opt.history = 1000
-
 -- Time to wait for mapped sequence
 opt.timeoutlen = 500
-
--- Time to wait for key code sequence
-opt.ttimeoutlen = 10
 
 -- Disable mouse by default
 opt.mouse = ''
@@ -73,30 +67,6 @@ opt.hlsearch = true
 -- Makes search act like search in modern browsers
 opt.incsearch = true
 
--- For regular expressions turn magic on
-opt.magic = true
-
--- Show matching brackets when text indicator is over them
-opt.showmatch = true
-
--- How many tenths of a second to blink when matching brackets
-opt.matchtime = 2
-
--- No annoying sound on errors
-opt.errorbells = false
-
--- No visual bell
-opt.visualbell = false
-
--- Use dark background
-opt.background = 'dark'
-
--- Set encoding
-opt.encoding = 'utf8'
-
--- Use Unix line endings
-opt.fileformats = 'unix,dos,mac'
-
 -- Enable true color support
 opt.termguicolors = true
 
@@ -137,9 +107,6 @@ opt.linebreak = true
 
 -- Maximum text width
 opt.textwidth = 500
-
--- Maintain indent
-opt.autoindent = true
 
 -- Wrap long lines
 opt.wrap = true

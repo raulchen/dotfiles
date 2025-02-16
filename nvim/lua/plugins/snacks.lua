@@ -339,10 +339,6 @@ local dashboard_opts = {
 local terminal_keys = {
   { "<c-/>", function() Snacks.terminal.toggle() end, desc = "Toggle terminal", mode = { "n", "t" } },
   { "<c-_>", function() Snacks.terminal.toggle() end, desc = "Toggle terminal", mode = { "n", "t" } },
-  { "<c-h>", [[<c-\><c-n><c-w>h]], desc = "Window movement: left", mode = "t" },
-  { "<c-j>", [[<c-\><c-n><c-w>j]], desc = "Window movement: down", mode = "t" },
-  { "<c-k>", [[<c-\><c-n><c-w>k]], desc = "Window movement: up", mode = "t" },
-  { "<c-l>", [[<c-\><c-n><c-w>l]], desc = "Window movement: right", mode = "t" },
   -- <c-\><c-n>: return to normal mode, <c-w>z: zoom, i: enter insert mode
   { "<c-z><c-z>", [[<c-\><c-n><c-w>zi]], desc = "Zoom", mode = "t", remap = true },
   { "<leader>bt", function() Snacks.terminal.colorize() end, desc = "Parse terminal color codes" },

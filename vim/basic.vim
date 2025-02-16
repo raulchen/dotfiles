@@ -159,7 +159,6 @@ let &showbreak = "↪ " " Show line wrap indicator
 """ Misc
 
 set diffopt=vertical
-set shellpipe=>
 
 """ Custom commands
 

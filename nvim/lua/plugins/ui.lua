@@ -172,7 +172,7 @@ local function setup_noice()
   require("noice").setup(opts)
 end
 
-local dot_repeatable_keymap = require("base.utils").dot_repeatable_keymap
+local dot_repeatable_keymap = require("core.utils").dot_repeatable_keymap
 
 local barbar_keys = {
   { "<tab>", "<cmd>BufferNext<cr>", desc = "Next buffer" },

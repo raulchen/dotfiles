@@ -74,7 +74,7 @@ local function setup_dap(_, _)
 end
 
 local function dap_keys()
-  local _repeatable = require("base.utils").dot_repeatable_keymap
+  local _repeatable = require("core.utils").dot_repeatable_keymap
   local _dap = function() return require("dap") end
   return {
     { "<leader>dd", function() _dap().continue() end, desc = "Start/conintue debugger" },

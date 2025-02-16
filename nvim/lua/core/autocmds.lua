@@ -27,6 +27,14 @@ api.nvim_create_autocmd('BufWritePre', {
   desc = 'Trim trailing whitespace'
 })
 
+vim.api.nvim_create_autocmd("TextYankPost", {
+  desc = "Highlight on yank",
+  group = general_group,
+  callback = function()
+    vim.highlight.on_yank({ timeout = 300 })
+  end,
+})
+
 -- Filetype specific settings
 -- Python/Pyrex: Fold based on indentation
 api.nvim_create_autocmd('FileType', {

@@ -160,13 +160,37 @@ let &showbreak = "↪ " " Show line wrap indicator
 " :W sudo saves the file
 command W w !sudo tee % > /dev/null
 
-""" Custom functions
+""" Auto Commands
 
+" Parse syntax from this many lines backwards.
+" If syntax is still incorrect, manually reparse syntax with
+" ':syntax sync fromstart'.
+autocmd BufEnter * syntax sync minlines=5000
+
+" Return to last edit position when opening files
+autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+
+" Delete trailing white space on save
 func! DeleteTrailingWhitespaces()
     exe "normal mz"
     %s/\s\+$//ge
     exe "normal `z"
 endfunc
+autocmd BufWrite * :call DeleteTrailingWhitespaces()
+
+" Python
+" Fold files based on indentation
+autocmd FileType python,pyrex set foldmethod=indent
+autocmd FileType python,pyrex set foldlevel=99
+
+" C/C++
+" Use "//"-style comments
+autocmd FileType c,cpp setlocal commentstring=//\ %s
+
+""" Key mappings
+
+let g:mapleader = " "
+let g:maplocalleader = "\\"
 
 function! GetSelection(one_line) range
     let [lnum1, col1] = getpos("'<")[1:2]
@@ -201,33 +225,6 @@ function! SwitchNumber()
         set nonumber
     endif
 endfunc
-
-""" Auto Commands
-
-" Parse syntax from this many lines backwards.
-" If syntax is still incorrect, manually reparse syntax with
-" ':syntax sync fromstart'.
-autocmd BufEnter * syntax sync minlines=5000
-
-" Return to last edit position when opening files
-autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
-
-" Delete trailing white space on save
-autocmd BufWrite * :call DeleteTrailingWhitespaces()
-
-" Python
-" Fold files based on indentation
-autocmd FileType python,pyrex set foldmethod=indent
-autocmd FileType python,pyrex set foldlevel=99
-
-" C/C++
-" Use "//"-style comments
-autocmd FileType c,cpp setlocal commentstring=//\ %s
-
-""" Key mappings
-
-let g:mapleader = " "
-let g:maplocalleader = "\\"
 
 "" Override builtins
 

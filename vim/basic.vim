@@ -122,9 +122,6 @@ endif
 
 """ Files, backups and undo
 
-set nowritebackup
-set nobackup
-
 set undofile
 if !has("nvim")
     let g:vim_data_dir = '~/.local/share/vim/'

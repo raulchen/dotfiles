@@ -27,6 +27,7 @@ map('n', '<leader>wv', '<c-w>v', { desc = 'Vertical split window' })
 map('n', '<leader>wh', '<c-w>s', { desc = 'Horizontal split window' })
 map('n', '<leader>we', '<c-w>=', { desc = 'Equalize window sizes' })
 map('n', '<leader>wx', '<c-w>c', { desc = 'Close current window' })
+map('n', '<leader>ww', '<c-w>p', { desc = 'Previous window' })
 map('n', '<c-h>', '<c-w>h', { desc = 'Move to left window' })
 map('n', '<c-l>', '<c-w>l', { desc = 'Move to right window' })
 map('n', '<c-j>', '<c-w>j', { desc = 'Move to lower window' })
@@ -105,6 +106,14 @@ map({ "i", "n", "s" }, "<esc>", function()
   vim.cmd("noh")
   return "<esc>"
 end, { expr = true, desc = "Escape and clear hlsearch" })
+
+-- Clear search, diff update and redraw
+map(
+  "n",
+  "<leader>ur",
+  "<Cmd>nohlsearch<Bar>diffupdate<Bar>normal! <C-L><CR>",
+  { desc = "Redraw / clear hlsearch / diff update" }
+)
 
 -- Custom commands
 vim.api.nvim_create_user_command('W', 'w !sudo tee % > /dev/null', {

@@ -1,6 +1,8 @@
 local opt = vim.opt
 
+-------------------
 -- General settings
+-------------------
 
 -- Show line numbers
 opt.number = true
@@ -23,7 +25,16 @@ opt.spell = true
 -- Set spellcheck language
 opt.spelllang = 'en_us'
 
+-- Confirm to save changes before exiting modified buffer
+opt.confirm = true
+
+-- Decrease update time to make features like git signs, code diagnostics,
+-- and swap file updates more responsive
+opt.updatetime = 1000
+
+--------------------------
 -- User Interface settings
+--------------------------
 
 -- Set 7 lines to the cursor - when moving vertically using j/k
 opt.scrolloff = 7
@@ -46,8 +57,8 @@ opt.ruler = true
 -- Highlight current line
 opt.cursorline = true
 
--- Height of the command bar
-opt.cmdheight = 1
+-- Hide cmdline unless needed
+opt.cmdheight = 0
 
 -- Configure backspace so it acts as it should act
 opt.backspace = 'eol,start,indent'
@@ -85,12 +96,19 @@ opt.splitright = true
 -- Merge signcolumn and number column
 opt.signcolumn = 'number'
 
+-- Preview substitutions in a split window
+opt.inccommand = 'split'
+
+-------------------------
 -- Files/backups settings
+-------------------------
 
 -- Persistent undo history
 opt.undofile = true
 
+---------------------
 -- Text/tabs settings
+---------------------
 
 -- Use spaces instead of tabs
 opt.expandtab = true
@@ -102,11 +120,20 @@ opt.smarttab = true
 opt.shiftwidth = 4
 opt.tabstop = 4
 
--- Linebreak on 500 characters
-opt.linebreak = true
+-- round indentation with `>`/`<` to shiftwidth
+opt.shiftround = true
+-- Number of space inserted for indentation,
+-- when zero the 'tabstop' value will be used
+opt.shiftwidth = 0
 
--- Maximum text width
-opt.textwidth = 500
+-- Wrap indent to match line start
+opt.breakindent = true
+
+-- Automatically adjusts indentation for new lines based on programming syntax
+opt.smartindent = true
+
+-- Ensure lines break only at specific characters (like spaces or hyphens)
+opt.linebreak = true
 
 -- Wrap long lines
 opt.wrap = true

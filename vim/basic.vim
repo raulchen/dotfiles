@@ -156,10 +156,6 @@ set ai " Auto indent
 set wrap " Wrap lines
 let &showbreak = "↪ " " Show line wrap indicator
 
-""" Misc
-
-set diffopt=vertical
-
 """ Custom commands
 
 " :W sudo saves the file

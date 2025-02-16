@@ -120,12 +120,17 @@ end
 local function picker_grep(opts)
   opts = opts or {}
   if not opts.dirs then
-    local callback = function(dir)
-      opts.dirs = { dir }
-      picker_grep(opts)
-    end
-    if prompt_for_search_dir(callback) then
-      return
+    local oil_dir = oil_current_dir()
+    if oil_dir then
+      opts.cwd = oil_dir
+    else
+      local callback = function(dir)
+        opts.dirs = { dir }
+        picker_grep(opts)
+      end
+      if prompt_for_search_dir(callback) then
+        return
+      end
     end
   end
   require("snacks.picker").grep(opts)

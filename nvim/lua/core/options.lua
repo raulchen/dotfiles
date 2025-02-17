@@ -105,6 +105,11 @@ opt.inccommand = 'split'
 -- C hides messages while scanning for completion items.
 opt.shortmess:append({ W = true, I = true, c = true, C = true })
 
+-- Override special fill chars
+opt.fillchars = {
+  diff = "╱",
+}
+
 -------------------------
 -- Files/backups settings
 -------------------------

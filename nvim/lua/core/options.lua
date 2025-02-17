@@ -151,3 +151,9 @@ opt.wrap = true
 
 -- Show line wrap indicator
 opt.showbreak = '↪ '
+
+-- Use histogram algorithm and line matching for more accurate diffs
+opt.diffopt = vim.list_extend(
+  opt.diffopt:get(),
+  { "algorithm:histogram", "linematch:60" }
+)

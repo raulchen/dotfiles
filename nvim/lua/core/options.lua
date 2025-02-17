@@ -99,6 +99,12 @@ opt.signcolumn = 'number'
 -- Preview substitutions in a split window
 opt.inccommand = 'split'
 
+-- W hides “written” messages when saving a file (“filename written”).
+-- I hides the intro screen that appears on startup.
+-- c hides completion messages like “match 1 of 2”.
+-- C hides messages while scanning for completion items.
+opt.shortmess:append({ W = true, I = true, c = true, C = true })
+
 -------------------------
 -- Files/backups settings
 -------------------------

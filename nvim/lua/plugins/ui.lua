@@ -238,7 +238,12 @@ return {
         'AndreM222/copilot-lualine',
       },
     },
-    opts = lualine_opts,
+    config = function()
+      require("lualine").setup(lualine_opts)
+      -- Lualine will reset laststatus when it's lazy loaded,
+      -- so we need to set it again.
+      vim.opt.laststatus = 3
+    end,
   },
   {
     'romgrk/barbar.nvim',

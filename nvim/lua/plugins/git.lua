@@ -1,6 +1,5 @@
 local fugitive_keys = {
   { "<leader>gg", "<cmd>Git<CR>", desc = "Git status" },
-  { "<leader>gB", "<cmd>G blame<CR>", desc = "Git blame" },
 }
 
 local function setup_gitsigns()
@@ -44,6 +43,7 @@ local function setup_gitsigns()
       map('n', '<leader>gR', gs.reset_buffer, "Reset buffer")
       map('n', '<leader>gp', gs.preview_hunk, "Preview hunk")
       map('n', '<leader>gb', function() gs.blame_line { full = true } end, "Blame line")
+      map('n', '<leader>gB', gs.blame, "Blame buffer")
       map('n', '<leader>gq', gs.setqflist, "Show buffer hunks in quickfix")
       map('n', '<leader>gQ', function() gs.setqflist('all') end, "Show all hunks in quickfix")
 

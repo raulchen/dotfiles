@@ -72,6 +72,13 @@ local diffview_keys = {
 }
 
 local diffview_opts = {
+  file_panel = {
+    win_config = {
+      type = "split",
+      position = "bottom",
+      height = 16,
+    },
+  },
   hooks = {
     ---@diagnostic disable-next-line
     view_enter = function(view)

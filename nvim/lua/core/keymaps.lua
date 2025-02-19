@@ -61,7 +61,7 @@ map('v', '<c-j>', ":m '>+1<cr>gv=gv", { desc = 'Move line(s) down' })
 map('v', '<c-k>', ":m '<-2<cr>gv=gv", { desc = 'Move line(s) up' })
 
 -- System clipboard
-map('n', '<leader>y', '"+y', { desc = 'Yank to system clipboard' })
+map({ 'n', 'v' }, '<leader>y', '"+y', { desc = 'Yank to system clipboard' })
 
 -- Command line mappings
 -- Ctrl-Y to edit command line

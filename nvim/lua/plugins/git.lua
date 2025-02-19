@@ -122,6 +122,7 @@ local function setup_octo()
 
   require("octo").setup({
     enable_builtin = true,
+    picker = "snacks",
     default_merge_method = "squash",
     mappings_disable_default = true,
     mappings = mappings,

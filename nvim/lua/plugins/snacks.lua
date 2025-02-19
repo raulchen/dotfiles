@@ -370,7 +370,7 @@ return {
       },
     },
     image = {
-      markdown = {
+      doc = {
         inline = false,
         float = true,
         max_width = 200,

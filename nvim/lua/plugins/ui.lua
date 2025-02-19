@@ -147,7 +147,6 @@ local function setup_noice()
   }
   -- Use mini view for the following verbose messages.
   local verbose_messages = {
-    "written",
     "lines yanked",
     -- lazy.nvim config change message
     "Config Change Detected",

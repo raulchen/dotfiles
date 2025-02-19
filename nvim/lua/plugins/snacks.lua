@@ -376,7 +376,16 @@ return {
         max_width = 200,
         max_height = 200,
       }
-    }
+    },
+    zen = {
+      win = {
+        width = 0.9,
+        border = "hpad",
+        backdrop = {
+          transparent = false,
+        },
+      },
+    },
   },
   keys = snacks_keys,
   init = function()

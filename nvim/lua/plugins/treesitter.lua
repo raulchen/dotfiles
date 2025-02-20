@@ -46,6 +46,7 @@ local function setup_treesitter(_, _)
         ["]k"] = { query = "@block.outer", desc = "Next block start" },
         ["]f"] = { query = "@function.outer", desc = "Next function start" },
         ["]a"] = { query = "@parameter.inner", desc = "Next parameter start" },
+        ["]C"] = { query = "@class.outer", desc = "Next class start" },
       },
       goto_next_end = {
         ["]K"] = { query = "@block.outer", desc = "Next block end" },
@@ -57,6 +58,7 @@ local function setup_treesitter(_, _)
         ["[f"] = { query = "@function.outer", desc = "Previous function start" },
         ["[a"] = { query = "@parameter.inner", desc = "Previous parameter start" },
       },
+      ["[C"] = { query = "@class.outer", desc = "Previous class start" },
       goto_previous_end = {
         ["[K"] = { query = "@block.outer", desc = "Previous block end" },
         ["[F"] = { query = "@function.outer", desc = "Previous function end" },

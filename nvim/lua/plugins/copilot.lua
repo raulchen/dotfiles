@@ -61,7 +61,7 @@ local copilot_chat_keys = {
 
 local function setup_copilot_chat()
   local opts = {
-    model = "o1",
+    model = "claude-3.5-sonnet",
     question_header = "  User ",
     answer_header = "  Copilot ",
     mappings = {

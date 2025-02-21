@@ -20,6 +20,32 @@ local copilot_opts = {
   }
 }
 
+local function save_copilot_chat(name)
+  -- Generate save name with timestamp if not provided
+  local save_name = name
+  if not save_name then
+    local timestamp = os.date("%Y%m%d_%H%M%S")
+    save_name = "save_" .. timestamp
+  end
+
+  -- Save current chat
+  vim.cmd("CopilotChatSave " .. save_name)
+
+  -- Cleanup old saves
+  local max_saves = 20
+  local save_dir = vim.fn.stdpath("data") .. "/copilotchat_history/"
+
+  local files = vim.fn.glob(save_dir .. "save_*", false, true)
+  table.sort(files, function(a, b)
+    return vim.fn.getftime(a) > vim.fn.getftime(b)
+  end)
+
+  -- Remove oldest files if exceeding max_saves
+  for i = max_saves + 1, #files do
+    vim.fn.delete(files[i])
+  end
+end
+
 local copilot_chat_keys = {
   { "<c-s>", "<CR>", ft = "copilot-chat", desc = "Submit prompt", remap = true },
   {
@@ -56,6 +82,12 @@ local copilot_chat_keys = {
     end,
     desc = "CopilotChat: Prompt actions",
     mode = { "n", "x" },
+  },
+  {
+    "<leader>aS",
+    save_copilot_chat,
+    desc = "CopilotChat: Save chat",
+    ft = "copilot-chat",
   },
 }
 

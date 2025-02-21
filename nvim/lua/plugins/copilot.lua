@@ -46,6 +46,37 @@ local function save_copilot_chat(name)
   end
 end
 
+local function load_copilot_chat()
+  require("snacks").picker({
+    title = "Copilot: Load chat",
+    finder = function()
+      -- Get list of json files from the chat save directory
+      local save_dir = vim.fn.stdpath("data") .. "/copilotchat_history"
+      local files = vim.fn.glob(save_dir .. "/*.json", false, true)
+      -- Sort files by modification time
+      table.sort(files, function(a, b)
+        return vim.fn.getftime(a) > vim.fn.getftime(b)
+      end)
+
+      local choices = {}
+      for _, file in ipairs(files) do
+        local name = vim.fn.fnamemodify(file, ":t:r")
+        table.insert(choices, {
+          text = name,
+          file = file,
+        })
+      end
+      return choices
+    end,
+    format = "text",
+    confirm = function(picker, item)
+      picker:close()
+      vim.cmd("CopilotChatLoad " .. item.text)
+      vim.cmd("CopilotChatOpen")
+    end,
+  })
+end
+
 local copilot_chat_keys = {
   { "<c-s>", "<CR>", ft = "copilot-chat", desc = "Submit prompt", remap = true },
   {
@@ -87,6 +118,12 @@ local copilot_chat_keys = {
     "<leader>aS",
     save_copilot_chat,
     desc = "CopilotChat: Save chat",
+    ft = "copilot-chat",
+  },
+  {
+    "<leader>aL",
+    load_copilot_chat,
+    desc = "CopilotChat: Load chat",
     ft = "copilot-chat",
   },
 }

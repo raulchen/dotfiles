@@ -25,7 +25,7 @@ local function save_copilot_chat(name)
   local save_name = name
   if not save_name then
     local timestamp = os.date("%Y%m%d_%H%M%S")
-    save_name = "save_" .. timestamp
+    save_name = "chat_" .. timestamp
   end
 
   -- Save current chat
@@ -35,7 +35,7 @@ local function save_copilot_chat(name)
   local max_saves = 20
   local save_dir = vim.fn.stdpath("data") .. "/copilotchat_history/"
 
-  local files = vim.fn.glob(save_dir .. "save_*", false, true)
+  local files = vim.fn.glob(save_dir .. "chat_*", false, true)
   table.sort(files, function(a, b)
     return vim.fn.getftime(a) > vim.fn.getftime(b)
   end)
@@ -115,12 +115,6 @@ local copilot_chat_keys = {
     mode = { "n", "x" },
   },
   {
-    "<leader>aS",
-    save_copilot_chat,
-    desc = "CopilotChat: Save chat",
-    ft = "copilot-chat",
-  },
-  {
     "<leader>aL",
     load_copilot_chat,
     desc = "CopilotChat: Load chat",
@@ -149,6 +143,21 @@ local function setup_copilot_chat()
       Wording = "Please improve the grammar and wording of the following text.",
       Concise = "Please rewrite the following text to make it more concise.",
     },
+    callback = function(response, source)
+      -- Automatically save chat session on each response.
+      local bufnr = source.bufnr
+      local session_name
+      local ok = pcall(function()
+        session_name = vim.api.nvim_buf_get_var(bufnr, "copilot_chat_session_name")
+      end)
+
+      if not ok then
+        local timestamp = os.date("%Y%m%d_%H%M%S")
+        session_name = "chat_" .. timestamp
+        vim.api.nvim_buf_set_var(bufnr, "copilot_chat_session_name", session_name)
+      end
+      save_copilot_chat(session_name)
+    end,
   }
   require("CopilotChat").setup(opts)
 

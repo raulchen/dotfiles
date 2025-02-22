@@ -360,7 +360,9 @@ return {
     notifier = {},
     bigfile = {},
     scroll = {},
-    gitbrowse = {},
+    gitbrowse = {
+      what = "permalink",
+    },
     explorer = {},
     dashboard = dashboard_opts,
     scope = {},

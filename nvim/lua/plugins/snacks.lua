@@ -405,6 +405,19 @@ return {
 
         Snacks.toggle.zoom():map("<leader>wz"):map("<c-w>z")
         Snacks.toggle.zen():map("<leader>uz")
+        Snacks.toggle.option("spell", { name = "spelling" }):map("<leader>us")
+        Snacks.toggle.option("wrap", { name = "wrap" }):map("<leader>uw")
+        Snacks.toggle.new({
+          id = "dark_theme",
+          name = "dark theme",
+          get = function()
+            return vim.g.colors_name == "onedark"
+          end,
+          set = function(state)
+            vim.cmd(state and "colorscheme onedark" or "colorscheme onelight")
+          end,
+        }):map(
+          "<leader>uT")
       end,
     })
   end,

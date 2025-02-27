@@ -23,7 +23,6 @@ local function setup_whichkey(_, _)
     { "<leader>f", group = "find" },
     { "<leader>fg", group = "git" },
     { "<leader>g", group = "git" },
-    { "<leader>o", group = "octo", icon = { icon = " ", color = "blue" } },
     { "<leader>os", group = "search" },
     { "<leader>s", group = "sessions" },
     { "<leader>t", group = "tabs" },

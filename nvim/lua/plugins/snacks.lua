@@ -415,6 +415,9 @@ return {
           end,
           set = function(state)
             vim.cmd(state and "colorscheme onedark" or "colorscheme onelight")
+            -- laststatus gets reset when changing colorscheme,
+            -- set it to 3 again
+            vim.opt.laststatus = 3
           end,
         }):map(
           "<leader>uT")

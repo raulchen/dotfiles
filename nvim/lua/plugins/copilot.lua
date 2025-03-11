@@ -81,7 +81,19 @@ local copilot_chat_keys = {
   { "<c-s>", "<CR>", ft = "copilot-chat", desc = "Submit prompt", remap = true },
   {
     "<leader>aa",
-    "<cmd>CopilotChatToggle<cr>",
+    function()
+      -- If not in visual mode, clear the marks.
+      -- So the chat selection will be empty.
+      local mode = vim.api.nvim_get_mode().mode
+      if not (mode:sub(1, 1) == "v" or mode:sub(1, 1) == "V" or mode == "\22") then
+        local bufnr = vim.api.nvim_get_current_buf()
+        vim.api.nvim_buf_set_mark(bufnr, '<', 0, 0, {})
+        vim.api.nvim_buf_set_mark(bufnr, '>', 0, 0, {})
+      end
+      -- Toggle CopilotChat
+      local chat = require("CopilotChat")
+      chat.toggle()
+    end,
     desc = "CopilotChat: Toggle chat window",
     mode = { "n", "x" },
   },
@@ -127,6 +139,7 @@ local function setup_copilot_chat()
     model = "claude-3.5-sonnet",
     question_header = "  User ",
     answer_header = "  Copilot ",
+    selection = require("CopilotChat.select").visual,
     mappings = {
       close = {
         insert = '', -- disable <ctrl-c> to close window

@@ -120,8 +120,7 @@ local copilot_chat_keys = {
   {
     "<leader>ap",
     function()
-      local actions = require("CopilotChat.actions")
-      require("CopilotChat.integrations.snacks").pick(actions.prompt_actions())
+      require("CopilotChat").select_prompt()
     end,
     desc = "CopilotChat: Prompt actions",
     mode = { "n", "x" },

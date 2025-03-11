@@ -131,6 +131,14 @@ local copilot_chat_keys = {
     desc = "CopilotChat: Load chat",
     ft = "copilot-chat",
   },
+  {
+    "<c-c>",
+    function()
+      require("CopilotChat").stop()
+    end,
+    desc = "CopilotChat: stop",
+    ft = "copilot-chat",
+  },
 }
 
 local function setup_copilot_chat()

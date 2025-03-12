@@ -123,25 +123,42 @@ local function setup_octo()
     },
   })
   vim.treesitter.language.register('markdown', 'octo')
-  -- Set which-key hints.
+
+  local function set_which_key(buf)
+    require('which-key').add({
+      buffer = buf,
+      { "<localleader>a", group = "assignee" },
+      { "<localleader>c", group = "comment" },
+      { "<localleader>g", group = "goto" },
+      { "<localleader>i", group = "issue" },
+      { "<localleader>l", group = "label" },
+      { "<localleader>o", group = "operation" },
+      { "<localleader>p", group = "pr" },
+      { "<localleader>r", group = "react" },
+      { "<localleader>s", group = "suggest" },
+      { "<localleader>v", group = "review" },
+    })
+  end
+
+  -- For PR review buffers ("octo") and file panel buffers ("octo_panel").
+  -- NOTE: "octo://*" file name pattern can also match the PR review buffers.
+  -- But that will lead to a weird behavior where the <localleader> mappings
+  -- are not usable until <leader> is pressed once.
   vim.api.nvim_create_autocmd("FileType", {
     pattern = { "octo", "octo_panel" },
+    callback = function(ev) set_which_key(ev.buf) end,
+  })
+
+  -- For file review buffers.
+  vim.api.nvim_create_autocmd("BufEnter", {
+    pattern = { "octo://*/review/*" },
     callback = function(ev)
-      local wk = require('which-key')
-      local keys = {
-        buffer = ev.buf,
-        { "<localleader>a", group = "assignee" },
-        { "<localleader>c", group = "comment" },
-        { "<localleader>g", group = "goto" },
-        { "<localleader>i", group = "issue" },
-        { "<localleader>l", group = "label" },
-        { "<localleader>o", group = "operation" },
-        { "<localleader>p", group = "pr" },
-        { "<localleader>r", group = "react" },
-        { "<localleader>s", group = "suggest" },
-        { "<localleader>v", group = "review" },
-      }
-      wk.add(keys)
+      if not vim.b[ev.buf].octo_setup_done then
+        vim.b[ev.buf].octo_setup_done = true
+        --- Disable snacks.scroll as it conflicts with the comment buffers
+        vim.b[ev.buf].snacks_scroll = false
+        set_which_key(ev.buf)
+      end
     end,
   })
 end

@@ -84,12 +84,16 @@ vim.api.nvim_create_autocmd("FileType", {
 })
 
 api.nvim_create_autocmd('FileType', {
-  desc = 'Python/Pyrex: Fold based on indentation',
+  desc = 'Python autocmd',
   group = filetype_group,
   pattern = { 'python', 'pyrex' },
   callback = function()
+    -- Fold based on indentation
     vim.opt_local.foldmethod = 'indent'
     vim.opt_local.foldlevel = 99
+    -- Set macro 'p' to print a debug message
+    local esc = vim.api.nvim_replace_termcodes('<esc>', true, true, true)
+    vim.fn.setreg('p', 'yoprint("=== "' .. esc .. 'PA, )' .. esc .. 'P')
   end
 })
 

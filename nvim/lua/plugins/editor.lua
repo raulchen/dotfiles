@@ -101,14 +101,6 @@ return {
     keys = flash_keys,
   },
   {
-    "echasnovski/mini.pairs",
-    version = '*',
-    event = { "InsertEnter", "CmdlineEnter" },
-    opts = {
-      modes = { insert = true, command = true, terminal = false },
-    }
-  },
-  {
     'echasnovski/mini.cursorword',
     version = '*',
     event = "VeryLazy",

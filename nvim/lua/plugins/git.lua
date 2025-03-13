@@ -127,16 +127,16 @@ local function setup_octo()
   local function set_which_key(buf)
     require('which-key').add({
       buffer = buf,
-      { "<localleader>a", group = "assignee" },
-      { "<localleader>c", group = "comment" },
-      { "<localleader>g", group = "goto" },
-      { "<localleader>i", group = "issue" },
-      { "<localleader>l", group = "label" },
-      { "<localleader>o", group = "operation" },
-      { "<localleader>p", group = "pr" },
-      { "<localleader>r", group = "react" },
-      { "<localleader>s", group = "suggest" },
-      { "<localleader>v", group = "review" },
+      { "<localleader>a", group = "assignee", icon = { icon = " ", color = "blue" }, },
+      { "<localleader>c", group = "comment", icon = { icon = " ", color = "blue" }, },
+      { "<localleader>g", group = "goto", icon = { icon = " ", color = "blue" }, },
+      { "<localleader>i", group = "issue", icon = { icon = " ", color = "blue" }, },
+      { "<localleader>l", group = "label", icon = { icon = "󰌕 ", color = "blue" }, },
+      { "<localleader>o", group = "operation", icon = { icon = " ", color = "blue" }, },
+      { "<localleader>p", group = "pr", icon = { icon = " ", color = "blue" }, },
+      { "<localleader>r", group = "react", icon = { icon = "󰞅 ", color = "blue" }, },
+      { "<localleader>s", group = "suggest", icon = { icon = "󱀡 ", color = "blue" }, },
+      { "<localleader>v", group = "review", icon = { icon = " ", color = "blue" }, },
     })
   end
 

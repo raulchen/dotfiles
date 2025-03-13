@@ -1,12 +1,10 @@
 -- Settings for each LSP server.
 local server_settings = {
-  pyright = {
-    python = {
-      analysis = {
-        autoSearchPaths = true,
-        useLibraryCodeForTypes = true,
-        diagnosticMode = 'openFilesOnly',
-      },
+  basedpyright = {
+    analysis = {
+      autoSearchPaths = true,
+      useLibraryCodeForTypes = true,
+      diagnosticMode = "openFilesOnly",
     },
   },
   lua_ls = {

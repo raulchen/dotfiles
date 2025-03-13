@@ -24,7 +24,7 @@ return {
         "bashls",
         "clangd",
         "lua_ls",
-        "pyright",
+        "basedpyright",
         "vimls",
       },
     },

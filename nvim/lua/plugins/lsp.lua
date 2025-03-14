@@ -1,10 +1,16 @@
 -- Settings for each LSP server.
 local server_settings = {
   basedpyright = {
-    analysis = {
-      autoSearchPaths = true,
-      useLibraryCodeForTypes = true,
-      diagnosticMode = "openFilesOnly",
+    -- Use ruff to organize imports.
+    disableOrganizeImports = true,
+    basedpyright = {
+      analysis = {
+        -- Use a less-strict type checking mode.
+        typeCheckingMode = "standard",
+        autoSearchPaths = true,
+        useLibraryCodeForTypes = true,
+        diagnosticMode = "openFilesOnly",
+      },
     },
   },
   lua_ls = {

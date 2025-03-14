@@ -5,11 +5,18 @@ local server_settings = {
     disableOrganizeImports = true,
     basedpyright = {
       analysis = {
+        -- NOTE: `typeCheckingMode` and `diagnosticSeverityOverrides` doesn't seem to
+        -- work on projects with a local pyrightconfig.json file
+        --
         -- Use a less-strict type checking mode.
         typeCheckingMode = "standard",
         autoSearchPaths = true,
         useLibraryCodeForTypes = true,
         diagnosticMode = "openFilesOnly",
+        diagnosticSeverityOverrides = {
+          -- Ignores "Variable not allowed in type expression".
+          reportInvalidTypeForm = false,
+        },
       },
     },
   },

@@ -6,4 +6,4 @@ pyrightconfig.json
 
 /_tmp/
 # Ignore worktree directories
-/wk-*/
+/wt-*/

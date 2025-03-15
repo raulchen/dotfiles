@@ -60,11 +60,11 @@
     swc = "switch -c"
     swm = "!git switch $(git master-branch)"
     swl = "switch -"  -- switch to last branch
-    wk = "worktree"
-    # Create a new worktree named 'wk-<branch>' with a new branch '<branch>'
-    wkc = "!f() { git worktree add wk-\"$1\" -b \"$1\"; }; f"
-    # Remove worktree and delete associated branch. Accepts either branch name or worktree name with 'wk-' prefix
-    wkd = "!f() { branch=\"${1#wk-}\"; git worktree remove wk-\"$branch\" && git branch -D \"$branch\"; }; f"
+    wt = "worktree"
+    # Create a new worktree named 'wt-<branch>' with a new branch '<branch>'
+    wtc = "!f() { git worktree add wt-\"$1\" -b \"$1\"; }; f"
+    # Remove worktree and delete associated branch. Accepts either branch name or worktree name with 'wt-' prefix
+    wtd = "!f() { branch=\"${1#wt-}\"; git worktree remove wt-\"$branch\" && git branch -D \"$branch\"; }; f"
 [include]
     path = ~/.config/git/delta.txt
 [include]

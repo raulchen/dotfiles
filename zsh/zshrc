@@ -2,7 +2,7 @@ DOTFILES=$HOME/dotfiles
 
 # === Environmental variables ===
 
-export PATH="$HOME/bin:$DOTFILES/bin:/opt/homebrew/bin:$PATH"
+export PATH="$HOME/.local/bin:$HOME/bin:$DOTFILES/bin:/opt/homebrew/bin:$PATH"
 
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8

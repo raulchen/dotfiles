@@ -30,6 +30,9 @@ function _custom_keybinds ()
     bindkey '^Y' edit-command-line
     bindkey -M vicmd '^Y' edit-command-line
 
+    # Bind Ctrl-D to delete-char, the default is list-choices
+    bindkey "^d" delete-char
+
     # Expand ".../"
     function expand-dots {
        if [[ $LBUFFER =~ ".*\.\.\.$" ]]; then

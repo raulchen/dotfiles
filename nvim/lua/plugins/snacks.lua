@@ -254,7 +254,12 @@ local picker_opts = {
         true
       )
     end,
-  }
+  },
+  formatters = {
+    file = {
+      truncate = 80,
+    },
+  },
 }
 
 -- End of snacks.picker configurations --

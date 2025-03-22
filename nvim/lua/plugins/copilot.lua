@@ -201,9 +201,10 @@ local copilot_chat_keys = {
 
 local function setup_copilot_chat()
   require("CopilotChat").setup({
-    model = "claude-3.7-sonnet",
+    model = "claude-3.7-sonnet-thought",
     question_header = "  User ",
     answer_header = "  Copilot ",
+    error_header = "   Error ",
     selection = require("CopilotChat.select").visual,
     mappings = {
       close = {

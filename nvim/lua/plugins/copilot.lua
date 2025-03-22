@@ -74,6 +74,39 @@ local function load_copilot_chat()
       vim.cmd("CopilotChatLoad " .. item.text)
       vim.cmd("CopilotChatOpen")
     end,
+    preview = function(ctx)
+      local file = io.open(ctx.item.file, "r")
+      if not file then
+        ctx.preview:set_lines({ "Unable to read file" })
+        return
+      end
+
+      local content = file:read("*a")
+      file:close()
+
+      local ok, messages = pcall(vim.json.decode, content, {
+        luanil = {
+          object = true,
+          array = true,
+        },
+      })
+
+      if not ok then
+        ctx.preview:set_lines({ "vim.fn.json_decode error" })
+        return
+      end
+
+      local config = require("CopilotChat.config")
+      local preview = {}
+      for _, message in ipairs(messages or {}) do
+        local header = message.role == "user" and config.question_header or config.answer_header
+        table.insert(preview, header .. config.separator .. "\n")
+        table.insert(preview, message.content .. "\n")
+      end
+
+      ctx.preview:highlight({ ft = "copilot-chat" })
+      ctx.preview:set_lines(preview)
+    end,
   })
 end
 

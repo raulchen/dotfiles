@@ -21,15 +21,8 @@ local copilot_opts = {
 }
 
 local function save_copilot_chat(name)
-  -- Generate save name with timestamp if not provided
-  local save_name = name
-  if not save_name then
-    local timestamp = os.date("%Y%m%d_%H%M%S")
-    save_name = "chat_" .. timestamp
-  end
-
   -- Save current chat
-  vim.cmd("CopilotChatSave " .. save_name)
+  require("CopilotChat").save(name)
 
   -- Cleanup old saves
   local max_saves = 20
@@ -43,6 +36,35 @@ local function save_copilot_chat(name)
   -- Remove oldest files if exceeding max_saves
   for i = max_saves + 1, #files do
     vim.fn.delete(files[i])
+  end
+end
+
+local CHAT_TITLE_PROMPT = [[
+Generate a short title (maximum 10 words) for the following chat.
+Use a filepath-friendly format, replace all spaces with underscores.
+Output only the title and nothing else in your response.
+
+```
+%s
+```
+]]
+
+local function auto_save_copilot_chat(response, source)
+  if vim.g.copilot_chat_title then
+    save_copilot_chat(vim.g.copilot_chat_title)
+  else
+    -- use AI to generate chat title based on first AI response to user question
+    require("CopilotChat").ask(vim.trim(CHAT_TITLE_PROMPT:format(response)), {
+      callback = function(gen_response)
+        vim.print("Generated chat title: " .. gen_response)
+        -- Prefix the title with timestamp in format YYYYMMDD_HHMMSS
+        local timestamp = os.date("%Y%m%d_%H%M%S")
+        vim.g.copilot_chat_title = timestamp .. "_" .. vim.trim(gen_response)
+        save_copilot_chat(vim.g.copilot_chat_title)
+      end,
+      -- disable updating chat buffer and history with this question
+      headless = true,
+    })
   end
 end
 
@@ -71,8 +93,10 @@ local function load_copilot_chat()
     format = "text",
     confirm = function(picker, item)
       picker:close()
-      vim.cmd("CopilotChatLoad " .. item.text)
-      vim.cmd("CopilotChatOpen")
+      local chat = require("CopilotChat")
+      chat.load(item.text)
+      chat.open()
+      vim.g.copilot_chat_title = item.text
     end,
     preview = function(ctx)
       local file = io.open(ctx.item.file, "r")
@@ -97,7 +121,7 @@ local function load_copilot_chat()
       end
 
       local config = require("CopilotChat.config")
-      local preview = {}
+      local preview = { ctx.item.text, "", }
       for _, message in ipairs(messages or {}) do
         local header = message.role == "user" and config.question_header or config.answer_header
         table.insert(preview, header .. config.separator .. "\n")
@@ -145,6 +169,7 @@ local copilot_chat_keys = {
   {
     "<leader>ax",
     function()
+      vim.g.copilot_chat_title = nil
       return require("CopilotChat").reset()
     end,
     desc = "CopilotChat: Reset",
@@ -175,7 +200,7 @@ local copilot_chat_keys = {
 }
 
 local function setup_copilot_chat()
-  local opts = {
+  require("CopilotChat").setup({
     model = "claude-3.7-sonnet",
     question_header = "  User ",
     answer_header = "  Copilot ",
@@ -196,23 +221,8 @@ local function setup_copilot_chat()
       Wording = "Please improve the grammar and wording of the following text.",
       Concise = "Please rewrite the following text to make it more concise.",
     },
-    callback = function(response, source)
-      -- Automatically save chat session on each response.
-      local bufnr = source.bufnr
-      local session_name
-      local ok = pcall(function()
-        session_name = vim.api.nvim_buf_get_var(bufnr, "copilot_chat_session_name")
-      end)
-
-      if not ok then
-        local timestamp = os.date("%Y%m%d_%H%M%S")
-        session_name = "chat_" .. timestamp
-        vim.api.nvim_buf_set_var(bufnr, "copilot_chat_session_name", session_name)
-      end
-      save_copilot_chat(session_name)
-    end,
-  }
-  require("CopilotChat").setup(opts)
+    callback = auto_save_copilot_chat,
+  })
 
   vim.api.nvim_create_autocmd("BufEnter", {
     pattern = "copilot-chat",

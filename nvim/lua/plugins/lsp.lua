@@ -64,9 +64,9 @@ local function setup_lspconfig(_, _)
   -- Global mappings.
   -- See `:help vim.diagnostic.*` for documentation on any of the below functions
   local keymap = vim.keymap.set
-  keymap('n', '<leader>cd', function() vim.diagnostic.open_float(float_win_opts) end,
+  keymap('n', '<leader>cx', function() vim.diagnostic.open_float(float_win_opts) end,
     { desc = "Show diagnostics in a floating window." })
-  keymap('n', '<leader>cD', vim.diagnostic.setqflist, { desc = "Show all diagnostics" })
+  keymap('n', '<leader>cX', vim.diagnostic.setqflist, { desc = "Show all diagnostics" })
 
   keymap('n', '[d', function() vim.diagnostic.jump({ count = 1, float = false }) end,
     { desc = "Go to previous diagnostic" })
@@ -83,45 +83,35 @@ local function setup_lspconfig(_, _)
       vim.keymap.set(mode, key, cmd, opts)
     end
 
+    local wk = require("which-key")
     local gp = require('goto-preview')
 
     local has_picker, picker = pcall(require, "snacks.picker")
-
-    local wk = require("which-key")
-    wk.add({
-      buffer = ev.buf,
-      { "<leader>cg", name = "goto" },
-    })
-
-    wk.add({
-      buffer = ev.buf,
-      { "<leader>cp", name = "preview" },
-    })
     -- See `:help vim.lsp.*` for documentation on any of the below functions
     if has_picker then
       map('n', 'gd', picker.lsp_definitions, "Go to definition")
       map('n', 'gr', picker.lsp_references, "Search references")
-      map('n', '<leader>cgd', picker.lsp_declarations, "Go to declaration")
-      map('n', '<leader>cgi', picker.lsp_implementations, "Go to implementation")
-      map('n', '<leader>cgt', picker.lsp_type_definitions, "Go to type definition")
+      map('n', '<leader>cd', picker.lsp_declarations, "Go to declaration")
+      map('n', '<leader>ci', picker.lsp_implementations, "Go to implementation")
+      map('n', '<leader>ct', picker.lsp_type_definitions, "Go to type definition")
       map('n', '<leader>cs', picker.lsp_symbols, "Search LSP symbols")
       map('n', '<leader>cS', picker.lsp_workspace_symbols, "Search LSP symbols in workspace")
     else
       map('n', 'gd', vim.lsp.buf.definition, "Go to definition")
       map('n', 'gr', vim.lsp.buf.references, "Search references")
-      map('n', '<leader>cgd', vim.lsp.buf.declaration, "Go to declaration")
-      map('n', '<leader>cgi', vim.lsp.buf.implementation, "Go to implementation")
-      map('n', '<leader>cgt', vim.lsp.buf.type_definition, "Go to type definition")
+      map('n', '<leader>cd', vim.lsp.buf.declaration, "Go to declaration")
+      map('n', '<leader>ci', vim.lsp.buf.implementation, "Go to implementation")
+      map('n', '<leader>ct', vim.lsp.buf.type_definition, "Go to type definition")
       map('n', '<leader>cs', vim.lsp.buf.document_symbol, "Search LSP symbols")
       map('n', '<leader>cS', vim.lsp.buf.workspace_symbol, "Search LSP symbols in workspace")
     end
     map('n', 'gD', gp.goto_preview_definition, "Preview definition")
+    map('n', '<leader>cD', gp.goto_preview_declaration, "Preview declaration")
+    map('n', '<leader>cI', gp.goto_preview_implementation, "Preview implementation")
+    map('n', '<leader>cT', gp.goto_preview_type_definition, "Preview type definition")
+
     map('n', 'K', function() vim.lsp.buf.hover(float_win_opts) end, "Display hover information")
     map('i', '<C-k>', function() vim.lsp.buf.signature_help(float_win_opts) end, "Show signature")
-
-    map('n', '<leader>cpd', gp.goto_preview_declaration, "Preview declaration")
-    map('n', '<leader>cpi', gp.goto_preview_implementation, "Preview implementation")
-    map('n', '<leader>cpt', gp.goto_preview_type_definition, "Preview type definition")
 
     map('n', '<leader>cr', vim.lsp.buf.rename, "Rename symbol under cursor")
     map('n', '<leader>ca', vim.lsp.buf.code_action, "Code action")

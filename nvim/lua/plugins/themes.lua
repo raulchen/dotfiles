@@ -15,6 +15,7 @@ local function setup_onedarkpro(_, _)
     fg = color.brighten("fg", 5, "onedark"),
     comment = color.lighten("comment", 5, "onedark"),
     cursorline = color.lighten("#282A36", 10),
+    float_bg = '#323540',
   }
 
   local light_colors = {

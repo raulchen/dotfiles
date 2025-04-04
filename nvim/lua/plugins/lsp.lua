@@ -65,8 +65,9 @@ local function setup_lspconfig(_, _)
   keymap('n', '<leader>cd', vim.diagnostic.open_float, { desc = "Show diagnostics in a floating window." })
   keymap('n', '<leader>cD', vim.diagnostic.setqflist, { desc = "Show all diagnostics" })
 
-  keymap('n', '[d', function() vim.diagnostic.goto_prev({ float = false }) end, { desc = "Go to previous diagnostic" })
-  keymap('n', ']d', function() vim.diagnostic.goto_next({ float = false }) end, { desc = "Go to next diagnostic" })
+  keymap('n', '[d', function() vim.diagnostic.jump({ count = 1, float = false }) end,
+    { desc = "Go to previous diagnostic" })
+  keymap('n', ']d', function() vim.diagnostic.jump({ count = -1, float = false }) end, { desc = "Go to next diagnostic" })
 
   -- Buffer local mappings.
   local on_attach = function(ev)

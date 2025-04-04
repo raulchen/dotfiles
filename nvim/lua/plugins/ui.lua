@@ -168,6 +168,9 @@ local function setup_noice()
       find = msg,
     })
   end
+  opts.presets = {
+    lsp_doc_border = true,
+  }
   require("noice").setup(opts)
 end
 

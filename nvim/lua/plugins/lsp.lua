@@ -59,10 +59,13 @@ end
 local function setup_lspconfig(_, _)
   vim.lsp.set_log_level("warn")
 
+  local float_win_opts = { border = 'rounded' }
+
   -- Global mappings.
   -- See `:help vim.diagnostic.*` for documentation on any of the below functions
   local keymap = vim.keymap.set
-  keymap('n', '<leader>cd', vim.diagnostic.open_float, { desc = "Show diagnostics in a floating window." })
+  keymap('n', '<leader>cd', function() vim.diagnostic.open_float(float_win_opts) end,
+    { desc = "Show diagnostics in a floating window." })
   keymap('n', '<leader>cD', vim.diagnostic.setqflist, { desc = "Show all diagnostics" })
 
   keymap('n', '[d', function() vim.diagnostic.jump({ count = 1, float = false }) end,
@@ -113,8 +116,8 @@ local function setup_lspconfig(_, _)
       map('n', '<leader>cS', vim.lsp.buf.workspace_symbol, "Search LSP symbols in workspace")
     end
     map('n', 'gD', gp.goto_preview_definition, "Preview definition")
-    map('n', 'K', vim.lsp.buf.hover, "Display hover information")
-    map('i', '<C-k>', vim.lsp.buf.signature_help, "Show signature")
+    map('n', 'K', function() vim.lsp.buf.hover(float_win_opts) end, "Display hover information")
+    map('i', '<C-k>', function() vim.lsp.buf.signature_help(float_win_opts) end, "Show signature")
 
     map('n', '<leader>cpd', gp.goto_preview_declaration, "Preview declaration")
     map('n', '<leader>cpi', gp.goto_preview_implementation, "Preview implementation")

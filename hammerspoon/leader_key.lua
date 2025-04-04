@@ -102,4 +102,31 @@ for k, v in pairs(raycast_shortcuts) do
     module.bind(k[1], k[2], function() hs.execute("open -g " .. v) end)
 end
 
+-- App shortcuts
+local app_shortcuts = {
+    -- Browser
+    [{ { 'ctrl' }, 'b' }] = "com.apple.Safari",
+    -- Terminal
+    [{ { 'ctrl' }, 't' }] = "com.mitchellh.ghostty",
+    -- Slack
+    [{ { 'ctrl' }, 's' }] = "com.tinyspeck.slackmacgap",
+    -- Notes
+    [{ { 'ctrl' }, 'n' }] = "com.apple.Notes",
+    -- Message
+    [{ { 'ctrl' }, 'm' }] = "com.apple.MobileSMS",
+    -- Calendar
+    [{ { 'ctrl' }, 'c' }] = "com.apple.iCal",
+}
+
+for k, v in pairs(app_shortcuts) do
+    module.bind(k[1], k[2], function()
+        local app = hs.application.find(v)
+        if app then
+            app:activate()
+        else
+            hs.application.launchOrFocusByBundleID(v)
+        end
+    end)
+end
+
 return module

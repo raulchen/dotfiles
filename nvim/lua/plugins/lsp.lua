@@ -59,7 +59,7 @@ end
 local function setup_lspconfig(_, _)
   vim.lsp.set_log_level("warn")
 
-  local float_win_opts = { border = 'rounded' }
+  local float_win_opts = { border = 'single' }
 
   -- Global mappings.
   -- See `:help vim.diagnostic.*` for documentation on any of the below functions

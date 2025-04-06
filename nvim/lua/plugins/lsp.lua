@@ -36,8 +36,7 @@ local server_settings = {
 }
 
 local function setup_server(server)
-  -- Add additional capabilities supported by nvim-cmp
-  local capabilities = require('cmp_nvim_lsp').default_capabilities()
+  local capabilities = require('blink.cmp').get_lsp_capabilities()
   local config = {
     capabilities = capabilities,
     on_attach = function(client, buf)
@@ -185,7 +184,7 @@ return {
     config = setup_lspconfig,
     dependencies = {
       'williamboman/mason-lspconfig.nvim',
-      'hrsh7th/cmp-nvim-lsp',
+      'saghen/blink.cmp',
       {
         'rmagatti/goto-preview',
         config = setup_goto_preview,

@@ -64,7 +64,6 @@ return {
       "stevearc/dressing.nvim",
       "nvim-lua/plenary.nvim",
       "MunifTanjim/nui.nvim",
-      "hrsh7th/nvim-cmp",
       "nvim-tree/nvim-web-devicons",
       "zbirenbaum/copilot.lua",
     },

@@ -53,6 +53,7 @@ local function setup_onedarkpro(_, _)
     SpellBad = { undercurl = true, sp = "${red}" },
     DiagnosticUnderlineError = { undercurl = true, sp = "${red}" },
     Title = { fg = "${cyan}", extend = true },
+    PmenuSel = { bg = "#4d505c", extend = true },
     -- Plug-ins
     -- which-key.nvim
     WhichKeyBorder = { bg = "${bg}", extend = true },

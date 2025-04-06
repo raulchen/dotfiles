@@ -136,14 +136,8 @@ local lualine_opts = {
 local function setup_noice()
   local opts = {}
   opts.lsp = {
-    override = {
-      -- override the default lsp markdown formatter with Noice
-      ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
-      -- override the lsp markdown formatter with Noice
-      ["vim.lsp.util.stylize_markdown"] = true,
-      -- override cmp documentation with Noice (requires nvim-cmp)
-      ["cmp.entry.get_documentation"] = true,
-    },
+    hover = { enabled = false, },
+    signature = { enabled = false, },
   }
   -- Use mini view for the following verbose messages.
   local verbose_messages = {
@@ -168,9 +162,6 @@ local function setup_noice()
       find = msg,
     })
   end
-  opts.presets = {
-    lsp_doc_border = true,
-  }
   require("noice").setup(opts)
 end
 

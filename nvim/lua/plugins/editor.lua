@@ -117,5 +117,8 @@ return {
     version = "*",
     event = "VeryLazy",
     opts = mini_surround_opts,
+    keys = {
+      { "gs", "+surround", mode = { "n", "x" } },
+    }
   },
 }

@@ -85,21 +85,28 @@ local function setup_lspconfig(_, _)
     local wk = require("which-key")
     local gp = require('goto-preview')
 
+    wk.add({
+      buffer = ev.buf,
+      { 'gr', name = 'LSP' },
+    })
+
     local has_picker, picker = pcall(require, "snacks.picker")
     -- See `:help vim.lsp.*` for documentation on any of the below functions
     if has_picker then
       map('n', 'gd', picker.lsp_definitions, "Go to definition")
-      map('n', 'gr', picker.lsp_references, "Search references")
+      map('n', 'grr', picker.lsp_references, "Search references")
       map('n', '<leader>cd', picker.lsp_declarations, "Go to declaration")
       map('n', '<leader>ci', picker.lsp_implementations, "Go to implementation")
+      map('n', 'gri', picker.lsp_implementations, "Go to implementation")
       map('n', '<leader>ct', picker.lsp_type_definitions, "Go to type definition")
       map('n', '<leader>cs', picker.lsp_symbols, "Search LSP symbols")
       map('n', '<leader>cS', picker.lsp_workspace_symbols, "Search LSP symbols in workspace")
     else
       map('n', 'gd', vim.lsp.buf.definition, "Go to definition")
-      map('n', 'gr', vim.lsp.buf.references, "Search references")
+      map('n', 'grr', vim.lsp.buf.references, "Search references")
       map('n', '<leader>cd', vim.lsp.buf.declaration, "Go to declaration")
       map('n', '<leader>ci', vim.lsp.buf.implementation, "Go to implementation")
+      map('n', 'gri', vim.lsp.buf.implementation, "Go to implementation")
       map('n', '<leader>ct', vim.lsp.buf.type_definition, "Go to type definition")
       map('n', '<leader>cs', vim.lsp.buf.document_symbol, "Search LSP symbols")
       map('n', '<leader>cS', vim.lsp.buf.workspace_symbol, "Search LSP symbols in workspace")
@@ -113,7 +120,9 @@ local function setup_lspconfig(_, _)
     map('i', '<C-k>', function() vim.lsp.buf.signature_help(float_win_opts) end, "Show signature")
 
     map('n', '<leader>cr', vim.lsp.buf.rename, "Rename symbol under cursor")
+    map('n', 'grn', vim.lsp.buf.rename, "Rename symbol under cursor")
     map('n', '<leader>ca', vim.lsp.buf.code_action, "Code action")
+    map('n', 'gra', vim.lsp.buf.code_action, "Code action")
 
     wk.add({
       buffer = ev.buf,

@@ -5,6 +5,7 @@ local blink_opts = {
     preset = 'default',
     ['<C-p>'] = { 'show_and_insert', 'select_prev', 'fallback_to_mappings' },
     ['<C-n>'] = { 'show_and_insert', 'select_next', 'fallback_to_mappings' },
+    ['<CR>'] = { 'accept', 'fallback' },
     ['<Tab>'] = {
       function()
         if require("copilot.suggestion").is_visible() then

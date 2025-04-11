@@ -408,7 +408,7 @@ return {
         end
         vim.print = _G.dd -- Override print to use snacks for `:=` command
 
-        Snacks.toggle.zoom():map("<leader>wz"):map("<c-w>z")
+        Snacks.toggle.zoom():map("<leader>wz"):map("<c-w>z"):map("<c-z><c-z>", { mode = { "n", "v", "i" } })
         Snacks.toggle.zen():map("<leader>uz")
         Snacks.toggle.option("spell", { name = "spelling" }):map("<leader>us")
         Snacks.toggle.option("wrap", { name = "wrap" }):map("<leader>uw")

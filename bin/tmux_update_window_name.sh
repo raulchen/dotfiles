@@ -15,4 +15,4 @@ if [ -z "$pwd" ]; then
     pwd="$(pwd)"
 fi
 
-tmux_update_window_name $pwd
+tmux_update_window_name "$pwd"

@@ -13,13 +13,22 @@ local copilot_opts = {
       accept = false,
       next = "<c-s>",
       prev = "<c-s-s>",
-      accept_line = "<c-e>",
+      dismiss = "<c-e>",
     },
   },
   filetypes = {
     gitcommit = true,
   }
 }
+
+local function copilot_accept()
+  if require("copilot.suggestion").is_visible() then
+    require("copilot.suggestion").accept()
+    return true
+  else
+    return false
+  end
+end
 
 local copilot = {
   "zbirenbaum/copilot.lua",
@@ -294,7 +303,15 @@ local avante = {
 local use_avante = os.getenv("NVIM_USE_AVANTE") ~= "0"
 
 if use_avante then
-  return { copilot, avante }
+  return {
+    copilot,
+    avante,
+    copilot_accept = copilot_accept,
+  }
 else
-  return { copilot, copilot_chat }
+  return {
+    copilot,
+    copilot_chat,
+    copilot_accept = copilot_accept,
+  }
 end

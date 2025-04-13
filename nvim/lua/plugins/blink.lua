@@ -7,14 +7,15 @@ local blink_opts = {
     ['<C-n>'] = { 'show_and_insert', 'select_next', 'fallback_to_mappings' },
     ['<CR>'] = { 'accept', 'fallback' },
     ['<Tab>'] = {
-      function()
-        if require("copilot.suggestion").is_visible() then
-          require("copilot.suggestion").accept()
-          return true
-        else
-          return false
-        end
-      end, 'snippet_forward', 'fallback' },
+      function() return require("plugins.copilot").copilot_accept() end,
+      'snippet_forward',
+      'fallback',
+    },
+    ['<C-y>'] = {
+      function() return require("plugins.copilot").copilot_accept() end,
+      'select_and_accept',
+      'fallback',
+    },
   },
   cmdline = {
     keymap = {

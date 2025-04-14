@@ -27,7 +27,7 @@
     cpc = "cherry-pick --continue"
     df = "diff"
     dfc = "diff --cached"
-    dfm = "!git diff $(git master-branch)"
+    dfm = "!git diff $(git merge-base $(git master-branch) HEAD)"
     dfs = "!DELTA_FEATURES=+side-by-side git diff"
     fc = "fetch"
     lg = "log"

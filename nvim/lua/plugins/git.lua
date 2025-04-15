@@ -91,64 +91,11 @@ local function toggle_diffview()
     {
       name = "Pick a commit",
       action = function()
-        require("snacks").picker({
+        require("snacks.picker").git_log({
           title = "Select commit for diff",
-          finder = function()
-            -- Get list of commits using jobstart
-            local commits = {}
-            local job = vim.fn.jobstart({ 'git', 'log', '--pretty=format:%h %s (%ar)', '-n', '100' }, {
-              stdout_buffered = true,
-              on_stdout = function(_, data)
-                if not data then return end
-
-                for _, line in ipairs(data) do
-                  if line and line ~= "" then
-                    local hash = line:match("^(%S+)")
-                    if hash then
-                      table.insert(commits, {
-                        text = line,
-                        hash = hash
-                      })
-                    end
-                  end
-                end
-              end,
-              on_stderr = function(_, data)
-                if data and data[1] and data[1] ~= "" then
-                  vim.schedule(function()
-                    vim.notify("Error getting git log: " .. table.concat(data, "\n"), vim.log.levels.ERROR)
-                  end)
-                end
-              end
-            })
-
-            -- Wait for job to complete
-            vim.fn.jobwait({ job })
-            return commits
-          end,
-          format = "text",
           confirm = function(picker, item)
             picker:close()
-            vim.cmd("DiffviewOpen " .. item.hash)
-          end,
-          preview = function(ctx)
-            local lines = {}
-            local job = vim.fn.jobstart({ 'git', 'show', ctx.item.hash, '--stat', '--patch' }, {
-              stdout_buffered = true,
-              on_stdout = function(_, data)
-                if data then
-                  for _, line in ipairs(data) do
-                    if line then
-                      table.insert(lines, line)
-                    end
-                  end
-                end
-              end,
-            })
-
-            vim.fn.jobwait({ job })
-            ctx.preview:highlight({ ft = "diff" })
-            ctx.preview:set_lines(lines)
+            vim.cmd("DiffviewOpen " .. item.commit)
           end,
         })
       end

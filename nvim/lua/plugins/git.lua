@@ -53,19 +53,83 @@ local function setup_gitsigns()
   }
 end
 
-local diffview_keys = {
-  {
-    '<leader>gd',
-    function()
-      if vim.g.diffview_open then
-        vim.cmd("DiffviewClose")
-      else
-        vim.api.nvim_feedkeys(":DiffviewOpen ", "c", true)
+local function toggle_diffview()
+  if vim.g.diffview_open then
+    vim.cmd("DiffviewClose")
+    return
+  end
+
+  -- Define the diff options with their corresponding action functions
+  local diff_options = {
+    {
+      name = "Index (Working tree)",
+      action = function() vim.cmd("DiffviewOpen") end
+    },
+    {
+      name = "master",
+      action = function() vim.cmd("DiffviewOpen master") end
+    },
+    {
+      name = "Merge-base with master",
+      action = function()
+        vim.fn.jobstart({ 'git', 'merge-base', 'HEAD', 'master' }, {
+          stdout_buffered = true,
+          on_stdout = function(_, data)
+            if data and data[1] and data[1] ~= "" then
+              local merge_base = data[1]:gsub("%s+$", "") -- Trim whitespace
+              vim.schedule(function()
+                vim.cmd("DiffviewOpen " .. merge_base)
+              end)
+            end
+          end,
+          on_stderr = function(_, data)
+            if data and data[1] and data[1] ~= "" then
+              vim.schedule(function()
+                vim.notify("Error getting merge-base: " .. table.concat(data, "\n"), vim.log.levels.ERROR)
+              end)
+            end
+          end
+        })
       end
-    end,
-    mode = 'n',
-    desc = "Toggle diff view"
-  },
+    },
+    {
+      name = "HEAD~1",
+      action = function() vim.cmd("DiffviewOpen HEAD~1") end
+    },
+    {
+      name = "HEAD~2",
+      action = function() vim.cmd("DiffviewOpen HEAD~2") end
+    },
+    {
+      name = "HEAD~3",
+      action = function() vim.cmd("DiffviewOpen HEAD~3") end
+    },
+    {
+      name = "Specify git-rev manually",
+      action = function() vim.api.nvim_feedkeys(":DiffviewOpen ", "c", true) end
+    }
+  }
+
+  -- Get the names for the selector
+  local options = {}
+  for _, option in ipairs(diff_options) do
+    table.insert(options, option.name)
+  end
+
+  -- Show the selector
+  vim.ui.select(options, {
+    prompt = "Select git revision for diff:",
+    format_item = function(item) return item end,
+  }, function(choice, idx)
+    if not choice then return end
+
+    -- Execute the action function directly
+    diff_options[idx].action()
+  end)
+end
+
+local diffview_keys = {
+  { '<leader>gd', mode = 'n', toggle_diffview, desc = "Toggle diff view" },
   { '<leader>gh', '<cmd>DiffviewFileHistory %<CR>', mode = 'n', desc = 'Current file history' },
   { '<leader>gh', ':DiffviewFileHistory<CR>', mode = 'x', desc = 'File range history' },
   { '<leader>gl', '<cmd>DiffviewFileHistory<CR>', mode = 'n', desc = 'Git log' },

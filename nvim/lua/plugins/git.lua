@@ -66,10 +66,6 @@ local function toggle_diffview()
       action = function() vim.cmd("DiffviewOpen") end
     },
     {
-      name = "master",
-      action = function() vim.cmd("DiffviewOpen master") end
-    },
-    {
       name = "Merge-base with master",
       action = function()
         vim.fn.jobstart({ 'git', 'merge-base', 'HEAD', 'master' }, {
@@ -93,38 +89,85 @@ local function toggle_diffview()
       end
     },
     {
-      name = "HEAD~1",
-      action = function() vim.cmd("DiffviewOpen HEAD~1") end
+      name = "Pick a commit",
+      action = function()
+        require("snacks").picker({
+          title = "Select commit for diff",
+          finder = function()
+            -- Get list of commits using jobstart
+            local commits = {}
+            local job = vim.fn.jobstart({ 'git', 'log', '--pretty=format:%h %s (%ar)', '-n', '100' }, {
+              stdout_buffered = true,
+              on_stdout = function(_, data)
+                if not data then return end
+
+                for _, line in ipairs(data) do
+                  if line and line ~= "" then
+                    local hash = line:match("^(%S+)")
+                    if hash then
+                      table.insert(commits, {
+                        text = line,
+                        hash = hash
+                      })
+                    end
+                  end
+                end
+              end,
+              on_stderr = function(_, data)
+                if data and data[1] and data[1] ~= "" then
+                  vim.schedule(function()
+                    vim.notify("Error getting git log: " .. table.concat(data, "\n"), vim.log.levels.ERROR)
+                  end)
+                end
+              end
+            })
+
+            -- Wait for job to complete
+            vim.fn.jobwait({ job })
+            return commits
+          end,
+          format = "text",
+          confirm = function(picker, item)
+            picker:close()
+            vim.cmd("DiffviewOpen " .. item.hash)
+          end,
+          preview = function(ctx)
+            local lines = {}
+            local job = vim.fn.jobstart({ 'git', 'show', ctx.item.hash, '--stat', '--patch' }, {
+              stdout_buffered = true,
+              on_stdout = function(_, data)
+                if data then
+                  for _, line in ipairs(data) do
+                    if line then
+                      table.insert(lines, line)
+                    end
+                  end
+                end
+              end,
+            })
+
+            vim.fn.jobwait({ job })
+            ctx.preview:highlight({ ft = "diff" })
+            ctx.preview:set_lines(lines)
+          end,
+        })
+      end
     },
     {
-      name = "HEAD~2",
-      action = function() vim.cmd("DiffviewOpen HEAD~2") end
-    },
-    {
-      name = "HEAD~3",
-      action = function() vim.cmd("DiffviewOpen HEAD~3") end
-    },
-    {
-      name = "Specify git-rev manually",
+      name = "Manually specify",
       action = function() vim.api.nvim_feedkeys(":DiffviewOpen ", "c", true) end
     }
   }
 
-  -- Get the names for the selector
-  local options = {}
-  for _, option in ipairs(diff_options) do
-    table.insert(options, option.name)
-  end
-
   -- Show the selector
-  vim.ui.select(options, {
+  vim.ui.select(diff_options, {
     prompt = "Select git revision for diff:",
-    format_item = function(item) return item end,
+    format_item = function(item) return item.name end,
   }, function(choice, idx)
     if not choice then return end
 
-    -- Execute the action function directly
-    diff_options[idx].action()
+    -- Execute the action function
+    choice.action()
   end)
 end
 

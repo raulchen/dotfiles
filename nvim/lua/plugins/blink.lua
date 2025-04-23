@@ -43,6 +43,12 @@ local blink_opts = {
     nerd_font_variant = 'mono'
   },
   completion = {
+    accept = {
+      auto_brackets = {
+        -- Whether to auto-insert brackets for functions
+        enabled = false,
+      }
+    },
     documentation = {
       auto_show = true,
       window = { border = 'single' }

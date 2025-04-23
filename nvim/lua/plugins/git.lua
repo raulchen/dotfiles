@@ -134,6 +134,10 @@ local diffview_opts = {
     },
   },
   hooks = {
+    diff_buf_read = function(bufnr)
+      -- Disable snacks.scroll
+      vim.b[bufnr].snacks_scroll = false
+    end,
     ---@diagnostic disable-next-line
     view_enter = function(view)
       -- Save the current view

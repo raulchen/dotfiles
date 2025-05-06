@@ -1,7 +1,6 @@
 local api = vim.api
 
 local general_group = api.nvim_create_augroup('GeneralSettings', { clear = true })
-local filetype_group = api.nvim_create_augroup('FileTypeSettings', { clear = true })
 
 api.nvim_create_autocmd('BufReadPost', {
   desc = 'Return to last cursor position',
@@ -63,6 +62,25 @@ vim.api.nvim_create_autocmd({ "VimResized" }, {
 })
 
 -- Filetype specific settings
+
+local filetype_group = api.nvim_create_augroup('FileTypeSettings', { clear = true })
+
+-- Update formatoptions for all filetypes
+vim.api.nvim_create_autocmd("FileType", {
+  group = filetype_group,
+  pattern = "*",
+  callback = function()
+    -- Use vim.schedule to ensure that the autocmd runs after the default
+    -- formatoptions are set
+    vim.schedule(function()
+      vim.opt_local.formatoptions = vim.opt_local.formatoptions
+          - "t" -- Do not auto-wrap text using textwidth
+          - "c" -- Do not auto-wrap comments using textwidth
+          - "o" -- Do not insert comment leader after hitting o/O
+          + "r" -- Automatically insert the comment leader after hitting Enter
+    end)
+  end,
+})
 
 vim.api.nvim_create_autocmd("FileType", {
   desc = "Close some filetypes with <q>",

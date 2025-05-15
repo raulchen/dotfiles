@@ -35,25 +35,6 @@ local server_settings = {
   },
 }
 
-local function setup_server(server)
-  local capabilities = require('blink.cmp').get_lsp_capabilities()
-  local config = {
-    capabilities = capabilities,
-    on_attach = function(client, buf)
-      if client.name == "clangd" then
-        -- Like "a.vim", use command "A" for switching between source/header files.
-        vim.api.nvim_buf_create_user_command(buf, 'A', "ClangdSwitchSourceHeader", { nargs = 0 })
-      end
-    end,
-  }
-  if server_settings[server] ~= nil then
-    config.settings = server_settings[server]
-  end
-  local lspconfig = require('lspconfig')
-  lspconfig[server].setup(config)
-end
-
-
 
 local function setup_lspconfig(_, _)
   vim.lsp.set_log_level("warn")
@@ -73,6 +54,12 @@ local function setup_lspconfig(_, _)
 
   -- Buffer local mappings.
   local on_attach = function(ev)
+    local client = vim.lsp.get_client_by_id(ev.data.client_id)
+    if client ~= nil and client.name == "clangd" then
+      -- Like "a.vim", use command "A" for switching between source/header files.
+      vim.api.nvim_buf_create_user_command(ev.buf, 'A', "LspClangdSwitchSourceHeader", { nargs = 0 })
+    end
+
     -- Enable completion triggered by <c-x><c-o>
     vim.bo[ev.buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
 
@@ -139,13 +126,17 @@ local function setup_lspconfig(_, _)
     callback = on_attach,
   })
 
+  local lspconfig = require("lspconfig")
   local mason_lspconfig = require("mason-lspconfig")
   local installed_servers = mason_lspconfig.get_installed_servers()
-  local handles = {}
+  local capabilities = require('blink.cmp').get_lsp_capabilities()
   for _, server in ipairs(installed_servers) do
-    handles[server] = setup_server
+    local config = {
+      capabilities = capabilities,
+      settings = server_settings[server],
+    }
+    lspconfig[server].setup(config)
   end
-  mason_lspconfig.setup_handlers(handles)
 end
 
 

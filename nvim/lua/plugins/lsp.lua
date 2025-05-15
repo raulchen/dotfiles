@@ -183,7 +183,7 @@ return {
     event = { "BufReadPre", "BufNewFile" },
     config = setup_lspconfig,
     dependencies = {
-      'williamboman/mason-lspconfig.nvim',
+      'mason-org/mason-lspconfig.nvim',
       'saghen/blink.cmp',
       {
         'rmagatti/goto-preview',

@@ -14,10 +14,10 @@ end
 
 return {
   {
-    "williamboman/mason-lspconfig.nvim",
+    "mason-org/mason-lspconfig.nvim",
     lazy = true,
     dependencies = {
-      "williamboman/mason.nvim",
+      "mason-org/mason.nvim",
     },
     opts = {
       ensure_installed = {
@@ -38,7 +38,7 @@ return {
     config = setup_mason_tool_installer,
   },
   {
-    "williamboman/mason.nvim",
+    "mason-org/mason.nvim",
     cmd = "Mason",
     build = ":MasonUpdate", -- Update registry
     opts = {},

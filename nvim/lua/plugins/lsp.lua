@@ -134,6 +134,7 @@ local function setup_lspconfig(_, _)
     local config = {
       capabilities = capabilities,
       settings = server_settings[server],
+      restart = 'off',
     }
     lspconfig[server].setup(config)
   end

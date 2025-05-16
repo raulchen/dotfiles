@@ -130,7 +130,7 @@ local diffview_opts = {
     win_config = {
       type = "split",
       position = "bottom",
-      height = 16,
+      height = 12,
     },
   },
   hooks = {

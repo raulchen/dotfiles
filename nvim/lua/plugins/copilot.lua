@@ -300,6 +300,11 @@ local avante = {
   },
 }
 
+local use_copilot = os.getenv("NVIM_USE_COPILOT") ~= "0"
+if not use_copilot then
+  return {}
+end
+
 local use_avante = os.getenv("NVIM_USE_AVANTE") ~= "0"
 
 if use_avante then

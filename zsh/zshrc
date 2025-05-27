@@ -48,6 +48,9 @@ function _custom_keybinds ()
 # otherwise they will be overridden by zsh-vi-mode.
 zvm_after_init_commands+=(_custom_keybinds)
 
+# Add custom completions to fpath
+fpath=($DOTFILES/zsh/completions $fpath)
+
 # === Antigen settings ===
 
 # Install Antigen if not already installed

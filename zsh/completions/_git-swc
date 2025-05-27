@@ -1,0 +1,5 @@
+#compdef git-swc
+
+# Use the zsh builtin git-switch completion for git-swc
+(( $+functions[_git-switch] )) || _git 2>/dev/null
+_git-switch "$@"

@@ -57,7 +57,7 @@
     ss = "stash"
     st = "status"
     sw = "switch"
-    swc = "!f() { git switch -c \"$1\" 2>/dev/null || git switch \"$1\"; }; f"
+    swc = "!git-swc"
     swm = "!git switch $(git master-branch)"
     swl = "switch -"  -- switch to last branch
     wt = "worktree"

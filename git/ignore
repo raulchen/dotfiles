@@ -3,6 +3,7 @@
 
 compile_commands.json
 pyrightconfig.json
+.clangd
 
 /_tmp/
 # Ignore worktree directories

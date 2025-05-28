@@ -57,7 +57,7 @@ local function setup_lspconfig(_, _)
     local client = vim.lsp.get_client_by_id(ev.data.client_id)
     if client ~= nil and client.name == "clangd" then
       -- Like "a.vim", use command "A" for switching between source/header files.
-      vim.api.nvim_buf_create_user_command(ev.buf, 'A', "ClangdSwitchSourceHeader", { nargs = 0 })
+      vim.api.nvim_buf_create_user_command(ev.buf, 'A', "LspClangdSwitchSourceHeader", { nargs = 0 })
     end
 
     -- Enable completion triggered by <c-x><c-o>

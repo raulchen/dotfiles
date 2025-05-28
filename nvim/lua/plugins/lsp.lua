@@ -78,10 +78,23 @@ local function setup_lspconfig(_, _)
     })
 
     local has_picker, picker = pcall(require, "snacks.picker")
+
+    local lsp_references = function()
+      vim.notify("Finding references…", vim.log.levels.INFO, {
+        title = "LSP",
+        icon = "",
+      })
+      if picker then
+        picker.lsp_references()
+      else
+        vim.lsp.buf.references()
+      end
+    end
+
     -- See `:help vim.lsp.*` for documentation on any of the below functions
     if has_picker then
       map('n', 'gd', picker.lsp_definitions, "Go to definition")
-      map('n', 'grr', picker.lsp_references, "Search references")
+      map('n', 'grr', lsp_references, "Search references")
       map('n', '<leader>cd', picker.lsp_declarations, "Go to declaration")
       map('n', '<leader>ci', picker.lsp_implementations, "Go to implementation")
       map('n', 'gri', picker.lsp_implementations, "Go to implementation")
@@ -90,7 +103,7 @@ local function setup_lspconfig(_, _)
       map('n', '<leader>cS', picker.lsp_workspace_symbols, "Search LSP symbols in workspace")
     else
       map('n', 'gd', vim.lsp.buf.definition, "Go to definition")
-      map('n', 'grr', vim.lsp.buf.references, "Search references")
+      map('n', 'grr', lsp_references, "Search references")
       map('n', '<leader>cd', vim.lsp.buf.declaration, "Go to declaration")
       map('n', '<leader>ci', vim.lsp.buf.implementation, "Go to implementation")
       map('n', 'gri', vim.lsp.buf.implementation, "Go to implementation")

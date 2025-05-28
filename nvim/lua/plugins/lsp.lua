@@ -138,19 +138,6 @@ local function setup_lspconfig(_, _)
     group = vim.api.nvim_create_augroup('UserLspConfig', {}),
     callback = on_attach,
   })
-
-  local lspconfig = require("lspconfig")
-  local mason_lspconfig = require("mason-lspconfig")
-  local installed_servers = mason_lspconfig.get_installed_servers()
-  local capabilities = require('blink.cmp').get_lsp_capabilities()
-  for _, server in ipairs(installed_servers) do
-    local config = {
-      capabilities = capabilities,
-      settings = server_settings[server],
-      restart = 'off',
-    }
-    lspconfig[server].setup(config)
-  end
 end
 
 
@@ -191,19 +178,53 @@ local function setup_tiny_inline_diagnostic()
   })
 end
 
+local function setup_mason_lspconfig()
+  local opts = {
+    automatic_enable = false,
+    ensure_installed = {
+      "bashls",
+      "clangd",
+      "lua_ls",
+      "basedpyright",
+      "vimls",
+    },
+  }
+  local mason_lspconfig = require("mason-lspconfig")
+  mason_lspconfig.setup(opts)
+
+  local installed_servers = mason_lspconfig.get_installed_servers()
+  local capabilities = require('blink.cmp').get_lsp_capabilities()
+  for _, server in ipairs(installed_servers) do
+    local config = {
+      capabilities = capabilities,
+      settings = server_settings[server],
+      restart = 'off',
+    }
+    vim.lsp.config(server, config)
+    vim.lsp.enable(server)
+  end
+end
+
 return {
   {
     'neovim/nvim-lspconfig',
     event = { "BufReadPre", "BufNewFile" },
     config = setup_lspconfig,
     dependencies = {
-      'mason-org/mason-lspconfig.nvim',
-      'saghen/blink.cmp',
       {
         'rmagatti/goto-preview',
         config = setup_goto_preview,
       },
     },
+  },
+  {
+    "mason-org/mason-lspconfig.nvim",
+    event = { "BufReadPre", "BufNewFile" },
+    dependencies = {
+      "mason-org/mason.nvim",
+      "saghen/blink.cmp",
+    },
+    config = setup_mason_lspconfig,
   },
   {
     "folke/lazydev.nvim",

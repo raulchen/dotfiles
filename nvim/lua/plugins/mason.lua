@@ -14,23 +14,6 @@ end
 
 return {
   {
-    "mason-org/mason-lspconfig.nvim",
-    lazy = true,
-    dependencies = {
-      "mason-org/mason.nvim",
-    },
-    opts = {
-      automatic_enable = false,
-      ensure_installed = {
-        "bashls",
-        "clangd",
-        "lua_ls",
-        "basedpyright",
-        "vimls",
-      },
-    },
-  },
-  {
     "WhoIsSethDaniel/mason-tool-installer.nvim",
     lazy = true,
     dependencies = {

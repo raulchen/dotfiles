@@ -120,9 +120,9 @@ end
 
 local diffview_keys = {
   { '<leader>gd', mode = 'n', toggle_diffview, desc = "Toggle diff view" },
-  { '<leader>gh', '<cmd>DiffviewFileHistory %<CR>', mode = 'n', desc = 'Current file history' },
-  { '<leader>gh', ':DiffviewFileHistory<CR>', mode = 'x', desc = 'File range history' },
-  { '<leader>gl', '<cmd>DiffviewFileHistory<CR>', mode = 'n', desc = 'Git log' },
+  { '<leader>gh', '<cmd>DiffviewFileHistory % --max-count=1000<CR>', mode = 'n', desc = 'Current file history' },
+  { '<leader>gh', ':DiffviewFileHistory --max-count=1000<CR>', mode = 'x', desc = 'File range history' },
+  { '<leader>gl', '<cmd>DiffviewFileHistory --max-count=1000<CR>', mode = 'n', desc = 'Git log' },
 }
 
 local diffview_opts = {

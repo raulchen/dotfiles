@@ -125,30 +125,48 @@ local diffview_keys = {
   { '<leader>gl', '<cmd>DiffviewFileHistory --max-count=1000<CR>', mode = 'n', desc = 'Git log' },
 }
 
-local diffview_opts = {
-  file_panel = {
-    win_config = {
-      type = "split",
-      position = "bottom",
-      height = 12,
+local function setup_diffview()
+  local keymaps = require("diffview.config").defaults.keymaps
+  keymaps = vim.deepcopy(keymaps)
+
+  for _, v in pairs(keymaps) do
+    if type(v) == "table" then
+      for _, keymap in ipairs(v) do
+        if keymap[2] and keymap[2]:find("<leader>") then
+          keymap[2] = keymap[2]:gsub("<leader>", "<localleader>")
+        end
+      end
+    end
+  end
+  keymaps.disable_defaults = true
+
+  local diffview_opts = {
+    file_panel = {
+      win_config = {
+        type = "split",
+        position = "bottom",
+        height = 12,
+      },
     },
-  },
-  hooks = {
-    diff_buf_read = function(bufnr)
-      -- Disable snacks.scroll
-      vim.b[bufnr].snacks_scroll = false
-    end,
-    ---@diagnostic disable-next-line
-    view_enter = function(view)
-      -- Save the current view
-      vim.g.diffview_open = true
-    end,
-    ---@diagnostic disable-next-line
-    view_leave = function(view)
-      vim.g.diffview_open = false
-    end,
+    keymaps = keymaps,
+    hooks = {
+      diff_buf_read = function(bufnr)
+        -- Disable snacks.scroll
+        vim.b[bufnr].snacks_scroll = false
+      end,
+      ---@diagnostic disable-next-line
+      view_enter = function(view)
+        -- Save the current view
+        vim.g.diffview_open = true
+      end,
+      ---@diagnostic disable-next-line
+      view_leave = function(view)
+        vim.g.diffview_open = false
+      end,
+    },
   }
-}
+  require("diffview").setup(diffview_opts)
+end
 
 local function setup_octo()
   local mappings = {}
@@ -287,7 +305,7 @@ return {
       "DiffviewFileHistory",
     },
     keys = diffview_keys,
-    opts = diffview_opts,
+    config = setup_diffview,
   },
   {
     'pwntester/octo.nvim',

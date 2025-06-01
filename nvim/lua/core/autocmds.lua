@@ -61,6 +61,23 @@ vim.api.nvim_create_autocmd({ "VimResized" }, {
   end,
 })
 
+vim.api.nvim_create_autocmd("BufReadPost", {
+  desc = "Prompt to resolve symlinks when opening files",
+  group = general_group,
+  callback = function(event)
+    local file = vim.api.nvim_buf_get_name(event.buf)
+    local real_file = vim.fn.resolve(file)
+    if real_file ~= file then
+      if vim.fn.confirm("File is a symlink. Resolve to original file?\n" .. real_file, "&Yes\n&No") == 1 then
+        vim.schedule(function()
+          vim.cmd("ResolveSymlink")
+        end
+        )
+      end
+    end
+  end,
+})
+
 -- Filetype specific settings
 
 local filetype_group = api.nvim_create_augroup('FileTypeSettings', { clear = true })

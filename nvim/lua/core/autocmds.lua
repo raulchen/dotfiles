@@ -65,10 +65,14 @@ vim.api.nvim_create_autocmd("BufReadPost", {
   desc = "Prompt to resolve symlinks when opening files",
   group = general_group,
   callback = function(event)
-    local file = vim.api.nvim_buf_get_name(event.buf)
-    local real_file = vim.fn.resolve(file)
-    if real_file ~= file then
-      if vim.fn.confirm("File is a symlink. Resolve to original file?\n" .. real_file, "&Yes\n&No") == 1 then
+    local buf_path = vim.api.nvim_buf_get_name(event.buf)
+    -- Skip if the buffer is not a file.
+    if vim.fn.filereadable(buf_path) == 0 then
+      return
+    end
+    local real_path = vim.fn.resolve(buf_path)
+    if real_path ~= buf_path then
+      if vim.fn.confirm("File is a symlink. Resolve to original file?\n" .. real_path, "&Yes\n&No") == 1 then
         vim.schedule(function()
           vim.cmd("ResolveSymlink")
         end

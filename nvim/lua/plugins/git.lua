@@ -19,17 +19,19 @@ local function setup_gitsigns()
       -- Navigation
       map('n', ']c', function()
         if vim.wo.diff then
-          vim.cmd.normal({ ']c', bang = true })
+          return ']c'
         else
           gs.nav_hunk('next')
+          return ''
         end
       end, "Next change/hunk", { expr = true })
 
       map('n', '[c', function()
         if vim.wo.diff then
-          vim.cmd.normal({ '[c', bang = true })
+          return '[c'
         else
           gs.nav_hunk('prev')
+          return ''
         end
       end, "Previous change/hunk", { expr = true })
 

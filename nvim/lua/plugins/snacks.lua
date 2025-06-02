@@ -175,6 +175,8 @@ local function picker_keys()
     { "<leader>f\"", function() p().registers() end, desc = "Find registers" },
     { "<leader>f'", function() p().marks() end, desc = "Find marks" },
     { "<leader>fj", function() p().jumps() end, desc = "Find jump list" },
+    { "<leader>fn", function() p().notifications() end, desc = "Find notifications" },
+    { "<leader>fh", function() p().help() end, desc = "Find help" },
     -- git
     { "<leader>fga", function() p().git_stash() end, desc = "Git stash" },
     { "<leader>fgb", function() p().git_branches() end, desc = "Git branches" },

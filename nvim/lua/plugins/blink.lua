@@ -7,12 +7,20 @@ local blink_opts = {
     ['<C-n>'] = { 'show_and_insert', 'select_next', 'fallback_to_mappings' },
     ['<CR>'] = { 'accept', 'fallback' },
     ['<Tab>'] = {
-      function() return require("plugins.copilot").copilot_accept() end,
+      function()
+        local copilot_accept = require("plugins.copilot").copilot_accept
+        if not copilot_accept then return false end
+        return copilot_accept()
+      end,
       'snippet_forward',
       'fallback',
     },
     ['<C-y>'] = {
-      function() return require("plugins.copilot").copilot_accept() end,
+      function()
+        local copilot_accept = require("plugins.copilot").copilot_accept
+        if not copilot_accept then return false end
+        return copilot_accept()
+      end,
       'select_and_accept',
       'fallback',
     },

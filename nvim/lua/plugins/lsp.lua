@@ -214,6 +214,21 @@ local function setup_mason_lspconfig()
       capabilities = capabilities,
       settings = server_settings[server],
       restart = 'off',
+      root_dir = function(bufnr, cb)
+        local uri = vim.uri_from_bufnr(bufnr)
+        -- Disable LSP for non-file buffers.
+        if not uri:match('^file://') then
+          return
+        end
+        -- Detect the root directory based on the server's default root markers.
+        local default_config = vim.lsp.config[server]
+        local root_markers = default_config.root_markers
+        if root_markers == nil then
+          root_markers = { '.git' }
+        end
+        local root = vim.fs.root(bufnr, root_markers)
+        cb(root)
+      end
     }
     vim.lsp.config(server, config)
     vim.lsp.enable(server)

@@ -8,7 +8,7 @@ local blink_opts = {
     ['<CR>'] = { 'accept', 'fallback' },
     ['<Tab>'] = {
       function()
-        local copilot_accept = require("plugins.copilot").copilot_accept
+        local copilot_accept = require("plugins.ai").copilot_accept
         if not copilot_accept then return false end
         return copilot_accept()
       end,
@@ -17,7 +17,7 @@ local blink_opts = {
     },
     ['<C-y>'] = {
       function()
-        local copilot_accept = require("plugins.copilot").copilot_accept
+        local copilot_accept = require("plugins.ai").copilot_accept
         if not copilot_accept then return false end
         return copilot_accept()
       end,

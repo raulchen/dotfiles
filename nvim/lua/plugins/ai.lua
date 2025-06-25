@@ -300,14 +300,69 @@ local avante = {
   },
 }
 
+local code_companion = {
+  "olimorris/codecompanion.nvim",
+  dependencies = {
+    "nvim-lua/plenary.nvim",
+    "nvim-treesitter/nvim-treesitter",
+  },
+  opts = {
+    strategies = {
+      chat = {
+        keymaps = {
+          send = {
+            modes = { n = { "<C-s>", "<CR>" }, i = "<C-s>" },
+            opts = {},
+          },
+          close = {
+            modes = { n = "<f13>", i = "<f13>" },
+            opts = {},
+          },
+        },
+      },
+    },
+  },
+  keys = {
+    {
+      "<leader>aa",
+      function()
+        require("codecompanion").toggle()
+      end,
+      desc = "CodeCompanion: Toggle chat",
+      mode = { "n", "x" },
+    },
+    {
+      "<leader>ai",
+      function()
+        vim.api.nvim_feedkeys(":CodeCompanion ", "n", false)
+      end,
+      desc = "CodeCompanion: inline assistant",
+      mode = { "x" },
+    }
+  },
+  cmd = {
+    "CodeCompanion",
+    "CodeCompanionActions",
+    "CodeCompanionChat",
+    "CodeCompanionCmd",
+  },
+}
+
 local use_copilot = os.getenv("NVIM_USE_COPILOT") ~= "0"
 if not use_copilot then
   return {}
 end
 
+local use_code_companion = os.getenv("NVIM_USE_CODE_COMPANION") ~= "0"
 local use_avante = os.getenv("NVIM_USE_AVANTE") ~= "0"
 
-if use_avante then
+if use_code_companion then
+  return {
+    copilot,
+    code_companion,
+    copilot_accept = copilot_accept,
+  }
+elseif use_avante then
   return {
     copilot,
     avante,

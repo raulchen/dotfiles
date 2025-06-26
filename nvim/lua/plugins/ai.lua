@@ -305,6 +305,7 @@ local code_companion = {
   dependencies = {
     "nvim-lua/plenary.nvim",
     "nvim-treesitter/nvim-treesitter",
+    "ravitemer/codecompanion-history.nvim"
   },
   opts = {
     strategies = {
@@ -318,6 +319,17 @@ local code_companion = {
             modes = { n = "<f13>", i = "<f13>" },
             opts = {},
           },
+        },
+      },
+    },
+    extensions = {
+      history = {
+        enabled = true,
+        opts = {
+          -- Keymap to open chat history
+          keymap = "<leader>aH",
+          auto_save = true,
+          expiration_days = 180,
         },
       },
     },

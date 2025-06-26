@@ -358,6 +358,9 @@ local code_companion = {
     "CodeCompanionChat",
     "CodeCompanionCmd",
   },
+  init = function()
+    require("plugins.extensions.codecompanion_notification").init()
+  end,
 }
 
 local use_copilot = os.getenv("NVIM_USE_COPILOT") ~= "0"

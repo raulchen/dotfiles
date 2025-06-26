@@ -313,11 +313,45 @@ local code_companion = {
         keymaps = {
           send = {
             modes = { n = { "<C-s>", "<CR>" }, i = "<C-s>" },
-            opts = {},
           },
           close = {
-            modes = { n = "<f13>", i = "<f13>" },
-            opts = {},
+            modes = { n = "q", i = "<f13>" },
+          },
+          regenerate = {
+            modes = { n = "<leader>ar", },
+          },
+          stop = {
+            modes = { n = "<leader>as", },
+          },
+          clear = {
+            modes = { n = "<leader>ax", },
+          },
+          yank_code = {
+            modes = { n = "<leader>ay", },
+          },
+          pin = {
+            modes = { n = "<leader>aP", },
+          },
+          watch = {
+            modes = { n = "<leader>aW", },
+          },
+          change_adapter = {
+            modes = { n = "<leader>aA", },
+          },
+          debug = {
+            modes = { n = "<leader>aD", },
+          },
+          system_prompt = {
+            modes = { n = "<leader>aS", },
+          },
+          auto_tool_mode = {
+            modes = { n = "<leader>aT", },
+          },
+          goto_file_under_cursor = {
+            modes = { n = "gf", },
+          },
+          copilot_stats = {
+            modes = { n = "<leader>aU", },
           },
         },
       },

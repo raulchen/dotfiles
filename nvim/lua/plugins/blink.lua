@@ -31,6 +31,7 @@ local blink_opts = {
       ['<C-p>'] = { 'show_and_insert', 'select_prev', 'fallback_to_mappings' },
       ['<C-n>'] = { 'show_and_insert', 'select_next', 'fallback_to_mappings' },
       ['<C-y>'] = { 'select_and_accept', 'fallback' },
+      ['<C-e>'] = { 'cancel', 'fallback_to_mappings' },
     },
     sources = function()
       local type = vim.fn.getcmdtype()

@@ -204,6 +204,31 @@ local barbar_keys = {
   }
 }
 
+local config_render_markdown = function(_, _)
+  ---@module 'render-markdown'
+  ---@type render.md.UserConfig
+  local opts = {
+    file_types = { 'markdown', 'codecompanion' },
+    heading = { icons = { '󰎤 ', '󰎧 ', '󰎪 ', '󰎭 ', '󰎱 ', '󰎳 ' } },
+    code = {
+      disable_background = true,
+      language_border = '',
+    },
+    sign = {
+      enabled = false,
+    },
+    completions = {
+      lsp = { enabled = true },
+      blink = { enabled = true, },
+    },
+  }
+  require("render-markdown").setup(opts)
+  vim.cmd [[
+    hi RenderMarkdownCode guibg=None
+    hi RenderMarkdownCodeInline guibg=None
+  ]]
+end
+
 return {
   {
     'stevearc/oil.nvim',
@@ -261,5 +286,14 @@ return {
     dependencies = {
       "MunifTanjim/nui.nvim",
     }
+  },
+  {
+    'MeanderingProgrammer/render-markdown.nvim',
+    ft = { 'markdown', 'codecompanion' },
+    dependencies = {
+      'nvim-treesitter/nvim-treesitter',
+      'nvim-tree/nvim-web-devicons',
+    },
+    config = config_render_markdown,
   },
 }

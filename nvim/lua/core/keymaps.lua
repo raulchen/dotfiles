@@ -77,6 +77,8 @@ vim.cmd([[set cedit=\<C-Y>]])
 -- Emacs-style navigation
 map('c', '<C-A>', '<Home>', { desc = 'Start of line' })
 map('c', '<C-B>', '<Left>', { desc = 'Move left' })
+-- Also map <C-V> to move left, as <C-B> is taken by Tmux.
+map('c', '<C-V>', '<Left>', { desc = 'Move left' })
 map('c', '<C-D>', '<Del>', { desc = 'Delete character' })
 map('c', '<C-E>', '<End>', { desc = 'End of line' })
 map('c', '<C-F>', '<Right>', { desc = 'Move right' })

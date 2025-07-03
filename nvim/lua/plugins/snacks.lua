@@ -355,6 +355,24 @@ local terminal_keys = {
   { "<leader>bt", function() Snacks.terminal.colorize() end, desc = "Parse terminal color codes" },
 }
 
+-- Map <A-1> to <A-9> to toggle terminals 1 to 9.
+for i = 1, 9 do
+  table.insert(terminal_keys, {
+    "<A-" .. i .. ">",
+    [[]] .. i .. [[<c-/>]],
+    desc = "Toggle terminal " .. i,
+    mode = { "n" },
+    remap = true,
+  })
+  table.insert(terminal_keys, {
+    "<A-" .. i .. ">",
+    [[<c-\><c-n>]] .. i .. [[<c-/>]],
+    desc = "Toggle terminal " .. i,
+    mode = { "t" },
+    remap = true,
+  })
+end
+
 for _, key in ipairs(terminal_keys) do
   table.insert(snacks_keys, key)
 end

@@ -231,9 +231,9 @@ local picker_opts = {
           "go_to_end",
           mode = { "i" },
         },
-        ["<c-w>w"] = {
+        ["<c-w><c-w>"] = {
           "cycle_win",
-          mode = { "n" },
+          mode = { "n", "i" },
         },
       },
     },

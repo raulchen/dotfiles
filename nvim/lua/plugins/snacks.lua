@@ -347,9 +347,25 @@ local dashboard_opts = {
   },
 }
 
+local function toggle_terminal()
+  ---@type snacks.terminal.Opts
+  local opts = {}
+  local id = vim.v.count1
+  if id > 5 then
+    -- Use float window for terminal id > 5.
+    opts.win = {
+      position = "float",
+      wo = {
+        winbar = id .. ": %{get(b:, 'term_title', '')}"
+      }
+    }
+  end
+  Snacks.terminal.toggle(nil, opts)
+end
+
 local terminal_keys = {
-  { "<c-/>", function() Snacks.terminal.toggle() end, desc = "Toggle terminal", mode = { "n", "t" } },
-  { "<c-_>", function() Snacks.terminal.toggle() end, desc = "Toggle terminal", mode = { "n", "t" } },
+  { "<c-/>", toggle_terminal, desc = "Toggle terminal", mode = { "n", "t" } },
+  { "<c-_>", toggle_terminal, desc = "Toggle terminal", mode = { "n", "t" } },
   -- <c-\><c-n>: return to normal mode, <c-w>z: zoom, i: enter insert mode
   { "<c-z><c-z>", [[<c-\><c-n><c-w>zi]], desc = "Zoom", mode = "t", remap = true },
   { "<leader>bt", function() Snacks.terminal.colorize() end, desc = "Parse terminal color codes" },

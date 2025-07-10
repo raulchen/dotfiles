@@ -397,6 +397,28 @@ local code_companion = {
   end,
 }
 
+local claude_code = {
+  "coder/claudecode.nvim",
+  dependencies = { "folke/snacks.nvim" },
+  keys = {
+    { "<leader>ac", "<cmd>ClaudeCode<cr>", desc = "Claude: Toggle window" },
+    { "<leader>aC", "<cmd>ClaudeCode --continue<cr>", desc = "Claude: Continue last conversation" },
+    { "<leader>ab", "<cmd>ClaudeCodeAdd %<cr>", desc = "Claude: Add current buffer" },
+    { "<leader>as", "<cmd>ClaudeCodeSend<cr>", mode = "v", desc = "Claude: Send selection" },
+    {
+      "<leader>as",
+      "<cmd>ClaudeCodeTreeAdd<cr>",
+      desc = "Claude: Add file",
+      ft = { "oil" },
+    },
+  },
+  opts = {
+    terminal = {
+      split_width_percentage = 0.4,
+    }
+  },
+}
+
 local use_copilot = os.getenv("NVIM_USE_COPILOT") ~= "0"
 if not use_copilot then
   return {}
@@ -409,18 +431,21 @@ if use_code_companion then
   return {
     copilot,
     code_companion,
+    claude_code,
     copilot_accept = copilot_accept,
   }
 elseif use_avante then
   return {
     copilot,
     avante,
+    claude_code,
     copilot_accept = copilot_accept,
   }
 else
   return {
     copilot,
     copilot_chat,
+    claude_code,
     copilot_accept = copilot_accept,
   }
 end

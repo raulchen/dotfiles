@@ -8,3 +8,6 @@ pyrightconfig.json
 /_tmp/
 # Ignore worktree directories
 /wt-*/
+
+# Claude Code per-project directories
+.claude/

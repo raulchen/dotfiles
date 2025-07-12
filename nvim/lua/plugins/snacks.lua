@@ -150,6 +150,101 @@ local function picker_grep_word(opts)
   require("snacks.picker").grep_word(opts)
 end
 
+local function picker_dirs(opts)
+  opts = opts or {}
+  -- Set default for hidden if not specified
+  if opts.hidden == nil then
+    opts.hidden = false
+  end
+  local search_dir
+  if not opts.cwd then
+    local oil_dir = oil_current_dir()
+    if oil_dir then
+      search_dir = oil_dir
+    else
+      local callback = function(dir)
+        opts.cwd = dir
+        picker_dirs(opts)
+      end
+      if prompt_for_search_dir(callback) then
+        return
+      else
+        search_dir = vim.fn.getcwd()
+      end
+    end
+    opts.cwd = search_dir
+  end
+  opts.title = "Directories in " .. (search_dir or opts.cwd)
+  opts.win = {
+    input = {
+      keys = {
+        ["<c-g>"] = { "toggle_hidden", mode = { "i", "n" } },
+      },
+    },
+  }
+  opts.actions = {
+    toggle_hidden = function(picker)
+      picker.opts.hidden = not (picker.opts.hidden or false)
+      if picker.opts.hidden then
+        vim.notify("Showing hidden directories")
+      else
+        vim.notify("Hiding hidden directories")
+      end
+      picker:find()
+    end,
+  }
+  local search_cwd = opts.cwd -- Capture cwd in closure
+  opts.finder = function(filter, ctx)
+    local cmd, args
+
+    -- Get current picker options (includes toggled hidden state)
+    local picker_opts = ctx.picker.opts
+
+    -- Simple command selection
+    if vim.fn.executable("fd") == 1 then
+      cmd = "fd"
+      args = { "--type", "d", "--color", "never", "-E", ".git", ".", search_cwd }
+    elseif vim.fn.executable("fdfind") == 1 then
+      cmd = "fdfind"
+      args = { "--type", "d", "--color", "never", "-E", ".git", ".", search_cwd }
+    else
+      cmd = "find"
+      args = { search_cwd, "-type", "d", "-not", "-path", "*/.*" }
+    end
+
+    -- Handle hidden directories toggle
+    if picker_opts.hidden then
+      if cmd == "fd" or cmd == "fdfind" then
+        table.insert(args, #args, "--hidden") -- Insert before path
+      elseif cmd == "find" then
+        -- Remove the hidden exclusion for find
+        for i = #args, 1, -1 do
+          if args[i] == "*/.*" and args[i - 1] == "-path" and args[i - 2] == "-not" then
+            table.remove(args, i)
+            table.remove(args, i - 1)
+            table.remove(args, i - 2)
+            break
+          end
+        end
+      end
+    end
+
+    return require("snacks.picker.source.proc").proc({
+      picker_opts,
+      {
+        cmd = cmd,
+        args = args,
+        notify = not picker_opts.live,
+        transform = function(item)
+          item.file = item.text
+          item.dir = true
+        end,
+      },
+    }, ctx)
+  end
+  require("snacks.picker")(opts)
+end
+
 local function picker_keys()
   local function p()
     return require("snacks.picker")
@@ -159,6 +254,7 @@ local function picker_keys()
     { "<leader>fR", function() p().resume() end, desc = "Resume last snacks.picker command" },
     -- Buffers and files.
     { "<leader>ff", function() picker_smart_files() end, desc = "Smart find files" },
+    { "<leader>fd", function() picker_dirs() end, desc = "Find directories" },
     { "<leader>fF", function() p().files() end, desc = "Find files" },
     { "<leader>fr", function() picker_recent() end, desc = "Find recent files" },
     { "<leader>fb", function() p().buffers() end, desc = "Find buffers" },

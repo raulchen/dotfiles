@@ -329,7 +329,7 @@ local picker_opts = {
         },
         ["<c-w><c-w>"] = {
           "cycle_win",
-          mode = { "n", "i" },
+          mode = { "n" },
         },
       },
     },

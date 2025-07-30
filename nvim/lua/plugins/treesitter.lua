@@ -95,7 +95,7 @@ end
 return {
   {
     "nvim-treesitter/nvim-treesitter",
-    event = { "BufReadPre", "BufNewFile" },
+    event = { "BufNew" },
     build = ":TSUpdate",
     config = setup_treesitter,
     dependencies = {

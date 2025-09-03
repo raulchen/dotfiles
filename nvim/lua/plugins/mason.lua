@@ -12,6 +12,10 @@ local function setup_mason_tool_installer()
   require("mason-tool-installer").check_install(false, false)
 end
 
+if os.getenv("NVIM_DEV") == "0" then
+  return {}
+end
+
 return {
   {
     "WhoIsSethDaniel/mason-tool-installer.nvim",

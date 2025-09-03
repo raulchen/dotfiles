@@ -235,6 +235,10 @@ local function setup_mason_lspconfig()
   end
 end
 
+if os.getenv("NVIM_DEV") == "0" then
+  return {}
+end
+
 return {
   {
     'neovim/nvim-lspconfig',

@@ -419,6 +419,10 @@ local claude_code = {
   },
 }
 
+if os.getenv("NVIM_DEV") == "0" then
+  return {}
+end
+
 local use_copilot = os.getenv("NVIM_USE_COPILOT") ~= "0"
 if not use_copilot then
   return {}

@@ -153,7 +153,6 @@ fi
 export FZF_FILE_PREVIEW_CMD="bat -n --color=always --line-range :$LINES {}"
 export FZF_DIR_PREVIEW_CMD="ls -1 --color=always {}"
 export FZF_PREVIEW_WINDOW="right,50%,<70(down,50%)"
-export FZF_TMUX_OPTS='-p90%,90%'
 FZF_DEFAULT_BIND="
 ctrl-q:toggle-all,
 ctrl-u:half-page-up,
@@ -163,7 +162,7 @@ ctrl-j:preview-down,
 ctrl-/:toggle-preview
 "
 FZF_DEFAULT_BIND="${FZF_DEFAULT_BIND//$'\n'/}"
-export FZF_DEFAULT_OPTS="--reverse --bind '$FZF_DEFAULT_BIND'"
+export FZF_DEFAULT_OPTS="--tmux=center,90%,90% --reverse --bind '$FZF_DEFAULT_BIND'"
 export FZF_CTRL_T_OPTS="
   --preview '[ -f {} ] && $FZF_FILE_PREVIEW_CMD || [ -d {} ] && $FZF_DIR_PREVIEW_CMD'
   --preview-window $FZF_PREVIEW_WINDOW"

@@ -9,14 +9,14 @@ fu() {
         done
         echo "/"
     }
-    local DIR=$(print_parent_dirs | fzf-tmux $FZF_TMUX_OPTS)
+    local DIR=$(print_parent_dirs | fzf)
     cd "$DIR"
 }
 
 # Git commit browser
 flog() {
   git log --oneline --decorate --color=always ${*:-} |
-  fzf-tmux $FZF_TMUX_OPTS -- --ansi --no-sort --reverse \
+  fzf -- --ansi --no-sort --reverse \
       --delimiter=' ' \
       --preview "git show {1} | bat --color=always -l gitlog --line-range :$LINES --style plain" \
       --preview-window $FZF_PREVIEW_WINDOW \
@@ -36,7 +36,7 @@ frg() {
 # Search and kill a process.
 fkill() {
     (date; ps -ef) |
-      fzf-tmux $FZF_TMUX_OPTS -- --bind='ctrl-r:reload(date; ps -ef)' \
+      fzf -- --bind='ctrl-r:reload(date; ps -ef)' \
           --header=$'Press CTRL-R to reload\n\n' --header-lines=2 \
           --preview='echo {}' --preview-window=down,3,wrap \
           | awk '{print $2}' | xargs kill -9

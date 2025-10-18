@@ -344,9 +344,6 @@ local code_companion = {
           system_prompt = {
             modes = { n = "<leader>aS", },
           },
-          auto_tool_mode = {
-            modes = { n = "<leader>aT", },
-          },
           goto_file_under_cursor = {
             modes = { n = "gf", },
           },

@@ -489,6 +489,21 @@ for _, key in ipairs(terminal_keys) do
   table.insert(snacks_keys, key)
 end
 
+for _, term in ipairs({
+  { name = "TermRight", position = "right" },
+  { name = "TermFloat", position = "float" },
+  { name = "TermBottom", position = "bottom" },
+}) do
+  vim.api.nvim_create_user_command(term.name, function(opts)
+    local cmd = opts.args ~= "" and opts.args or nil
+    Snacks.terminal.open(cmd, {
+      win = {
+        position = term.position,
+      },
+    })
+  end, { nargs = "*", complete = "shellcmd" })
+end
+
 return {
   "folke/snacks.nvim",
   priority = 1000,

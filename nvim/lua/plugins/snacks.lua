@@ -443,6 +443,16 @@ local dashboard_opts = {
   },
 }
 
+local terminal_opts = {
+  win = {
+    wo = { winhighlight = "NormalFloat:Normal" },
+    keys = {
+      hide_slash = { "<C-/>", "hide", desc = "Hide Terminal", mode = { "t", "n" } },
+      hide_underscore = { "<c-_>", "hide", desc = "which_key_ignore", mode = { "t", "n" } },
+    },
+  },
+}
+
 local function toggle_terminal()
   ---@type snacks.terminal.Opts
   local opts = {}
@@ -522,11 +532,7 @@ return {
     explorer = {},
     dashboard = dashboard_opts,
     scope = {},
-    terminal = {
-      win = {
-        wo = { winhighlight = "NormalFloat:Normal" },
-      },
-    },
+    terminal = terminal_opts,
     image = {
       doc = {
         inline = false,

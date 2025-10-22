@@ -447,6 +447,8 @@ local terminal_opts = {
       winbar = "%{b:snacks_terminal.id}: %{b:term_title}",
     },
     keys = {
+      q = false,           -- disable q to hide
+      term_normal = false, -- disable double esc to normal mode
       hide_slash = { "<C-/>", "hide", desc = "Hide Terminal", mode = { "t", "n" } },
       hide_underscore = { "<c-_>", "hide", desc = "which_key_ignore", mode = { "t", "n" } },
     },

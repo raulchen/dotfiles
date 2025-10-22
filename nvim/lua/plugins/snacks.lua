@@ -284,9 +284,6 @@ local function picker_keys()
     { "<leader>fgd", function() p().git_diff() end, desc = "Git diffs" },
     --  quickfix
     { "<leader>ff", function() p().qflist() end, desc = "Search quickfix", ft = "qf" },
-    -- LSP
-    { "<leader>ft", function() p().lsp_symbols() end, desc = "Search LSP symbols" },
-    { "<leader>fT", function() p().lsp_workspace_symbols() end, desc = "Search LSP symbols in workspace" },
   }
 end
 
@@ -462,6 +459,9 @@ local last_terminal
 
 -- Find the Snacks terminal that owns the given buffer.
 local function terminal_from_buf(buf)
+  if last_terminal and last_terminal:buf_valid() and last_terminal.buf == buf then
+    return last_terminal
+  end
   for _, term in ipairs(Snacks.terminal.list()) do
     if term:buf_valid() and term.buf == buf then
       return term
@@ -513,6 +513,7 @@ local terminal_keys = {
   -- <c-\><c-n>: return to normal mode, <c-w>z: zoom, i: enter insert mode
   { "<c-z><c-z>", [[<c-\><c-n><c-w>zi]], desc = "Zoom", mode = "t", remap = true },
   { "<leader>bt", function() Snacks.terminal.colorize() end, desc = "Parse terminal color codes" },
+  { "<leader>ft", "<cmd>TermPick<cr>", desc = "Pick a Snacks terminal" },
 }
 
 -- Map <A-1> to <A-9> to toggle terminals 1 to 9.
@@ -522,14 +523,14 @@ for i = 1, 9 do
     function() toggle_terminal(i) end,
     desc = "Toggle terminal " .. i,
     mode = { "n" },
-    remap = true,
+    remap = false,
   })
   table.insert(terminal_keys, {
     "<A-" .. i .. ">",
     function() toggle_terminal(i) end,
     desc = "Toggle terminal " .. i,
     mode = { "t" },
-    remap = true,
+    remap = false,
   })
 end
 
@@ -546,7 +547,7 @@ for _, term in ipairs({
   vim.api.nvim_create_user_command(term.name, function(opts)
     local cmd = opts.args ~= "" and opts.args or nil
     local count = (opts.count or 0) > 0 and opts.count or nil
-    local terminal = Snacks.terminal.open(cmd, {
+    local terminal = Snacks.terminal(cmd, {
       count = count,
       win = {
         position = term.position,
@@ -555,6 +556,44 @@ for _, term in ipairs({
     set_last_terminal(terminal)
   end, { nargs = "*", complete = "shellcmd", count = 0 })
 end
+
+-- Present existing Snacks terminals in a simple picker.
+vim.api.nvim_create_user_command("TermPick", function()
+  local items = {}
+  for _, term in ipairs(Snacks.terminal.list()) do
+    if term:buf_valid() then
+      local ok, info = pcall(vim.api.nvim_buf_get_var, term.buf, "snacks_terminal")
+      local id = ok and info and info.id or term.id
+      local title = vim.b[term.buf].term_title
+      items[#items + 1] = {
+        text = string.format("%s: %s", id or "?", title),
+        term = term,
+      }
+    end
+  end
+
+  if vim.tbl_isempty(items) then
+    Snacks.notify.warn("No Snacks terminals found")
+    return
+  end
+
+  Snacks.picker({
+    title = "Terminals",
+    focus = "list",
+    items = items,
+    format = "text",
+    layout = { hidden = { "preview" } },
+    confirm = function(picker, item)
+      if not item or not item.term then
+        return
+      end
+      local term = item.term
+      set_last_terminal(term)
+      term:show()
+      picker:close()
+    end,
+  })
+end, { nargs = 0 })
 
 return {
   "folke/snacks.nvim",

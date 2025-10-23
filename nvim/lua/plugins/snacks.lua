@@ -542,6 +542,7 @@ end
 
 -- Convenience commands for opening shared layouts that also update the cache.
 for _, term in ipairs({
+  { name = "Term", position = "current" },
   { name = "TermRight", position = "right" },
   { name = "TermFloat", position = "float" },
   { name = "TermBottom", position = "bottom" },
@@ -552,6 +553,9 @@ for _, term in ipairs({
     local terminal = Snacks.terminal(cmd, {
       count = count,
       win = {
+        bo = {
+          buflisted = term.position == "current",
+        },
         position = term.position,
       },
     })

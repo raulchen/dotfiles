@@ -552,7 +552,7 @@ for _, term in ipairs({
   vim.api.nvim_create_user_command(term.name, function(opts)
     local cmd = opts.args ~= "" and opts.args or nil
     local count = (opts.count or 0) > 0 and opts.count or nil
-    local terminal = Snacks.terminal(cmd, {
+    local terminal = Snacks.terminal.open(cmd, {
       count = count,
       win = {
         bo = {

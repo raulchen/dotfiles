@@ -441,6 +441,8 @@ local dashboard_opts = {
 }
 
 local terminal_opts = {
+  auto_insert = false,
+  start_insert = true,
   win = {
     wo = {
       winhighlight = "NormalFloat:Normal",

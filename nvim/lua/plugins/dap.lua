@@ -110,11 +110,7 @@ local dapui_keys = {
 }
 
 local function setup_dap_python()
-  local dap_python = require("dap-python")
-  dap_python.setup(vim.fn.stdpath('data') .. "/mason/packages/debugpy/venv/bin/python")
-  dap_python.resolve_python = function()
-    return 'python'
-  end
+  require("dap-python").setup()
 end
 
 local dap_python_keys = {

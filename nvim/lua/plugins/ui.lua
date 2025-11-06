@@ -98,8 +98,7 @@ local lualine_opts = {
         function()
           ---@diagnostic disable-next-line
           local mode = require("noice").api.statusline.mode.get()
-          local substr_idx = mode:find("recording")
-          return mode:sub(substr_idx)
+          return mode:sub(#"recording " + 1)
         end,
         cond = function()
           local exist, noice = pcall(require, "noice")

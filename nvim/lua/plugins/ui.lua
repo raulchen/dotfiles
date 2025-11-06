@@ -138,7 +138,11 @@ local lualine_opts = {
 }
 
 local function setup_noice()
-  local opts = {}
+  local opts = {
+    presets = {
+      long_message_to_split = true, -- long messages will be sent to a split
+    },
+  }
   opts.lsp = {
     hover = { enabled = false, },
     signature = { enabled = false, },

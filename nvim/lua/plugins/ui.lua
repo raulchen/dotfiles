@@ -89,6 +89,11 @@ local lualine_opts = {
     },
     lualine_x = {
       {
+        -- showcmd
+        "%S",
+        color = { fg = "orange" },
+      },
+      {
         -- Show macro recording message
         function()
           ---@diagnostic disable-next-line
@@ -105,10 +110,10 @@ local lualine_opts = {
           local mode = noice.api.statusline.mode.get()
           return mode ~= nil and mode:find("recording") ~= nil
         end,
-        color = { fg = "#ff9e64" },
+        color = { fg = "orange" },
       },
-      -- Show search count
       {
+        -- Show search count
         function()
           ---@diagnostic disable-next-line
           local search = require("noice").api.status.search.get()
@@ -120,7 +125,7 @@ local lualine_opts = {
           ---@diagnostic disable-next-line
           return exist and noice.api.status.search.has()
         end,
-        color = { fg = "#ff9e64" },
+        color = { fg = "orange" },
       },
       {
         "copilot",

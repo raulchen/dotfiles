@@ -12,6 +12,7 @@ opt.relativenumber = true
 
 -- Show incomplete commands at bottom
 opt.showcmd = true
+opt.showcmdloc = "statusline"
 
 -- Time to wait for mapped sequence
 opt.timeoutlen = 500

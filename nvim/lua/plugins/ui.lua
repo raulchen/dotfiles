@@ -76,6 +76,7 @@ local lualine_opts = {
   options = {
     section_separators = "",
     component_separators = "|",
+    globalstatus = true,
   },
   sections = {
     lualine_c = {
@@ -264,12 +265,7 @@ return {
         'AndreM222/copilot-lualine',
       },
     },
-    config = function()
-      require("lualine").setup(lualine_opts)
-      -- Lualine will reset laststatus when it's lazy loaded,
-      -- so we need to set it again.
-      vim.opt.laststatus = 3
-    end,
+    opts = lualine_opts,
   },
   {
     'romgrk/barbar.nvim',

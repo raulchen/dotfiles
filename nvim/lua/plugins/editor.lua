@@ -3,10 +3,12 @@ local tmux_navigator_keys = {
   { "<C-M-J>", "<cmd>TmuxNavigateDown<cr>", desc = "TmuxNavigateDown" },
   { "<C-M-K>", "<cmd>TmuxNavigateUp<cr>", desc = "TmuxNavigateUp" },
   { "<C-M-L>", "<cmd>TmuxNavigateRight<cr>", desc = "TmuxNavigateRight" },
+  { "<C-M-\\>", "<cmd>TmuxNavigatePrevious<cr>", desc = "TmuxNavigatePrevious" },
   { "<C-M-H>", "<c-\\><c-n><cmd>TmuxNavigateLeft<cr>", mode = "t", desc = "TmuxNavigateLeft" },
   { "<C-M-J>", "<c-\\><c-n><cmd>TmuxNavigateDown<cr>", mode = "t", desc = "TmuxNavigateDown" },
   { "<C-M-K>", "<c-\\><c-n><cmd>TmuxNavigateUp<cr>", mode = "t", desc = "TmuxNavigateUp" },
   { "<C-M-L>", "<c-\\><c-n><cmd>TmuxNavigateRight<cr>", mode = "t", desc = "TmuxNavigateRight" },
+  { "<C-M-\\>", "<c-\\><c-n><cmd>TmuxNavigatePrevious<cr>", mode= "t", desc = "TmuxNavigatePrevious" },
 }
 
 local function setup_whichkey(_, _)

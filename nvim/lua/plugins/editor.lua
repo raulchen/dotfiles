@@ -1,14 +1,9 @@
 local tmux_navigator_keys = {
-  { "<C-M-H>", "<cmd>TmuxNavigateLeft<cr>", desc = "TmuxNavigateLeft" },
-  { "<C-M-J>", "<cmd>TmuxNavigateDown<cr>", desc = "TmuxNavigateDown" },
-  { "<C-M-K>", "<cmd>TmuxNavigateUp<cr>", desc = "TmuxNavigateUp" },
-  { "<C-M-L>", "<cmd>TmuxNavigateRight<cr>", desc = "TmuxNavigateRight" },
-  { "<C-M-\\>", "<cmd>TmuxNavigatePrevious<cr>", desc = "TmuxNavigatePrevious" },
-  { "<C-M-H>", "<c-\\><c-n><cmd>TmuxNavigateLeft<cr>", mode = "t", desc = "TmuxNavigateLeft" },
-  { "<C-M-J>", "<c-\\><c-n><cmd>TmuxNavigateDown<cr>", mode = "t", desc = "TmuxNavigateDown" },
-  { "<C-M-K>", "<c-\\><c-n><cmd>TmuxNavigateUp<cr>", mode = "t", desc = "TmuxNavigateUp" },
-  { "<C-M-L>", "<c-\\><c-n><cmd>TmuxNavigateRight<cr>", mode = "t", desc = "TmuxNavigateRight" },
-  { "<C-M-\\>", "<c-\\><c-n><cmd>TmuxNavigatePrevious<cr>", mode= "t", desc = "TmuxNavigatePrevious" },
+  { "<C-M-H>", "<cmd>TmuxNavigateLeft<cr>", mode = { "n", "t", "i" }, desc = "TmuxNavigateLeft" },
+  { "<C-M-J>", "<cmd>TmuxNavigateDown<cr>", mode = { "n", "t", "i" }, desc = "TmuxNavigateDown" },
+  { "<C-M-K>", "<cmd>TmuxNavigateUp<cr>", mode = { "n", "t", "i" }, desc = "TmuxNavigateUp" },
+  { "<C-M-L>", "<cmd>TmuxNavigateRight<cr>", mode = { "n", "t", "i" }, desc = "TmuxNavigateRight" },
+  { "<C-M-\\>", "<cmd>TmuxNavigatePrevious<cr>", mode = { "n", "t", "i" }, desc = "TmuxNavigatePrevious" },
 }
 
 local function setup_whichkey(_, _)

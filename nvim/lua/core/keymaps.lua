@@ -7,6 +7,7 @@ vim.g.maplocalleader = '\\'
 -- Buffer management
 map('n', '<leader>be', '<cmd>enew<cr>', { desc = 'Create new buffer' })
 map('n', '<leader>x', '<cmd>bd<cr>', { desc = 'Delete current buffer' })
+map('n', '<leader>bx', '<cmd>bd<cr>', { desc = 'Delete current buffer' })
 map('n', '<leader>bw', '<cmd>w<cr>', { desc = 'Save current buffer' })
 map({ 'n', 'x' }, '<tab>', '<cmd>bn<cr>', { desc = 'Next buffer' })
 map({ 'n', 'x' }, '<s-tab>', '<cmd>bp<cr>', { desc = 'Previous buffer' })

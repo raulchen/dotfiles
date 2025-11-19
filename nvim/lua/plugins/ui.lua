@@ -180,10 +180,11 @@ local barbar_keys = {
   { "<tab>", "<cmd>BufferNext<cr>", desc = "Next buffer" },
   { "<s-tab>", "<cmd>BufferPrevious<cr>", desc = "Previous buffer" },
   { "<leader>x", "<cmd>BufferClose<cr>", desc = "Close buffer" },
+  { "<leader>bx", "<cmd>BufferClose<cr>", desc = "Close buffer" },
+  { "<leader>bX", "<cmd>BufferPickDelete<cr>", desc = "Pick buffer to delete" },
   { "<leader>br", "<cmd>BufferRestore<cr>", desc = "Restore buffer" },
   { "<leader>bo", "<cmd>BufferCloseAllButCurrent<cr>", desc = "Only keep current buffer" },
   { "<leader>bb", "<cmd>BufferPick<cr>", desc = "Pick buffer" },
-  { "<leader>bx", "<cmd>BufferPickDelete<cr>", desc = "Pick buffer to delete" },
   dot_repeatable_keymap({ "<leader>bn", function() vim.cmd("BufferMoveNext") end, desc = "Move buffer to next" }),
   dot_repeatable_keymap({ "<leader>bp", function() vim.cmd("BufferMovePrevious") end, desc = "Move buffer to previous" }),
   {

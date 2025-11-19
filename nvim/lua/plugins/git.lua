@@ -239,6 +239,19 @@ local function setup_octo()
       end
     end,
   })
+
+  -- Re-enable wrap when diff mode is enabled in review buffers.
+  -- When Octo calls :diffthis, it automatically sets wrap=false.
+  -- This autocmd triggers when diff is enabled and overrides that behavior.
+  vim.api.nvim_create_autocmd("OptionSet", {
+    pattern = "diff",
+    callback = function()
+      local bufname = vim.api.nvim_buf_get_name(0)
+      if bufname:match("octo://.*review") and vim.wo.diff then
+        vim.wo.wrap = true
+      end
+    end,
+  })
 end
 
 local octo_keys = {

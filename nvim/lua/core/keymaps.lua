@@ -21,6 +21,7 @@ map({ 'n', 'x' }, ']t', '<cmd>tabn<cr>', { desc = 'Next tab' })
 map({ 'n', 'x' }, '<leader>tp', '<cmd>tabp<cr>', { desc = 'Previous tab' })
 map({ 'n', 'x' }, '[t', '<cmd>tabp<cr>', { desc = 'Previous tab' })
 map('n', '<leader>tx', '<cmd>tabclose<cr>', { desc = 'Close current tab' })
+map('n', '<leader>ts', '<cmd>tab split<cr>', { desc = 'Split current window into new tab' })
 
 -- Window management
 map('n', '<leader>wv', '<c-w>v', { desc = 'Vertical split window' })

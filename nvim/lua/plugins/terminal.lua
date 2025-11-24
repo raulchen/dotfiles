@@ -80,6 +80,8 @@ local ergoterm_opts = {
       right = "40%",
       below = "40%",
     },
+    -- Remember insert/normal mode between focus sessions
+    persist_mode = true,
     -- Set winbar to show terminal name and current directory (skip floating terminals)
     on_open = function(term)
       -- Don't set winbar for floating terminals

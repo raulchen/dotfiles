@@ -8,18 +8,22 @@ local blink_opts = {
     ['<CR>'] = { 'accept', 'fallback' },
     ['<Tab>'] = {
       function()
-        local copilot_accept = require("plugins.ai").copilot_accept
-        if not copilot_accept then return false end
-        return copilot_accept()
+        local ok, ai_utils = pcall(require, "plugins.utils.ai")
+        if ok and ai_utils then
+          return ai_utils.copilot_accept()
+        end
+        return false
       end,
       'snippet_forward',
       'fallback',
     },
     ['<C-y>'] = {
       function()
-        local copilot_accept = require("plugins.ai").copilot_accept
-        if not copilot_accept then return false end
-        return copilot_accept()
+        local ok, ai_utils = pcall(require, "plugins.utils.ai")
+        if ok and ai_utils then
+          return ai_utils.copilot_accept()
+        end
+        return false
       end,
       'select_and_accept',
       'fallback',

@@ -1,3 +1,14 @@
+-- Helper function to focus or start a terminal
+local function focus_or_start_terminal(term)
+  if term:is_active() then
+    term:focus()
+  else
+    -- Terminal was cleaned up, restart it
+    term:start()
+    term:focus()
+  end
+end
+
 local function toggle_terminal(count)
   local ergoterm = require("ergoterm")
 
@@ -9,6 +20,16 @@ local function toggle_terminal(count)
     return
   end
 
+  -- If both count and vim.v.count are absent, toggle the last used terminal
+  if not count and (not vim.v.count or vim.v.count == 0) then
+    local last_term = ergoterm.get_state("last_focused")
+    if last_term then
+      focus_or_start_terminal(last_term)
+      return
+    end
+    -- If no last terminal exists, fall through to default behavior (terminal 1)
+  end
+
   -- Otherwise, open the terminal named $count
   count = count or (vim.v.count > 0 and vim.v.count) or 1
   local term_name = tostring(count)
@@ -16,13 +37,7 @@ local function toggle_terminal(count)
 
   if term then
     -- Terminal exists, focus it
-    if term:is_active() then
-      term:focus()
-    else
-      -- Terminal was cleaned up, restart it
-      term:start()
-      term:focus()
-    end
+    focus_or_start_terminal(term)
   else
     -- Create new terminal with the given name
     term = ergoterm:new({
@@ -93,8 +108,7 @@ local ergoterm_opts = {
 
 -- BEGIN AI AGENTS CONFIGURATION --
 
--- Track the last used agent and agent instances (module-level for persistence)
-local last_agent = nil
+-- Agent instances (module-level for persistence)
 local agents = {}
 
 local function ensure_ai_agents()
@@ -166,6 +180,14 @@ local function ensure_ai_agents()
   return agents
 end
 
+-- Check if a terminal is an AI agent
+local function is_ai_agent(term)
+  if not term then
+    return false
+  end
+  return vim.tbl_contains(term.tags or {}, "ai_chat")
+end
+
 -- Toggle agent terminal window, prompt to choose which agent for the first time
 local function toggle_ai_agent()
   ensure_ai_agents()
@@ -184,18 +206,18 @@ local function toggle_ai_agent()
     -- If an agent is active, toggle it
     active_chat:toggle()
   else
-    -- If no agent is active, prompt to choose
-    if last_agent then
-      -- Use last agent if available
-      last_agent:start()
-      last_agent:focus()
+    -- If no agent is active, check if last focused terminal is an AI agent
+    local last_focused = ergoterm.get_state("last_focused")
+    if last_focused and is_ai_agent(last_focused) then
+      -- Use last focused AI agent if available
+      last_focused:start()
+      last_focused:focus()
     else
       -- Show picker to choose agent
       ergoterm.select({
         terminals = agents.chats,
         prompt = "Select AI Agent to Launch",
         callbacks = function(term)
-          last_agent = term
           term:start()
           term:focus()
         end,
@@ -209,14 +231,15 @@ local function add_current_buffer()
   ensure_ai_agents()
   local ergoterm = require("ergoterm")
   local file = vim.fn.expand("%:p")
+  local last_focused = ergoterm.get_state("last_focused")
+  local default_agent = (last_focused and is_ai_agent(last_focused)) and last_focused or nil
   ergoterm.select_started({
     terminals = agents.filtered_chats,
     prompt = "Add file to chat",
     callbacks = function(term)
-      last_agent = term
       term:send({ term.meta.add_file(file) }, { new_line = false })
     end,
-    default = last_agent or agents.cursor_agent,
+    default = default_agent,
   })
 end
 
@@ -226,14 +249,15 @@ local function add_line_numbers()
   local ergoterm = require("ergoterm")
   local file = vim.fn.expand("%:p")
   local line = vim.api.nvim_win_get_cursor(0)[1]
+  local last_focused = ergoterm.get_state("last_focused")
+  local default_agent = (last_focused and is_ai_agent(last_focused)) and last_focused or nil
   ergoterm.select_started({
     terminals = agents.filtered_chats,
     prompt = "Add line numbers to chat",
     callbacks = function(term)
-      last_agent = term
       term:send({ term.meta.add_lines(file, line, line) }, { new_line = false })
     end,
-    default = last_agent or agents.cursor_agent,
+    default = default_agent,
   })
 end
 
@@ -244,14 +268,15 @@ local function add_selected_line_numbers()
   local file = vim.fn.expand("%:p")
   local start_line = vim.fn.line("'<")
   local end_line = vim.fn.line("'>")
+  local last_focused = ergoterm.get_state("last_focused")
+  local default_agent = (last_focused and is_ai_agent(last_focused)) and last_focused or nil
   ergoterm.select_started({
     terminals = agents.filtered_chats,
     prompt = "Add line numbers to chat",
     callbacks = function(term)
-      last_agent = term
       term:send({ term.meta.add_lines(file, start_line, end_line) }, { new_line = false })
     end,
-    default = last_agent or agents.cursor_agent,
+    default = default_agent,
   })
 end
 
@@ -259,14 +284,15 @@ end
 local function send_line_contents()
   ensure_ai_agents()
   local ergoterm = require("ergoterm")
+  local last_focused = ergoterm.get_state("last_focused")
+  local default_agent = (last_focused and is_ai_agent(last_focused)) and last_focused or nil
   ergoterm.select_started({
     terminals = agents.filtered_chats,
     prompt = "Send line to chat",
     callbacks = function(term)
-      last_agent = term
       term:send("single_line")
     end,
-    default = last_agent or agents.cursor_agent,
+    default = default_agent,
   })
 end
 
@@ -274,14 +300,15 @@ end
 local function send_selection_contents()
   ensure_ai_agents()
   local ergoterm = require("ergoterm")
+  local last_focused = ergoterm.get_state("last_focused")
+  local default_agent = (last_focused and is_ai_agent(last_focused)) and last_focused or nil
   ergoterm.select_started({
     terminals = agents.filtered_chats,
     prompt = "Send selection to chat",
     callbacks = function(term)
-      last_agent = term
       term:send("visual_selection", { trim = false })
     end,
-    default = last_agent or agents.cursor_agent,
+    default = default_agent,
   })
 end
 
@@ -293,7 +320,6 @@ local function list_switch_agents()
     terminals = agents.chats,
     prompt = "Select AI Agent",
     callbacks = function(term)
-      last_agent = term
       if term:is_active() then
         term:focus()
       else

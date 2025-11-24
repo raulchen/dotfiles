@@ -440,168 +440,6 @@ local dashboard_opts = {
   },
 }
 
-local terminal_opts = {
-  auto_insert = false,
-  start_insert = true,
-  win = {
-    wo = {
-      winhighlight = "NormalFloat:Normal",
-      winbar = "%{b:snacks_terminal.id}: %{b:term_title}",
-    },
-    keys = {
-      q = false,           -- disable q to hide
-      term_normal = false, -- disable double esc to normal mode
-      hide_slash = { "<C-/>", "hide", desc = "Hide Terminal", mode = { "t", "n" } },
-      hide_underscore = { "<c-_>", "hide", desc = "which_key_ignore", mode = { "t", "n" } },
-    },
-  },
-}
-
--- Remember the last Snacks terminal instance so <c-/> can reopen it.
----@type snacks.terminal?
-local last_terminal
-
--- Find the Snacks terminal that owns the given buffer.
-local function terminal_from_buf(buf)
-  if last_terminal and last_terminal:buf_valid() and last_terminal.buf == buf then
-    return last_terminal
-  end
-  for _, term in ipairs(Snacks.terminal.list()) do
-    if term:buf_valid() and term.buf == buf then
-      return term
-    end
-  end
-end
-
-local function set_last_terminal(term)
-  if term and term:buf_valid() then
-    last_terminal = term
-  end
-end
-
--- Update the cached terminal whenever we enter a Snacks terminal buffer.
-vim.api.nvim_create_autocmd("BufEnter", {
-  group = vim.api.nvim_create_augroup("SnacksRememberTerminal", { clear = true }),
-  callback = function(event)
-    if vim.bo[event.buf].filetype == "snacks_terminal" then
-      set_last_terminal(terminal_from_buf(event.buf))
-    end
-  end,
-})
-
--- Toggle the last terminal (or create one) while honoring manual counts.
-local function toggle_terminal(count)
-  count = count or (vim.v.count > 0 and vim.v.count)
-  -- If a count is provided, toggle that terminal.
-  if count then
-    local terminal = Snacks.terminal.toggle(nil, { count = count })
-    set_last_terminal(terminal)
-    return
-  end
-
-  -- Otherwise, toggle the last used terminal if it exists.
-  if last_terminal and last_terminal:buf_valid() then
-    last_terminal:toggle()
-    set_last_terminal(last_terminal)
-    return
-  end
-
-  -- Fallback: toggle a new terminal.
-  local terminal = Snacks.terminal.toggle(nil, {})
-  set_last_terminal(terminal)
-end
-
-local terminal_keys = {
-  { "<c-/>", toggle_terminal, desc = "Toggle terminal", mode = { "n", "t" } },
-  { "<c-_>", toggle_terminal, desc = "Toggle terminal", mode = { "n", "t" } },
-  -- <c-\><c-n>: return to normal mode, <c-w>z: zoom, i: enter insert mode
-  { "<c-z><c-z>", [[<c-\><c-n><c-w>zi]], desc = "Zoom", mode = "t", remap = true },
-  { "<leader>bt", function() Snacks.terminal.colorize() end, desc = "Parse terminal color codes" },
-  { "<leader>ft", "<cmd>TermPick<cr>", desc = "Pick a Snacks terminal" },
-}
-
--- Map <A-1> to <A-9> to toggle terminals 1 to 9.
-for i = 1, 9 do
-  table.insert(terminal_keys, {
-    "<A-" .. i .. ">",
-    function() toggle_terminal(i) end,
-    desc = "Toggle terminal " .. i,
-    mode = { "n" },
-    remap = false,
-  })
-  table.insert(terminal_keys, {
-    "<A-" .. i .. ">",
-    function() toggle_terminal(i) end,
-    desc = "Toggle terminal " .. i,
-    mode = { "t" },
-    remap = false,
-  })
-end
-
-for _, key in ipairs(terminal_keys) do
-  table.insert(snacks_keys, key)
-end
-
--- Convenience commands for opening shared layouts that also update the cache.
-for _, term in ipairs({
-  { name = "Term", position = "current" },
-  { name = "TermRight", position = "right" },
-  { name = "TermFloat", position = "float" },
-  { name = "TermBottom", position = "bottom" },
-}) do
-  vim.api.nvim_create_user_command(term.name, function(opts)
-    local cmd = opts.args ~= "" and opts.args or nil
-    local count = (opts.count or 0) > 0 and opts.count or nil
-    local terminal = Snacks.terminal.open(cmd, {
-      count = count,
-      win = {
-        bo = {
-          buflisted = term.position == "current",
-        },
-        position = term.position,
-      },
-    })
-    set_last_terminal(terminal)
-  end, { nargs = "*", complete = "shellcmd", count = 0 })
-end
-
--- Present existing Snacks terminals in a simple picker.
-vim.api.nvim_create_user_command("TermPick", function()
-  local items = {}
-  for _, term in ipairs(Snacks.terminal.list()) do
-    if term:buf_valid() then
-      local ok, info = pcall(vim.api.nvim_buf_get_var, term.buf, "snacks_terminal")
-      local id = ok and info and info.id or term.id
-      local title = vim.b[term.buf].term_title
-      items[#items + 1] = {
-        text = string.format("%s: %s", id or "?", title),
-        term = term,
-      }
-    end
-  end
-
-  if vim.tbl_isempty(items) then
-    Snacks.notify.warn("No Snacks terminals found")
-    return
-  end
-
-  Snacks.picker({
-    title = "Terminals",
-    focus = "list",
-    items = items,
-    format = "text",
-    layout = { hidden = { "preview" } },
-    confirm = function(picker, item)
-      if not item or not item.term then
-        return
-      end
-      local term = item.term
-      set_last_terminal(term)
-      term:show()
-      picker:close()
-    end,
-  })
-end, { nargs = 0 })
 
 return {
   "folke/snacks.nvim",
@@ -621,7 +459,6 @@ return {
     explorer = {},
     dashboard = dashboard_opts,
     scope = {},
-    terminal = terminal_opts,
     image = {
       doc = {
         inline = false,
@@ -655,6 +492,10 @@ return {
         vim.print = _G.dd -- Override print to use snacks for `:=` command
 
         Snacks.toggle.zoom():map("<leader>wz"):map("<c-w>z"):map("<c-z><c-z>", { mode = { "n", "v", "i" } })
+        -- Zoom terminal window
+        -- <c-\><c-n>: return to normal mode, <c-w>z: zoom, i: enter insert mode
+        vim.keymap.set("t", "<c-z><c-z>", [[<c-\><c-n><c-w>zi]], { desc = "Toggle zoom" })
+
         Snacks.toggle.zen():map("<leader>uz")
         Snacks.toggle.option("spell", { name = "spelling" }):map("<leader>us")
         Snacks.toggle.option("wrap", { name = "wrap" }):map("<leader>uw")

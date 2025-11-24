@@ -40,6 +40,8 @@
     mgm = "!git merge $(git master-branch)"
     pl = "pull"
     plb = "!git pull origin $(git branch --show-current)"
+    plom = "!git pull origin $(git master-branch)"
+    plum = "!git pull upstream $(git master-branch)"
     ps = "push"
     psb = "!git push origin $(git branch --show-current)"
     psd = "push --delete origin"

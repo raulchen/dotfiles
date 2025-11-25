@@ -12,3 +12,6 @@ pyrightconfig.json
 # Claude Code per-project directories
 .claude/
 CLAUDE.local.md
+
+# pyenv version file
+.python-version

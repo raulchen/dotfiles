@@ -144,3 +144,28 @@ api.nvim_create_autocmd('FileType', {
     vim.opt_local.commentstring = '// %s'
   end
 })
+
+-- Terminal specific settings
+local terminal_group = api.nvim_create_augroup('TerminalSettings', { clear = true })
+
+api.nvim_create_autocmd('TermOpen', {
+  desc = 'Set up gf mapping for terminal buffers',
+  group = terminal_group,
+  callback = function(event)
+    vim.keymap.set("n", "gf", function()
+      local cwd = vim.fn.getcwd()
+      local filename = vim.fn.expand("<cfile>")
+      local f = vim.fn.findfile(filename, cwd)
+      local d = vim.fn.finddir(filename, cwd)
+      local path = f ~= "" and f or d
+      if path ~= "" then
+        vim.cmd("close")
+        vim.schedule(function()
+          vim.cmd("e " .. path)
+        end)
+      else
+        vim.notify("No file or directory under cursor", vim.log.levels.WARN)
+      end
+    end, { buffer = event.buf, desc = "Open file or directory under cursor" })
+  end,
+})

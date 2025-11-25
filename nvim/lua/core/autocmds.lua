@@ -158,14 +158,27 @@ api.nvim_create_autocmd('TermOpen', {
       local f = vim.fn.findfile(filename, cwd)
       local d = vim.fn.finddir(filename, cwd)
       local path = f ~= "" and f or d
-      if path ~= "" then
-        vim.cmd("close")
-        vim.schedule(function()
-          vim.cmd("e " .. path)
-        end)
-      else
+      if path == "" then
         vim.notify("No file or directory under cursor", vim.log.levels.WARN)
       end
+
+      -- Check if filename is followed by :number
+      local line = vim.fn.getline(".")
+      -- Find filename in the line and check what follows it
+      local _, filename_end = line:find(filename, 1, true)
+      local line_number = nil
+      if filename_end then
+        local after_filename = line:sub(filename_end + 1)
+        line_number = after_filename:match("^:(%d+)")
+      end
+
+      vim.cmd("close")
+      vim.schedule(function()
+        vim.cmd("e " .. vim.fn.fnameescape(path))
+        if line_number then
+          vim.api.nvim_win_set_cursor(0, { tonumber(line_number), 0 })
+        end
+      end)
     end, { buffer = event.buf, desc = "Open file or directory under cursor" })
   end,
 })

@@ -43,7 +43,6 @@ local function toggle_terminal(count)
     term = ergoterm:new({
       name = term_name,
       layout = "below",
-      title = "123",
     })
     term:start()
   end
@@ -77,8 +76,8 @@ local ergoterm_opts = {
   terminal_defaults = {
     float_winblend = 0,
     size = {
-      right = "40%",
-      below = "40%",
+      right = "50%",
+      below = "45%",
     },
     -- Remember insert/normal mode between focus sessions
     persist_mode = true,

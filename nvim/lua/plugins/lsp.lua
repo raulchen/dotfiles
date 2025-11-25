@@ -35,6 +35,22 @@ local server_settings = {
   },
 }
 
+local function maybe_setup_venv(config)
+  local venv = vim.env.VIRTUAL_ENV
+  if not venv or venv == "" then
+    return
+  end
+  local python = table.concat({ venv, "bin", "python" }, "/")
+  if vim.fn.executable(python) == 1 then
+    vim.notify("Using virtual env: " .. tostring(python), vim.log.levels.INFO, {
+      title = "basedpyright",
+      icon = " ",
+    })
+    config.settings.python = config.settings.python or {}
+    config.settings.python.pythonPath = python
+  end
+end
+
 
 local function setup_lspconfig(_, _)
   vim.lsp.set_log_level("warn")
@@ -230,6 +246,10 @@ local function setup_mason_lspconfig()
         cb(root)
       end
     }
+    if server == "basedpyright" then
+      maybe_setup_venv(config)
+    end
+
     vim.lsp.config(server, config)
     vim.lsp.enable(server)
   end

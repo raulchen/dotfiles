@@ -88,6 +88,60 @@ map('c', '<c-x><c-f>', '<C-R>=expand("%:p")<cr>', { desc = 'Insert file path' })
 -- Terminal Mappings
 map("t", "<esc><esc>", "<c-\\><c-n>", { desc = "Enter Normal Mode" })
 
+-- Enhanced gf mapping:
+-- check for line number after the filename.
+-- open file in a different window with winfixbuf disabled
+map("n", "gf", function()
+  local cwd = vim.fn.getcwd()
+  local filename = vim.fn.expand("<cfile>")
+  local path = vim.fn.findfile(filename, cwd)
+  if path == "" then
+    path = vim.fn.finddir(filename, cwd)
+  end
+  if path == "" then
+    vim.notify("No file or directory under cursor", vim.log.levels.WARN)
+    return
+  end
+
+  -- Check if filename is followed by :number
+  local line = vim.fn.getline(".")
+  local _, filename_end = line:find(filename, 1, true)
+  local line_number = nil
+  if filename_end then
+    local after_filename = line:sub(filename_end + 1)
+    line_number = after_filename:match("^:(%d+)")
+  end
+
+  -- Find a different window with winfixbuf disabled
+  local current_win = vim.api.nvim_get_current_win()
+  local target_win = nil
+  local windows = vim.api.nvim_tabpage_list_wins(0)
+
+  -- Check for existing window with winfixbuf disabled (excluding current window)
+  for _, win in ipairs(windows) do
+    if win ~= current_win and not vim.api.nvim_win_get_option(win, "winfixbuf") then
+      target_win = win
+      break
+    end
+  end
+
+  -- Create vertical split if none exists
+  if not target_win then
+    vim.cmd("vsplit")
+    target_win = vim.api.nvim_get_current_win()
+  else
+    vim.api.nvim_set_current_win(target_win)
+  end
+
+  -- Open the file in the target window
+  vim.schedule(function()
+    vim.cmd("e " .. vim.fn.fnameescape(path))
+    if line_number then
+      vim.api.nvim_win_set_cursor(0, { tonumber(line_number), 0 })
+    end
+  end)
+end, { desc = "Open file under cursor" })
+
 -- Esc to clear search highlights
 map({ "i", "n", "s" }, "<esc>", function()
   vim.cmd("noh")

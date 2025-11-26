@@ -82,6 +82,27 @@ vim.api.nvim_create_autocmd("BufReadPost", {
   end,
 })
 
+vim.api.nvim_create_autocmd('BufWinEnter', {
+  desc = "Make window irreplaceable for certain filetypes",
+  group = general_group,
+  pattern = '*',
+  callback = function()
+    local filetypes = {
+      "help",
+      "man",
+      "notify",
+      "qf",
+      "gitsigns-blame",
+      "snacks_picker_input",
+      "snacks_picker_list",
+      "ergoterm",
+    }
+    if vim.tbl_contains(filetypes, vim.bo.filetype) then
+      vim.wo.winfixbuf = true
+    end
+  end,
+})
+
 -- Filetype specific settings
 
 local filetype_group = api.nvim_create_augroup('FileTypeSettings', { clear = true })

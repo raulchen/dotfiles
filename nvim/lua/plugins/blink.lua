@@ -1,3 +1,18 @@
+local function copilot_accept()
+  local ok, copilot = pcall(require, "copilot.suggestion")
+  if not ok or not copilot then
+    vim.notify("Copilot plugin not found", vim.log.levels.WARN)
+    return false
+  end
+
+  if copilot.is_visible() then
+    copilot.accept()
+    return true
+  else
+    return false
+  end
+end
+
 ---@module 'blink.cmp'
 ---@type blink.cmp.Config
 local blink_opts = {
@@ -7,24 +22,12 @@ local blink_opts = {
     ['<C-n>'] = { 'show_and_insert', 'select_next', 'fallback_to_mappings' },
     ['<CR>'] = { 'accept', 'fallback' },
     ['<Tab>'] = {
-      function()
-        local ok, ai_utils = pcall(require, "plugins.utils.ai")
-        if ok and ai_utils then
-          return ai_utils.copilot_accept()
-        end
-        return false
-      end,
+      copilot_accept,
       'snippet_forward',
       'fallback',
     },
     ['<C-y>'] = {
-      function()
-        local ok, ai_utils = pcall(require, "plugins.utils.ai")
-        if ok and ai_utils then
-          return ai_utils.copilot_accept()
-        end
-        return false
-      end,
+      copilot_accept,
       'select_and_accept',
       'fallback',
     },

@@ -103,13 +103,24 @@ map("n", "gf", function()
     return
   end
 
-  -- Check if filename is followed by :number
+  -- Check if filename is followed by a line number
+  -- Supports: file:10 or file line(s) 10
   local line = vim.fn.getline(".")
   local _, filename_end = line:find(filename, 1, true)
   local line_number = nil
   if filename_end then
     local after_filename = line:sub(filename_end + 1)
-    line_number = after_filename:match("^:(%d+)")
+    -- Match :10 pattern
+    local colon_match = after_filename:match("^%s*:%s*(%d+)")
+    if colon_match then
+      line_number = tonumber(colon_match)
+    else
+      -- Match " line 10" or " lines 10" pattern
+      local line_match = after_filename:match("^%s*lines?%s+(%d+)")
+      if line_match then
+        line_number = tonumber(line_match)
+      end
+    end
   end
 
   -- Find a different window with winfixbuf disabled
@@ -137,7 +148,7 @@ map("n", "gf", function()
   vim.schedule(function()
     vim.cmd("e " .. vim.fn.fnameescape(path))
     if line_number then
-      vim.api.nvim_win_set_cursor(0, { tonumber(line_number), 0 })
+      vim.api.nvim_win_set_cursor(0, { line_number, 0 })
     end
   end)
 end, { desc = "Open file under cursor" })

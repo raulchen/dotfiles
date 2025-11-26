@@ -129,17 +129,26 @@ vim.api.nvim_create_autocmd("FileType", {
   group = filetype_group,
   pattern = {
     "help",
-    "lspinfo",
     "man",
     "notify",
     "qf",
-    "startuptime",
-    "checkhealth",
-    "gitsigns-blame",
+  },
+  callback = function(event)
+    vim.keymap.set("n", "q", "<cmd>close<cr>", { buffer = event.buf, silent = true })
+  end,
+})
+
+vim.api.nvim_create_autocmd("FileType", {
+  desc = "Disable buffer listing for certain filetypes",
+  group = filetype_group,
+  pattern = {
+    "help",
+    "man",
+    "notify",
+    "qf",
   },
   callback = function(event)
     vim.bo[event.buf].buflisted = false
-    vim.keymap.set("n", "q", "<cmd>close<cr>", { buffer = event.buf, silent = true })
   end,
 })
 

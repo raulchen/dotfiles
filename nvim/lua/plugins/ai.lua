@@ -7,7 +7,6 @@ local copilot_keys = {
 }
 
 local copilot_opts = {
-  copilot_model = "gpt-4o-copilot",
   suggestion = {
     keymap = {
       accept = false,

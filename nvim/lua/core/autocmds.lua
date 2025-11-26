@@ -172,7 +172,28 @@ api.nvim_create_autocmd('TermOpen', {
         line_number = after_filename:match("^:(%d+)")
       end
 
-      vim.cmd("close")
+      -- Find window with winfixbuf disabled or create vertical split
+      local current_win = vim.api.nvim_get_current_win()
+      local target_win = nil
+      local windows = vim.api.nvim_tabpage_list_wins(0)
+
+      -- Check for existing window with winfixbuf disabled (excluding current window)
+      for _, win in ipairs(windows) do
+        if win ~= current_win and not vim.api.nvim_win_get_option(win, "winfixbuf") then
+          target_win = win
+          break
+        end
+      end
+
+      -- Create vertical split if none exists
+      if not target_win then
+        vim.cmd("vsplit")
+        target_win = vim.api.nvim_get_current_win()
+      else
+        vim.api.nvim_set_current_win(target_win)
+      end
+
+      -- Open the file in the target window
       vim.schedule(function()
         vim.cmd("e " .. vim.fn.fnameescape(path))
         if line_number then

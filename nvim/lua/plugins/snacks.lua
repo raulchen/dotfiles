@@ -316,18 +316,22 @@ local picker_opts = {
   win = {
     input = {
       keys = {
-        ["<c-a>"] = {
-          "go_to_beginning_or_select_all",
-          mode = { "n", "i" },
-        },
-        ["<c-e>"] = {
-          "go_to_end",
-          mode = { "i" },
-        },
-        ["<c-w><c-w>"] = {
-          "cycle_win",
-          mode = { "n" },
-        },
+        ["<c-a>"] = { "go_to_beginning_or_select_all", mode = { "n", "i" } },
+        ["<c-e>"] = { "go_to_end", mode = { "i" } },
+        ["<Esc>"] = false, -- disable <Esc> to close picker
+        ["<c-w><c-w>"] = { "cycle_win", mode = { "n" } },
+      },
+    },
+    list = {
+      keys = {
+        ["<Esc>"] = false, -- disable <Esc> to close picker
+        ["<c-w><c-w>"] = { "cycle_win", mode = { "n" } },
+      },
+    },
+    pipeline = {
+      keys = {
+        ["<Esc>"] = false, -- disable <Esc> to close picker
+        ["<c-w><c-w>"] = { "cycle_win", mode = { "n" } },
       },
     },
   },

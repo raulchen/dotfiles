@@ -1,35 +1,52 @@
-local function copilot_accept()
+local function copilot_suggest(fn_name, visible_only)
   local ok, copilot = pcall(require, "copilot.suggestion")
   if not ok or not copilot then
     vim.notify("Copilot plugin not found", vim.log.levels.WARN)
     return false
   end
 
-  if copilot.is_visible() then
-    copilot.accept()
-    return true
-  else
+  if visible_only == nil then
+    visible_only = true
+  end
+  if visible_only and not copilot.is_visible() then
     return false
   end
+
+  copilot[fn_name]()
+  return true
 end
 
 ---@module 'blink.cmp'
 ---@type blink.cmp.Config
 local blink_opts = {
   keymap = {
-    preset = 'default',
+    preset = 'none',
     ['<C-p>'] = { 'show_and_insert', 'select_prev', 'fallback_to_mappings' },
     ['<C-n>'] = { 'show_and_insert', 'select_next', 'fallback_to_mappings' },
+    ['<C-b>'] = { 'scroll_documentation_up', 'fallback' },
+    ['<C-f>'] = { 'scroll_documentation_down', 'fallback' },
+    ['<C-k>'] = { 'show_signature', 'hide_signature', 'fallback' },
     ['<CR>'] = { 'accept', 'fallback' },
     ['<Tab>'] = {
-      copilot_accept,
+      function() copilot_suggest("accept") end,
       'snippet_forward',
       'fallback',
     },
-    ['<C-y>'] = {
-      copilot_accept,
-      'select_and_accept',
+    ['<S-Tab>'] = { 'snippet_backward', 'fallback' },
+    ['<C-e>'] = {
+      function() copilot_suggest("accept_line") end,
       'fallback',
+    },
+    ['<Esc>'] = {
+      function() copilot_suggest("dismiss") end,
+      'cancel',
+      'fallback',
+    },
+    ['<C-s>'] = {
+      function() copilot_suggest("next", false) end,
+    },
+    ['<C-S-s>'] = {
+      function() copilot_suggest("prev", false) end,
     },
   },
   cmdline = {

@@ -8,11 +8,12 @@ local copilot_keys = {
 
 local copilot_opts = {
   suggestion = {
+    -- keymaps are managed by blink
     keymap = {
       accept = false,
-      next = "<c-s>",
-      prev = "<c-s-s>",
-      dismiss = "<c-e>",
+      next = false,
+      prev = false,
+      dismiss = false,
     },
   },
   filetypes = {

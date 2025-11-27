@@ -189,6 +189,35 @@ local function is_ai_agent(term)
   return vim.tbl_contains(term.tags or {}, "ai_chat")
 end
 
+-- Helper function to select AI agent and send content
+-- If last_focused is an AI agent, use it as default with select_started
+-- Otherwise, prompt to choose which agent to launch
+local function select_ai_agent_and_send(prompt, send_callback)
+  ensure_ai_agents()
+  local ergoterm = require("ergoterm")
+  local last_focused = ergoterm.get_state("last_focused")
+  local default_agent = (last_focused and is_ai_agent(last_focused)) and last_focused or nil
+  if not default_agent then
+    -- Prompt to choose which agent to launch
+    ergoterm.select({
+      terminals = agents.chats,
+      prompt = prompt,
+      callbacks = function(term)
+        term:start()
+        term:focus()
+        send_callback(term)
+      end,
+    })
+  else
+    ergoterm.select_started({
+      terminals = agents.filtered_chats,
+      prompt = prompt,
+      callbacks = send_callback,
+      default = default_agent,
+    })
+  end
+end
+
 -- Toggle agent terminal window, prompt to choose which agent for the first time
 local function toggle_ai_agent()
   ensure_ai_agents()
@@ -229,88 +258,43 @@ end
 
 -- Add the current buffer
 local function add_current_buffer()
-  ensure_ai_agents()
-  local ergoterm = require("ergoterm")
   local file = vim.fn.expand("%:p")
-  local last_focused = ergoterm.get_state("last_focused")
-  local default_agent = (last_focused and is_ai_agent(last_focused)) and last_focused or nil
-  ergoterm.select_started({
-    terminals = agents.filtered_chats,
-    prompt = "Add file to chat",
-    callbacks = function(term)
-      term:send({ term.meta.add_file(file) }, { new_line = false })
-    end,
-    default = default_agent,
-  })
+  select_ai_agent_and_send("Add file to chat", function(term)
+    term:send({ term.meta.add_file(file) }, { new_line = false })
+  end)
 end
 
 -- Add the line or selected lines (only line numbers) - normal mode
 local function add_line_numbers()
-  ensure_ai_agents()
-  local ergoterm = require("ergoterm")
   local file = vim.fn.expand("%:p")
   local line = vim.api.nvim_win_get_cursor(0)[1]
-  local last_focused = ergoterm.get_state("last_focused")
-  local default_agent = (last_focused and is_ai_agent(last_focused)) and last_focused or nil
-  ergoterm.select_started({
-    terminals = agents.filtered_chats,
-    prompt = "Add line numbers to chat",
-    callbacks = function(term)
-      term:send({ term.meta.add_lines(file, line, line) }, { new_line = false })
-    end,
-    default = default_agent,
-  })
+  select_ai_agent_and_send("Add line numbers to chat", function(term)
+    term:send({ term.meta.add_lines(file, line, line) }, { new_line = false })
+  end)
 end
 
 -- Add the line or selected lines (only line numbers) - visual mode
 local function add_selected_line_numbers()
-  ensure_ai_agents()
-  local ergoterm = require("ergoterm")
   local file = vim.fn.expand("%:p")
   local start_line = vim.fn.line("'<")
   local end_line = vim.fn.line("'>")
-  local last_focused = ergoterm.get_state("last_focused")
-  local default_agent = (last_focused and is_ai_agent(last_focused)) and last_focused or nil
-  ergoterm.select_started({
-    terminals = agents.filtered_chats,
-    prompt = "Add line numbers to chat",
-    callbacks = function(term)
-      term:send({ term.meta.add_lines(file, start_line, end_line) }, { new_line = false })
-    end,
-    default = default_agent,
-  })
+  select_ai_agent_and_send("Add line numbers to chat", function(term)
+    term:send({ term.meta.add_lines(file, start_line, end_line) }, { new_line = false })
+  end)
 end
 
 -- Send the contents - normal mode
 local function send_line_contents()
-  ensure_ai_agents()
-  local ergoterm = require("ergoterm")
-  local last_focused = ergoterm.get_state("last_focused")
-  local default_agent = (last_focused and is_ai_agent(last_focused)) and last_focused or nil
-  ergoterm.select_started({
-    terminals = agents.filtered_chats,
-    prompt = "Send line to chat",
-    callbacks = function(term)
-      term:send("single_line")
-    end,
-    default = default_agent,
-  })
+  select_ai_agent_and_send("Send line to chat", function(term)
+    term:send("single_line")
+  end)
 end
 
 -- Send the contents - visual mode
 local function send_selection_contents()
-  ensure_ai_agents()
-  local ergoterm = require("ergoterm")
-  local last_focused = ergoterm.get_state("last_focused")
-  local default_agent = (last_focused and is_ai_agent(last_focused)) and last_focused or nil
-  ergoterm.select_started({
-    terminals = agents.filtered_chats,
-    prompt = "Send selection to chat",
-    callbacks = function(term)
-      term:send("visual_selection", { trim = false })
-    end,
-    default = default_agent,
-  })
+  select_ai_agent_and_send("Send selection to chat", function(term)
+    term:send("visual_selection", { trim = false })
+  end)
 end
 
 -- List and switch agents

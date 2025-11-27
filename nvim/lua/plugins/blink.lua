@@ -51,11 +51,12 @@ local blink_opts = {
   },
   cmdline = {
     keymap = {
-      preset = 'cmdline',
-      ['<C-p>'] = { 'show_and_insert', 'select_prev', 'fallback_to_mappings' },
+      preset = 'none',
       ['<C-n>'] = { 'show_and_insert', 'select_next', 'fallback_to_mappings' },
-      ['<C-y>'] = { 'select_and_accept', 'fallback' },
-      ['<C-e>'] = { 'cancel', 'fallback_to_mappings' },
+      ['<C-p>'] = { 'show_and_insert', 'select_prev', 'fallback_to_mappings' },
+      ['<Tab>'] = { 'show_and_insert', 'select_next', 'fallback_to_mappings' },
+      ['<S-Tab>'] = { 'show_and_insert', 'select_prev', 'fallback_to_mappings' },
+      ['<Esc>'] = { 'cancel', 'fallback' },
     },
     sources = function()
       local type = vim.fn.getcmdtype()

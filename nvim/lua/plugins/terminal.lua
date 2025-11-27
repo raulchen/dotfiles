@@ -146,7 +146,7 @@ local function ensure_ai_agents()
   })
 
   agents.claude_code = ai_chats:new({
-    cmd = "claude code",
+    cmd = "claude",
     name = "claude code",
     meta = {
       add_file = function(file) return "@" .. file end,

@@ -37,7 +37,7 @@ local blink_opts = {
       function() copilot_suggest("accept_line") end,
       'fallback',
     },
-    ['<C-c>'] = {
+    ['<Esc>'] = {
       function() copilot_suggest("dismiss") end,
       'cancel',
       'fallback',
@@ -56,7 +56,7 @@ local blink_opts = {
       ['<C-p>'] = { 'show_and_insert', 'select_prev', 'fallback_to_mappings' },
       ['<Tab>'] = { 'show_and_insert', 'select_next', 'fallback_to_mappings' },
       ['<S-Tab>'] = { 'show_and_insert', 'select_prev', 'fallback_to_mappings' },
-      ['<C-c>'] = { 'cancel', 'fallback' },
+      ['<Esc>'] = { 'cancel', 'fallback' },
     },
     sources = function()
       local type = vim.fn.getcmdtype()

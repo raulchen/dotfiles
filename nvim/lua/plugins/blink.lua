@@ -109,9 +109,6 @@ local blink_opts = {
       'snippets',
       'buffer',
       'spell',
-      "avante_commands",
-      "avante_mentions",
-      "avante_files",
     },
     providers = {
       buffer = {
@@ -138,24 +135,6 @@ local blink_opts = {
         module = 'blink-cmp-spell',
         score_offset = -10,
       },
-      avante_commands = {
-        name = "avante_commands",
-        module = "blink.compat.source",
-        score_offset = 90,
-        opts = {},
-      },
-      avante_files = {
-        name = "avante_files",
-        module = "blink.compat.source",
-        score_offset = 100,
-        opts = {},
-      },
-      avante_mentions = {
-        name = "avante_mentions",
-        module = "blink.compat.source",
-        score_offset = 1000,
-        opts = {},
-      },
     }
   },
   fuzzy = { implementation = "prefer_rust_with_warning" }
@@ -174,19 +153,6 @@ return {
     dependencies = {
       'rafamadriz/friendly-snippets',
       'ribru17/blink-cmp-spell',
-      {
-        'saghen/blink.compat',
-        version = '*',
-        lazy = true,
-        opts = {},
-        config = function()
-          -- monkeypatch cmp.ConfirmBehavior for Avante
-          require("cmp").ConfirmBehavior = {
-            Insert = "insert",
-            Replace = "replace",
-          }
-        end,
-      },
     },
   },
 }

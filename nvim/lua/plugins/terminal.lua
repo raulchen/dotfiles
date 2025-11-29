@@ -117,6 +117,30 @@ local ergoterm_opts = {
 -- Agent instances (module-level for persistence)
 local agents = {}
 
+local agent_names = {
+  "cursor-agent",
+  "claude",
+  "codex",
+}
+
+local agent_configs = {}
+for _, name in ipairs(agent_names) do
+  agent_configs[name] = {
+    name = name,
+    cmd = name,
+    meta = {
+      add_file = function(file) return "@" .. file end,
+      add_lines = function(file, start_line, end_line)
+        if start_line == end_line then
+          return "@" .. file .. ":" .. start_line
+        else
+          return "@" .. file .. ":" .. start_line .. ":" .. end_line
+        end
+      end,
+    }
+  }
+end
+
 local function ensure_ai_agents()
   if agents.chats then
     return agents
@@ -134,53 +158,13 @@ local function ensure_ai_agents()
     watch_files = true,
   })
 
-  -- Create agent instances
-  agents.cursor_agent = ai_chats:new({
-    cmd = "cursor-agent",
-    name = "cursor-agent",
-    meta = {
-      add_file = function(file) return "@" .. file end,
-      add_lines = function(file, start_line, end_line)
-        if start_line == end_line then
-          return "@" .. file .. ":" .. start_line
-        else
-          return "@" .. file .. ":" .. start_line .. ":" .. end_line
-        end
-      end,
-    },
-  })
+  -- Create agent instances from config
+  agents.chats = {}
+  for _, name in ipairs(agent_names) do
+    agents[name] = ai_chats:new(agent_configs[name])
+    table.insert(agents.chats, agents[name])
+  end
 
-  agents.claude_code = ai_chats:new({
-    cmd = "claude",
-    name = "claude code",
-    meta = {
-      add_file = function(file) return "@" .. file end,
-      add_lines = function(file, start_line, end_line)
-        if start_line == end_line then
-          return "@" .. file .. ":" .. start_line
-        else
-          return "@" .. file .. ":" .. start_line .. ":" .. end_line
-        end
-      end,
-    },
-  })
-
-  agents.codex = ai_chats:new({
-    cmd = "codex",
-    name = "codex",
-    meta = {
-      add_file = function(file) return "@" .. file end,
-      add_lines = function(file, start_line, end_line)
-        if start_line == end_line then
-          return "@" .. file .. ":" .. start_line
-        else
-          return "@" .. file .. ":" .. start_line .. ":" .. end_line
-        end
-      end,
-    },
-  })
-
-  agents.chats = { agents.cursor_agent, agents.claude_code, agents.codex }
   agents.filtered_chats = ergoterm.filter_by_tag("ai_chat")
 
   return agents
@@ -320,8 +304,51 @@ local function list_switch_agents()
   })
 end
 
+-- Launch AI agent with custom args
+local function launch_ai_agent_with_args()
+  ensure_ai_agents()
+  local ergoterm = require("ergoterm")
+
+  -- First, select which agent to use
+  ergoterm.select({
+    terminals = agents.chats,
+    prompt = "Select AI Agent",
+    callbacks = function(term)
+      -- Get the base command for this agent
+      local base_cmd = agent_configs[term.name].cmd
+
+      -- Then prompt for custom args
+      vim.ui.input({
+        prompt = string.format("Enter custom args for %s: ", term.name),
+        default = "",
+      }, function(args)
+        -- Stop the terminal if it's running
+        if term:is_started() then
+          term:stop()
+        end
+
+        -- Build command with args
+        -- term.cmd is a string, build command string with args
+        if args and args ~= "" then
+          local cmd_with_args = base_cmd .. " " .. args
+          -- Update the terminal's command in place
+          term.cmd = cmd_with_args
+        else
+          -- Reset to base command if no args provided
+          term.cmd = base_cmd
+        end
+
+        -- Restart the terminal with the updated command
+        term:start()
+        term:focus()
+      end)
+    end,
+  })
+end
+
 -- AI Agent keymaps
 table.insert(ergoterm_keys, { "<leader>aa", toggle_ai_agent, desc = "Toggle AI Agent" })
+table.insert(ergoterm_keys, { "<leader>aA", launch_ai_agent_with_args, desc = "Launch AI Agent with Custom Args" })
 table.insert(ergoterm_keys, { "<leader>ab", add_current_buffer, desc = "Add Current Buffer to AI Agent" })
 table.insert(ergoterm_keys, { "<leader>as", add_line_numbers, desc = "Add Line Numbers to AI Agent" })
 table.insert(ergoterm_keys,

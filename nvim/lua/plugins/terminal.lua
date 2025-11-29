@@ -12,10 +12,15 @@ end
 local function toggle_terminal(count)
   local ergoterm = require("ergoterm")
 
+  local is_regular_term = function(term)
+    return term and #(term.tags or {}) == 0
+  end
+
   -- Check if current buffer is already a terminal
   local current_term = ergoterm.identify()
-  if current_term then
+  if is_regular_term(current_term) then
     -- Hide the current terminal
+    ---@diagnostic disable-next-line: need-check-nil
     current_term:close()
     return
   end
@@ -23,7 +28,7 @@ local function toggle_terminal(count)
   -- If both count and vim.v.count are absent, toggle the last used terminal
   if not count and (not vim.v.count or vim.v.count == 0) then
     local last_term = ergoterm.get_state("last_focused")
-    if last_term then
+    if is_regular_term(last_term) then
       focus_or_start_terminal(last_term)
       return
     end

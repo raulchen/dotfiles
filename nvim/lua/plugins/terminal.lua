@@ -121,6 +121,7 @@ local agent_names = {
   "cursor-agent",
   "claude",
   "codex",
+  "gemini",
 }
 
 local agent_configs = {}

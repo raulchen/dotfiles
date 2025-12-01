@@ -29,6 +29,9 @@ local blink_opts = {
     ['<CR>'] = { 'accept', 'fallback' },
     ['<Tab>'] = {
       function() return copilot_suggest("accept") end,
+      function() -- sidekick next edit suggestion
+        return require("sidekick").nes_jump_or_apply()
+      end,
       'snippet_forward',
       'fallback',
     },

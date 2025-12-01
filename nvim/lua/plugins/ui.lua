@@ -128,8 +128,17 @@ local lualine_opts = {
         color = { fg = "orange" },
       },
       {
-        "copilot",
-        show_colors = true,
+        function()
+          return " "
+        end,
+        color = function()
+          local status = require("sidekick.status").get()
+          if status then
+            return status.kind == "Error" and "DiagnosticError" or status.busy and "DiagnosticWarn" or "Special"
+          else
+            return "Normal"
+          end
+        end,
       },
       {
         "filetype",
@@ -263,9 +272,6 @@ return {
             auto_attach = true,
           },
         },
-      },
-      {
-        'AndreM222/copilot-lualine',
       },
     },
     opts = lualine_opts,

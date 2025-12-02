@@ -11,6 +11,8 @@ map('n', '<leader>bx', '<cmd>bd<cr>', { desc = 'Delete current buffer' })
 map('n', '<leader>bw', '<cmd>w<cr>', { desc = 'Save current buffer' })
 map({ 'n', 'x' }, '<tab>', '<cmd>bn<cr>', { desc = 'Next buffer' })
 map({ 'n', 'x' }, '<s-tab>', '<cmd>bp<cr>', { desc = 'Previous buffer' })
+map({ 'n', 'x' }, 'L', '<cmd>bn<cr>', { desc = 'Next buffer' })
+map({ 'n', 'x' }, 'H', '<cmd>bp<cr>', { desc = 'Previous buffer' })
 map('n', '<leader>bl', '<c-^>', { desc = 'Switch to last buffer' })
 
 -- Tab management

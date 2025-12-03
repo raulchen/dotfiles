@@ -28,25 +28,25 @@ local blink_opts = {
     ['<C-k>'] = { 'show_signature', 'hide_signature', 'fallback' },
     ['<CR>'] = { 'accept', 'fallback' },
     ['<Tab>'] = {
-      function() copilot_suggest("accept") end,
+      function() return copilot_suggest("accept") end,
       'snippet_forward',
       'fallback',
     },
     ['<S-Tab>'] = { 'snippet_backward', 'fallback' },
     ['<C-e>'] = {
-      function() copilot_suggest("accept_line") end,
+      function() return copilot_suggest("accept_line") end,
       'fallback',
     },
     ['<Esc>'] = {
-      function() copilot_suggest("dismiss") end,
+      function() return copilot_suggest("dismiss") end,
       'cancel',
       'fallback',
     },
     ['<C-s>'] = {
-      function() copilot_suggest("next", false) end,
+      function() return copilot_suggest("next", false) end,
     },
     ['<C-S-s>'] = {
-      function() copilot_suggest("prev", false) end,
+      function() return copilot_suggest("prev", false) end,
     },
   },
   cmdline = {

@@ -88,8 +88,6 @@ vim.api.nvim_create_autocmd('BufWinEnter', {
   pattern = '*',
   callback = function()
     local filetypes = {
-      "help",
-      "man",
       "notify",
       "qf",
       "gitsigns-blame",

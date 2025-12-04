@@ -52,6 +52,12 @@ local sidekick = {
           nav_right = false,
           nav_up = false,
           nav_down = false,
+          disable_ctrl_c = {
+            "<c-c>",
+            "",
+            mode = { "n", "i", "t", "x" },
+            desc = "Disable Ctrl-C to prevent accidental exits",
+          }
         },
       },
       mux = {

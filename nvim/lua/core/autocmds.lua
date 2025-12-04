@@ -96,7 +96,11 @@ vim.api.nvim_create_autocmd('BufWinEnter', {
       "ergoterm",
     }
     if vim.tbl_contains(filetypes, vim.bo.filetype) then
-      vim.wo.winfixbuf = true
+      -- Only set winfixbuf when the window is not full screen
+      local win_count = #vim.api.nvim_tabpage_list_wins(0)
+      if win_count > 1 then
+        vim.wo.winfixbuf = true
+      end
     end
   end,
 })

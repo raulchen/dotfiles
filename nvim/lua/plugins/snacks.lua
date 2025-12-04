@@ -258,6 +258,7 @@ local function picker_keys()
     { "<leader>fF", function() p().files() end, desc = "Find files" },
     { "<leader>fr", function() picker_recent() end, desc = "Find recent files" },
     { "<leader>fb", function() p().buffers() end, desc = "Find buffers" },
+    { "<leader>fB", function() p().buffers({ hidden = true, nofile = true }) end, desc = "Find All Buffers" },
     -- Search
     { "<leader>fS", function() picker_grep() end, desc = "Search" },
     { "<leader>fs", function() picker_grep_word() end, desc = "Search word or visual selection", mode = { "n", "x" } },

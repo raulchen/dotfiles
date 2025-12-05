@@ -275,11 +275,12 @@ local function picker_keys()
     { "<leader>fn", function() p().notifications() end, desc = "Find notifications" },
     { "<leader>fh", function() p().help() end, desc = "Find help" },
     -- git
+    { "<leader>fg", "+git", },
     { "<leader>fga", function() p().git_stash() end, desc = "Git stash" },
     { "<leader>fgb", function() p().git_branches() end, desc = "Git branches" },
     { "<leader>fgf", function() p().git_files() end, desc = "Git files" },
     { "<leader>fgh", function() p().git_log_file() end, desc = "Git file history" },
-    { "<leader>fgH", function() p().git_log_line() end, desc = "Git line history" },
+    { "<leader>fgH", function() p().git_log_line() end, mode = { "n", "x" }, desc = "Git line history" },
     { "<leader>fgl", function() p().git_log() end, desc = "Git log" },
     { "<leader>fgs", function() p().git_status() end, desc = "Git status" },
     { "<leader>fgd", function() p().git_diff() end, desc = "Git diffs" },

@@ -12,23 +12,27 @@ local function setup_mason_tool_installer()
   require("mason-tool-installer").check_install(false, false)
 end
 
+local mason_tool_installer = {
+  "WhoIsSethDaniel/mason-tool-installer.nvim",
+  lazy = true,
+  dependencies = {
+    "williamboman/mason.nvim",
+  },
+  config = setup_mason_tool_installer,
+}
+
+local mason = {
+  "mason-org/mason.nvim",
+  cmd = "Mason",
+  build = ":MasonUpdate", -- Update registry
+  opts = {},
+}
+
 if os.getenv("NVIM_DEV") == "0" then
   return {}
 end
 
 return {
-  {
-    "WhoIsSethDaniel/mason-tool-installer.nvim",
-    lazy = true,
-    dependencies = {
-      "williamboman/mason.nvim",
-    },
-    config = setup_mason_tool_installer,
-  },
-  {
-    "mason-org/mason.nvim",
-    cmd = "Mason",
-    build = ":MasonUpdate", -- Update registry
-    opts = {},
-  },
+  mason_tool_installer,
+  mason,
 }

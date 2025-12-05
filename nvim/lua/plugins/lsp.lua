@@ -255,44 +255,52 @@ local function setup_mason_lspconfig()
   end
 end
 
+local lspconfig = {
+  'neovim/nvim-lspconfig',
+  event = { "BufReadPre", "BufNewFile" },
+  config = setup_lspconfig,
+  dependencies = {
+    {
+      'rmagatti/goto-preview',
+      config = setup_goto_preview,
+    },
+  },
+}
+
+local mason_lspconfig = {
+  "mason-org/mason-lspconfig.nvim",
+  event = { "BufReadPre", "BufNewFile" },
+  dependencies = {
+    "mason-org/mason.nvim",
+    "saghen/blink.cmp",
+  },
+  config = setup_mason_lspconfig,
+}
+
+local lazydev = {
+  "folke/lazydev.nvim",
+  ft = "lua",
+  opts = {
+    library = {
+      "~/.hammerspoon/Spoons/EmmyLua.spoon/annotations",
+    },
+  },
+}
+
+local tiny_inline_diagnostic = {
+  "rachartier/tiny-inline-diagnostic.nvim",
+  event = "LspAttach",
+  priority = 1000, -- needs to be loaded in first
+  config = setup_tiny_inline_diagnostic,
+}
+
 if os.getenv("NVIM_DEV") == "0" then
   return {}
 end
 
 return {
-  {
-    'neovim/nvim-lspconfig',
-    event = { "BufReadPre", "BufNewFile" },
-    config = setup_lspconfig,
-    dependencies = {
-      {
-        'rmagatti/goto-preview',
-        config = setup_goto_preview,
-      },
-    },
-  },
-  {
-    "mason-org/mason-lspconfig.nvim",
-    event = { "BufReadPre", "BufNewFile" },
-    dependencies = {
-      "mason-org/mason.nvim",
-      "saghen/blink.cmp",
-    },
-    config = setup_mason_lspconfig,
-  },
-  {
-    "folke/lazydev.nvim",
-    ft = "lua",
-    opts = {
-      library = {
-        "~/.hammerspoon/Spoons/EmmyLua.spoon/annotations",
-      },
-    },
-  },
-  {
-    "rachartier/tiny-inline-diagnostic.nvim",
-    event = "LspAttach",
-    priority = 1000, -- needs to be loaded in first
-    config = setup_tiny_inline_diagnostic,
-  },
+  lspconfig,
+  mason_lspconfig,
+  lazydev,
+  tiny_inline_diagnostic,
 }

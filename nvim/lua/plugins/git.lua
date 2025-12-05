@@ -302,34 +302,42 @@ local octo_keys = {
   },
 }
 
+local fugitive = {
+  "tpope/vim-fugitive",
+  cmd = { "Git", "G" },
+  keys = fugitive_keys,
+}
+
+local gitsigns = {
+  "lewis6991/gitsigns.nvim",
+  event = { "BufReadPre", "BufNewFile" },
+  config = setup_gitsigns,
+}
+
+local diffview = {
+  "sindrets/diffview.nvim",
+  cmd = {
+    "DiffviewOpen",
+    "DiffviewFileHistory",
+  },
+  keys = diffview_keys,
+  config = setup_diffview,
+}
+
+local octo = {
+  'pwntester/octo.nvim',
+  dependencies = {
+    'nvim-lua/plenary.nvim',
+    'nvim-tree/nvim-web-devicons',
+  },
+  cmd = { "Octo" },
+  keys = octo_keys,
+  config = setup_octo,
+}
+
 return {
-  {
-    "tpope/vim-fugitive",
-    cmd = { "Git", "G" },
-    keys = fugitive_keys,
-  },
-  {
-    "lewis6991/gitsigns.nvim",
-    event = { "BufReadPre", "BufNewFile" },
-    config = setup_gitsigns,
-  },
-  {
-    "sindrets/diffview.nvim",
-    cmd = {
-      "DiffviewOpen",
-      "DiffviewFileHistory",
-    },
-    keys = diffview_keys,
-    config = setup_diffview,
-  },
-  {
-    'pwntester/octo.nvim',
-    dependencies = {
-      'nvim-lua/plenary.nvim',
-      'nvim-tree/nvim-web-devicons',
-    },
-    cmd = { "Octo" },
-    keys = octo_keys,
-    config = setup_octo,
-  },
+  fugitive,
+  gitsigns,
+  diffview,
+  octo,
 }

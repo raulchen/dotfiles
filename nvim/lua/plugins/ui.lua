@@ -250,63 +250,73 @@ local config_render_markdown = function(_, _)
   ]]
 end
 
-return {
-  {
-    'stevearc/oil.nvim',
-    dependencies = { "nvim-tree/nvim-web-devicons" },
-    -- Disable lazy loading so that `vim <dir>` and `:e <dir>` will use oil.
-    lazy = false,
-    keys = oil_keys,
-    config = setup_oil,
-  },
-  {
-    "nvim-lualine/lualine.nvim",
-    event = "VeryLazy",
-    dependencies = {
-      "nvim-tree/nvim-web-devicons",
-      {
-        -- Show current code context.
-        "SmiteshP/nvim-navic",
-        opts = {
-          lsp = {
-            auto_attach = true,
-          },
+local oil = {
+  'stevearc/oil.nvim',
+  dependencies = { "nvim-tree/nvim-web-devicons" },
+  -- Disable lazy loading so that `vim <dir>` and `:e <dir>` will use oil.
+  lazy = false,
+  keys = oil_keys,
+  config = setup_oil,
+}
+
+local lualine = {
+  "nvim-lualine/lualine.nvim",
+  event = "VeryLazy",
+  dependencies = {
+    "nvim-tree/nvim-web-devicons",
+    {
+      -- Show current code context.
+      "SmiteshP/nvim-navic",
+      opts = {
+        lsp = {
+          auto_attach = true,
         },
       },
     },
-    opts = lualine_opts,
   },
-  {
-    'romgrk/barbar.nvim',
-    version = '*',
-    event = "VeryLazy",
-    dependencies = {
-      'nvim-tree/nvim-web-devicons',
-    },
-    init = function() vim.g.barbar_auto_setup = false end,
-    opts = {
-      focus_on_close = 'right',
-      icons = {
-        buffer_index = true,
-      }
-    },
-    keys = barbar_keys,
+  opts = lualine_opts,
+}
+
+local barbar = {
+  'romgrk/barbar.nvim',
+  version = '*',
+  event = "VeryLazy",
+  dependencies = {
+    'nvim-tree/nvim-web-devicons',
   },
-  {
-    "folke/noice.nvim",
-    event = "VeryLazy",
-    config = setup_noice,
-    dependencies = {
-      "MunifTanjim/nui.nvim",
+  init = function() vim.g.barbar_auto_setup = false end,
+  opts = {
+    focus_on_close = 'right',
+    icons = {
+      buffer_index = true,
     }
   },
-  {
-    'MeanderingProgrammer/render-markdown.nvim',
-    ft = { 'markdown', 'codecompanion' },
-    dependencies = {
-      'nvim-treesitter/nvim-treesitter',
-      'nvim-tree/nvim-web-devicons',
-    },
-    config = config_render_markdown,
+  keys = barbar_keys,
+}
+
+local noice = {
+  "folke/noice.nvim",
+  event = "VeryLazy",
+  config = setup_noice,
+  dependencies = {
+    "MunifTanjim/nui.nvim",
+  }
+}
+
+local render_markdown = {
+  'MeanderingProgrammer/render-markdown.nvim',
+  ft = { 'markdown', 'codecompanion' },
+  dependencies = {
+    'nvim-treesitter/nvim-treesitter',
+    'nvim-tree/nvim-web-devicons',
   },
+  config = config_render_markdown,
+}
+
+return {
+  oil,
+  lualine,
+  barbar,
+  noice,
+  render_markdown,
 }

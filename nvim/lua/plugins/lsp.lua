@@ -53,7 +53,7 @@ local function maybe_setup_venv(config)
 end
 
 
-local function setup_lspconfig(_, _)
+local function setup_lsp_basics()
   vim.lsp.set_log_level("warn")
 
   local float_win_opts = { border = 'single' }
@@ -210,20 +210,8 @@ local function setup_tiny_inline_diagnostic()
   })
 end
 
-local function setup_mason_lspconfig()
-  local opts = {
-    automatic_enable = false,
-    ensure_installed = {
-      "bashls",
-      "clangd",
-      "lua_ls",
-      "basedpyright",
-      "vimls",
-    },
-  }
-  local mason_lspconfig = require("mason-lspconfig")
-  mason_lspconfig.setup(opts)
-
+local function setup_lsp_servers()
+  local mason_lspconfig = require('mason-lspconfig')
   local installed_servers = mason_lspconfig.get_installed_servers()
   local capabilities = require('blink.cmp').get_lsp_capabilities()
   for _, server in ipairs(installed_servers) do
@@ -256,26 +244,38 @@ local function setup_mason_lspconfig()
   end
 end
 
+local mason_lspconfig = {
+  "mason-org/mason-lspconfig.nvim",
+  dependencies = {
+    "mason-org/mason.nvim",
+  },
+  opts = {
+    automatic_enable = false,
+    ensure_installed = {
+      "bashls",
+      "clangd",
+      "lua_ls",
+      "basedpyright",
+      "vimls",
+    },
+  },
+}
+
 local lspconfig = {
   'neovim/nvim-lspconfig',
   event = { "BufReadPre", "BufNewFile" },
-  config = setup_lspconfig,
+  config = function()
+    setup_lsp_basics()
+    setup_lsp_servers()
+  end,
   dependencies = {
+    mason_lspconfig,
+    "saghen/blink.cmp",
     {
       'rmagatti/goto-preview',
       config = setup_goto_preview,
     },
   },
-}
-
-local mason_lspconfig = {
-  "mason-org/mason-lspconfig.nvim",
-  event = { "BufReadPre", "BufNewFile" },
-  dependencies = {
-    "mason-org/mason.nvim",
-    "saghen/blink.cmp",
-  },
-  config = setup_mason_lspconfig,
 }
 
 local lazydev = {
@@ -301,7 +301,6 @@ end
 
 return {
   lspconfig,
-  mason_lspconfig,
   lazydev,
   tiny_inline_diagnostic,
 }

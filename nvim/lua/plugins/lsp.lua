@@ -172,44 +172,6 @@ local function setup_lsp_basics()
   })
 end
 
-
-local function setup_goto_preview()
-  require('goto-preview').setup({
-    default_mappings = false,
-    height = 30,
-    post_open_hook = function(_, win)
-      -- Close the current preview window with <Esc> or 'q'.
-      local function close_window()
-        vim.api.nvim_win_close(win, true)
-      end
-      vim.keymap.set('n', '<Esc>', close_window, { buffer = true })
-      vim.keymap.set('n', 'q', close_window, { buffer = true })
-    end,
-  })
-end
-
-local function setup_tiny_inline_diagnostic()
-  vim.diagnostic.config({
-    -- Disable signs.
-    signs = false,
-    virtual_text = {
-      -- Disable messages, only show markers.
-      format = function(_) return "" end,
-      prefix = "󰊠",
-      spacing = 0,
-    },
-  })
-  require('tiny-inline-diagnostic').setup({
-    preset = "ghost",
-    options = {
-      multiple_diag_under_cursor = true,
-      virt_texts = {
-        priority = 9999,
-      },
-    },
-  })
-end
-
 local function setup_lsp_servers()
   local mason_lspconfig = require('mason-lspconfig')
   local installed_servers = mason_lspconfig.get_installed_servers()
@@ -261,6 +223,22 @@ local mason_lspconfig = {
   },
 }
 
+local goto_preview = {
+  'rmagatti/goto-preview',
+  opts = {
+    default_mappings = false,
+    height = 30,
+    post_open_hook = function(_, win)
+      -- Close the current preview window with <Esc> or 'q'.
+      local function close_window()
+        vim.api.nvim_win_close(win, true)
+      end
+      vim.keymap.set('n', '<Esc>', close_window, { buffer = true })
+      vim.keymap.set('n', 'q', close_window, { buffer = true })
+    end,
+  }
+}
+
 local lspconfig = {
   'neovim/nvim-lspconfig',
   event = { "BufReadPre", "BufNewFile" },
@@ -269,12 +247,9 @@ local lspconfig = {
     setup_lsp_servers()
   end,
   dependencies = {
-    mason_lspconfig,
     "saghen/blink.cmp",
-    {
-      'rmagatti/goto-preview',
-      config = setup_goto_preview,
-    },
+    mason_lspconfig,
+    goto_preview,
   },
 }
 
@@ -292,7 +267,27 @@ local tiny_inline_diagnostic = {
   "rachartier/tiny-inline-diagnostic.nvim",
   event = "LspAttach",
   priority = 1000, -- needs to be loaded in first
-  config = setup_tiny_inline_diagnostic,
+  config = function()
+    vim.diagnostic.config({
+      -- Disable signs.
+      signs = false,
+      virtual_text = {
+        -- Disable messages, only show markers.
+        format = function(_) return "" end,
+        prefix = "󰊠",
+        spacing = 0,
+      },
+    })
+    require('tiny-inline-diagnostic').setup({
+      preset = "ghost",
+      options = {
+        multiple_diag_under_cursor = true,
+        virt_texts = {
+          priority = 9999,
+        },
+      },
+    })
+  end,
 }
 
 if os.getenv("NVIM_DEV") == "0" then

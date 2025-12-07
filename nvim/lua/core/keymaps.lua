@@ -132,7 +132,7 @@ map("n", "gf", function()
 
   -- Check for existing window with winfixbuf disabled (excluding current window)
   for _, win in ipairs(windows) do
-    if win ~= current_win and not vim.api.nvim_win_get_option(win, "winfixbuf") then
+    if win ~= current_win and not vim.wo[win].winfixbuf then
       target_win = win
       break
     end

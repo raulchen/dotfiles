@@ -28,6 +28,7 @@ local server_settings = {
           align_array_table = "false",
           align_continuous_assign_statement = "false",
           align_continuous_rect_table_field = "false",
+          align_continuous_inline_comment = "false",
           align_if_branch = "false",
         },
       },

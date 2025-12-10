@@ -40,7 +40,7 @@ local sidekick = {
     cli = {
       win = {
         split = {
-          width = 0,  -- set to 0 for default split width
+          width = 0, -- set to 0 for default split width
           height = 0, -- set to 0 for default split height
         },
         keys = {
@@ -147,10 +147,12 @@ end
 
 local use_copilot = os.getenv("NVIM_USE_COPILOT") ~= "0"
 if not use_copilot then
-  return {}
+  return {
+    sidekick,
+  }
+else
+  return {
+    copilot,
+    sidekick,
+  }
 end
-
-return {
-  copilot,
-  sidekick,
-}

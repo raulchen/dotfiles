@@ -34,7 +34,8 @@ local function jump_to_prompt(direction)
   -- \v enables "very magic" mode where special regex chars don't need escaping
   local pattern = "\\v^(\\> |user| ┌────)"
   local count = vim.v.count1
-  local flags = direction == "next" and "w" or "bw"
+  -- the upper case 'W' disables wrapping around the file
+  local flags = direction == "next" and "W" or "bW"
   for _ = 1, count do
     vim.fn.search(pattern, flags)
   end

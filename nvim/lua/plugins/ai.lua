@@ -29,6 +29,17 @@ local copilot = {
   opts = copilot_opts,
 }
 
+local function jump_to_prompt(direction)
+  -- Match prompt patterns: "> " (claude), "user" (codex), " ┌────" (cursor)
+  -- \v enables "very magic" mode where special regex chars don't need escaping
+  local pattern = "\\v^(\\> |user| ┌────)"
+  local count = vim.v.count1
+  local flags = direction == "next" and "w" or "bw"
+  for _ = 1, count do
+    vim.fn.search(pattern, flags)
+  end
+end
+
 local sidekick = {
   "folke/sidekick.nvim",
   opts = {
@@ -131,6 +142,18 @@ local sidekick = {
       function() require("sidekick.cli").prompt() end,
       mode = { "n", "x" },
       desc = "Sidekick Select Prompt",
+    },
+    {
+      "]p",
+      function() jump_to_prompt("next") end,
+      desc = "Jump to next prompt",
+      ft = "sidekick_terminal",
+    },
+    {
+      "[p",
+      function() jump_to_prompt("prev") end,
+      desc = "Jump to previous prompt",
+      ft = "sidekick_terminal",
     },
   },
   config = function(_, opts)

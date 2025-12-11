@@ -41,6 +41,8 @@ local function jump_to_prompt(direction)
   end
 end
 
+local dot_repeatable = require("core.utils").dot_repeatable_keymap
+
 local sidekick = {
   "folke/sidekick.nvim",
   opts = {
@@ -144,18 +146,18 @@ local sidekick = {
       mode = { "n", "x" },
       desc = "Sidekick Select Prompt",
     },
-    {
+    dot_repeatable({
       "]p",
       function() jump_to_prompt("next") end,
       desc = "Jump to next prompt",
       ft = "sidekick_terminal",
-    },
-    {
+    }),
+    dot_repeatable({
       "[p",
       function() jump_to_prompt("prev") end,
       desc = "Jump to previous prompt",
       ft = "sidekick_terminal",
-    },
+    }),
   },
   config = function(_, opts)
     require("sidekick").setup(opts)

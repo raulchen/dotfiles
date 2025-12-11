@@ -115,6 +115,12 @@ local sidekick = {
       desc = "Send File",
     },
     {
+      "<leader>al",
+      function() require("sidekick.cli").send({ msg = "{line}" }) end,
+      mode = { "n", "x" },
+      desc = "Send Line(s)",
+    },
+    {
       "<leader>av",
       function() require("sidekick.cli").send({ msg = "{selection}" }) end,
       mode = { "x" },

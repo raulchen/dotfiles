@@ -71,7 +71,23 @@ local sidekick = {
             "",
             mode = { "n", "i", "t", "x" },
             desc = "Disable Ctrl-C to prevent accidental exits",
-          }
+          },
+          send_selection = {
+            "<leader>av",
+            function()
+              -- Get visual selection boundaries
+              local mode = vim.fn.mode()
+              local start_pos = vim.fn.getpos("v") -- where visual selection started
+              local end_pos = vim.fn.getpos(".") -- current cursor position
+              local lines = vim.fn.getregion(start_pos, end_pos, { type = mode })
+              -- Exit visual mode
+              vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Esc>", true, false, true), "x", false)
+              -- Send selection to CLI
+              require("sidekick.cli").send({ msg = table.concat(lines, "\n") })
+            end,
+            mode = "x",
+            desc = "Send visual selection",
+          },
         },
       },
       mux = {

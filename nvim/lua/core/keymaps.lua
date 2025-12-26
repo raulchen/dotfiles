@@ -89,6 +89,11 @@ map('c', '<c-x><c-f>', '<C-R>=expand("%:p")<cr>', { desc = 'Insert file path' })
 
 -- Terminal Mappings
 map("t", "<esc><esc>", "<c-\\><c-n>", { desc = "Enter Normal Mode" })
+map("t", "<C-\\><C-r>", function()
+  local reg = vim.fn.getcharstr()
+  local content = vim.fn.getreg(reg)
+  vim.api.nvim_paste(content, true, -1)
+end, { desc = "Paste register" })
 
 -- Enhanced gf mapping:
 -- check for line number after the filename.

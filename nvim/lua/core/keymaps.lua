@@ -90,9 +90,48 @@ map('c', '<c-x><c-f>', '<C-R>=expand("%:p")<cr>', { desc = 'Insert file path' })
 -- Terminal Mappings
 map("t", "<esc><esc>", "<c-\\><c-n>", { desc = "Enter Normal Mode" })
 map("t", "<C-\\><C-r>", function()
+  local registers = '*+"-:.%/#=_abcdefghijklmnopqrstuvwxyz0123456789'
+  local lines = {}
+  for i = 1, #registers do
+    local key = registers:sub(i, i)
+    local ok, value = pcall(vim.fn.getreg, key, 1)
+    if ok and value ~= "" then
+      value = vim.fn.keytrans(value --[[@as string]])
+          :gsub("<Space>", " ")
+          :gsub("<CR>", "\\n")
+          :gsub("<NL>", "\\n")
+          :sub(1, 50)
+      table.insert(lines, string.format('"%s: %s', key, value))
+    end
+  end
+
+  -- Create floating window
+  local buf = vim.api.nvim_create_buf(false, true)
+  vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
+  local width = math.min(60, math.max(unpack(vim.tbl_map(function(l) return #l end, lines))))
+  local height = #lines
+  local win = vim.api.nvim_open_win(buf, false, {
+    relative = "cursor",
+    row = 1,
+    col = 0,
+    width = width,
+    height = height,
+    style = "minimal",
+    border = "rounded",
+    title = " Registers ",
+    title_pos = "center",
+  })
+  vim.wo[win].wrap = false
+
+  vim.cmd("redraw")
   local reg = vim.fn.getcharstr()
+  vim.api.nvim_win_close(win, true)
+  vim.api.nvim_buf_delete(buf, { force = true })
+
   local content = vim.fn.getreg(reg)
-  vim.api.nvim_paste(content, true, -1)
+  if content ~= "" then
+    vim.api.nvim_paste(content, true, -1)
+  end
 end, { desc = "Paste register" })
 
 -- Enhanced gf mapping:

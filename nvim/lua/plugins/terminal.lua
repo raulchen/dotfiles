@@ -50,6 +50,7 @@ local function toggle_terminal(count)
       layout = "below",
     })
     term:start()
+    term:focus()
   end
 end
 

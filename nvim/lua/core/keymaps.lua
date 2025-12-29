@@ -134,6 +134,12 @@ map("t", "<C-\\><C-r>", function()
   end
 end, { desc = "Paste register" })
 
+-- Terminal window navigation
+map('t', '<C-\\><C-h>', '<cmd>wincmd h<cr>', { desc = 'Move to left window' })
+map('t', '<C-\\><C-j>', '<cmd>wincmd j<cr>', { desc = 'Move to lower window' })
+map('t', '<C-\\><C-k>', '<cmd>wincmd k<cr>', { desc = 'Move to upper window' })
+map('t', '<C-\\><C-l>', '<cmd>wincmd l<cr>', { desc = 'Move to right window' })
+
 -- Enhanced gf mapping:
 -- check for line number after the filename.
 -- open file in a different window with winfixbuf disabled

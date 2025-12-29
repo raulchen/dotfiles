@@ -162,18 +162,6 @@ local sidekick = {
       mode = { "n", "x" },
       desc = "Sidekick Select Prompt",
     },
-    dot_repeatable({
-      "]p",
-      function() jump_to_prompt("next") end,
-      desc = "Jump to next prompt",
-      ft = "sidekick_terminal",
-    }),
-    dot_repeatable({
-      "[p",
-      function() jump_to_prompt("prev") end,
-      desc = "Jump to previous prompt",
-      ft = "sidekick_terminal",
-    }),
   },
   config = function(_, opts)
     require("sidekick").setup(opts)
@@ -186,6 +174,27 @@ local sidekick = {
         require("sidekick.nes").enable(state)
       end,
     }):map("<leader>aN")
+
+    -- Map [[ ]] for jumping between prompts in sidekick terminal buffers
+    vim.api.nvim_create_autocmd("FileType", {
+      pattern = "sidekick_terminal",
+      callback = function(event)
+        -- Defer to ensure we override the default keymaps
+        vim.schedule(function()
+          if not vim.api.nvim_buf_is_valid(event.buf) then return end
+          vim.keymap.set("n", "]]", function() jump_to_prompt("next") end, {
+            buffer = event.buf,
+            noremap = true,
+            desc = "Jump to next prompt",
+          })
+          vim.keymap.set("n", "[[", function() jump_to_prompt("prev") end, {
+            buffer = event.buf,
+            noremap = true,
+            desc = "Jump to previous prompt",
+          })
+        end)
+      end,
+    })
   end,
 }
 

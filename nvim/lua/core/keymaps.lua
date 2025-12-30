@@ -140,10 +140,9 @@ map('t', '<C-\\><C-j>', '<cmd>wincmd j<cr>', { desc = 'Move to lower window' })
 map('t', '<C-\\><C-k>', '<cmd>wincmd k<cr>', { desc = 'Move to upper window' })
 map('t', '<C-\\><C-l>', '<cmd>wincmd l<cr>', { desc = 'Move to right window' })
 
--- Enhanced gf mapping:
--- check for line number after the filename.
--- open file in a different window with winfixbuf disabled
-map("n", "gf", function()
+-- Enhanced gf/gF mappings:
+-- Check for line number after the filename (supports: file:10 or file line(s) 10)
+local function open_file_under_cursor(use_other_window)
   local cwd = vim.fn.getcwd()
   local filename = vim.fn.expand("<cfile>")
   local path = vim.fn.findfile(filename, cwd)
@@ -156,7 +155,6 @@ map("n", "gf", function()
   end
 
   -- Check if filename is followed by a line number
-  -- Supports: file:10 or file line(s) 10
   local line = vim.fn.getline(".")
   local _, filename_end = line:find(filename, 1, true)
   local line_number = nil
@@ -175,35 +173,46 @@ map("n", "gf", function()
     end
   end
 
-  -- Find a different window with winfixbuf disabled
-  local current_win = vim.api.nvim_get_current_win()
-  local target_win = nil
-  local windows = vim.api.nvim_tabpage_list_wins(0)
+  -- Handle window selection
+  if use_other_window then
+    -- Find a different window with winfixbuf disabled
+    local current_win = vim.api.nvim_get_current_win()
+    local target_win = nil
+    local windows = vim.api.nvim_tabpage_list_wins(0)
 
-  -- Check for existing window with winfixbuf disabled (excluding current window)
-  for _, win in ipairs(windows) do
-    if win ~= current_win and not vim.wo[win].winfixbuf then
-      target_win = win
-      break
+    for _, win in ipairs(windows) do
+      if win ~= current_win and not vim.wo[win].winfixbuf then
+        target_win = win
+        break
+      end
+    end
+
+    -- Create vertical split if none exists
+    if not target_win then
+      vim.cmd("vsplit")
+      target_win = vim.api.nvim_get_current_win()
+    else
+      vim.api.nvim_set_current_win(target_win)
     end
   end
 
-  -- Create vertical split if none exists
-  if not target_win then
-    vim.cmd("vsplit")
-    target_win = vim.api.nvim_get_current_win()
-  else
-    vim.api.nvim_set_current_win(target_win)
-  end
-
-  -- Open the file in the target window
-  vim.schedule(function()
+  -- Open the file and jump to line if specified
+  local open_file = function()
     vim.cmd("e " .. vim.fn.fnameescape(path))
     if line_number then
       vim.api.nvim_win_set_cursor(0, { line_number, 0 })
     end
-  end)
-end, { desc = "Open file under cursor" })
+  end
+
+  if use_other_window then
+    vim.schedule(open_file)
+  else
+    open_file()
+  end
+end
+
+map("n", "gf", function() open_file_under_cursor(false) end, { desc = "Open file under cursor in current window" })
+map("n", "gF", function() open_file_under_cursor(true) end, { desc = "Open file under cursor in other window" })
 
 -- Esc to clear search highlights
 map({ "i", "n", "s" }, "<esc>", function()

@@ -30,6 +30,7 @@ local server_settings = {
           align_continuous_rect_table_field = "false",
           align_continuous_inline_comment = "false",
           align_if_branch = "false",
+          align_call_args = "false",
         },
       },
     },

@@ -43,6 +43,9 @@ function _custom_keybinds ()
     }
     zle -N expand-dots
     bindkey -M viins "/" expand-dots
+
+    # Make space trigger history expansion (e.g., !!, !$) before inserting it
+    bindkey ' ' magic-space
 }
 # Postpone keybindings until zsh-vi-mode is loaded,
 # otherwise they will be overridden by zsh-vi-mode.

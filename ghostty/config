@@ -5,3 +5,7 @@ font-family = "Maple Mono NF CN"
 
 # Disable the confirmation dialog when closing Ghostty
 confirm-close-surface = false
+
+# Normalize ctrl-[ to a plain ESC
+# Without this fix, zsh-vi-mode would clear the command line when switching to normal mode with ctrl-[
+keybind = ctrl+[=text:\x1b

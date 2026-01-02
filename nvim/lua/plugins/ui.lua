@@ -229,7 +229,7 @@ local config_render_markdown = function(_, _)
   ---@module 'render-markdown'
   ---@type render.md.UserConfig
   local opts = {
-    file_types = { 'markdown', 'codecompanion' },
+    file_types = { 'markdown', 'octo' },
     heading = { icons = { '󰎤 ', '󰎧 ', '󰎪 ', '󰎭 ', '󰎱 ', '󰎳 ' } },
     code = {
       disable_background = true,
@@ -305,7 +305,7 @@ local noice = {
 
 local render_markdown = {
   'MeanderingProgrammer/render-markdown.nvim',
-  ft = { 'markdown', 'codecompanion' },
+  ft = { 'markdown', 'octo' },
   dependencies = {
     'nvim-treesitter/nvim-treesitter',
     'nvim-tree/nvim-web-devicons',

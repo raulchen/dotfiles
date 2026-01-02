@@ -230,16 +230,13 @@ local function picker_dirs(opts)
     end
 
     return require("snacks.picker.source.proc").proc({
-      picker_opts,
-      {
-        cmd = cmd,
-        args = args,
-        notify = not picker_opts.live,
-        transform = function(item)
-          item.file = item.text
-          item.dir = true
-        end,
-      },
+      cmd = cmd,
+      args = args,
+      notify = not picker_opts.live,
+      transform = function(item)
+        item.file = item.text
+        item.dir = true
+      end,
     }, ctx)
   end
   require("snacks.picker")(opts)

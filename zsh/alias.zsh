@@ -4,7 +4,15 @@ alias -g VL="2>&1 | vless"
 alias -g G="2>&1 | grep -i"
 alias -g F="2>&1 | fzf --reverse"
 alias -g C="2>&1 | tmux load-buffer -"
-alias -g N="> /dev/null 2>&1 "
+# redirect stderr to stdout
+alias -g RE="2>&1"
+# No stdout
+alias -g NO=">/dev/null"
+# No stderr
+alias -g NE="2>/dev/null"
+# No stdout and stderr
+alias -g NOE=">/dev/null 2>&1"
+
 
 alias tailf="tail -f"
 unalias d >/dev/null 2>&1

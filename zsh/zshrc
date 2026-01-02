@@ -51,6 +51,16 @@ function _custom_keybinds ()
 
     # Make space trigger history expansion (e.g., !!, !$) before inserting it
     bindkey ' ' magic-space
+
+    if [[ $IS_MACOS == true ]]; then
+        # Copy current command buffer to clipboard
+        function copy-command-to-clipboard() {
+            echo -n "$BUFFER" | pbcopy
+            zle -M "Command copied to clipboard"
+        }
+        zle -N copy-command-to-clipboard
+        bindkey '^X^Y' copy-command-to-clipboard
+    fi
 }
 # Postpone keybindings until zsh-vi-mode is loaded,
 # otherwise they will be overridden by zsh-vi-mode.

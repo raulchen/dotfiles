@@ -3,7 +3,16 @@ alias -g L="2>&1 | less"
 alias -g VL="2>&1 | vless"
 alias -g G="2>&1 | grep -i"
 alias -g F="2>&1 | fzf --reverse"
-alias -g C="2>&1 | tmux load-buffer -"
+
+# Copy to system clipboard
+if [[ `uname` == 'Darwin' ]]; then
+    alias -g C="2>&1 | pbcopy"
+elif type xclip >/dev/null 2>&1 ; then
+    alias -g C="2>&1 | xclip -selection clipboard"
+fi
+# Copy to tmux clipboard
+alias -g CT="2>&1 | tmux load-buffer -"
+
 # redirect stderr to stdout
 alias -g RE="2>&1"
 # No stdout

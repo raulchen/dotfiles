@@ -31,9 +31,9 @@ function _custom_keybinds ()
     # Also bind C-V to backward-char because C-B is Tmux prefix
     bindkey '^V' backward-char
 
-    # Ctrl-Y: edit in vim
-    bindkey '^Y' edit-command-line
-    bindkey -M vicmd '^Y' edit-command-line
+    # Edit command with $EDITOR
+    bindkey '^X^E' edit-command-line
+    bindkey -M vicmd '^X^E' edit-command-line
 
     # Bind Ctrl-D to delete-char, the default is list-choices
     bindkey "^d" delete-char

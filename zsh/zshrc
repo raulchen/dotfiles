@@ -9,6 +9,11 @@ export LANG=en_US.UTF-8
 
 export XDG_CONFIG_HOME=~/.config
 
+# Cache OS check to avoid repeated uname calls
+IS_MACOS=false
+[[ $OSTYPE == darwin* ]] && IS_MACOS=true
+export IS_MACOS
+
 if which nvim >/dev/null 2>&1 ; then
     export EDITOR='nvim'
 else
@@ -81,7 +86,7 @@ antigen bundle zsh-users/zsh-syntax-highlighting
 # zsh-history-substring-search should be loaded after zsh-syntax-highlighting
 antigen bundle zsh-users/zsh-history-substring-search
 
-if [[ `uname` == 'Darwin' ]]; then
+if [[ $IS_MACOS == true ]]; then
     antigen bundle macos
     antigen bundle brew
 fi

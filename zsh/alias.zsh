@@ -5,7 +5,9 @@ alias -g G="| grep -i"
 alias -g F="| fzf --reverse"
 
 # Copy to system clipboard
-if [[ `uname` == 'Darwin' ]]; then
+: ${IS_MACOS:=$([[ $OSTYPE == darwin* ]] && echo true || echo false)}
+
+if [[ $IS_MACOS == true ]]; then
     alias -g C="| pbcopy"
 elif type xclip >/dev/null 2>&1 ; then
     alias -g C="| xclip -selection clipboard"
@@ -33,7 +35,7 @@ alias tat="tmux new -A -s default"
 alias proxy_on="export {http,https,ftp}_proxy=http://127.0.0.1:7890; export socks_proxy=socks5://127.0.0.1:7891; no_proxy='localhost,127.0.0.1,*.local'"
 alias proxy_off="unset {http,https,ftp,all,socks,no}_proxy"
 
-if [[ `uname` == 'Darwin' ]]; then
+if [[ $IS_MACOS == true ]]; then
     # Flush Directory Service cache
     alias flushdns="dscacheutil -flushcache && sudo killall -HUP mDNSResponder"
 

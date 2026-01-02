@@ -2,6 +2,8 @@
 base_dir=$(cd "$(dirname "$0")" && pwd)
 backup_dir="$base_dir/.backups.local"
 backup_prefix="$backup_dir/$(date '+%Y%m%d%H%M%S')"
+is_darwin=false
+[[ $OSTYPE == darwin* ]] && is_darwin=true
 
 link_file() {
     local src=$1 dst=$2
@@ -68,7 +70,7 @@ fi
 echo "Setting up tmux..."
 link_file "$base_dir/tmux" ~/.config/tmux
 
-if [[ `uname` == "Darwin" ]]; then
+if [[ $is_darwin == true ]]; then
     echo "Setting up Hammerspoon..."
     link_file "$base_dir/hammerspoon" ~/.hammerspoon
 fi

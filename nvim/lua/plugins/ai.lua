@@ -41,8 +41,6 @@ local function jump_to_prompt(direction)
   end
 end
 
-local dot_repeatable = require("core.utils").dot_repeatable_keymap
-
 local sidekick = {
   "folke/sidekick.nvim",
   opts = {
@@ -58,9 +56,9 @@ local sidekick = {
           height = 0, -- set to 0 for default split height
         },
         keys = {
-          buffers = { "<leader>ab", "buffers", mode = "n", desc = "open buffer picker" },
-          files = { "<leader>af", "files", mode = "n", desc = "open file picker" },
-          prompt = { "<leader>ap", "prompt", mode = "n", desc = "insert prompt or context" },
+          buffers = { "<c-\\><c-b>", "buffers", mode = "nt", desc = "open buffer picker" },
+          files = { "<c-\\><c-f>", "files", mode = "nt", desc = "open file picker" },
+          prompt = { "<c-\\><c-p>", "prompt", mode = "nt", desc = "insert prompt or context" },
           hide_ctrl_z = false,
           nav_left = false,
           nav_right = false,

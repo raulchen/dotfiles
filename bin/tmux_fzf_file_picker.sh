@@ -20,7 +20,7 @@ PANE_ID="$TMUX_PANE"
 # Run FZF_DEFAULT_COMMAND and pipe to fzf
 # Let fzf read FZF_CTRL_T_OPTS via FZF_DEFAULT_OPTS environment variable
 selected=$(eval "$FZF_DEFAULT_COMMAND" | \
-    FZF_DEFAULT_OPTS="--multi ${FZF_DEFAULT_OPTS-} ${FZF_CTRL_T_OPTS-}" fzf)
+    FZF_DEFAULT_OPTS="${FZF_DEFAULT_OPTS-} ${FZF_CTRL_T_OPTS-}" fzf)
 
 # If files were selected, insert them into the current pane
 if [ -n "$selected" ]; then

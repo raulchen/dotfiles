@@ -446,6 +446,22 @@ local dashboard_opts = {
   },
 }
 
+local image_keys = {
+  { "<leader>ui", function() Snacks.image.hover() end, desc = "Preview image under cursor" },
+}
+
+for _, key in ipairs(image_keys) do
+  table.insert(snacks_keys, key)
+end
+
+local image_opts = {
+  doc = {
+    inline = false,
+    float = true,
+    max_width = 200,
+    max_height = 200,
+  }
+}
 
 return {
   "folke/snacks.nvim",
@@ -465,14 +481,7 @@ return {
     explorer = {},
     dashboard = dashboard_opts,
     scope = {},
-    image = {
-      doc = {
-        inline = false,
-        float = true,
-        max_width = 200,
-        max_height = 200,
-      }
-    },
+    image = image_opts,
     zen = {
       win = {
         width = 0.9,

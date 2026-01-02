@@ -106,7 +106,6 @@ typeset -A commands_to_plugins=(
     "bazel" "bazel"
     "mvn" "mvn"
     "pyenv" "davidparsson/zsh-pyenv-lazy"
-    "zoxide" "zoxide"
 )
 
 for cmd in ${(@k)commands_to_plugins}; do
@@ -226,6 +225,10 @@ if test -e "$DOTFILES/zsh/zshrc.local"; then
 fi
 
 # === Misc ===
+
+if type zoxide >/dev/null 2>&1 ; then
+    eval "$(zoxide init --cmd cd zsh)"
+fi
 
 if type bat >/dev/null 2>&1 ; then
     export BAT_THEME="ansi"

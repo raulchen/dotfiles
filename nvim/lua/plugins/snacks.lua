@@ -252,6 +252,11 @@ local function picker_keys()
     -- Buffers and files.
     { "<leader>ff", function() picker_smart_files() end, desc = "Smart find files" },
     { "<leader>fd", function() picker_dirs() end, desc = "Find directories" },
+    {
+      "<leader>fz",
+      function() p().zoxide({ confirm = { "edit", "close" } }) end,
+      desc = "Find recent directories from zoxide"
+    },
     { "<leader>fF", function() p().files() end, desc = "Find files" },
     { "<leader>fr", function() picker_recent() end, desc = "Find recent files" },
     { "<leader>fb", function() p().buffers() end, desc = "Find buffers" },

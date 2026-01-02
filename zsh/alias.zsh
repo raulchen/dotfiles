@@ -1,17 +1,17 @@
-alias -g H="2>&1 | head"
-alias -g L="2>&1 | less"
-alias -g VL="2>&1 | vless"
-alias -g G="2>&1 | grep -i"
-alias -g F="2>&1 | fzf --reverse"
+alias -g H="| head"
+alias -g L="| less"
+alias -g VL="| vless"
+alias -g G="| grep -i"
+alias -g F="| fzf --reverse"
 
 # Copy to system clipboard
 if [[ `uname` == 'Darwin' ]]; then
-    alias -g C="2>&1 | pbcopy"
+    alias -g C="| pbcopy"
 elif type xclip >/dev/null 2>&1 ; then
-    alias -g C="2>&1 | xclip -selection clipboard"
+    alias -g C="| xclip -selection clipboard"
 fi
 # Copy to tmux clipboard
-alias -g CT="2>&1 | tmux load-buffer -"
+alias -g CT="| tmux load-buffer -"
 
 # redirect stderr to stdout
 alias -g RE="2>&1"

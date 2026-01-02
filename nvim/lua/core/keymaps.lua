@@ -70,8 +70,8 @@ map("x", "N", "'nN'[v:searchforward]", { expr = true, desc = "Prev Search Result
 map("o", "N", "'nN'[v:searchforward]", { expr = true, desc = "Prev Search Result" })
 
 -- Command line mappings
--- Ctrl-Y to edit command line
-vim.cmd([[set cedit=\<C-Y>]])
+-- Edit command line
+vim.cmd([[set cedit=\<C-X>\<C-E>]])
 -- Emacs-style navigation
 map('c', '<C-A>', '<Home>', { desc = 'Start of line' })
 map('c', '<C-B>', '<Left>', { desc = 'Move left' })

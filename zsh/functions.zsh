@@ -84,3 +84,14 @@ function notify {
         _notify "Task failed"
     fi
 }
+
+if type yazi >/dev/null 2>&1 ; then
+    #  Wrapper for yazi to cd into the directory output by yazi
+    function yz() {
+        local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
+        command yazi "$@" --cwd-file="$tmp"
+        IFS= read -r -d '' cwd < "$tmp"
+        [ -n "$cwd" ] && [ "$cwd" != "$PWD" ] && builtin cd -- "$cwd"
+        rm -f -- "$tmp"
+    }
+fi

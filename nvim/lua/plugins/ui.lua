@@ -48,6 +48,17 @@ local function setup_oil()
       ["gx"] = "actions.open_external",
       ["g."] = "actions.toggle_hidden",
       ["g\\"] = "actions.toggle_trash",
+      ["gc"] = {
+        callback = function()
+          local config = require("oil.config")
+          if config.constrain_cursor == "name" then
+            config.constrain_cursor = false
+          else
+            config.constrain_cursor = "name"
+          end
+        end,
+        desc = "Toggle constrain cursor",
+      },
     },
     float = {
       border = "single",

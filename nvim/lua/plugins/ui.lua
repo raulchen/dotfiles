@@ -206,7 +206,7 @@ local lualine_opts = {
 local function setup_noice()
   local opts = {
     presets = {
-      -- long_message_to_split = true, -- long messages will be sent to a split
+      long_message_to_split = true, -- long messages will be sent to a split
     },
   }
   opts.lsp = {

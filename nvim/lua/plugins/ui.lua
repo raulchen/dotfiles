@@ -30,25 +30,23 @@ local function setup_oil()
     use_default_keymaps = false,
     keymaps = {
       ["g?"] = "actions.show_help",
-      ["<CR>"] = "actions.select",
-      ["L"] = "actions.select",
       ["<C-v>"] = { "actions.select", opts = { vertical = true }, desc = "Open the entry in a vertical split" },
       ["<C-s>"] = { "actions.select", opts = { horizontal = true }, desc = "Open the entry in a horizontal split" },
       ["<C-t>"] = { "actions.select", opts = { tab = true }, desc = "Open the entry in new tab" },
-      ["<C-p>"] = "actions.preview",
+      ["J"] = "actions.preview_scroll_down",
+      ["K"] = "actions.preview_scroll_up",
       ["<c-c>"] = "actions.close",
       ["q"] = "actions.close",
-      ["<leader>r"] = "actions.refresh",
-      ["-"] = "actions.parent",
       ["H"] = "actions.parent",
-      ["_"] = "actions.open_cwd",
-      ["`"] = "actions.cd",
-      ["~"] = { "actions.cd", opts = { scope = "tab" }, desc = ":tcd to the current oil directory" },
-      ["gs"] = "actions.change_sort",
+      ["L"] = "actions.select",
+      ["-"] = "actions.parent",
+      ["<CR>"] = "actions.select",
       ["gx"] = "actions.open_external",
-      ["g."] = "actions.toggle_hidden",
-      ["g\\"] = "actions.toggle_trash",
-      ["gc"] = {
+      ["<localleader>p"] = "actions.preview",
+      ["<localleader>s"] = "actions.change_sort",
+      ["<localleader>."] = "actions.toggle_hidden",
+      ["<localleader>\\"] = "actions.toggle_trash",
+      ["<localleader>C"] = {
         callback = function()
           local config = require("oil.config")
           if config.constrain_cursor == "name" then
@@ -58,6 +56,20 @@ local function setup_oil()
           end
         end,
         desc = "Toggle constrain cursor",
+      },
+      ["<localleader>c"] = "actions.cd",
+      ["<localleader>t"] = { "actions.tcd" },
+      ["<localleader>d"] = "actions.open_cwd",
+      ["<localleader>r"] = "actions.refresh",
+      ["<localleader>y"] = "actions.yank_entry",
+      ["<localleader>q"] = "actions.send_to_qflist",
+      ["<localleader>:"] = {
+        "actions.open_cmdline",
+        opts = {
+          shorten_path = true,
+          modify = ":h",
+        },
+        desc = "Open the command line with the current directory as an argument",
       },
     },
     float = {

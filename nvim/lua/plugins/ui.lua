@@ -1,6 +1,11 @@
 -- Global function to set winbar for oil buffers
 function _G.get_oil_winbar()
-  local bufnr = vim.api.nvim_win_get_buf(vim.g.statusline_winid)
+  local winid = vim.g.statusline_winid
+  local win_cfg = vim.api.nvim_win_get_config(winid)
+  if win_cfg.relative ~= "" then
+    return ""
+  end
+  local bufnr = vim.api.nvim_win_get_buf(winid)
   local dir = require("oil").get_current_dir(bufnr)
   if dir then
     return vim.fn.fnamemodify(dir, ":~")
@@ -12,9 +17,6 @@ end
 
 local function setup_oil()
   require("oil").setup({
-    win_options = {
-      winbar = "%!v:lua.get_oil_winbar()",
-    },
     columns = {
       "icon",
       "permissions",
@@ -49,9 +51,23 @@ local function setup_oil()
     },
     float = {
       border = "single",
-      get_win_title = function() return "" end,
       max_width = 160,
     },
+  })
+
+  local function set_oil_winbar(winid)
+    local win_cfg = vim.api.nvim_win_get_config(winid)
+    if win_cfg.relative ~= "" then
+      return
+    end
+    vim.api.nvim_set_option_value("winbar", "%!v:lua.get_oil_winbar()", { win = winid })
+  end
+
+  vim.api.nvim_create_autocmd("FileType", {
+    pattern = "oil",
+    callback = function()
+      set_oil_winbar(0)
+    end,
   })
 
   vim.api.nvim_create_autocmd("User", {

@@ -2,7 +2,7 @@
 # Script to find the project root based on specific files or directories
 
 # Define the files or directories that signify the project root
-special_paths=(".git")
+special_paths=(".git" "pyproject.toml")
 
 # Start at the current directory
 current_path="$1"

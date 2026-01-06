@@ -1,7 +1,7 @@
 local function setup_mason_tool_installer()
   require("mason-tool-installer").setup({
     ensure_installed = {
-      { "black", version = "22.10.0" },
+      "black",
       "ruff",
       "debugpy",
     },
@@ -25,7 +25,9 @@ local mason = {
   "mason-org/mason.nvim",
   cmd = "Mason",
   build = ":MasonUpdate", -- Update registry
-  opts = {},
+  opts = {
+    PATH = "append", -- Lower priority than system PATH
+  },
 }
 
 if os.getenv("NVIM_DEV") == "0" then

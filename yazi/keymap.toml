@@ -1,0 +1,6 @@
+[mgr]
+prepend_keymap = [
+	{ on = "<Tab>",   run = "tab_switch 1 --relative",  desc = "Switch to next tab" },
+	{ on = "<S-Tab>", run = "tab_switch -1 --relative", desc = "Switch to previous tab" },
+	{ on = "i",       run = "spot",                     desc = "Spot file info" },
+]

@@ -70,7 +70,7 @@ if [[ $is_darwin == true ]]; then
 fi
 
 mkdir -p ~/.config
-xdg_configs=(nvim tmux git lsd wezterm ghostty)
+xdg_configs=(nvim tmux git lsd wezterm ghostty yazi)
 for name in "${xdg_configs[@]}"; do
     link_file "$base_dir/$name" ~/.config/"$name"
 done

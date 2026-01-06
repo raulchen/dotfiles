@@ -49,42 +49,28 @@ link_file() {
     fi
     if [[ "$link_dst" == "true" ]]; then
         ln -s "$src" "$dst"
-        echo "Linked $dst to $src"
+        echo "$dst linked to $src"
         return 0
     fi
     return 1
 }
 
-echo "Setting up zsh..."
+if [[ "$base_dir" != "$HOME/dotfiles" ]]; then
+    link_file "$base_dir" ~/dotfiles
+fi
+
 link_file "$base_dir/zsh/zshrc" ~/.zshrc
 
-echo "Setting up neovim..."
-mkdir -p ~/.config
-link_file "$base_dir/nvim" ~/.config/nvim
-
-echo "Setting up vim..."
 if link_file "$base_dir/vim/vimrc" ~/.vimrc ; then
     vim +PlugInstall +qall
 fi
 
-echo "Setting up tmux..."
-link_file "$base_dir/tmux" ~/.config/tmux
-
 if [[ $is_darwin == true ]]; then
-    echo "Setting up Hammerspoon..."
     link_file "$base_dir/hammerspoon" ~/.hammerspoon
 fi
 
-echo "Setting up git..."
-link_file "$base_dir/git" ~/.config/git
-
-echo "Setting up lsd..."
-link_file "$base_dir/lsd" ~/.config/lsd
-
-echo "Setting up WezTerm..."
-link_file "$base_dir/wezterm" ~/.config/wezterm
-
-echo "Setting up Ghostty..."
-link_file "$base_dir/ghostty" ~/.config/ghostty
-
-echo "Done"
+mkdir -p ~/.config
+xdg_configs=(nvim tmux git lsd wezterm ghostty)
+for name in "${xdg_configs[@]}"; do
+    link_file "$base_dir/$name" ~/.config/"$name"
+done

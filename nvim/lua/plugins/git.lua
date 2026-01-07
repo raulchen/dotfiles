@@ -1,5 +1,7 @@
-local fugitive_keys = {
-  { "<leader>gg", "<cmd>Git<CR>", desc = "Git status" },
+local fugitive = {
+  "tpope/vim-fugitive",
+  cmd = { "Git", "G" },
+  keys = { "<leader>gg", "<cmd>Git<CR>", desc = "Git status" },
 }
 
 local function setup_gitsigns()
@@ -54,6 +56,12 @@ local function setup_gitsigns()
     end
   }
 end
+
+local gitsigns = {
+  "lewis6991/gitsigns.nvim",
+  event = { "BufReadPre", "BufNewFile" },
+  config = setup_gitsigns,
+}
 
 local function toggle_diffview()
   if vim.g.diffview_open then
@@ -188,6 +196,16 @@ local function setup_diffview()
   require("diffview").setup(diffview_opts)
 end
 
+local diffview = {
+  "sindrets/diffview.nvim",
+  cmd = {
+    "DiffviewOpen",
+    "DiffviewFileHistory",
+  },
+  keys = diffview_keys,
+  config = setup_diffview,
+}
+
 local function setup_octo()
   local mappings = {}
 
@@ -318,28 +336,6 @@ local octo_keys = {
     "<cmd>Octo search is:issue is:open assignee:@me<CR>",
     desc = "Search global: open issues assigned to me",
   },
-}
-
-local fugitive = {
-  "tpope/vim-fugitive",
-  cmd = { "Git", "G" },
-  keys = fugitive_keys,
-}
-
-local gitsigns = {
-  "lewis6991/gitsigns.nvim",
-  event = { "BufReadPre", "BufNewFile" },
-  config = setup_gitsigns,
-}
-
-local diffview = {
-  "sindrets/diffview.nvim",
-  cmd = {
-    "DiffviewOpen",
-    "DiffviewFileHistory",
-  },
-  keys = diffview_keys,
-  config = setup_diffview,
 }
 
 local octo = {

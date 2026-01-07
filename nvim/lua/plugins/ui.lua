@@ -1,3 +1,5 @@
+local dot_repeatable_keymap = require("core.utils").dot_repeatable_keymap
+
 -- Global function to set winbar for oil buffers
 function _G.get_oil_winbar()
   local winid = vim.g.statusline_winid
@@ -128,6 +130,15 @@ local oil_keys = {
   { "<leader>uF", function() toggle_oil(true) end, desc = "Toggle file explorer on selected dir" },
 }
 
+local oil = {
+  'stevearc/oil.nvim',
+  dependencies = { "nvim-tree/nvim-web-devicons" },
+  -- Disable lazy loading so that `vim <dir>` and `:e <dir>` will use oil.
+  lazy = false,
+  keys = oil_keys,
+  config = setup_oil,
+}
+
 local lualine_opts = {
   options = {
     section_separators = "",
@@ -203,43 +214,23 @@ local lualine_opts = {
   },
 }
 
-local function setup_noice()
-  local opts = {
-    presets = {
-      long_message_to_split = true, -- long messages will be sent to a split
-    },
-  }
-  opts.lsp = {
-    hover = { enabled = false, },
-    signature = { enabled = false, },
-  }
-  -- Use mini view for the following verbose messages.
-  local verbose_messages = {
-    "lines yanked",
-    -- lazy.nvim config change message
-    "Config Change Detected",
-    -- undo message
-    "; before #",
-    -- redo message
-    "; after #",
-  }
-  opts.routes = {
+local lualine = {
+  "nvim-lualine/lualine.nvim",
+  event = "VeryLazy",
+  dependencies = {
+    "nvim-tree/nvim-web-devicons",
     {
-      filter = {
-        any = {},
+      -- Show current code context.
+      "SmiteshP/nvim-navic",
+      opts = {
+        lsp = {
+          auto_attach = true,
+        },
       },
-      view = "mini",
     },
-  }
-  for _, msg in ipairs(verbose_messages) do
-    table.insert(opts.routes[1].filter.any, {
-      find = msg,
-    })
-  end
-  require("noice").setup(opts)
-end
-
-local dot_repeatable_keymap = require("core.utils").dot_repeatable_keymap
+  },
+  opts = lualine_opts,
+}
 
 local barbar_keys = {
   { "<tab>", "<cmd>BufferNext<cr>", desc = "Next buffer" },
@@ -281,6 +272,68 @@ local barbar_keys = {
   }
 }
 
+local barbar = {
+  'romgrk/barbar.nvim',
+  version = '*',
+  event = "VeryLazy",
+  dependencies = {
+    'nvim-tree/nvim-web-devicons',
+  },
+  init = function() vim.g.barbar_auto_setup = false end,
+  opts = {
+    focus_on_close = 'right',
+    icons = {
+      buffer_index = true,
+    }
+  },
+  keys = barbar_keys,
+}
+
+local function setup_noice()
+  local opts = {
+    presets = {
+      long_message_to_split = true, -- long messages will be sent to a split
+    },
+  }
+  opts.lsp = {
+    hover = { enabled = false, },
+    signature = { enabled = false, },
+  }
+  -- Use mini view for the following verbose messages.
+  local verbose_messages = {
+    "lines yanked",
+    -- lazy.nvim config change message
+    "Config Change Detected",
+    -- undo message
+    "; before #",
+    -- redo message
+    "; after #",
+  }
+  opts.routes = {
+    {
+      filter = {
+        any = {},
+      },
+      view = "mini",
+    },
+  }
+  for _, msg in ipairs(verbose_messages) do
+    table.insert(opts.routes[1].filter.any, {
+      find = msg,
+    })
+  end
+  require("noice").setup(opts)
+end
+
+local noice = {
+  "folke/noice.nvim",
+  event = "VeryLazy",
+  config = setup_noice,
+  dependencies = {
+    "MunifTanjim/nui.nvim",
+  }
+}
+
 local config_render_markdown = function(_, _)
   ---@module 'render-markdown'
   ---@type render.md.UserConfig
@@ -305,59 +358,6 @@ local config_render_markdown = function(_, _)
     hi RenderMarkdownCodeInline guibg=None
   ]]
 end
-
-local oil = {
-  'stevearc/oil.nvim',
-  dependencies = { "nvim-tree/nvim-web-devicons" },
-  -- Disable lazy loading so that `vim <dir>` and `:e <dir>` will use oil.
-  lazy = false,
-  keys = oil_keys,
-  config = setup_oil,
-}
-
-local lualine = {
-  "nvim-lualine/lualine.nvim",
-  event = "VeryLazy",
-  dependencies = {
-    "nvim-tree/nvim-web-devicons",
-    {
-      -- Show current code context.
-      "SmiteshP/nvim-navic",
-      opts = {
-        lsp = {
-          auto_attach = true,
-        },
-      },
-    },
-  },
-  opts = lualine_opts,
-}
-
-local barbar = {
-  'romgrk/barbar.nvim',
-  version = '*',
-  event = "VeryLazy",
-  dependencies = {
-    'nvim-tree/nvim-web-devicons',
-  },
-  init = function() vim.g.barbar_auto_setup = false end,
-  opts = {
-    focus_on_close = 'right',
-    icons = {
-      buffer_index = true,
-    }
-  },
-  keys = barbar_keys,
-}
-
-local noice = {
-  "folke/noice.nvim",
-  event = "VeryLazy",
-  config = setup_noice,
-  dependencies = {
-    "MunifTanjim/nui.nvim",
-  }
-}
 
 local render_markdown = {
   'MeanderingProgrammer/render-markdown.nvim',

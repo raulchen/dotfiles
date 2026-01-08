@@ -30,9 +30,9 @@ local copilot = {
 }
 
 local function jump_to_prompt(direction)
-  -- Match prompt patterns: "> " (claude), "› " (codex), " ┌────" (cursor)
+  -- Match prompt patterns: "❯ " (claude), "› " (codex), " ┌────" (cursor)
   -- \v enables "very magic" mode where special regex chars don't need escaping
-  local pattern = "\\v^(\\> |› | ┌────)"
+  local pattern = "\\v^(❯ |› | ┌────)"
   local count = vim.v.count1
   -- the upper case 'W' disables wrapping around the file
   local flags = direction == "next" and "W" or "bW"

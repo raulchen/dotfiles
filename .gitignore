@@ -1,7 +1,8 @@
 *.local
+*.local.*
+local.*
 nvim/lazy-lock.json
 nvim/spell
-hammerspoon/local.lua
 hammerspoon/Spoons/EmmyLua.spoon/annotations
 zsh/my-theme.zsh-theme.antigen-compat
 tmux/plugins

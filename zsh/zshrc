@@ -1,25 +1,3 @@
-DOTFILES=$HOME/dotfiles
-
-# === Environmental variables ===
-
-export PATH="$HOME/.local/bin:$HOME/bin:$DOTFILES/bin:/opt/homebrew/bin:$PATH"
-
-export LC_ALL=en_US.UTF-8
-export LANG=en_US.UTF-8
-
-export XDG_CONFIG_HOME=~/.config
-
-# Cache OS check to avoid repeated uname calls
-IS_MACOS=false
-[[ $OSTYPE == darwin* ]] && IS_MACOS=true
-export IS_MACOS
-
-if which nvim >/dev/null 2>&1 ; then
-    export EDITOR='nvim'
-else
-    export EDITOR='vim'
-fi
-
 # === zsh settings ===
 
 HISTSIZE=130000

@@ -1,0 +1,44 @@
+DOTFILES=$HOME/dotfiles
+
+# === Environmental variables ===
+
+# Safely add to PATH, avoiding duplicates
+# Usage: path_add [-a] <path>
+#   -a: append instead of prepend
+path_add() {
+    local append=false
+    [[ "$1" == "-a" ]] && { append=true; shift; }
+    local dir="$1"
+    [[ -d "$dir" ]] || return 1
+    [[ ":$PATH:" == *":$dir:"* ]] && return 0
+    if $append; then
+        export PATH="$PATH:$dir"
+    else
+        export PATH="$dir:$PATH"
+    fi
+}
+
+path_add /opt/homebrew/bin
+path_add $DOTFILES/bin
+path_add $HOME/bin
+path_add $HOME/.local/bin
+
+export LC_ALL=en_US.UTF-8
+export LANG=en_US.UTF-8
+
+export XDG_CONFIG_HOME=~/.config
+
+# Cache OS check to avoid repeated uname calls
+IS_MACOS=false
+[[ $OSTYPE == darwin* ]] && IS_MACOS=true
+export IS_MACOS
+
+if which nvim >/dev/null 2>&1 ; then
+    export EDITOR='nvim'
+else
+    export EDITOR='vim'
+fi
+
+if test -e "$DOTFILES/zsh/zshenv.local"; then
+    source "$DOTFILES/zsh/zshenv.local"
+fi

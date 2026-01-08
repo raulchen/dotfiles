@@ -60,6 +60,7 @@ if [[ "$base_dir" != "$HOME/dotfiles" ]]; then
 fi
 
 link_file "$base_dir/zsh/zshrc" ~/.zshrc
+link_file "$base_dir/zsh/zshenv" ~/.zshenv
 
 if link_file "$base_dir/vim/vimrc" ~/.vimrc ; then
     vim +PlugInstall +qall

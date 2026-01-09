@@ -90,7 +90,6 @@ fi
 typeset -A commands_to_plugins=(
     "bazel" "bazel"
     "mvn" "mvn"
-    "pyenv" "davidparsson/zsh-pyenv-lazy"
 )
 
 for cmd in ${(@k)commands_to_plugins}; do
@@ -225,4 +224,9 @@ if [ -n "$TMUX" ]; then
         tmux_update_window_name.sh
     }
     precmd_functions+=(tmux_update_window_name)
+fi
+
+# uv shell completion
+if type uv >/dev/null 2>&1; then
+    eval "$(uv generate-shell-completion zsh)"
 fi

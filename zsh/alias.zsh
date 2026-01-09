@@ -62,3 +62,13 @@ alias g="git"
 for al in `git --list-cmds=alias`; do
     alias g$al="git $al"
 done
+
+# uv
+if type uv >/dev/null 2>&1; then
+    alias uva="uv add"
+    alias uvp="uv pip"
+    alias uvpy="uv python"
+    alias uvr="uv run"
+    alias uvs="uv sync"
+    alias uvv="uv venv"
+fi

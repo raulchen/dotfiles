@@ -18,8 +18,14 @@ export VIRTUAL_ENV_DISABLE_PROMPT=1
 
 # Show venv name
 function venv_prompt() {
-    if [[ -n "$VIRTUAL_ENV" ]]; then
-        echo " "
+    if [[ -n "$VIRTUAL_ENV_PROMPT" ]]; then
+        local project_dir="${VIRTUAL_ENV:h}"
+        # Drop the venv name if in the project dir.
+        if [[ "$PWD" == "$project_dir" || "$PWD" == "$project_dir"/* ]]; then
+            echo " $PROMPT_SEPARATOR"
+        else
+            echo " $VIRTUAL_ENV_PROMPT$PROMPT_SEPARATOR"
+        fi
     fi
 }
 

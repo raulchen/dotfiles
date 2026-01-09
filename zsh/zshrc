@@ -235,9 +235,13 @@ fi
 function auto_venv() {
     if [[ -f .venv/bin/activate ]]; then
         source .venv/bin/activate
-    elif [[ -n "$VIRTUAL_ENV" ]]; then
+        _AUTO_VENV=1
+    elif [[ -n "$VIRTUAL_ENV" && -n "$_AUTO_VENV" ]]; then
         local venv_dir="${VIRTUAL_ENV:h}"
-        [[ "$PWD" != "$venv_dir"* ]] && deactivate
+        if [[ "$PWD" != "$venv_dir"* ]]; then
+            deactivate
+            unset _AUTO_VENV
+        fi
     fi
 }
 add-zsh-hook chpwd auto_venv

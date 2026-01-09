@@ -1,3 +1,10 @@
+# Re-prioritize custom paths for macOS.
+# On macOS, /etc/zprofile runs path_helper which reads /etc/paths and
+# /etc/paths.d/*, prepending system paths to PATH. This happens after
+# ~/.zshenv, pushing our custom paths to the end. Re-add them here with
+# -f (force) to move them back to the front.
+[[ $IS_MACOS == true ]] && path_add_custom -f
+
 # === zsh settings ===
 
 HISTSIZE=130000

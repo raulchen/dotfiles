@@ -1,27 +1,49 @@
 DOTFILES=$HOME/dotfiles
 
-# === Environmental variables ===
+# === PATH setup ===
 
 # Safely add to PATH, avoiding duplicates
-# Usage: path_add [-a] <path>
+# Usage: path_add [-a|-f] <path>
 #   -a: append instead of prepend
+#   -f: force to front (remove if exists, then prepend)
 path_add() {
-    local append=false
-    [[ "$1" == "-a" ]] && { append=true; shift; }
+    local append=false force=false
+    while [[ "$1" == -* ]]; do
+        case "$1" in
+            -a) append=true; shift ;;
+            -f) force=true; shift ;;
+            *) shift ;;
+        esac
+    done
     local dir="$1"
     [[ -d "$dir" ]] || return 1
-    [[ ":$PATH:" == *":$dir:"* ]] && return 0
-    if $append; then
-        export PATH="$PATH:$dir"
-    else
+    if $force; then
+        PATH="${PATH//:$dir:/:}"    # remove from middle
+        PATH="${PATH/#$dir:/}"      # remove from start
+        PATH="${PATH/%:$dir/}"      # remove from end
         export PATH="$dir:$PATH"
+    elif [[ ":$PATH:" != *":$dir:"* ]]; then
+        if $append; then
+            export PATH="$PATH:$dir"
+        else
+            export PATH="$dir:$PATH"
+        fi
     fi
 }
 
-path_add /opt/homebrew/bin
-path_add $DOTFILES/bin
-path_add $HOME/bin
-path_add $HOME/.local/bin
+# Add custom paths (lowest priority first)
+# Usage: path_add_custom [-f]
+path_add_custom() {
+    local flag="$1"
+    path_add $flag /opt/homebrew/bin
+    path_add $flag $DOTFILES/bin
+    path_add $flag $HOME/bin
+    path_add $flag $HOME/.local/bin
+}
+
+path_add_custom
+
+# === Environmental variables ===
 
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8

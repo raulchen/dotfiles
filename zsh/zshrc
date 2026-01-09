@@ -230,3 +230,15 @@ fi
 if type uv >/dev/null 2>&1; then
     eval "$(uv generate-shell-completion zsh)"
 fi
+
+# Auto activate/deactivate venv
+function auto_venv() {
+    if [[ -f .venv/bin/activate ]]; then
+        source .venv/bin/activate
+    elif [[ -n "$VIRTUAL_ENV" ]]; then
+        local venv_dir="${VIRTUAL_ENV:h}"
+        [[ "$PWD" != "$venv_dir"* ]] && deactivate
+    fi
+}
+add-zsh-hook chpwd auto_venv
+auto_venv

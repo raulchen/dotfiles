@@ -22,7 +22,7 @@ function venv_prompt() {
         local project_dir="${VIRTUAL_ENV:h}"
         # Drop the venv name if in the project dir.
         if [[ "$PWD" == "$project_dir" || "$PWD" == "$project_dir"/* ]]; then
-            echo " $PROMPT_SEPARATOR"
+            echo " "
         else
             echo " $VIRTUAL_ENV_PROMPT$PROMPT_SEPARATOR"
         fi

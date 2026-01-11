@@ -160,6 +160,31 @@ local sidekick = {
       mode = { "n", "x" },
       desc = "Sidekick Select Prompt",
     },
+    {
+      "<leader>aP",
+      function()
+        local tools = require("sidekick.config").cli.tools
+        local tool_flags = {
+          claude = { cmd = { "claude" }, flag = "--dangerously-skip-permissions" },
+          codex = { cmd = { "codex" }, flag = "--full-auto" },
+          ["cursor-agent"] = { cmd = { "cursor-agent" }, flag = "--force" },
+        }
+        local states = {}
+        for name, cfg in pairs(tool_flags) do
+          tools[name] = tools[name] or {}
+          local enabled = vim.tbl_contains(tools[name].cmd or {}, cfg.flag)
+          if enabled then
+            tools[name].cmd = cfg.cmd
+          else
+            tools[name].cmd = vim.list_extend(vim.deepcopy(cfg.cmd), { cfg.flag })
+          end
+          states[name] = not enabled
+        end
+        local status = vim.iter(states):map(function(k, v) return k .. ":" .. (v and "ON" or "OFF") end):totable()
+        vim.notify("Skip permissions: " .. table.concat(status, ", "))
+      end,
+      desc = "Toggle CLI skip permissions",
+    },
   },
   config = function(_, opts)
     require("sidekick").setup(opts)

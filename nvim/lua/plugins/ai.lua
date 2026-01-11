@@ -51,6 +51,11 @@ local sidekick = {
     },
     cli = {
       win = {
+        float = {
+          border = "rounded",
+          width = 0.9,
+          height = 0.9,
+        },
         split = {
           width = 0, -- set to 0 for default split width
           height = 0, -- set to 0 for default split height
@@ -184,6 +189,25 @@ local sidekick = {
         vim.notify("Skip permissions: " .. table.concat(status, ", "))
       end,
       desc = "Toggle CLI skip permissions",
+    },
+    {
+      "<leader>aL",
+      function()
+        local State = require("sidekick.cli.state")
+        local states = State.get({ terminal = true })
+        for _, state in ipairs(states) do
+          if state.terminal then
+            local opts = state.terminal.opts
+            opts.layout = opts.layout == "float" and "right" or "float"
+            if state.terminal:is_open() then
+              state.terminal:hide()
+              state.terminal:show()
+              state.terminal:focus()
+            end
+          end
+        end
+      end,
+      desc = "Toggle sidekick float layout",
     },
   },
   config = function(_, opts)

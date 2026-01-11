@@ -88,7 +88,7 @@ map('c', '<c-x><c-d>', '<C-R>=expand("%:p:h")."/"<cr>', { desc = 'Insert directo
 map('c', '<c-x><c-f>', '<C-R>=expand("%:p")<cr>', { desc = 'Insert file path' })
 
 -- Terminal Mappings
-map("t", "<esc><esc>", "<c-\\><c-n>", { desc = "Enter Normal Mode" })
+map("t", "<c-\\><c-\\>", "<c-\\><c-n>", { desc = "Enter Normal Mode" })
 map("t", "<C-\\><C-r>", function()
   local registers = '*+"-:.%/#=_abcdefghijklmnopqrstuvwxyz0123456789'
   local lines = {}

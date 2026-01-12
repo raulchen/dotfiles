@@ -1,3 +1,5 @@
+local default_layout = "below"
+
 -- Helper function to focus or start a terminal
 local function focus_or_start_terminal(term)
   if term:is_active() then
@@ -21,11 +23,15 @@ end
 
 local function create_new_terminal()
   local ergoterm = require("ergoterm")
+  local current = ergoterm.identify()
+  if current then
+    current:close()
+  end
   local num = 1
   while ergoterm.get_by_name(tostring(num)) do
     num = num + 1
   end
-  create_and_focus_terminal(tostring(num), "float")
+  create_and_focus_terminal(tostring(num), default_layout)
 end
 
 local function cycle_terminal(direction)
@@ -66,7 +72,27 @@ local function cycle_terminal(direction)
     next_idx = (current_idx - 2) % #all_terms + 1
   end
 
+  if current_term then
+    current_term:close()
+  end
   focus_or_start_terminal(all_terms[next_idx])
+end
+
+local function toggle_layout()
+  local ergoterm = require("ergoterm")
+  local current = ergoterm.identify()
+  default_layout = default_layout == "float" and "below" or "float"
+  -- Toggle all open terminals
+  for _, term in ipairs(ergoterm.get_all()) do
+    if term:is_open() then
+      term:close()
+      term:open(default_layout)
+    end
+  end
+  -- Refocus current terminal
+  if current then
+    current:focus()
+  end
 end
 
 local function toggle_terminal(count)
@@ -96,7 +122,7 @@ local function toggle_terminal(count)
   if term then
     focus_or_start_terminal(term)
   else
-    create_and_focus_terminal(term_name, "float")
+    create_and_focus_terminal(term_name, default_layout)
   end
 end
 
@@ -106,6 +132,7 @@ local ergoterm_keys = {
   { "<c-\\><c-n>", function() cycle_terminal("next") end, desc = "Next terminal", ft = "ergoterm", mode = "t" },
   { "<c-\\><c-p>", function() cycle_terminal("prev") end, desc = "Previous terminal", ft = "ergoterm", mode = "t" },
   { "<c-\\><c-c>", create_new_terminal, desc = "Create new terminal", ft = "ergoterm", mode = "t" },
+  { "<c-\\><c-v>", toggle_layout, desc = "Toggle layout views", ft = "ergoterm", mode = "t" },
   { "<leader>ft", "<cmd>TermSelect<cr>", desc = "Pick a terminal" },
 }
 

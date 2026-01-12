@@ -95,35 +95,33 @@ local function toggle_layout()
   end
 end
 
-local function toggle_terminal(count)
+local function toggle_terminal()
   local ergoterm = require("ergoterm")
 
-  -- Check if current buffer is already a terminal
+  -- If in a terminal, close it
   local current_term = ergoterm.identify()
   if current_term then
     current_term:close()
     return
   end
 
-  -- If both count and vim.v.count are absent, toggle the last used terminal
-  if not count and (not vim.v.count or vim.v.count == 0) then
-    local last_term = ergoterm.get_state("last_focused")
-    if last_term then
-      focus_or_start_terminal(last_term)
+  -- Toggle the last used terminal if active
+  local last_term = ergoterm.get_state("last_focused")
+  if last_term and last_term:is_active() then
+    focus_or_start_terminal(last_term)
+    return
+  end
+
+  -- Find the first active terminal
+  for _, term in ipairs(ergoterm.get_all()) do
+    if term:is_active() then
+      focus_or_start_terminal(term)
       return
     end
   end
 
-  -- Otherwise, open the terminal named $count
-  count = count or (vim.v.count > 0 and vim.v.count) or 1
-  local term_name = tostring(count)
-  local term = ergoterm.get_by_name(term_name)
-
-  if term then
-    focus_or_start_terminal(term)
-  else
-    create_and_focus_terminal(term_name, default_layout)
-  end
+  -- Create terminal 1 if none active
+  create_and_focus_terminal("1", default_layout)
 end
 
 local ergoterm_keys = {
@@ -135,16 +133,6 @@ local ergoterm_keys = {
   { "<c-\\><c-v>", toggle_layout, desc = "Toggle layout views", ft = "ergoterm", mode = "t" },
   { "<leader>ft", "<cmd>TermSelect<cr>", desc = "Pick a terminal" },
 }
-
--- Map <A-1> to <A-9> to toggle terminals 1 to 9
-for i = 1, 9 do
-  table.insert(ergoterm_keys, {
-    "<A-" .. i .. ">",
-    function() toggle_terminal(i) end,
-    desc = "Toggle terminal " .. i,
-    mode = { "n", "t" },
-  })
-end
 
 local ergoterm_opts = {
   terminal_defaults = {

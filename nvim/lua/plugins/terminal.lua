@@ -143,13 +143,16 @@ local ergoterm_opts = {
     },
     persist_mode = true,
     on_open = function(term)
-      -- Set winbar for non-floating terminals
-      if term._state.layout == "float" then
-        return
-      end
       vim.schedule(function()
         local win = vim.fn.bufwinid(term._state.bufnr)
-        if win ~= -1 then
+        if win == -1 then
+          return
+        end
+        if term._state.layout == "float" then
+          -- Clear winbar for floating terminals
+          vim.api.nvim_set_option_value("winbar", "", { scope = "local", win = win })
+        else
+          -- Set winbar for non-floating terminals
           local name = term.name or "terminal"
           local dir = term._state.dir or vim.fn.getcwd()
           local home = vim.fn.expand("~")

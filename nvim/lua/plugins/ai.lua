@@ -191,7 +191,7 @@ local sidekick = {
       desc = "Toggle CLI skip permissions",
     },
     {
-      "<leader>aL",
+      "<c-\\><c-v>",
       function()
         local State = require("sidekick.cli.state")
         local states = State.get({ terminal = true })
@@ -203,11 +203,14 @@ local sidekick = {
               state.terminal:hide()
               state.terminal:show()
               state.terminal:focus()
+              vim.schedule(vim.cmd.startinsert)
             end
           end
         end
       end,
-      desc = "Toggle sidekick float layout",
+      mode = "t",
+      ft = "sidekick_terminal",
+      desc = "Toggle sidekick layout views",
     },
   },
   config = function(_, opts)

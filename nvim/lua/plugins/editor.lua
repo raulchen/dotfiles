@@ -53,7 +53,7 @@ local which_key = {
       { "<leader>g", group = "git" },
       { "<leader>os", group = "search" },
       { "<leader>s", group = "sessions" },
-      { "<leader>t", group = "tabs" },
+      { "<leader><tab>", group = "tabs" },
       { "<leader>u", group = "ui" },
       { "<leader>w", group = "windows" },
     })

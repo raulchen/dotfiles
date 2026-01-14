@@ -16,13 +16,13 @@ map({ 'n', 'x' }, 'H', '<cmd>bp<cr>', { desc = 'Previous buffer' })
 map('n', '<leader>bl', '<c-^>', { desc = 'Switch to last buffer' })
 
 -- Tab management
-map('n', '<leader>te', '<cmd>tabnew<cr>', { desc = 'Create new tab' })
-map({ 'n', 'x' }, '<leader>tn', '<cmd>tabn<cr>', { desc = 'Next tab' })
-map({ 'n', 'x' }, ']t', '<cmd>tabn<cr>', { desc = 'Next tab' })
-map({ 'n', 'x' }, '<leader>tp', '<cmd>tabp<cr>', { desc = 'Previous tab' })
-map({ 'n', 'x' }, '[t', '<cmd>tabp<cr>', { desc = 'Previous tab' })
-map('n', '<leader>tx', '<cmd>tabclose<cr>', { desc = 'Close current tab' })
-map('n', '<leader>ts', '<cmd>tab split<cr>', { desc = 'Split current window into new tab' })
+map('n', '<leader><tab>e', '<cmd>tabnew<cr>', { desc = 'Create new tab' })
+map({ 'n', 'x' }, '<leader><tab>n', '<cmd>tabn<cr>', { desc = 'Next tab' })
+map({ 'n', 'x' }, ']<tab>', '<cmd>tabn<cr>', { desc = 'Next tab' })
+map({ 'n', 'x' }, '<leader><tab>p', '<cmd>tabp<cr>', { desc = 'Previous tab' })
+map({ 'n', 'x' }, '[<tab>', '<cmd>tabp<cr>', { desc = 'Previous tab' })
+map('n', '<leader><tab>x', '<cmd>tabclose<cr>', { desc = 'Close current tab' })
+map('n', '<leader><tab>s', '<cmd>tab split<cr>', { desc = 'Split current window into new tab' })
 
 -- Window management
 map('n', '<leader>wv', '<c-w>v', { desc = 'Vertical split window' })

@@ -4,10 +4,13 @@ if [ -z "$TMUX" ]; then
     exit 0
 fi
 
+# Capture window ID immediately to avoid race conditions
+window_id="$(tmux display-message -p '#{window_id}')"
+
 tmux_update_window_name() {
     project_root="$(find_project_root.sh "$1")"
     window_name="$(basename "$project_root")"
-    tmux rename-window -t "$(tmux display-message -p '#{window_id}')" "$window_name"
+    tmux rename-window -t "$window_id" "$window_name"
 }
 
 pwd="$1"

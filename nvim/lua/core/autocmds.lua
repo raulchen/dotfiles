@@ -57,7 +57,9 @@ vim.api.nvim_create_autocmd({ "VimResized" }, {
   desc = "Equalize window sizes when vim is resized",
   group = general_group,
   callback = function()
+    local current_tab = vim.api.nvim_get_current_tabpage()
     vim.cmd("tabdo wincmd =")
+    vim.api.nvim_set_current_tabpage(current_tab)
   end,
 })
 

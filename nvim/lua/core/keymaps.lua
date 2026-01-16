@@ -59,7 +59,12 @@ map('v', '<c-j>', ":m '>+1<cr>gv=gv", { desc = 'Move line(s) down' })
 map('v', '<c-k>', ":m '<-2<cr>gv=gv", { desc = 'Move line(s) up' })
 
 -- System clipboard
-map({ 'n', 'v' }, '<leader>y', '"+y', { desc = 'Yank to system clipboard' })
+map({ 'v' }, '<leader>y', '"+y', { desc = 'Yank selection to system clipboard' })
+map({ 'n' }, '<leader>y', function()
+  local path = vim.fn.expand("%")
+  vim.fn.setreg('+', path)
+  vim.notify("Copied: " .. path, vim.log.levels.INFO)
+end, { desc = 'Yank buffer path to system clipboard' })
 
 -- Make n/N direction consistent regardless of / or ? search
 map("n", "n", "'Nn'[v:searchforward].'zv'", { expr = true, desc = "Next Search Result" })

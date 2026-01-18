@@ -294,6 +294,9 @@ local function setup_noice()
     presets = {
       long_message_to_split = true, -- long messages will be sent to a split
     },
+    notify = {
+      enabled = false,
+    },
   }
   opts.lsp = {
     hover = { enabled = false, },

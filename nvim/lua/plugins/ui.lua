@@ -28,6 +28,8 @@ local function setup_oil()
     view_options = {
       show_hidden = true,
     },
+    -- Increase the cleanup delay, default is 2000ms.
+    cleanup_delay_ms = 10000,
     constrain_cursor = "name",
     use_default_keymaps = false,
     keymaps = {

@@ -65,6 +65,8 @@
     wt = "worktree"
     # Create a new worktree named 'wt-<branch>' with a new branch '<branch>'
     wtc = "!f() { git worktree add wt-\"$1\" -b \"$1\"; }; f"
+    # Create a new worktree named 'wt-<branch>' and attach to the existing branch.
+    wta = "!f() { git worktree add wt-\"$1\" \"$1\"; }; f"
     # Remove worktree and delete associated branch. Accepts either branch name or worktree name with 'wt-' prefix
     wtd = "!f() { branch=\"${1#wt-}\"; git worktree remove wt-\"$branch\" && git branch -D \"$branch\"; }; f"
 [include]

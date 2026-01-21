@@ -528,8 +528,7 @@ return {
             -- set it to 3 again
             vim.opt.laststatus = 3
           end,
-        }):map(
-          "<leader>uT")
+        }):map("<leader>uA") -- A for Appearance
       end,
     })
   end,

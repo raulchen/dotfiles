@@ -380,7 +380,19 @@ for _, key in ipairs(gitbrowse_keys) do
 end
 
 local explorer_keys = {
-  { "<leader>ut", function() Snacks.explorer() end, desc = "Toggle file explorer" },
+  {
+    "<leader>ut",
+    function()
+      local buffer_dir = vim.fn.expand("%:p:h")
+      local cwd = vim.fn.getcwd()
+      if vim.startswith(buffer_dir, "/") and not vim.startswith(buffer_dir, cwd) then
+        Snacks.explorer({ cwd = buffer_dir })
+      else
+        Snacks.explorer()
+      end
+    end,
+    desc = "Toggle file explorer",
+  },
 }
 
 for _, key in ipairs(explorer_keys) do

@@ -72,6 +72,10 @@ local function setup_lsp_basics()
     { desc = "Go to previous diagnostic" })
   keymap('n', ']d', function() vim.diagnostic.jump({ count = 1, float = false }) end, { desc = "Go to next diagnostic" })
 
+  -- Enable inlay hints by default.
+  vim.lsp.inlay_hint.enable(true)
+  Snacks.toggle.inlay_hints():map('<leader>cH')
+
   -- Buffer local mappings.
   local on_attach = function(ev)
     local client = vim.lsp.get_client_by_id(ev.data.client_id)
@@ -153,21 +157,6 @@ local function setup_lsp_basics()
     map('n', '<leader>cwl', function()
       print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
     end, "List workspace folders")
-
-    -- Inlay hint
-    if client and client:supports_method(vim.lsp.protocol.Methods.textDocument_inlayHint, ev.buf) then
-      vim.lsp.inlay_hint.enable(true, { bufnr = ev.buf })
-      map('n', '<leader>cH', function()
-        local enabled = vim.lsp.inlay_hint.is_enabled({ bufnr = ev.buf })
-        if enabled then
-          vim.lsp.inlay_hint.enable(false, { bufnr = ev.buf })
-          vim.notify("Inlay hints disabled")
-        else
-          vim.lsp.inlay_hint.enable(true, { bufnr = ev.buf })
-          vim.notify("Inlay hints enabled")
-        end
-      end, 'Toggle inlay hints')
-    end
   end
   vim.api.nvim_create_autocmd('LspAttach', {
     group = vim.api.nvim_create_augroup('UserLspConfig', {}),

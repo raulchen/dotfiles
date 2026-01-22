@@ -21,12 +21,14 @@ project_root="$(find_project_root.sh "$pane_path")"
 window_name="$(basename "$project_root")"
 
 # Append branch name if in a git worktree
-git_dir="$(git -C "$project_root" rev-parse --git-dir 2>/dev/null)"
-git_common_dir="$(git -C "$project_root" rev-parse --git-common-dir 2>/dev/null)"
-if [ -n "$git_dir" ] && [ "$git_dir" != "$git_common_dir" ]; then
-    branch="$(git -C "$project_root" symbolic-ref --short HEAD 2>/dev/null)"
-    if [ -n "$branch" ]; then
-        window_name="$window_name:$branch"
+git_dir="$(cd "$project_root" && realpath "$(git rev-parse --git-dir 2>/dev/null)" 2>/dev/null)"
+if [ -n "$git_dir" ]; then
+    git_common_dir="$(cd "$project_root" && realpath "$(git rev-parse --git-common-dir 2>/dev/null)" 2>/dev/null)"
+    if [ "$git_dir" != "$git_common_dir" ]; then
+        branch="$(git -C "$project_root" symbolic-ref --short HEAD 2>/dev/null)"
+        if [ -n "$branch" ]; then
+            window_name="$window_name:$branch"
+        fi
     fi
 fi
 

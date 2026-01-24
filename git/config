@@ -5,6 +5,8 @@
     email = chenh1024@gmail.com
 [core]
     excludesfile = ~/.config/git/ignore
+[push]
+    autoSetupRemote = true
 [merge]
     conflictstyle = diff3
     tool = vimdiff

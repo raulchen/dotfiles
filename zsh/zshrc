@@ -160,7 +160,11 @@ if type fzf >/dev/null 2>&1 ; then
             fd --type d --hidden --follow --exclude ".git" . "$1"
         }
     fi
-    export FZF_FILE_PREVIEW_CMD="bat -n --color=always --line-range :$LINES {}"
+    if type bat >/dev/null 2>&1; then
+        export FZF_FILE_PREVIEW_CMD="bat -n --color=always --line-range :$LINES {}"
+    else
+        export FZF_FILE_PREVIEW_CMD="cat {}"
+    fi
     export FZF_DIR_PREVIEW_CMD="ls -1 --color=always {}"
     export FZF_PREVIEW_WINDOW="right,50%,<70(down,50%)"
     FZF_DEFAULT_BIND="

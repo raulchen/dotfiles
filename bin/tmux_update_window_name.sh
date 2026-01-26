@@ -32,4 +32,7 @@ if [ -n "$git_dir" ]; then
     fi
 fi
 
+# Limit window name to 25 characters
+window_name="${window_name:0:25}"
+
 tmux rename-window -t "$window_id" "$window_name"

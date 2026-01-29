@@ -1,0 +1,66 @@
+#!/bin/bash
+# Convert a regular git repo to a bare repo with worktrees
+#
+# Usage: git-to-bare [repo_path]
+#   repo_path: Path to the git repo (defaults to current directory)
+#
+# After conversion:
+#   - The repo will only contain .git/ (bare repo)
+#   - A worktree will be created at main/ for the default branch
+
+set -e
+
+repo_path="${1:-.}"
+repo_path="$(cd "$repo_path" && pwd)"
+
+# Check if it's a git repo
+if [[ ! -d "$repo_path/.git" ]]; then
+    echo "Error: $repo_path is not a git repository" >&2
+    exit 1
+fi
+
+cd "$repo_path"
+
+# Check for uncommitted changes
+if ! git diff --quiet || ! git diff --cached --quiet; then
+    echo "Error: Repository has uncommitted changes. Please commit or stash them first." >&2
+    exit 1
+fi
+
+# Check for untracked files
+untracked=$(git ls-files --others --exclude-standard)
+if [[ -n "$untracked" ]]; then
+    echo "Error: Repository has untracked files that would be deleted:" >&2
+    echo "$untracked" | head -20 >&2
+    [[ $(echo "$untracked" | wc -l) -gt 20 ]] && echo "... and more" >&2
+    echo "Please remove, commit, or stash them first." >&2
+    exit 1
+fi
+
+# Detect main branch (main or master)
+main_branch=""
+if git show-ref --verify --quiet refs/heads/main; then
+    main_branch="main"
+elif git show-ref --verify --quiet refs/heads/master; then
+    main_branch="master"
+else
+    echo "Error: Could not find main or master branch" >&2
+    exit 1
+fi
+
+echo "Converting $repo_path to bare repo..."
+echo "Main branch: $main_branch"
+
+# Remove all files except .git
+find . -maxdepth 1 ! -name '.git' ! -name '.' -exec rm -rf {} +
+
+# Configure as bare repo
+git config core.bare true
+
+# Create worktree for main branch
+echo "Creating worktree for $main_branch..."
+git worktree add main "$main_branch"
+
+echo "Done!"
+echo "  Bare repo: $repo_path/.git"
+echo "  Worktree:  $repo_path/main"

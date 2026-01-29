@@ -1,8 +1,8 @@
 #!/bin/bash
 # Script to find the project root based on specific files or directories
 
-# Define the files or directories that signify the project root
-special_paths=(".git" "pyproject.toml")
+# Files or directories that signify a project root.
+special_paths=(".git" "package.json" "Cargo.toml" "go.mod" "pyproject.toml" "pom.xml" "build.gradle" "build.gradle.kts")
 
 # Start at the current directory
 current_path="$1"

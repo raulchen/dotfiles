@@ -61,7 +61,7 @@
     ss = "stash"
     st = "status"
     sw = "switch"
-    swc = "!git-swc"
+    swc = "!~/.config/git/scripts/git-swc"
     swm = "!git switch $(git master-branch)"
     swl = "switch -"  -- switch to last branch
     wt = "worktree"
@@ -71,6 +71,8 @@
     wta = "!f() { git worktree add wt-\"$1\" \"$1\"; }; f"
     # Remove worktree and delete associated branch. Accepts either branch name or worktree name with 'wt-' prefix
     wtd = "!f() { branch=\"${1#wt-}\"; git worktree remove wt-\"$branch\" && git branch -D \"$branch\"; }; f"
+    # Convert repo to bare and checkout main branch as worktree
+    to-bare = "!~/.config/git/scripts/git-to-bare"
 [include]
     path = ~/.config/git/delta.txt
 [include]

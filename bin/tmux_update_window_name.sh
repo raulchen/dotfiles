@@ -25,10 +25,10 @@ git_dir="$(cd "$project_root" && realpath "$(git rev-parse --git-dir 2>/dev/null
 if [ -n "$git_dir" ]; then
     git_common_dir="$(cd "$project_root" && realpath "$(git rev-parse --git-common-dir 2>/dev/null)" 2>/dev/null)"
     if [ "$git_dir" != "$git_common_dir" ]; then
-        branch="$(git -C "$project_root" symbolic-ref --short HEAD 2>/dev/null)"
-        if [ -n "$branch" ]; then
-            window_name="$window_name:$branch"
-        fi
+        # In a worktree: use repo name + worktree folder name
+        repo_name="$(basename "$(dirname "$git_common_dir")")"
+        worktree_name="$(basename "$project_root")"
+        window_name="$repo_name:$worktree_name"
     fi
 fi
 

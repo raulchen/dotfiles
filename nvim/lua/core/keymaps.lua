@@ -4,6 +4,11 @@ local map = vim.keymap.set
 vim.g.mapleader = ' '
 vim.g.maplocalleader = '\\'
 
+-- Command palette
+map({ 'n', 'v', 'x' }, '<leader>p', function()
+  require('core.command_palette').open()
+end, { desc = 'Open command palette' })
+
 -- Buffer management
 map('n', '<leader>be', '<cmd>enew<cr>', { desc = 'Create new buffer' })
 map('n', '<leader>x', '<cmd>bd<cr>', { desc = 'Delete current buffer' })

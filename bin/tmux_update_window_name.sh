@@ -10,6 +10,9 @@
 
 [[ -z "$TMUX" ]] && exit 0
 
+# Only update from the first pane in the window (pane-base-index is 1)
+[[ "$(tmux display-message -p '#{pane_index}')" != "1" ]] && exit 0
+
 window_id="${1:-$(tmux display-message -p '#{window_id}')}"
 pane_path="${2:-$PWD}"
 

@@ -225,7 +225,7 @@ fi
 if [ -n "$TMUX" ]; then
     # Hook function to update tmux window name
     function tmux_update_window_name() {
-        tmux_update_window_name.sh
+        ~/.config/tmux/scripts/tmux_update_window_name.sh
     }
     precmd_functions+=(tmux_update_window_name)
 fi

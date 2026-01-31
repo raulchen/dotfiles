@@ -44,8 +44,8 @@ if git_info="$(git -C "$pane_path" rev-parse --path-format=absolute --git-dir --
 
     # Build window name
     window_name="$repo_name"
-    [[ -n "$subproject_name" ]] && window_name="$window_name:$subproject_name"
-    [[ -n "$worktree_name" ]] && window_name="$window_name:$worktree_name"
+    [[ -n "$subproject_name" ]] && window_name="$window_name/$subproject_name"
+    [[ -n "$worktree_name" ]] && window_name="$window_name/$worktree_name"
 else
     # Not a git repo, find project root
     project_root="$(find_project_root.sh "$pane_path")"

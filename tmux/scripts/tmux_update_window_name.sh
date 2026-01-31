@@ -17,7 +17,7 @@ window_id="${1:-$(tmux display-message -p '#{window_id}')}"
 pane_path="${2:-$PWD}"
 
 # Get git info in a single call (avoids multiple subprocess spawns)
-if git_info="$(git -C "$pane_path" rev-parse --git-dir --git-common-dir --show-toplevel 2>/dev/null)"; then
+if git_info="$(git -C "$pane_path" rev-parse --path-format=absolute --git-dir --git-common-dir --show-toplevel 2>/dev/null)"; then
     # Parse the three lines of output
     git_dir="${git_info%%$'\n'*}"
     git_info="${git_info#*$'\n'}"

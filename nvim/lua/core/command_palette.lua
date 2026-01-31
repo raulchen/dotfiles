@@ -21,22 +21,21 @@ function M.register(item)
   table.insert(commands, item)
 end
 
----Get buffer-local keymaps starting with <localleader> for the current mode.
+---Get all buffer-local keymaps for the current mode.
 ---@return CommandPaletteItem[]
-local function get_localleader_keymaps()
+local function get_buffer_keymaps()
   local items = {}
-  local localleader = vim.g.maplocalleader or "\\"
   local mode = vim.api.nvim_get_mode().mode:sub(1, 1)
 
   local keymaps = vim.api.nvim_buf_get_keymap(0, mode)
   for _, km in ipairs(keymaps) do
-    if km.lhs and km.lhs:sub(1, #localleader) == localleader and km.desc then
-      table.insert(items, {
-        name = km.desc,
-        category = "<localleader>" .. km.lhs:sub(#localleader + 1),
-        lhs = km.lhs,
-      })
-    end
+    local name = km.desc or ""
+    local category = km.lhs and km.lhs or nil
+    table.insert(items, {
+      name = name,
+      category = category,
+      lhs = km.lhs,
+    })
   end
 
   return items
@@ -45,7 +44,7 @@ end
 ---Open the command palette picker.
 function M.open()
   local items = vim.list_extend({}, commands)
-  vim.list_extend(items, get_localleader_keymaps())
+  vim.list_extend(items, get_buffer_keymaps())
 
   if #items == 0 then
     vim.notify("Command palette is empty.", vim.log.levels.WARN)

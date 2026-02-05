@@ -48,6 +48,18 @@ local function setup_oil()
       ["gx"] = "actions.open_external",
       ["<localleader>p"] = "actions.preview",
       ["<localleader>s"] = "actions.change_sort",
+      ["<localleader>t"] = {
+        callback = function()
+          local oil = require("oil")
+          local config = require("oil.config")
+          config.view_options.sort = {
+            { "type", "asc" },
+            { "mtime", "desc" },
+          }
+          oil.open(oil.get_current_dir())
+        end,
+        desc = "Sort by modification time",
+      },
       ["<localleader>."] = "actions.toggle_hidden",
       ["<localleader>\\"] = "actions.toggle_trash",
       ["<localleader>C"] = {
@@ -62,7 +74,7 @@ local function setup_oil()
         desc = "Toggle constrain cursor",
       },
       ["<localleader>c"] = "actions.cd",
-      ["<localleader>t"] = { "actions.tcd" },
+      ["<localleader>T"] = { "actions.tcd" },
       ["<localleader>d"] = "actions.open_cwd",
       ["<localleader>r"] = "actions.refresh",
       ["<localleader>y"] = "actions.yank_entry",

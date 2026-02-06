@@ -63,23 +63,22 @@ vim.api.nvim_create_autocmd({ "VimResized" }, {
   end,
 })
 
+-- When using clangd with Bazel, "go to definition" often lands on symlinked
+-- files under bazel-out/. This autocmd resolves them to the real source files.
 vim.api.nvim_create_autocmd("BufReadPost", {
-  desc = "Prompt to resolve symlinks when opening files",
+  desc = "Resolve bazel-out symlinks to real source files",
   group = general_group,
   callback = function(event)
     local buf_path = vim.api.nvim_buf_get_name(event.buf)
-    -- Skip if the buffer is not a file.
-    if vim.fn.filereadable(buf_path) == 0 then
+    if not buf_path:find("/bazel%-") then
       return
     end
     local real_path = vim.fn.resolve(buf_path)
     if real_path ~= buf_path then
-      if vim.fn.confirm("File is a symlink. Resolve to original file?\n" .. real_path, "&Yes\n&No") == 1 then
-        vim.schedule(function()
-          vim.cmd("ResolveSymlink")
-        end
-        )
-      end
+      local cursor = vim.api.nvim_win_get_cursor(0)
+      vim.api.nvim_buf_set_name(event.buf, real_path)
+      vim.cmd("edit")
+      pcall(vim.api.nvim_win_set_cursor, 0, cursor)
     end
   end,
 })

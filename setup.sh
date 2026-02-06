@@ -62,9 +62,7 @@ fi
 link_file "$base_dir/zsh/zshrc" ~/.zshrc
 link_file "$base_dir/zsh/zshenv" ~/.zshenv
 
-if link_file "$base_dir/vim/vimrc" ~/.vimrc ; then
-    vim +PlugInstall +qall
-fi
+link_file "$base_dir/vim/vimrc" ~/.vimrc
 
 if [[ $is_darwin == true ]]; then
     link_file "$base_dir/hammerspoon" ~/.hammerspoon

@@ -70,6 +70,11 @@ if [[ $is_darwin == true ]]; then
     link_file "$base_dir/hammerspoon" ~/.hammerspoon
 fi
 
+mkdir -p ~/.claude
+for f in "$base_dir"/claude/*; do
+    link_file "$f" ~/.claude/"$(basename "$f")"
+done
+
 mkdir -p ~/.config
 xdg_configs=(nvim tmux git lsd wezterm ghostty yazi)
 for name in "${xdg_configs[@]}"; do

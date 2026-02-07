@@ -70,6 +70,11 @@ map({ 'n' }, '<leader>y', function()
   vim.fn.setreg('+', path)
   vim.notify("Copied: " .. path, vim.log.levels.INFO)
 end, { desc = 'Yank buffer path to system clipboard' })
+map({ 'n' }, '<leader>Y', function()
+  local path = vim.fn.expand("%:p")
+  vim.fn.setreg('+', path)
+  vim.notify("Copied: " .. path, vim.log.levels.INFO)
+end, { desc = 'Yank full buffer path to system clipboard' })
 
 -- Make n/N direction consistent regardless of / or ? search
 map("n", "n", "'Nn'[v:searchforward].'zv'", { expr = true, desc = "Next Search Result" })

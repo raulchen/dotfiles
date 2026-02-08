@@ -63,8 +63,8 @@ map('x', '>', '>gv', { remap = true, desc = 'Indent right (keep selection)' })
 map('v', '<c-j>', ":m '>+1<cr>gv=gv", { desc = 'Move line(s) down' })
 map('v', '<c-k>', ":m '<-2<cr>gv=gv", { desc = 'Move line(s) up' })
 
--- System clipboard
-map({ 'v' }, '<leader>y', '"+y', { desc = 'Yank selection to system clipboard' })
+-- Yank
+map({ 'n', 'x' }, 'gy', '"+y', { desc = 'Yank to system clipboard' })
 
 local function yank_to_clipboard(value)
   vim.fn.setreg('+', value)

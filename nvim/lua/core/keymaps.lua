@@ -64,7 +64,9 @@ map('v', '<c-j>', ":m '>+1<cr>gv=gv", { desc = 'Move line(s) down' })
 map('v', '<c-k>', ":m '<-2<cr>gv=gv", { desc = 'Move line(s) up' })
 
 -- Yank
-map({ 'n', 'x' }, 'gy', '"+y', { desc = 'Yank to system clipboard' })
+map({ 'n', 'x' }, 'gy', '"+y', { desc = 'Yank to clipboard' })
+map({ 'n', 'x' }, 'gp', '"+p', { desc = 'Paste from clipboard' })
+map({ 'n', 'x' }, 'gP', '"+P', { desc = 'Paste from clipboard (before)' })
 
 local function yank_to_register(value)
   local reg = vim.v.register == '"' and '+' or vim.v.register

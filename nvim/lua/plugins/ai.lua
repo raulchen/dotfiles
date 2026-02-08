@@ -45,6 +45,7 @@ local sidekick = {
   "folke/sidekick.nvim",
   opts = {
     nes = {
+      enabled = false,
       diff = {
         inline = false,
       },

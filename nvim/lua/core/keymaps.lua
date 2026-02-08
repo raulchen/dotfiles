@@ -1,4 +1,5 @@
 local map = vim.keymap.set
+local utils = require("core.utils")
 
 -- Leader configuration
 vim.g.mapleader = ' '
@@ -68,30 +69,24 @@ map({ 'n', 'x' }, 'gy', '"+y', { desc = 'Yank to clipboard' })
 map({ 'n', 'x' }, 'gp', '"+p', { desc = 'Paste from clipboard' })
 map({ 'n', 'x' }, 'gP', '"+P', { desc = 'Paste from clipboard (before)' })
 
-local function yank_to_register(value)
-  local reg = vim.v.register == '"' and '+' or vim.v.register
-  vim.fn.setreg(reg, value)
-  vim.notify(string.format('Copied to "%s: %s', reg, value), vim.log.levels.INFO)
-end
-
 map({ 'n' }, '<leader>yy', function()
-  yank_to_register(vim.fn.expand("%"))
+  utils.yank_to_register(vim.fn.expand("%"))
 end, { desc = 'Yank buffer path' })
 
 map({ 'n' }, '<leader>ya', function()
-  yank_to_register(vim.fn.expand("%:p"))
+  utils.yank_to_register(vim.fn.expand("%:p"))
 end, { desc = 'Yank absolute buffer path' })
 
 map({ 'n' }, '<leader>yf', function()
-  yank_to_register(vim.fn.expand("%:t"))
+  utils.yank_to_register(vim.fn.expand("%:t"))
 end, { desc = 'Yank buffer filename' })
 
 map({ 'n' }, '<leader>yd', function()
-  yank_to_register(vim.fn.expand("%:p:h"))
+  utils.yank_to_register(vim.fn.expand("%:p:h"))
 end, { desc = 'Yank buffer directory' })
 
 map({ 'n' }, '<leader>yl', function()
-  yank_to_register(string.format("%s:%d", vim.fn.expand("%:p"), vim.fn.line(".")))
+  utils.yank_to_register(string.format("%s:%d", vim.fn.expand("%:p"), vim.fn.line(".")))
 end, { desc = 'Yank full buffer path with line number' })
 
 -- Make n/N direction consistent regardless of / or ? search

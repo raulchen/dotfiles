@@ -30,4 +30,10 @@ M.dot_repeatable_keymap = function(keymap_opts)
   return keymap_opts
 end
 
+M.yank_to_register = function(value)
+  local reg = vim.v.register == '"' and '+' or vim.v.register
+  vim.fn.setreg(reg, value)
+  vim.notify(string.format('Copied to "%s: %s', reg, value), vim.log.levels.INFO)
+end
+
 return M

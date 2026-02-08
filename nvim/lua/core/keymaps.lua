@@ -66,30 +66,31 @@ map('v', '<c-k>', ":m '<-2<cr>gv=gv", { desc = 'Move line(s) up' })
 -- Yank
 map({ 'n', 'x' }, 'gy', '"+y', { desc = 'Yank to system clipboard' })
 
-local function yank_to_clipboard(value)
-  vim.fn.setreg('+', value)
-  vim.notify("Copied: " .. value, vim.log.levels.INFO)
+local function yank_to_register(value)
+  local reg = vim.v.register == '"' and '+' or vim.v.register
+  vim.fn.setreg(reg, value)
+  vim.notify(string.format('Copied to "%s: %s', reg, value), vim.log.levels.INFO)
 end
 
 map({ 'n' }, '<leader>yy', function()
-  yank_to_clipboard(vim.fn.expand("%"))
-end, { desc = 'Yank buffer path to system clipboard' })
+  yank_to_register(vim.fn.expand("%"))
+end, { desc = 'Yank buffer path' })
 
 map({ 'n' }, '<leader>ya', function()
-  yank_to_clipboard(vim.fn.expand("%:p"))
-end, { desc = 'Yank absolute buffer path to system clipboard' })
+  yank_to_register(vim.fn.expand("%:p"))
+end, { desc = 'Yank absolute buffer path' })
 
 map({ 'n' }, '<leader>yf', function()
-  yank_to_clipboard(vim.fn.expand("%:t"))
-end, { desc = 'Yank buffer filename to system clipboard' })
+  yank_to_register(vim.fn.expand("%:t"))
+end, { desc = 'Yank buffer filename' })
 
 map({ 'n' }, '<leader>yd', function()
-  yank_to_clipboard(vim.fn.expand("%:p:h"))
-end, { desc = 'Yank buffer directory to system clipboard' })
+  yank_to_register(vim.fn.expand("%:p:h"))
+end, { desc = 'Yank buffer directory' })
 
 map({ 'n' }, '<leader>yl', function()
-  yank_to_clipboard(string.format("%s:%d", vim.fn.expand("%:p"), vim.fn.line(".")))
-end, { desc = 'Yank full buffer path with line number to system clipboard' })
+  yank_to_register(string.format("%s:%d", vim.fn.expand("%:p"), vim.fn.line(".")))
+end, { desc = 'Yank full buffer path with line number' })
 
 -- Make n/N direction consistent regardless of / or ? search
 map("n", "n", "'Nn'[v:searchforward].'zv'", { expr = true, desc = "Next Search Result" })

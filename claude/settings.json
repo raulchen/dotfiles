@@ -57,6 +57,6 @@
   },
   "statusLine": {
     "type": "command",
-    "command": "/Users/haochen/.claude/statusline-command.sh"
+    "command": "~/.claude/statusline-command.sh"
   }
 }

@@ -53,6 +53,19 @@
     "type": "command",
     "command": "~/.claude/statusline-command.sh"
   },
+  "hooks": {
+    "Notification": [
+      {
+        "matcher": "permission_prompt|idle_prompt",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "[ \"$(uname)\" != \"Darwin\" ] && exit 0; INPUT=$(cat); MSG=$(echo \"$INPUT\" | jq -r '.message // \"Needs attention\"'); TITLE=$(echo \"$INPUT\" | jq -r '(.title // \"Claude Code\") + \" [\" + (.cwd // \"\" | split(\"/\") | last) + \"]\"'); osascript -e \"display notification \\\"$MSG\\\" with title \\\"$TITLE\\\"\""
+          }
+        ]
+      }
+    ]
+  },
   "enabledPlugins": {
     "lua-lsp@claude-plugins-official": true,
     "context7@claude-plugins-official": true,

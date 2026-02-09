@@ -49,14 +49,13 @@
       "Bash(gh api *)"
     ]
   },
-  "enabledPlugins": {
-    "lua-lsp@claude-plugins-official": true,
-    "context7@claude-plugins-official": true,
-    "pyright-lsp@claude-plugins-official": true,
-    "github@claude-plugins-official": true
-  },
   "statusLine": {
     "type": "command",
     "command": "~/.claude/statusline-command.sh"
+  },
+  "enabledPlugins": {
+    "lua-lsp@claude-plugins-official": true,
+    "context7@claude-plugins-official": true,
+    "pyright-lsp@claude-plugins-official": true
   }
 }

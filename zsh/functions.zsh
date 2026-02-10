@@ -50,19 +50,6 @@ vless() {
     fi
 }
 
-function _notify {
-  echo -ne 'trigger''-notify('$@')' && sleep 0.01 && echo -e '\r\033[K\033[1A'
-}
-
-function notify {
-    sleep 0.1;
-    if [ $? = 0 ]; then
-        _notify "Task finished"
-    else
-        _notify "Task failed"
-    fi
-}
-
 if type yazi >/dev/null 2>&1 ; then
     #  Wrapper for yazi to cd into the directory output by yazi
     function yz() {

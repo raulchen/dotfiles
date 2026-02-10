@@ -1,0 +1,36 @@
+#!/bin/sh
+#
+# Usage:
+#   notify "message"
+#   notify -t "title" "message"
+#
+# Sends an OSC 9 (or OSC 777 with title) desktop notification.
+# Wraps the OSC in tmux passthrough when inside tmux.
+
+title=""
+if [ "$1" = "-t" ] || [ "$1" = "--title" ]; then
+  shift
+  title=$1
+  shift
+fi
+
+if [ $# -eq 0 ]; then
+  echo "usage: notify [-t title] message" >&2
+  exit 1
+fi
+
+body="$*"
+
+if [ -n "$TMUX" ]; then
+  if [ -n "$title" ]; then
+    printf '\033Ptmux;\033\033]777;notify;%s;%s\007\033\\' "$title" "$body"
+  else
+    printf '\033Ptmux;\033\033]9;%s\007\033\\' "$body"
+  fi
+else
+  if [ -n "$title" ]; then
+    printf '\033]777;notify;%s;%s\007' "$title" "$body"
+  else
+    printf '\033]9;%s\007' "$body"
+  fi
+fi

@@ -34,12 +34,22 @@ frg() {
 }
 
 # Search and kill a process.
+# Keybinds send signals immediately and refresh the process list.
+# ctrl-t: SIGTERM  ctrl-k: SIGKILL  ctrl-s: SIGSTOP
+# enter:  full process details (ps + lsof) in a pager
+# ctrl-r: refresh process list
 fkill() {
-    (date; ps -ef) |
-      fzf -- --bind='ctrl-r:reload(date; ps -ef)' \
-          --header=$'Press CTRL-R to reload\n\n' --header-lines=2 \
-          --preview='echo {}' --preview-window=down,3,wrap \
-          | awk '{print $2}' | xargs kill -9
+    (date; ps -ef) | fzf \
+          --bind='ctrl-r:reload(date; ps -ef)' \
+          --bind='ctrl-t:execute-silent(echo {} | awk "{print \$2}" | xargs kill -15)+reload(date; ps -ef)' \
+          --bind='ctrl-k:execute-silent(echo {} | awk "{print \$2}" | xargs kill -9)+reload(date; ps -ef)' \
+          --bind='ctrl-s:execute-silent(echo {} | awk "{print \$2}" | xargs kill -STOP)+reload(date; ps -ef)' \
+          --bind='enter:execute(pid=$(echo {} | awk "{print \$2}"); { echo "=== Process $pid ==="; ps -p $pid -o pid,ppid,user,%cpu,%mem,stat,start,command 2>/dev/null; echo; echo "=== Open files ==="; lsof -p $pid 2>/dev/null; } | less)' \
+          --header=$'CTRL-T: SIGTERM | CTRL-K: SIGKILL | CTRL-S: SIGSTOP | ENTER: details | CTRL-R: reload\n\n' \
+          --header-lines=2 \
+          --preview='pid=$(echo {} | awk "{print \$2}"); ps -p $pid -o pid=,ppid=,user=,%cpu=,%mem=,command= 2>/dev/null; echo; echo "--- Open files ---"; lsof -p $pid 2>/dev/null | head -10' \
+          --preview-window=down,15,wrap \
+          --prompt='Kill> '
 }
 
 vless() {

@@ -4,8 +4,9 @@
 #   notify "message"
 #   notify -t "title" "message"
 #
-# Sends an OSC 9 (or OSC 777 with title) desktop notification.
-# Wraps the OSC in tmux passthrough when inside tmux.
+# Sends a desktop notification.
+# Uses OSC escape sequences when a terminal is attached,
+# falls back to osascript on macOS.
 
 title=""
 if [ "$1" = "-t" ] || [ "$1" = "--title" ]; then
@@ -21,16 +22,22 @@ fi
 
 body="$*"
 
-if [ -n "$TMUX" ]; then
-  if [ -n "$title" ]; then
-    printf '\033Ptmux;\033\033]777;notify;%s;%s\007\033\\' "$title" "$body"
+if [ -t 1 ]; then
+  # Terminal attached — use OSC escape sequences
+  if [ -n "$TMUX" ]; then
+    if [ -n "$title" ]; then
+      printf '\033Ptmux;\033\033]777;notify;%s;%s\007\033\\' "$title" "$body"
+    else
+      printf '\033Ptmux;\033\033]9;%s\007\033\\' "$body"
+    fi
   else
-    printf '\033Ptmux;\033\033]9;%s\007\033\\' "$body"
+    if [ -n "$title" ]; then
+      printf '\033]777;notify;%s;%s\007' "$title" "$body"
+    else
+      printf '\033]9;%s\007' "$body"
+    fi
   fi
-else
-  if [ -n "$title" ]; then
-    printf '\033]777;notify;%s;%s\007' "$title" "$body"
-  else
-    printf '\033]9;%s\007' "$body"
-  fi
+elif [ "$(uname)" = "Darwin" ]; then
+  # No terminal — use osascript on macOS
+  osascript -e "display notification \"$body\" with title \"${title:-Notification}\""
 fi

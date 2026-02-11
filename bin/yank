@@ -1,33 +1,47 @@
 #!/bin/sh
+# yank - copy input to tmux buffer and system clipboard via OSC 52
+# Usage: yank < file
+#        ... | yank
+
+buf=$(cat)
+[ -z "$buf" ] && exit 0
+
+# tmux buffer
+if [ -n "$TMUX" ]; then
+    printf '%s' "$buf" | tmux load-buffer -
+fi
+
+# OSC 52
 #
-# Usage:
-#   - yank [FILE...]
-#   - ... | yank
+# In tmux, writing OSC 52 to /dev/tty won't reach the real terminal from popup
+# sessions (the popup boundary blocks it). Instead, find the real terminal
+# client and write directly to its tty device.
 #
-# Copied from https://github.com/sunaku/home/blob/master/bin/yank
-
-input=$( cat "$@" )
-input() { printf %s "$input" ;}
-
-# copy to tmux
-test -n "$TMUX" &&
-  command -v tmux >/dev/null && input | tmux load-buffer -
-
-# copy via X11
-# test -n "$DISPLAY" && {
-#   (command -v xsel >/dev/null && input | xsel -i -b ||
-#   command -v xclip >/dev/null && input | xclip -sel c) && exit 0
-# }
-
-# copy via pbcopy
-(command -v pbcopy >/dev/null && input | pbcopy) && exit 0
-
-# copy via OSC 52
-printf_escape() {
-  esc=$1
-  test -n "$TMUX" -o -z "${TERM##screen*}" && esc="\033Ptmux;\033$esc\033\\"
-  printf "$esc"
-}
-len=$( input | wc -c ) max=74994
-test $len -gt $max && echo "$0: input is $(( len - max )) bytes too long" >&2
-printf_escape "\033]52;c;$( input | head -c $max | base64 | tr -d '\r\n' )\a"
+# Detection: clients spawned from within tmux (e.g. neovim terminal -> claude
+# code -> tmux new-session) have the tmux server as an ancestor in their
+# process tree. The real terminal client (e.g. Ghostty -> shell -> tmux) does
+# not. Walk each client's parent PID chain to distinguish.
+b64=$(printf '%s' "$buf" | base64 | tr -d '\n')
+if [ -n "$TMUX" ]; then
+    server_pid=$(tmux display-message -p '#{pid}')
+    tty=$(tmux list-clients -F '#{client_pid} #{client_tty}' | while read -r cpid ctty; do
+        pid=$cpid
+        nested=0
+        while [ "$pid" -gt 1 ] 2>/dev/null; do
+            ppid=$(ps -o ppid= -p "$pid" 2>/dev/null | tr -d ' ')
+            [ -z "$ppid" ] && break
+            if [ "$ppid" = "$server_pid" ]; then
+                nested=1  # tty is a pane pty, not the real terminal
+                break
+            fi
+            pid=$ppid
+        done
+        if [ "$nested" = 0 ]; then
+            printf '%s' "$ctty"
+            break
+        fi
+    done)
+    printf '\033]52;c;%s\a' "$b64" > "${tty:-/dev/tty}" 2>/dev/null
+else
+    printf '\033]52;c;%s\a' "$b64" >/dev/tty
+fi

@@ -6,42 +6,49 @@
 buf=$(cat)
 [ -z "$buf" ] && exit 0
 
-# tmux buffer
 if [ -n "$TMUX" ]; then
-    printf '%s' "$buf" | tmux load-buffer -
-fi
-
-# OSC 52
-#
-# In tmux, writing OSC 52 to /dev/tty won't reach the real terminal from popup
-# sessions (the popup boundary blocks it). Instead, find the real terminal
-# client and write directly to its tty device.
-#
-# Detection: clients spawned from within tmux (e.g. neovim terminal -> claude
-# code -> tmux new-session) have the tmux server as an ancestor in their
-# process tree. The real terminal client (e.g. Ghostty -> shell -> tmux) does
-# not. Walk each client's parent PID chain to distinguish.
-b64=$(printf '%s' "$buf" | base64 | tr -d '\n')
-if [ -n "$TMUX" ]; then
-    server_pid=$(tmux display-message -p '#{pid}')
+    # Use load-buffer -w to set the tmux paste buffer AND send OSC 52 to the
+    # terminal. By default it targets the current client, but in popup sessions
+    # (e.g. tmux display-popup running a nested tmux session), the current
+    # client is the popup — which can't forward OSC 52 to the real terminal.
+    # So we find the real terminal client and target it explicitly with -t.
+    #
+    # How: the real terminal client (terminal -> shell -> tmux) was started
+    # outside tmux, so the tmux server PID is NOT in its ancestry. Clients
+    # started from within tmux (e.g. neovim :terminal -> tmux new-session) ARE
+    # descendants of the server. Walk each client's parent PID chain to tell
+    # them apart.
+    server_pid=$(tmux display-message -p '#{pid}')  # tmux server PID
+    # For each client, walk its parent PID chain to find one not spawned from tmux.
+    #   e.g. "12345 /dev/ttys038\n67890 /dev/pts/0\n..."
     tty=$(tmux list-clients -F '#{client_pid} #{client_tty}' | while read -r cpid ctty; do
         pid=$cpid
         nested=0
-        while [ "$pid" -gt 1 ] 2>/dev/null; do
-            ppid=$(ps -o ppid= -p "$pid" 2>/dev/null | tr -d ' ')
-            [ -z "$ppid" ] && break
+        while [ "$pid" -gt 1 ] 2>/dev/null; do  # walk towards PID 1 (init)
+            ppid=$(ps -o ppid= -p "$pid" 2>/dev/null | tr -d ' ')  # get parent PID
+            [ -z "$ppid" ] && break  # process gone
             if [ "$ppid" = "$server_pid" ]; then
-                nested=1  # tty is a pane pty, not the real terminal
+                nested=1  # spawned from within tmux, its tty is a pane pty
                 break
             fi
-            pid=$ppid
+            pid=$ppid  # move up one level
         done
         if [ "$nested" = 0 ]; then
-            printf '%s' "$ctty"
+            printf '%s' "$ctty"  # found the real terminal
             break
         fi
     done)
-    printf '\033]52;c;%s\a' "$b64" > "${tty:-/dev/tty}" 2>/dev/null
-else
-    printf '\033]52;c;%s\a' "$b64" >/dev/tty
+    # -w sets the tmux buffer AND sends OSC 52 to the target client.
+    # This handles popup sessions but may not work over SSH.
+    if [ -n "$tty" ]; then
+        printf '%s' "$buf" | tmux load-buffer -w -t "$tty" -
+    else
+        printf '%s' "$buf" | tmux load-buffer -w -  # fallback to current client
+    fi
 fi
+
+# Also write OSC 52 directly to /dev/tty. Over SSH this is what actually
+# reaches the local terminal (load-buffer -w doesn't). In popup sessions
+# this may be blocked, but load-buffer -w -t above covers that case.
+b64=$(printf '%s' "$buf" | base64 | tr -d '\n')
+printf '\033]52;c;%s\a' "$b64" >/dev/tty 2>/dev/null

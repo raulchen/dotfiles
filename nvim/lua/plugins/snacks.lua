@@ -448,7 +448,8 @@ local dashboard_opts = {
       title = "Git Status",
       section = "terminal",
       enabled = function()
-        return Snacks.git.get_root() ~= nil
+        local inside_work_tree = vim.fn.systemlist("git rev-parse --is-inside-work-tree 2>/dev/null")[1]
+        return vim.v.shell_error == 0 and inside_work_tree == "true"
       end,
       cmd = "git status --short --branch --renames",
       indent = 2,

@@ -110,7 +110,8 @@ local dapui_keys = {
 }
 
 local function setup_dap_python()
-  require("dap-python").setup()
+  local python_adapter = vim.fn.executable("uv") == 1 and "uv" or "python3"
+  require("dap-python").setup(python_adapter)
 end
 
 local dap_python_keys = {

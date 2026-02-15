@@ -213,6 +213,10 @@ function! SearchSelection(forward) range
     return ":\<c-u>call feedkeys(". cmd . ", 'n')\<cr>"
 endfunction
 
+function! YankToClipboard(value)
+    call setreg('+', a:value)
+endfunction
+
 function! SwitchNumber()
     if(&relativenumber)
         set norelativenumber
@@ -240,66 +244,87 @@ nnoremap X "zX
 xnoremap <  <gv
 xnoremap >  >gv
 
-" Fast quit
-nnoremap <silent> <leader>q :q<cr>
-nnoremap <silent> <leader>Q :q!<cr>
+" Copy/paste using system clipboard.
+nnoremap <silent> gy "+y
+xnoremap <silent> gy "+y
+nnoremap <silent> gp "+p
+xnoremap <silent> gp "+p
+nnoremap <silent> gP "+P
+xnoremap <silent> gP "+P
 
-" Copy to system clipboard
-map <silent> <leader>y "+y
+nnoremap <silent> <leader>yy :call YankToClipboard(expand('%'))<cr>
+nnoremap <silent> <leader>ya :call YankToClipboard(expand('%:p'))<cr>
+nnoremap <silent> <leader>yf :call YankToClipboard(expand('%:t'))<cr>
+nnoremap <silent> <leader>yd :call YankToClipboard(expand('%:p:h'))<cr>
+nnoremap <silent> <leader>yl :call YankToClipboard(expand('%:p').':'.line('.'))<cr>
+
+" Make n/N direction consistent regardless of / or ? search.
+nnoremap <expr> n (v:searchforward ? 'n' : 'N').'zv'
+xnoremap <expr> n (v:searchforward ? 'n' : 'N')
+onoremap <expr> n (v:searchforward ? 'n' : 'N')
+nnoremap <expr> N (v:searchforward ? 'N' : 'n').'zv'
+xnoremap <expr> N (v:searchforward ? 'N' : 'n')
+onoremap <expr> N (v:searchforward ? 'N' : 'n')
 
 "" UI
 
 " toggle highlight search
-noremap <silent> <leader>uh :set hlsearch! hlsearch?<cr>
+nnoremap <silent> <leader>uh :set hlsearch! hlsearch?<cr>
 " switch between number, relative_number, no_number
-noremap <silent> <leader>un :call SwitchNumber()<cr>
+nnoremap <silent> <leader>un :call SwitchNumber()<cr>
 " toggle wrap
-noremap <silent> <leader>uw :set wrap! wrap?<cr>
+nnoremap <silent> <leader>uw :set wrap! wrap?<cr>
 " toggle spell checking
-noremap <silent> <leader>us :set spell! spell?<cr>
+nnoremap <silent> <leader>us :set spell! spell?<cr>
 
 "" Buffers
 
 " open new buffer
-noremap <silent> <leader>be :enew<cr>
+nnoremap <silent> <leader>be :enew<cr>
 " delete buffer
-noremap <silent> <leader>x :bd<cr>
+nnoremap <silent> <leader>x :bd<cr>
+nnoremap <silent> <leader>bx :bd<cr>
 " write buffer
-noremap <silent> <leader>bw :w<cr>
+nnoremap <silent> <leader>bw :w<cr>
 " switch buffers
 nnoremap <silent> <tab> :bn<cr>
 nnoremap <silent> ]b :bn<cr>
 nnoremap <silent> <s-tab> :bp<cr>
 nnoremap <silent> [b :bp<cr>
+nnoremap <silent> L :bn<cr>
+nnoremap <silent> H :bp<cr>
 " switch to last edited buffer
-noremap <leader>bl <c-^>
+nnoremap <leader>bl <c-^>
 " Only keep the current buffer, close all others.
 " %bd = delete all buffers; e# = edit the last buffer; bd# = delete the last buffer with "[No Name]".
 command! BufOnly silent! execute "%bd|e#|bd#"
-noremap <silent> <leader>bo :BufOnly<cr>
+nnoremap <silent> <leader>bo :BufOnly<cr>
 
 """ Tabs
-" Open new tab
-noremap <silent> <leader>te :tabnew<cr>
-" Next tab
-noremap <silent> <leader>tn :tabn<cr>
-noremap <silent> ]t :tabn<cr>
-" Previous tab
-noremap <silent> <leader>tp :tabp<cr>
-noremap <silent> [t :tabp<cr>
-" Close tab
-noremap <silent> <leader>tx :tabclose<cr>
+" Tab mappings.
+nnoremap <silent> <leader><tab>e :tabnew<cr>
+nnoremap <silent> <leader><tab>n :tabn<cr>
+xnoremap <silent> <leader><tab>n :tabn<cr>
+nnoremap <silent> ]<tab> :tabn<cr>
+xnoremap <silent> ]<tab> :tabn<cr>
+nnoremap <silent> <leader><tab>p :tabp<cr>
+xnoremap <silent> <leader><tab>p :tabp<cr>
+nnoremap <silent> [<tab> :tabp<cr>
+xnoremap <silent> [<tab> :tabp<cr>
+nnoremap <silent> <leader><tab>x :tabclose<cr>
+nnoremap <silent> <leader><tab>s :tab split<cr>
 
 "" Windows
 
 " split window vertically
-noremap <leader>wv <c-w>v
+nnoremap <leader>wv <c-w>v
 " split window horizontally
-noremap <leader>wh <c-w>s
+nnoremap <leader>wh <c-w>s
 " make split windows equal size
-noremap <leader>we <c-w>=
+nnoremap <leader>we <c-w>=
 " close current window
-noremap <leader>wx <c-w>c
+nnoremap <leader>wx <c-w>c
+nnoremap <leader>ww <c-w>p
 " increase window height
 nnoremap <leader>w= <c-w>+
 " decrease window height
@@ -313,6 +338,14 @@ nnoremap <silent> <c-h> <c-w>h
 nnoremap <silent> <c-l> <c-w>l
 nnoremap <silent> <c-j> <c-w>j
 nnoremap <silent> <c-k> <c-w>k
+tnoremap <silent> <c-\><c-h> <c-\><c-n><c-w>h
+tnoremap <silent> <c-\><c-j> <c-\><c-n><c-w>j
+tnoremap <silent> <c-\><c-k> <c-\><c-n><c-w>k
+tnoremap <silent> <c-\><c-l> <c-\><c-n><c-w>l
+
+" Esc to clear search highlights.
+nnoremap <silent> <esc> :nohlsearch<cr><esc>
+inoremap <silent> <esc> <esc>:nohlsearch<cr>
 
 " Switch quicklist
 nnoremap [q :cprev<cr>
@@ -321,9 +354,6 @@ nnoremap ]q :cnext<cr>
 " Move a line of text
 vnoremap <silent> <c-j> :m'>+<cr>`<my`>mzgv`yo`z
 vnoremap <silent> <c-k> :m'<-2<cr>`>my`<mzgv`yo`z
-
-" <leader>r to replace selected text
-vnoremap <expr> <leader>r ReplaceSelection()
 
 "" Command-line mode.
 

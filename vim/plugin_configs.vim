@@ -88,6 +88,8 @@ if !has("nvim")
   nnoremap <leader>fT :Tags<cr>
   " Find marks
   nnoremap <leader>fm :Marks<cr>
+  " Find marks
+  nnoremap <leader>f' :Marks<cr>
   " Find file history.
   nnoremap <leader>fh :History<cr>
   " Find search history.
@@ -136,7 +138,7 @@ if !has("nvim")
       endif
   endfunction
 
-  nnoremap <silent> <leader>n :call NerdTreeToggleFind()<CR>
+  nnoremap <silent> <leader>ut :call NerdTreeToggleFind()<CR>
 end
 
 """""""""""""""""""

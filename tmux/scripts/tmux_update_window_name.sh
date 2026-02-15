@@ -36,7 +36,7 @@ if git_info="$(git -C "$pane_path" rev-parse --path-format=absolute --git-dir --
     fi
 
     # Find sub-project within git toplevel
-    project_root="$(find_project_root.sh "$pane_path")"
+    project_root="$(~/dotfiles/bin/find_project_root.sh "$pane_path")"
     subproject_name=""
     if [[ "$project_root" != "$git_toplevel" && "$project_root" == "$git_toplevel"/* ]]; then
         subproject_name="${project_root##*/}"
@@ -48,7 +48,7 @@ if git_info="$(git -C "$pane_path" rev-parse --path-format=absolute --git-dir --
     [[ -n "$worktree_name" ]] && window_name="$window_name/$worktree_name"
 else
     # Not a git repo, find project root
-    project_root="$(find_project_root.sh "$pane_path")"
+    project_root="$(~/dotfiles/bin/find_project_root.sh "$pane_path")"
     window_name="${project_root##*/}"
 fi
 

@@ -61,16 +61,6 @@ local blink_opts = {
       ['<S-Tab>'] = { 'show_and_insert', 'select_prev', 'fallback_to_mappings' },
       ['<Esc>'] = { 'cancel', 'fallback' },
     },
-    sources = function()
-      local type = vim.fn.getcmdtype()
-      -- Search forward and backward
-      if type == '/' or type == '?' then return { 'buffer' } end
-      -- Command line
-      if type == ':' then return { 'cmdline', 'buffer' } end
-      -- Input (vim.fn.input())
-      if type == '@' then return { 'buffer' } end
-      return {}
-    end,
     completion = {
       menu = { auto_show = false },
       ghost_text = { enabled = true },
@@ -115,6 +105,9 @@ local blink_opts = {
     },
     providers = {
       buffer = {
+        -- Workaround to enable buffer provider for cmdline, see
+        -- https://github.com/saghen/blink.cmp/issues/2251
+        enabled = true,
         opts = {
           -- Make the buffer source include all normal buffers.
           get_bufnrs = function()

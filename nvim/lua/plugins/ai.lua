@@ -30,9 +30,8 @@ local copilot = {
 }
 
 local function jump_to_prompt(direction)
-  -- Match prompt patterns: "❯ " (claude), "› " (codex), " ┌────" (cursor)
-  -- \v enables "very magic" mode where special regex chars don't need escaping
-  local pattern = "\\v^(❯ |› | ┌────)"
+  -- Match prompt patterns: "❯ " (claude), "› " (codex), " ┌────" (cursor), " >" (gemini)
+  local pattern = [[^\(❯ \|› \| ┌────\| >\)]]
   local count = vim.v.count1
   -- the upper case 'W' disables wrapping around the file
   local flags = direction == "next" and "W" or "bW"
@@ -172,6 +171,7 @@ local sidekick = {
         local tools = require("sidekick.config").cli.tools
         local tool_flags = {
           claude = { cmd = { "claude" }, flag = "--dangerously-skip-permissions" },
+          gemini = { cmd = { "gemini" }, flag = "--yolo" },
           codex = { cmd = { "codex" }, flag = "--full-auto" },
           ["cursor-agent"] = { cmd = { "cursor-agent" }, flag = "--force" },
         }

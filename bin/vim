@@ -1,8 +1,11 @@
 #!/bin/bash
 if which nvim >/dev/null 2>&1; then
-    nvim "$@"
+    # Use exec to replace the shell process with nvim.
+    # This ensures signals (like Ctrl-C) are handled correctly and avoids
+    # leaving a dormant bash process in the background.
+    exec nvim "$@"
 else
-    # Find the original vim command.
+    # Find the original vim command, skipping this wrapper to avoid loops.
     _vim=""
     for v in $(which -a vim); do
         if [[ "$v" != *"dotfiles/bin/vim"* ]]; then
@@ -10,6 +13,5 @@ else
             break
         fi
     done
-    $_vim "$@"
+    exec "$_vim" "$@"
 fi
-

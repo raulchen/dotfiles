@@ -77,12 +77,16 @@ if !has("nvim")
   nnoremap <leader>ff :execute FilesOrGFiles()<cr>
   " Find files under the directory of the current file.
   nnoremap <leader>fd :Files <c-r>=expand("%:p:h")<cr>/<cr>
+  " Find recent files
+  nnoremap <leader>fr :History<cr>
   " Find a buffer.
   nnoremap <leader>fb :Buffers<cr>
   " Find word under cursor.
   nnoremap <leader>fs :call RgWithWordUnderCursor()<cr>
   " Find selected text.
   vnoremap <leader>fs :<c-u>call RgWithSelection()<cr>
+  " Search
+  nnoremap <leader>fS :Rg<cr>
   " Find tag for the current buffer.
   nnoremap <leader>ft :BTags<cr>
   nnoremap <leader>fT :Tags<cr>
@@ -90,12 +94,16 @@ if !has("nvim")
   nnoremap <leader>fm :Marks<cr>
   " Find marks
   nnoremap <leader>f' :Marks<cr>
-  " Find file history.
-  nnoremap <leader>fh :History<cr>
+  " Find undo history
+  nnoremap <leader>fu :UndotreeToggle<cr>
+  " Find help
+  nnoremap <leader>fh :Helptags<cr>
   " Find search history.
   nnoremap <leader>f/ :History/<cr>
   " Find command history.
   nnoremap <leader>f: :History:<cr>
+  " Find registers
+  nnoremap <leader>f" :Registers<cr>
   " Find git commits for the current buffer.
   nnoremap <leader>fc  :BCommits<cr>
   " Find all git commits.
@@ -189,14 +197,21 @@ autocmd TextYankPost *
 " let g:tmux_navigator_disable_when_zoomed = 1
 
 let g:tmux_navigator_no_mappings = 1
-noremap <silent> <C-M-H> :<C-U>TmuxNavigateLeft<cr>
-noremap <silent> <C-M-J> :<C-U>TmuxNavigateDown<cr>
-noremap <silent> <C-M-K> :<C-U>TmuxNavigateUp<cr>
-noremap <silent> <C-M-L> :<C-U>TmuxNavigateRight<cr>
-tnoremap <silent> <C-M-H> <c-\><c-n>:<C-U>TmuxNavigateLeft<cr>
-tnoremap <silent> <C-M-J> <c-\><c-n>:<C-U>TmuxNavigateDown<cr>
-tnoremap <silent> <C-M-K> <c-\><c-n>:<C-U>TmuxNavigateUp<cr>
-tnoremap <silent> <C-M-L> <c-\><c-n>:<C-U>TmuxNavigateRight<cr>
+noremap <silent> <C-M-H> :TmuxNavigateLeft<cr>
+noremap <silent> <C-M-J> :TmuxNavigateDown<cr>
+noremap <silent> <C-M-K> :TmuxNavigateUp<cr>
+noremap <silent> <C-M-L> :TmuxNavigateRight<cr>
+noremap <silent> <C-M-\> :TmuxNavigatePrevious<cr>
+inoremap <silent> <C-M-H> <C-O>:TmuxNavigateLeft<cr>
+inoremap <silent> <C-M-J> <C-O>:TmuxNavigateDown<cr>
+inoremap <silent> <C-M-K> <C-O>:TmuxNavigateUp<cr>
+inoremap <silent> <C-M-L> <C-O>:TmuxNavigateRight<cr>
+inoremap <silent> <C-M-\> <C-O>:TmuxNavigatePrevious<cr>
+tnoremap <silent> <C-M-H> <c-\><c-n>:TmuxNavigateLeft<cr>
+tnoremap <silent> <C-M-J> <c-\><c-n>:TmuxNavigateDown<cr>
+tnoremap <silent> <C-M-K> <c-\><c-n>:TmuxNavigateUp<cr>
+tnoremap <silent> <C-M-L> <c-\><c-n>:TmuxNavigateRight<cr>
+tnoremap <silent> <C-M-\> <c-\><c-n>:TmuxNavigatePrevious<cr>
 
 """""""""""""""""""
 " vim-fugitive

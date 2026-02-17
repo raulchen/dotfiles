@@ -288,11 +288,15 @@ nnoremap <silent> <leader>bx :bd<cr>
 nnoremap <silent> <leader>bw :w<cr>
 " switch buffers
 nnoremap <silent> <tab> :bn<cr>
+xnoremap <silent> <tab> :bn<cr>
 nnoremap <silent> ]b :bn<cr>
 nnoremap <silent> <s-tab> :bp<cr>
+xnoremap <silent> <s-tab> :bp<cr>
 nnoremap <silent> [b :bp<cr>
 nnoremap <silent> L :bn<cr>
+xnoremap <silent> L :bn<cr>
 nnoremap <silent> H :bp<cr>
+xnoremap <silent> H :bp<cr>
 " switch to last edited buffer
 nnoremap <leader>bl <c-^>
 " Only keep the current buffer, close all others.
@@ -343,9 +347,14 @@ tnoremap <silent> <c-\><c-j> <c-\><c-n><c-w>j
 tnoremap <silent> <c-\><c-k> <c-\><c-n><c-w>k
 tnoremap <silent> <c-\><c-l> <c-\><c-n><c-w>l
 
+" Terminal escape
+tnoremap <c-\><c-\> <c-\><c-n>
+
 " Esc to clear search highlights.
 nnoremap <silent> <esc> :nohlsearch<cr><esc>
-inoremap <silent> <esc> <esc>:nohlsearch<cr>
+
+" Clear search, diff update and redraw
+nnoremap <silent> <leader>ur :nohlsearch<bar>diffupdate<bar>normal! <c-l><cr>
 
 " Switch quicklist
 nnoremap [q :cprev<cr>

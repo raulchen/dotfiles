@@ -142,54 +142,32 @@ local function yank_ts_class_method_name()
   utils.yank_to_register(string.format("%s::%s", class_name, func_name))
 end
 
-local function setup_treesitter(_, _)
-  local opts = {
-    highlight = { enable = true },
-    indent = { enable = true },
-    ensure_installed = treesitter_filetypes,
-  }
-  opts.textobjects = {
-    select = {
-      enable = false,
-    },
-    move = {
-      enable = true,
-      set_jumps = true,
-      goto_next_start = {
-        ["]k"] = { query = "@block.outer", desc = "Next block start" },
-        ["]f"] = { query = "@function.outer", desc = "Next function start" },
-        ["]a"] = { query = "@parameter.inner", desc = "Next parameter start" },
-        ["]C"] = { query = "@class.outer", desc = "Next class start" },
-      },
-      goto_next_end = {
-        ["]K"] = { query = "@block.outer", desc = "Next block end" },
-        ["]F"] = { query = "@function.outer", desc = "Next function end" },
-        ["]A"] = { query = "@parameter.inner", desc = "Next parameter end" },
-      },
-      goto_previous_start = {
-        ["[k"] = { query = "@block.outer", desc = "Previous block start" },
-        ["[f"] = { query = "@function.outer", desc = "Previous function start" },
-        ["[a"] = { query = "@parameter.inner", desc = "Previous parameter start" },
-        ["[C"] = { query = "@class.outer", desc = "Previous class start" },
-      },
-      goto_previous_end = {
-        ["[K"] = { query = "@block.outer", desc = "Previous block end" },
-        ["[F"] = { query = "@function.outer", desc = "Previous function end" },
-        ["[A"] = { query = "@parameter.inner", desc = "Previous parameter end" },
-      },
-    },
-  }
-  require("nvim-treesitter.configs").setup(opts)
-  -- Tree-sitter based folding.
-  for _, filetype in ipairs(treesitter_filetypes) do
-    vim.api.nvim_create_autocmd(
-      'FileType',
-      {
-        pattern = filetype,
-        command = 'setlocal foldmethod=expr foldexpr=nvim_treesitter#foldexpr() nofoldenable',
-      }
-    )
+local function setup_treesitter_filetype_features(buf)
+  vim.treesitter.start(buf)
+  vim.bo[buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+  vim.opt_local.foldmethod = "expr"
+  if vim.treesitter.foldexpr then
+    vim.opt_local.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+  else
+    vim.opt_local.foldexpr = "nvim_treesitter#foldexpr()"
   end
+  vim.opt_local.foldenable = false
+end
+
+local function setup_treesitter(_, _)
+  local ts = require("nvim-treesitter")
+  ts.setup({})
+  if #treesitter_filetypes > 0 then
+    ts.install(treesitter_filetypes)
+  end
+
+  -- Tree-sitter based folding/highlighting.
+  vim.api.nvim_create_autocmd("FileType", {
+    pattern = treesitter_filetypes,
+    callback = function(args)
+      setup_treesitter_filetype_features(args.buf)
+    end,
+  })
 end
 
 local function setup_treesitter_context(_, _)
@@ -205,10 +183,42 @@ local function setup_treesitter_context(_, _)
   end, { desc = "Go to context beginning" })
 end
 
+local treesitter_textobjects_opts = {
+  select = {
+    enable = false,
+  },
+  move = {
+    enable = true,
+    set_jumps = true,
+    goto_next_start = {
+      ["]k"] = { query = "@block.outer", desc = "Next block start" },
+      ["]f"] = { query = "@function.outer", desc = "Next function start" },
+      ["]a"] = { query = "@parameter.inner", desc = "Next parameter start" },
+      ["]C"] = { query = "@class.outer", desc = "Next class start" },
+    },
+    goto_next_end = {
+      ["]K"] = { query = "@block.outer", desc = "Next block end" },
+      ["]F"] = { query = "@function.outer", desc = "Next function end" },
+      ["]A"] = { query = "@parameter.inner", desc = "Next parameter end" },
+    },
+    goto_previous_start = {
+      ["[k"] = { query = "@block.outer", desc = "Previous block start" },
+      ["[f"] = { query = "@function.outer", desc = "Previous function start" },
+      ["[a"] = { query = "@parameter.inner", desc = "Previous parameter start" },
+      ["[C"] = { query = "@class.outer", desc = "Previous class start" },
+    },
+    goto_previous_end = {
+      ["[K"] = { query = "@block.outer", desc = "Previous block end" },
+      ["[F"] = { query = "@function.outer", desc = "Previous function end" },
+      ["[A"] = { query = "@parameter.inner", desc = "Previous parameter end" },
+    },
+  },
+}
+
 return {
   {
     "nvim-treesitter/nvim-treesitter",
-    event = { "BufNew" },
+    lazy = false,
     build = ":TSUpdate",
     keys = {
       { "<leader>ym", function() yank_ts_ancestor_name("function") end, desc = "Yank method/function name", ft = treesitter_filetypes },
@@ -217,7 +227,10 @@ return {
     },
     config = setup_treesitter,
     dependencies = {
-      "nvim-treesitter/nvim-treesitter-textobjects",
+      {
+        "nvim-treesitter/nvim-treesitter-textobjects",
+        opts = treesitter_textobjects_opts,
+      },
       {
         "nvim-treesitter/nvim-treesitter-context",
         config = setup_treesitter_context,

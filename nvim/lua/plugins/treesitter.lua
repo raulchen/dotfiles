@@ -123,15 +123,15 @@ return {
     lazy = false,
     build = build_treesitter,
     config = setup_treesitter,
-    dependencies = {
-      {
-        "nvim-treesitter/nvim-treesitter-textobjects",
-        opts = treesitter_textobjects_opts,
-      },
-      {
-        "nvim-treesitter/nvim-treesitter-context",
-        config = setup_treesitter_context,
-      }
-    },
+  },
+  {
+    "nvim-treesitter/nvim-treesitter-textobjects",
+    event = { "BufReadPost", "BufNewFile" },
+    opts = treesitter_textobjects_opts,
+  },
+  {
+    "nvim-treesitter/nvim-treesitter-context",
+    event = { "BufReadPost", "BufNewFile" },
+    config = setup_treesitter_context,
   },
 }

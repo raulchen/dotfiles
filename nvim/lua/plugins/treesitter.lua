@@ -87,25 +87,25 @@ end
 
 local treesitter_move_mappings = {
   goto_next_start = {
-    { key = "]k", query = "@block.outer", desc = "Next block start" },
+    { key = "]k", query = { "@block.outer", "@conditional.outer", "@loop.outer" }, desc = "Next block start" },
     { key = "]f", query = "@function.outer", desc = "Next function start" },
     { key = "]a", query = "@parameter.inner", desc = "Next parameter start" },
     { key = "]]", query = "@class.outer", desc = "Next class start" },
   },
   goto_next_end = {
-    { key = "]K", query = "@block.outer", desc = "Next block end" },
+    { key = "]K", query = { "@block.outer", "@conditional.outer", "@loop.outer" }, desc = "Next block end" },
     { key = "]F", query = "@function.outer", desc = "Next function end" },
     { key = "]A", query = "@parameter.inner", desc = "Next parameter end" },
     { key = "][", query = "@class.outer", desc = "Next class end" },
   },
   goto_previous_start = {
-    { key = "[k", query = "@block.outer", desc = "Previous block start" },
+    { key = "[k", query = { "@block.outer", "@conditional.outer", "@loop.outer" }, desc = "Previous block start" },
     { key = "[f", query = "@function.outer", desc = "Previous function start" },
     { key = "[a", query = "@parameter.inner", desc = "Previous parameter start" },
     { key = "[[", query = "@class.outer", desc = "Previous class start" },
   },
   goto_previous_end = {
-    { key = "[K", query = "@block.outer", desc = "Previous block end" },
+    { key = "[K", query = { "@block.outer", "@conditional.outer", "@loop.outer" }, desc = "Previous block end" },
     { key = "[F", query = "@function.outer", desc = "Previous function end" },
     { key = "[A", query = "@parameter.inner", desc = "Previous parameter end" },
     { key = "[]", query = "@class.outer", desc = "Previous class end" },

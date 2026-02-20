@@ -15,14 +15,14 @@ local treesitter_filetypes = {
 }
 
 local function setup_treesitter_filetype_features(buf)
+  -- Enable syntax highlighting from Neovim's built-in Treesitter runtime.
   vim.treesitter.start(buf)
+  -- Use Treesitter-aware indentation for better structural indent behavior.
   vim.bo[buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+  -- Compute folds from syntax tree structure.
   vim.opt_local.foldmethod = "expr"
-  if vim.treesitter.foldexpr then
-    vim.opt_local.foldexpr = "v:lua.vim.treesitter.foldexpr()"
-  else
-    vim.opt_local.foldexpr = "nvim_treesitter#foldexpr()"
-  end
+  vim.opt_local.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+  -- Keep folds expanded by default; folding is available on demand.
   vim.opt_local.foldenable = false
 end
 

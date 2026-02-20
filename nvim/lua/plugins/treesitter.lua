@@ -85,37 +85,44 @@ local function setup_treesitter_context(_, _)
   end, { desc = "Go to context beginning" })
 end
 
-local treesitter_textobjects_opts = {
-  select = {
-    enable = false,
+local treesitter_move_mappings = {
+  goto_next_start = {
+    { key = "]k", query = "@block.outer", desc = "Next block start" },
+    { key = "]f", query = "@function.outer", desc = "Next function start" },
+    { key = "]a", query = "@parameter.inner", desc = "Next parameter start" },
+    { key = "]C", query = "@class.outer", desc = "Next class start" },
   },
-  move = {
-    enable = true,
-    set_jumps = true,
-    goto_next_start = {
-      ["]k"] = { query = "@block.outer", desc = "Next block start" },
-      ["]f"] = { query = "@function.outer", desc = "Next function start" },
-      ["]a"] = { query = "@parameter.inner", desc = "Next parameter start" },
-      ["]C"] = { query = "@class.outer", desc = "Next class start" },
-    },
-    goto_next_end = {
-      ["]K"] = { query = "@block.outer", desc = "Next block end" },
-      ["]F"] = { query = "@function.outer", desc = "Next function end" },
-      ["]A"] = { query = "@parameter.inner", desc = "Next parameter end" },
-    },
-    goto_previous_start = {
-      ["[k"] = { query = "@block.outer", desc = "Previous block start" },
-      ["[f"] = { query = "@function.outer", desc = "Previous function start" },
-      ["[a"] = { query = "@parameter.inner", desc = "Previous parameter start" },
-      ["[C"] = { query = "@class.outer", desc = "Previous class start" },
-    },
-    goto_previous_end = {
-      ["[K"] = { query = "@block.outer", desc = "Previous block end" },
-      ["[F"] = { query = "@function.outer", desc = "Previous function end" },
-      ["[A"] = { query = "@parameter.inner", desc = "Previous parameter end" },
-    },
+  goto_next_end = {
+    { key = "]K", query = "@block.outer", desc = "Next block end" },
+    { key = "]F", query = "@function.outer", desc = "Next function end" },
+    { key = "]A", query = "@parameter.inner", desc = "Next parameter end" },
+  },
+  goto_previous_start = {
+    { key = "[k", query = "@block.outer", desc = "Previous block start" },
+    { key = "[f", query = "@function.outer", desc = "Previous function start" },
+    { key = "[a", query = "@parameter.inner", desc = "Previous parameter start" },
+    { key = "[C", query = "@class.outer", desc = "Previous class start" },
+  },
+  goto_previous_end = {
+    { key = "[K", query = "@block.outer", desc = "Previous block end" },
+    { key = "[F", query = "@function.outer", desc = "Previous function end" },
+    { key = "[A", query = "@parameter.inner", desc = "Previous parameter end" },
   },
 }
+
+local function setup_treesitter_textobjects(_, opts)
+  require("nvim-treesitter-textobjects").setup(opts)
+
+  local move = require("nvim-treesitter-textobjects.move")
+  local map = vim.keymap.set
+  for mode_fn, mappings in pairs(treesitter_move_mappings) do
+    for _, mapping in ipairs(mappings) do
+      map({ "n", "x", "o" }, mapping.key, function()
+        move[mode_fn](mapping.query, "textobjects")
+      end, { desc = mapping.desc })
+    end
+  end
+end
 
 return {
   {
@@ -127,7 +134,12 @@ return {
   {
     "nvim-treesitter/nvim-treesitter-textobjects",
     event = { "BufReadPost", "BufNewFile" },
-    opts = treesitter_textobjects_opts,
+    opts = {
+      move = {
+        set_jumps = true,
+      },
+    },
+    config = setup_treesitter_textobjects,
   },
   {
     "nvim-treesitter/nvim-treesitter-context",

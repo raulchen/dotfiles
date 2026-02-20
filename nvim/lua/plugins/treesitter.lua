@@ -26,12 +26,34 @@ local function setup_treesitter_filetype_features(buf)
   vim.opt_local.foldenable = false
 end
 
+local function treesitter_install_preset(wait)
+  if vim.fn.executable("tree-sitter") ~= 1 then
+    local registry = require("mason-registry")
+    local pkg = registry.get_package("tree-sitter-cli")
+    if not pkg:is_installed() then
+      pkg:install()
+      vim.notify("Treesitter: installing tree-sitter-cli via Mason", vim.log.levels.INFO)
+    end
+  end
+
+  if #treesitter_filetypes > 0 then
+    vim.notify("Treesitter: installing managed parsers", vim.log.levels.INFO)
+    local install = require("nvim-treesitter").install(treesitter_filetypes, {
+      summary = true,
+      max_jobs = 4,
+    })
+    if wait then
+      install:wait(300000)
+    end
+  end
+end
+
 local function setup_treesitter(_, _)
   local ts = require("nvim-treesitter")
   ts.setup({})
-  if #treesitter_filetypes > 0 then
-    ts.install(treesitter_filetypes)
-  end
+  vim.api.nvim_create_user_command("TSInstallPreset", function()
+    treesitter_install_preset(false)
+  end, { desc = "Install preset Treesitter parsers" })
 
   -- Tree-sitter based folding/highlighting.
   vim.api.nvim_create_autocmd("FileType", {
@@ -40,6 +62,14 @@ local function setup_treesitter(_, _)
       setup_treesitter_filetype_features(args.buf)
     end,
   })
+end
+
+local function build_treesitter()
+  vim.defer_fn(function()
+    -- Delay this call because mason isn't available during the build callback.
+    treesitter_install_preset(true)
+    require("nvim-treesitter").update():wait(300000)
+  end, 1000)
 end
 
 local function setup_treesitter_context(_, _)
@@ -91,7 +121,7 @@ return {
   {
     "nvim-treesitter/nvim-treesitter",
     lazy = false,
-    build = ":TSUpdate",
+    build = build_treesitter,
     config = setup_treesitter,
     dependencies = {
       {

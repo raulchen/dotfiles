@@ -1,5 +1,6 @@
 local map = vim.keymap.set
 local utils = require("core.utils")
+local ts_yank = require("core.treesitter")
 
 -- Leader configuration
 vim.g.mapleader = ' '
@@ -88,6 +89,10 @@ end, { desc = 'Yank buffer directory' })
 map({ 'n' }, '<leader>yl', function()
   utils.yank_to_register(string.format("%s:%d", vim.fn.expand("%:p"), vim.fn.line(".")))
 end, { desc = 'Yank full buffer path with line number' })
+
+map("n", "<leader>ym", function() ts_yank.yank_ancestor_name("function") end, { desc = "Yank method/function name" })
+map("n", "<leader>yc", function() ts_yank.yank_ancestor_name("class") end, { desc = "Yank class name" })
+map("n", "<leader>yM", ts_yank.yank_class_method_name, { desc = "Yank class::method name" })
 
 -- Make n/N direction consistent regardless of / or ? search
 map("n", "n", "'Nn'[v:searchforward].'zv'", { expr = true, desc = "Next Search Result" })

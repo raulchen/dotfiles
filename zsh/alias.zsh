@@ -3,17 +3,7 @@ alias -g L="| less"
 alias -g VL="| vless"
 alias -g G="| grep -i"
 alias -g F="| fzf --reverse"
-
-# Copy to system clipboard
-: ${IS_MACOS:=$([[ $OSTYPE == darwin* ]] && echo true || echo false)}
-
-if [[ $IS_MACOS == true ]]; then
-    alias -g C="| pbcopy"
-elif type xclip >/dev/null 2>&1 ; then
-    alias -g C="| xclip -selection clipboard"
-fi
-# Copy to tmux clipboard
-alias -g CT="| tmux load-buffer -"
+alias -g Y="| yank"
 
 # redirect stderr to stdout
 alias -g RE="2>&1"

@@ -493,7 +493,9 @@ return {
     gitbrowse = {
       what = "permalink",
     },
-    explorer = {},
+    explorer = {
+      replace_netrw = false,
+    },
     dashboard = dashboard_opts,
     scope = {},
     image = image_opts,

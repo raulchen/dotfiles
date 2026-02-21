@@ -24,29 +24,13 @@ alias -g NE="2>/dev/null"
 # No stdout and stderr
 alias -g NOE=">/dev/null 2>&1"
 
-
 alias tailf="tail -f"
-unalias d >/dev/null 2>&1
-alias d="dirs -v | head -10"
 alias v="vim"
 alias vi="vim"
 alias tat="tmux new -A -s default"
 
 alias proxy_on="export {http,https,ftp}_proxy=http://127.0.0.1:7890; export socks_proxy=socks5://127.0.0.1:7891; no_proxy='localhost,127.0.0.1,*.local'"
 alias proxy_off="unset {http,https,ftp,all,socks,no}_proxy"
-
-if [[ $IS_MACOS == true ]]; then
-    # Flush Directory Service cache
-    alias flushdns="dscacheutil -flushcache && sudo killall -HUP mDNSResponder"
-
-    # Hide/show all desktop icons (useful when presenting)
-    alias hidedesktop="defaults write com.apple.finder CreateDesktop -bool false && killall Finder"
-    alias showdesktop="defaults write com.apple.finder CreateDesktop -bool true && killall Finder"
-
-    # Merge PDF files
-    # Usage: `mergepdf -o output.pdf input{1,2,3}.pdf`
-    alias mergepdf='/System/Library/Automator/Combine\ PDF\ Pages.action/Contents/Resources/join.py'
-fi
 
 # lsd
 if type lsd >/dev/null 2>&1 ; then

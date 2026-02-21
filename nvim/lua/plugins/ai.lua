@@ -91,6 +91,11 @@ local sidekick = {
         backend = "tmux",
         enabled = true,
       },
+      tools = {
+        zsh = {
+          cmd = { "zsh" },
+        },
+      },
     },
   },
   keys = {

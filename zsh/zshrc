@@ -232,7 +232,21 @@ fi
 
 # uv shell completion
 if type uv >/dev/null 2>&1; then
-    eval "$(uv generate-shell-completion zsh)"
+    # Load uv completion only when completion is first requested.
+    _uv_lazy_completion() {
+        # Register uv's real completion function (`_uv`) on demand.
+        source <(uv generate-shell-completion zsh)
+        # Remove this bootstrap function after first use.
+        unfunction _uv_lazy_completion 2>/dev/null
+
+        if (( $+functions[_uv] )); then
+            _uv "$@"
+        else
+            _default "$@"
+        fi
+    }
+
+    compdef _uv_lazy_completion uv
 fi
 
 # Auto activate/deactivate venv

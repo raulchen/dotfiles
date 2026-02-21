@@ -37,15 +37,13 @@ function _custom_keybinds ()
     # Make space trigger history expansion (e.g., !!, !$) before inserting it
     bindkey ' ' magic-space
 
-    if [[ $IS_MACOS == true ]]; then
-        # Copy current command buffer to clipboard
-        function copy-command-to-clipboard() {
-            echo -n "$BUFFER" | pbcopy
-            zle -M "Command copied to clipboard"
-        }
-        zle -N copy-command-to-clipboard
-        bindkey '^X^Y' copy-command-to-clipboard
-    fi
+    # Copy current command buffer to clipboard
+    function copy-command-to-clipboard() {
+        echo -n "$BUFFER" | yank
+        zle -M "Command copied to clipboard"
+    }
+    zle -N copy-command-to-clipboard
+    bindkey '^X^Y' copy-command-to-clipboard
 }
 # Postpone keybindings until zsh-vi-mode is loaded,
 # otherwise they will be overridden by zsh-vi-mode.
@@ -185,7 +183,7 @@ if type fzf >/dev/null 2>&1 ; then
     export FZF_CTRL_T_OPTS
     FZF_CTRL_R_OPTS="
     --preview 'echo {}' --preview-window up:3:hidden:wrap
-    --bind 'ctrl-y:execute-silent(echo -n {2..} | pbcopy)+abort'
+    --bind 'ctrl-y:execute-silent(echo -n {2..} | yank)+abort'
     --color header:italic
     --header 'CTRL-Y to copy command; CTRL-/ to preview full command'"
     FZF_CTRL_R_OPTS="${FZF_CTRL_R_OPTS//$'\n'    / }"

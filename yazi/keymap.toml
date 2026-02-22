@@ -11,6 +11,7 @@ prepend_keymap = [
 	{ on = [" ", "y", "f"], run = "copy filename", desc = "Copy filename" },
 	{ on = [" ", "y", "d"], run = "copy dirname",  desc = "Copy directory path" },
 	{ on = [" ", "x"],      run = "tab_close",     desc = "Close tab" },
+	{ on = [" ", "m"], run = "plugin toggle-pane max-preview", desc = "Maximize preview" },
 ]
 
 [tasks]

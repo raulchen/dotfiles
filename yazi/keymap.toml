@@ -3,4 +3,42 @@ prepend_keymap = [
 	{ on = "<Tab>",   run = "tab_switch 1 --relative",  desc = "Switch to next tab" },
 	{ on = "<S-Tab>", run = "tab_switch -1 --relative", desc = "Switch to previous tab" },
 	{ on = "i",       run = "spot",                     desc = "Spot file info" },
+	{ on = ["g", "?"], run = "help",                    desc = "Open help" },
+	# Map toggle to <Space><Space> (frees up <Space> as leader)
+	{ on = [" ", " "], run = "toggle",        desc = "Toggle selection" },
+	{ on = [" ", "y", "y"], run = "copy path",     desc = "Copy full path" },
+	{ on = [" ", "y", "a"], run = "copy path",     desc = "Copy full path" },
+	{ on = [" ", "y", "f"], run = "copy filename", desc = "Copy filename" },
+	{ on = [" ", "y", "d"], run = "copy dirname",  desc = "Copy directory path" },
+	{ on = [" ", "x"],      run = "tab_close",     desc = "Close tab" },
+]
+
+[tasks]
+prepend_keymap = [
+	{ on = "q", run = "close", desc = "Close task manager" },
+]
+
+[select]
+prepend_keymap = [
+	{ on = "q", run = "close", desc = "Close select" },
+]
+
+[input]
+prepend_keymap = [
+	{ on = "q", run = "close", desc = "Close input" },
+]
+
+[help]
+prepend_keymap = [
+	{ on = "q", run = "escape", desc = "Close help" },
+]
+
+[cmp]
+prepend_keymap = [
+	{ on = "q", run = "close", desc = "Close completion" },
+]
+
+[spot]
+prepend_keymap = [
+	{ on = "q", run = "close", desc = "Close spot" },
 ]

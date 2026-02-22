@@ -11,3 +11,7 @@ vim = [
 prepend_rules = [
 	{ mime = "image/*", use = [ "open", "vim", "reveal", "show_exif"] },
 ]
+
+[preview]
+max_width=1500
+max_height=1500

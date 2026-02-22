@@ -2,14 +2,6 @@ local snacks_keys = {}
 
 -- snacks.picker configurations --
 
-local function oil_current_dir()
-  local exists, oil = pcall(require, "oil")
-  if not exists then
-    return nil
-  end
-  return oil.get_current_dir()
-end
-
 local function prompt_for_search_dir(callback)
   -- If buffer is not under cwd, prompt for the search directory.
   local buffer_dir = vim.fn.expand("%:p:h")
@@ -34,19 +26,14 @@ end
 local function picker_smart_files(opts)
   opts = opts or {}
   if not opts.cwd then
-    local oil_dir = oil_current_dir()
-    if oil_dir then
-      opts.cwd = oil_dir
+    local callback = function(dir)
+      opts.cwd = dir
+      picker_smart_files(opts)
+    end
+    if prompt_for_search_dir(callback) then
+      return
     else
-      local callback = function(dir)
-        opts.cwd = dir
-        picker_smart_files(opts)
-      end
-      if prompt_for_search_dir(callback) then
-        return
-      else
-        opts.cwd = vim.fn.getcwd()
-      end
+      opts.cwd = vim.fn.getcwd()
     end
   end
   if not opts.filter then
@@ -120,17 +107,12 @@ end
 local function picker_grep(opts)
   opts = opts or {}
   if not opts.dirs then
-    local oil_dir = oil_current_dir()
-    if oil_dir then
-      opts.cwd = oil_dir
-    else
-      local callback = function(dir)
-        opts.dirs = { dir }
-        picker_grep(opts)
-      end
-      if prompt_for_search_dir(callback) then
-        return
-      end
+    local callback = function(dir)
+      opts.dirs = { dir }
+      picker_grep(opts)
+    end
+    if prompt_for_search_dir(callback) then
+      return
     end
   end
   require("snacks.picker").grep(opts)
@@ -158,19 +140,14 @@ local function picker_dirs(opts)
   end
   local search_dir
   if not opts.cwd then
-    local oil_dir = oil_current_dir()
-    if oil_dir then
-      search_dir = oil_dir
+    local callback = function(dir)
+      opts.cwd = dir
+      picker_dirs(opts)
+    end
+    if prompt_for_search_dir(callback) then
+      return
     else
-      local callback = function(dir)
-        opts.cwd = dir
-        picker_dirs(opts)
-      end
-      if prompt_for_search_dir(callback) then
-        return
-      else
-        search_dir = vim.fn.getcwd()
-      end
+      search_dir = vim.fn.getcwd()
     end
     opts.cwd = search_dir
   end

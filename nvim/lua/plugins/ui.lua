@@ -1,158 +1,5 @@
 local dot_repeatable_keymap = require("core.utils").dot_repeatable_keymap
 
--- Global function to set winbar for oil buffers
-function _G.get_oil_winbar()
-  local winid = vim.g.statusline_winid
-  local win_cfg = vim.api.nvim_win_get_config(winid)
-  if win_cfg.relative ~= "" then
-    return ""
-  end
-  local bufnr = vim.api.nvim_win_get_buf(winid)
-  local dir = require("oil").get_current_dir(bufnr)
-  if dir then
-    return vim.fn.fnamemodify(dir, ":~")
-  else
-    -- If there is no current directory (e.g. over ssh), just show the buffer name
-    return vim.api.nvim_buf_get_name(0)
-  end
-end
-
-local function setup_oil()
-  require("oil").setup({
-    columns = {
-      "icon",
-      "permissions",
-      "size",
-      "mtime",
-    },
-    view_options = {
-      show_hidden = true,
-    },
-    -- Increase the cleanup delay, default is 2000ms.
-    cleanup_delay_ms = 10000,
-    constrain_cursor = "name",
-    use_default_keymaps = false,
-    keymaps = {
-      ["g?"] = "actions.show_help",
-      ["<C-v>"] = { "actions.select", opts = { vertical = true }, desc = "Open the entry in a vertical split" },
-      ["<C-s>"] = { "actions.select", opts = { horizontal = true }, desc = "Open the entry in a horizontal split" },
-      ["<C-t>"] = { "actions.select", opts = { tab = true }, desc = "Open the entry in new tab" },
-      ["J"] = "actions.preview_scroll_down",
-      ["K"] = "actions.preview_scroll_up",
-      ["<c-c>"] = "actions.close",
-      ["q"] = "actions.close",
-      ["H"] = "actions.parent",
-      ["L"] = "actions.select",
-      ["-"] = "actions.parent",
-      ["<CR>"] = "actions.select",
-      ["gx"] = "actions.open_external",
-      ["<localleader>p"] = "actions.preview",
-      ["<localleader>s"] = "actions.change_sort",
-      ["<localleader>t"] = {
-        callback = function()
-          local oil = require("oil")
-          local config = require("oil.config")
-          config.view_options.sort = {
-            { "type", "asc" },
-            { "mtime", "desc" },
-          }
-          oil.open(oil.get_current_dir())
-        end,
-        desc = "Sort by modification time",
-      },
-      ["<localleader>."] = "actions.toggle_hidden",
-      ["<localleader>\\"] = "actions.toggle_trash",
-      ["<localleader>C"] = {
-        callback = function()
-          local config = require("oil.config")
-          if config.constrain_cursor == "name" then
-            config.constrain_cursor = false
-          else
-            config.constrain_cursor = "name"
-          end
-        end,
-        desc = "Toggle constrain cursor",
-      },
-      ["<localleader>c"] = "actions.cd",
-      ["<localleader>T"] = { "actions.tcd" },
-      ["<localleader>d"] = "actions.open_cwd",
-      ["<localleader>r"] = "actions.refresh",
-      ["<localleader>y"] = "actions.yank_entry",
-      ["<localleader>q"] = "actions.send_to_qflist",
-      ["<localleader>:"] = {
-        "actions.open_cmdline",
-        opts = {
-          shorten_path = true,
-          modify = ":h",
-        },
-        desc = "Open the command line with the current directory as an argument",
-      },
-    },
-    float = {
-      border = "single",
-      max_width = 160,
-    },
-  })
-
-  local function set_oil_winbar(winid)
-    local win_cfg = vim.api.nvim_win_get_config(winid)
-    if win_cfg.relative ~= "" then
-      return
-    end
-    vim.api.nvim_set_option_value("winbar", "%!v:lua.get_oil_winbar()", { win = winid })
-  end
-
-  vim.api.nvim_create_autocmd("FileType", {
-    pattern = "oil",
-    callback = function()
-      set_oil_winbar(0)
-    end,
-  })
-
-  vim.api.nvim_create_autocmd("User", {
-    pattern = "OilActionsPost",
-    callback = function(event)
-      if event.data.actions.type == "move" then
-        Snacks.rename.on_rename_file(event.data.actions.src_url, event.data.actions.dest_url)
-      end
-    end,
-  })
-end
-
-local function toggle_oil(prompt_for_dir)
-  local oil = require("oil")
-  if not prompt_for_dir then
-    oil.toggle_float()
-  else
-    ---@diagnostic disable-next-line: undefined-field
-    local cwd = vim.uv.cwd() .. "/"
-    vim.ui.input({
-      prompt = "Toggle file explorer: ",
-      default = cwd,
-      completion = "dir",
-    }, function(dir)
-      if not dir then
-        return
-      end
-      oil.toggle_float(dir)
-    end)
-  end
-end
-
-local oil_keys = {
-  { "<leader>uf", function() toggle_oil(false) end, desc = "Toggle file explorer on buffer dir" },
-  { "<leader>uF", function() toggle_oil(true) end, desc = "Toggle file explorer on selected dir" },
-}
-
-local oil = {
-  'stevearc/oil.nvim',
-  dependencies = { "nvim-tree/nvim-web-devicons" },
-  -- Disable lazy loading so that `vim <dir>` and `:e <dir>` will use oil.
-  lazy = false,
-  keys = oil_keys,
-  config = setup_oil,
-}
-
 local lualine_opts = {
   options = {
     section_separators = "",
@@ -386,10 +233,72 @@ local render_markdown = {
   config = config_render_markdown,
 }
 
+---@type LazySpec
+local yazi = {
+  "mikavilpas/yazi.nvim",
+  version = "*",
+  event = "VeryLazy",
+  dependencies = {
+    { "nvim-lua/plenary.nvim", lazy = true },
+  },
+  keys = {
+    {
+      "<leader>uf",
+      "<cmd>Yazi toggle<cr>",
+      desc = "Resume the last yazi session",
+    },
+    {
+      "<leader>uF",
+      function()
+        ---@diagnostic disable-next-line: undefined-field
+        local cwd = vim.uv.cwd() .. "/"
+        vim.ui.input({
+          prompt = "Toggle Yazi: ",
+          default = cwd,
+          completion = "dir",
+        }, function(dir)
+          if not dir then
+            return
+          end
+          require("yazi").yazi({}, dir)
+        end)
+      end,
+      desc = "Open Yazi on selected dir",
+    },
+  },
+  ---@type YaziConfig | {}
+  opts = {
+    open_for_directories = true,
+    open_multiple_tabs = true,
+    keymaps = {
+      show_help = "<c-h>",
+      open_file_in_vertical_split = "<c-v>",
+      open_file_in_horizontal_split = "<c-x>",
+      open_file_in_tab = "<c-t>",
+      grep_in_directory = "<c-s>",
+      replace_in_directory = "<c-g>",
+      cycle_open_buffers = "<c-w>",
+      copy_relative_path_to_selected_files = "<c-y>",
+      send_to_quickfix_list = "<c-q>",
+      change_working_directory = "<c-\\>",
+      open_and_pick_window = "<c-o>",
+    },
+    floating_window_scaling_factor = 0.95,
+    integrations = {
+      grep_in_directory = "snacks.picker",
+      grep_in_selected_files = "snacks.picker",
+      picker_add_copy_relative_path_action = "snacks.picker",
+    },
+  },
+  init = function()
+    vim.g.loaded_netrwPlugin = 1
+  end,
+}
+
 return {
-  oil,
   lualine,
   barbar,
   noice,
   render_markdown,
+  yazi,
 }

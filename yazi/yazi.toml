@@ -1,2 +1,3 @@
 [mgr]
 show_hidden = true
+linemode = "custom_linemode"

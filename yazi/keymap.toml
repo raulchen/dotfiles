@@ -14,6 +14,7 @@ prepend_keymap = [
 	{ on = [" ", "m"], run = "plugin toggle-pane max-preview", desc = "Maximize preview" },
 	{ on = "=", run = "plugin zoom 1",  desc = "Zoom in" },
 	{ on = "-", run = "plugin zoom -1", desc = "Zoom out" },
+	{ on = [" ", ":"], for = "unix", run = 'shell "$SHELL" --block', desc = "Open $SHELL here" },
 ]
 
 [tasks]

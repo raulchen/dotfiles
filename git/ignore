@@ -6,8 +6,6 @@ pyrightconfig.json
 .clangd
 
 /_tmp/
-# Ignore worktree directories
-/wt-*/
 
 # Claude Code per-project directories
 **/.claude/settings.local.json

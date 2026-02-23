@@ -10,7 +10,7 @@ pyrightconfig.json
 /wt-*/
 
 # Claude Code per-project directories
-.claude/
+**/.claude/settings.local.json
 CLAUDE.local.md
 
 # pyenv version file

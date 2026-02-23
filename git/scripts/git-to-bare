@@ -56,6 +56,8 @@ find . -maxdepth 1 ! -name '.git' ! -name '.' -exec rm -rf {} +
 
 # Configure as bare repo
 git config core.bare true
+# Set default branch so `git log` shows the main branch
+git symbolic-ref HEAD "refs/heads/$main_branch"
 
 # Create worktree for main branch
 echo "Creating worktree for $main_branch..."

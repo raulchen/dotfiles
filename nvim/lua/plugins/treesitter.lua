@@ -115,15 +115,19 @@ local treesitter_move_mappings = {
 local function setup_treesitter_textobjects(_, opts)
   require("nvim-treesitter-textobjects").setup(opts)
 
-  local move = require("nvim-treesitter-textobjects.move")
-  local map = vim.keymap.set
-  for mode_fn, mappings in pairs(treesitter_move_mappings) do
-    for _, mapping in ipairs(mappings) do
-      map({ "n", "x", "o" }, mapping.key, function()
-        move[mode_fn](mapping.query, "textobjects")
-      end, { desc = mapping.desc })
-    end
-  end
+  vim.api.nvim_create_autocmd("FileType", {
+    pattern = treesitter_filetypes,
+    callback = function(args)
+      local move = require("nvim-treesitter-textobjects.move")
+      for mode_fn, mappings in pairs(treesitter_move_mappings) do
+        for _, mapping in ipairs(mappings) do
+          vim.keymap.set({ "n", "x", "o" }, mapping.key, function()
+            move[mode_fn](mapping.query, "textobjects")
+          end, { buffer = args.buf, desc = mapping.desc })
+        end
+      end
+    end,
+  })
 end
 
 return {

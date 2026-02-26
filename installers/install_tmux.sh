@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# Download, build, and install the latest tmux release on Linux.
+# Download and install a pre-built tmux binary on Linux.
 #
 # Usage:
 #   install_tmux.sh
@@ -28,25 +28,23 @@ need_cmd() {
 }
 
 need_cmd curl
-need_cmd tar
 need_cmd mktemp
-need_cmd make
-need_cmd cc
+need_cmd install
 
 prefix="${1:-$HOME/.local}"
 opt_dir="$prefix/opt"
 bin_dir="$prefix/bin"
 
-tag="$(curl -fsSL -o /dev/null -w '%{url_effective}' "https://github.com/tmux/tmux/releases/latest" | sed -n 's#.*/tag/\([^/]*\)$#\1#p')"
+tag="$(curl -fsSL -o /dev/null -w '%{url_effective}' "https://github.com/nelsonenzo/tmux-appimage/releases/latest" | sed -n 's#.*/tag/\([^/]*\)$#\1#p')"
 
 if [ -z "$tag" ]; then
   echo "error: failed to determine latest tmux release tag" >&2
   exit 1
 fi
 
-version="$tag"
-asset="tmux-${version}.tar.gz"
-download_url="https://github.com/tmux/tmux/releases/download/${tag}/${asset}"
+version="${tag#v}"
+asset="tmux.appimage"
+download_url="https://github.com/nelsonenzo/tmux-appimage/releases/latest/download/${asset}"
 install_dir="$opt_dir/tmux-${version}"
 current_link="$opt_dir/tmux"
 target_bin="$bin_dir/tmux"
@@ -68,7 +66,7 @@ fi
 if [ -d "$install_dir" ]; then
   ln -sfn "$install_dir" "$current_link"
   ln -sfn "$current_link/bin/tmux" "$target_bin"
-  echo "tmux ${version} is already built. Symlinks updated."
+  echo "tmux ${version} is already installed. Symlinks updated."
   if [ -n "$current_version" ] && [ "$current_version" != "$version" ]; then
     echo "Upgraded tmux from ${current_version} to ${version}."
   fi
@@ -90,22 +88,8 @@ trap cleanup EXIT INT TERM
 echo "Downloading ${asset}..."
 curl -fL "$download_url" -o "$tmp_dir/$asset"
 
-tar -xzf "$tmp_dir/$asset" -C "$tmp_dir"
-
-src_dir="$tmp_dir/tmux-${version}"
-if [ ! -d "$src_dir" ]; then
-  echo "error: extracted source directory tmux-${version} not found" >&2
-  exit 1
-fi
-
-jobs="$(getconf _NPROCESSORS_ONLN 2>/dev/null || echo 4)"
-
-(
-  cd "$src_dir"
-  ./configure --prefix="$install_dir"
-  make -j"$jobs"
-  make install
-)
+mkdir -p "$install_dir/bin"
+install -m 0755 "$tmp_dir/$asset" "$install_dir/bin/tmux"
 
 ln -sfn "$install_dir" "$current_link"
 ln -sfn "$current_link/bin/tmux" "$target_bin"

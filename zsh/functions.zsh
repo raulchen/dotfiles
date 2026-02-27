@@ -13,6 +13,13 @@ fu() {
     cd "$DIR"
 }
 
+# d - cd from directory stack
+d() {
+    local dir
+    dir=$(dirs -p | tail -n +2 | fzf) || return
+    [[ -n "$dir" ]] && cd -- ${~dir}
+}
+
 # Git commit browser
 flog() {
   git log --oneline --decorate --color=always ${*:-} |

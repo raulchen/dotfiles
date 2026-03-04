@@ -57,6 +57,7 @@ opt.ruler = true
 
 -- Highlight current line
 opt.cursorline = true
+opt.cursorlineopt = "line"
 
 -- Hide cmdline unless needed
 opt.cmdheight = 0

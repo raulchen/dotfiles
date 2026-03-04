@@ -52,6 +52,7 @@ local function setup_onedarkpro(_, _)
     pythonString = { link = "String" },
     SpellBad = { undercurl = true, sp = "${red}" },
     DiagnosticUnderlineError = { undercurl = true, sp = "${red}" },
+    NonText = { bg = "NONE" },
     Title = { fg = "${cyan}", extend = true },
     PmenuSel = { bg = "#4d505c", extend = true },
     -- Plug-ins

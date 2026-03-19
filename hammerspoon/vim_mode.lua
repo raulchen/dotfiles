@@ -70,8 +70,7 @@ module.toggle = function()
     end
 end
 
-local leader_key = require("leader_key")
-leader_key.bind({}, "v", module.toggle)
+hs.hotkey.bind({ "ctrl", "cmd", "alt", "shift" }, "v", module.toggle)
 
 local key_stroke_fn = require("utils").key_stroke_fn
 local system_key_stroke_fn = require("utils").system_key_stroke_fn

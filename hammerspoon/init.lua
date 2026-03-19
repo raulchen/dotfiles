@@ -1,4 +1,3 @@
-require("leader_key")
 require("double_cmdq_to_quit")
 require("modifier_key_monitor").start()
 require("vim_mode")

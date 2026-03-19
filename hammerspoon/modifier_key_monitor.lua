@@ -4,7 +4,7 @@ local inspect = hs.inspect.inspect
 
 local MIN_INTERVAL_S = 0.5
 
-local mod_keys = { "ctrl", "shift" }
+local mod_keys = { "shift" }
 
 local key_states = {}
 
@@ -60,11 +60,6 @@ local mod_key_listener = hs.eventtap.new({ hs.eventtap.event.types.flagsChanged 
                     require("utils").toggle_caps_lock()
                     last_toggle_caps_lock_time = now
                 end
-            end
-        end
-        if key_states["ctrl"].repeats == 2 then
-            if now - key_states["ctrl"].last_press_time < MIN_INTERVAL_S then
-                require("leader_key").toggle()
             end
         end
     end

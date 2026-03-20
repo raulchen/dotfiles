@@ -1,3 +1,6 @@
+-- Add visited directories to zoxide index
+require("zoxide"):setup { update_db = true }
+
 -- Custom Linemode: Size | YYYY-MM-DD HH:MM
 function Linemode:custom_linemode()
 	local time = math.floor(self._file.cha.mtime or 0)

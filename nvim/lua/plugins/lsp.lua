@@ -40,7 +40,7 @@ local server_settings = {
 }
 
 local function setup_lsp_basics()
-  vim.lsp.set_log_level("warn")
+  vim.lsp.log.set_level("warn")
 
   local float_win_opts = { border = 'single' }
 

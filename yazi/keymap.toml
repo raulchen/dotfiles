@@ -15,7 +15,13 @@ prepend_keymap = [
 	{ on = [" ", "f", "d"], for = "unix", run = 'shell "dir=$(fd -t d | fzf) && ya emit cd -- \"$dir\"" --block', desc = "Search directories " },
 	{ on = [" ", "f", "z"], run = "plugin zoxide", desc = "Search zoxide" },
 	{ on = [" ", "x"], run = "tab_close", desc = "Close tab" },
-	{ on = [" ", "m"], run = "plugin toggle-pane max-preview", desc = "Maximize preview" },
+	{ on = [" ", "p", "u"], run = "plugin toggle-pane min-parent", desc = "Toggle parent pane" },
+	{ on = [" ", "p", "U"], run = "plugin toggle-pane max-parent", desc = "Maximize parent pane" },
+	{ on = [" ", "p", "c"], run = "plugin toggle-pane min-current", desc = "Toggle current pane" },
+	{ on = [" ", "p", "C"], run = "plugin toggle-pane max-current", desc = "Maximize current pane" },
+	{ on = [" ", "p", "p"], run = "plugin toggle-pane min-preview", desc = "Toggle preview" },
+	{ on = [" ", "p", "P"], run = "plugin toggle-pane max-preview", desc = "Maximize preview" },
+	{ on = [" ", "p", "r"], run = "plugin toggle-pane reset", desc = "Reset pane layout" },
 	{ on = [" ", ":"], for = "unix", run = 'shell "$SHELL" --block', desc = "Open $SHELL here" },
 ]
 

@@ -1,6 +1,8 @@
 # -*- mode: gitignore; -*-
 # vim: set filetype=gitignore:
 
+.DS_STORE
+
 compile_commands.json
 pyrightconfig.json
 .clangd

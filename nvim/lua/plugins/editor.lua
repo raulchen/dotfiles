@@ -154,6 +154,14 @@ local mini_ai = {
         u = ai.gen_spec.function_call(), -- u for "Usage"
         U = ai.gen_spec.function_call({ name_pattern = "[%w_]" }), -- without dot in function name
       },
+      mappings = {
+        -- Disable the following as the default mappings conflict with
+        -- built-in LSP selection mappings on Neovim>=0.12
+        around_next = '',
+        inside_next = '',
+        around_last = '',
+        inside_last = '',
+      },
     }
   end,
   config = function(_, opts)

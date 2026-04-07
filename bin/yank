@@ -51,4 +51,5 @@ fi
 # reaches the local terminal (load-buffer -w doesn't). In popup sessions
 # this may be blocked, but load-buffer -w -t above covers that case.
 b64=$(printf '%s' "$buf" | base64 | tr -d '\n')
-printf '\033]52;c;%s\a' "$b64" >/dev/tty 2>/dev/null
+# May fail in subshells without a controlling terminal (e.g. tmux plugins).
+printf '\033]52;c;%s\a' "$b64" >/dev/tty 2>/dev/null || true

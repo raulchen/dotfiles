@@ -11,6 +11,7 @@ local mason_tool_installer = {
     "mason-org/mason.nvim",
     "mason-org/mason-lspconfig.nvim",
   },
+  build = ":MasonToolsInstall",
   opts = {
     ensure_installed = {
       "bashls",

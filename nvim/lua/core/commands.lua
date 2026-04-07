@@ -26,21 +26,3 @@ end, { desc = 'Open LSP log file' })
 vim.api.nvim_create_user_command('LspInfo', function()
   vim.cmd('checkhealth vim.lsp')
 end, { desc = 'Show LSP info via checkhealth' })
-
-vim.api.nvim_create_user_command('LspRestart', function(opts)
-  local name = opts.fargs[1]
-  local filter = name and { bufnr = 0, name = name } or {}
-  local clients = vim.lsp.get_clients(filter)
-  for _, client in ipairs(clients) do
-    local bufs = client.attached_buffers and vim.tbl_keys(client.attached_buffers) or {}
-    client:stop()
-    vim.wait(30000, function()
-      return vim.lsp.get_client_by_id(client.id) == nil
-    end)
-    for _, buf in ipairs(bufs) do
-      vim.lsp.start(client.config, { bufnr = buf })
-    end
-  end
-end, { desc = 'Restart LSP clients', nargs = '?', complete = function()
-  return vim.tbl_map(function(c) return c.name end, vim.lsp.get_clients({ bufnr = 0 }))
-end })

@@ -23,6 +23,7 @@ local mason_tool_installer = {
       "ruff",
       "debugpy",
       "tree-sitter-cli",
+      "marksman",
     },
     run_on_start = false,
   },

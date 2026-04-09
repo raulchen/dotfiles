@@ -244,8 +244,8 @@ local yazi = {
   keys = {
     {
       "<leader>uf",
-      "<cmd>Yazi toggle<cr>",
-      desc = "Resume the last yazi session",
+      "<cmd>Yazi<cr>",
+      desc = "Open yazi at the current file",
     },
     {
       "<leader>uF",

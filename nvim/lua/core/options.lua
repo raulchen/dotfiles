@@ -159,3 +159,20 @@ opt.diffopt = vim.list_extend(
   opt.diffopt:get(),
   { "algorithm:histogram", "linematch:60" }
 )
+
+-- Override clipboard copy over SSH to use yank script, which handles
+-- floating tmux panes where the default OSC 52 copy doesn't work.
+if os.getenv('SSH_TTY') then
+  local osc52 = require('vim.ui.clipboard.osc52')
+  vim.g.clipboard = {
+    name = 'OSC 52 (yank)',
+    copy = {
+      ['+'] = 'yank',
+      ['*'] = 'yank',
+    },
+    paste = {
+      ['+'] = osc52.paste('+'),
+      ['*'] = osc52.paste('*'),
+    },
+  }
+end

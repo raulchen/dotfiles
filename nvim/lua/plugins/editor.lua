@@ -19,20 +19,6 @@ local vim_sleuth = {
   event = "VeryLazy",
 }
 
-local vim_oscyank = {
-  "ojroques/vim-oscyank",
-  event = "VeryLazy",
-  init = function()
-    vim.cmd([[
-      let g:oscyank_silent = 1
-      " Automatically copy text that was yanked to register +.
-      autocmd TextYankPost *
-          \ if v:event.operator is 'y' && v:event.regname is '+' |
-          \ execute 'OSCYankRegister +' |
-          \ endif
-    ]])
-  end,
-}
 
 local which_key = {
   "folke/which-key.nvim",
@@ -172,7 +158,6 @@ local mini_ai = {
 return {
   vim_tmux_navigator,
   vim_sleuth,
-  vim_oscyank,
   which_key,
   flash,
   mini_cursorword,

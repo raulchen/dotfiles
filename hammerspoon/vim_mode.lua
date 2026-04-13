@@ -94,6 +94,14 @@ local bind_key = function(mode, source_mod, source_key, target_mod, target_key, 
     bind_fn(mode, source_mod, source_key, fn, can_repeat)
 end
 
+-- Fire `fn` on key press (not release), without repeating. Used for
+-- operator/prefix keys (d, c, g) so that typing the follow-up key quickly
+-- (e.g. `dw`) doesn't let the follow-up fire in the parent mode before
+-- we've switched into the sub-mode.
+local bind_press_fn = function(mode, mod, key, fn)
+    mode.modal:bind(mod, key, fn, nil, nil)
+end
+
 -- === Normal mode ===
 
 -- hjkl movements
@@ -113,13 +121,13 @@ bind_key(normal, {}, '0', { 'cmd' }, 'left', false)
 bind_key(normal, { 'shift' }, '4', { 'cmd' }, 'right', false)
 
 -- gg -> move to the beginning of the file
-bind_fn(normal, {}, 'g', function()
+bind_press_fn(normal, {}, 'g', function()
     switch_to_mode(normal_g)
-end, false)
-bind_fn(normal_g, {}, 'g', function()
+end)
+bind_press_fn(normal_g, {}, 'g', function()
     key_stroke_fn({ 'cmd' }, 'up')()
     switch_to_mode(normal)
-end, false)
+end)
 
 -- G -> move to the end of the file
 bind_key(normal, { 'shift' }, 'g', { 'cmd' }, 'down', false)
@@ -145,52 +153,52 @@ bind_key(normal, {}, 'p', { 'cmd' }, 'v', false)
 bind_key(normal, {}, 'x', {}, 'forwarddelete', true)
 
 -- Implement c_ d_ commands
-bind_fn(normal, {}, 'c', function()
+bind_press_fn(normal, {}, 'c', function()
     switch_to_mode(normal_c)
-end, false)
-bind_fn(normal, {}, 'd', function()
+end)
+bind_press_fn(normal, {}, 'd', function()
     switch_to_mode(normal_d)
-end, false)
+end)
 for _, op in ipairs({ 'c', 'd' }) do
     local mode = op == 'c' and normal_c or normal_d
     local target_mode = op == 'c' and insert or normal
     -- w/e -> delete word forward
-    bind_fn(mode, {}, 'w', function()
+    bind_press_fn(mode, {}, 'w', function()
         key_stroke_fn({ 'alt' }, 'forwarddelete')()
         switch_to_mode(target_mode)
-    end, false)
-    bind_fn(mode, {}, 'e', function()
+    end)
+    bind_press_fn(mode, {}, 'e', function()
         key_stroke_fn({ 'alt' }, 'forwarddelete')()
         switch_to_mode(target_mode)
-    end, false)
+    end)
     -- b -> delete word backwards
-    bind_fn(mode, {}, 'b', function()
+    bind_press_fn(mode, {}, 'b', function()
         key_stroke_fn({ 'alt' }, 'delete')()
         switch_to_mode(target_mode)
-    end, false)
+    end)
     -- 0/$ -> delete to the beginning/end of the line
-    bind_fn(mode, {}, '0', function()
+    bind_press_fn(mode, {}, '0', function()
         key_stroke_fn({ 'cmd' }, 'delete')()
         switch_to_mode(target_mode)
-    end, false)
-    bind_fn(mode, { 'shift' }, '4', function()
+    end)
+    bind_press_fn(mode, { 'shift' }, '4', function()
         key_stroke_fn({ 'ctrl' }, 'k')()
         switch_to_mode(target_mode)
-    end, false)
+    end)
     -- cc/dd -> delete the whole line
-    bind_fn(mode, {}, op, function()
+    bind_press_fn(mode, {}, op, function()
         key_stroke_fn({ 'cmd' }, 'right')()
         key_stroke_fn({ 'cmd' }, 'delete')()
         if op == 'd' then
             key_stroke_fn({}, 'forwarddelete')()
         end
         switch_to_mode(target_mode)
-    end, false)
+    end)
     -- C/D -> delete to the end of the line
-    bind_fn(normal, { 'shift' }, op, function()
+    bind_press_fn(normal, { 'shift' }, op, function()
         key_stroke_fn({ 'ctrl' }, 'k')()
         switch_to_mode(target_mode)
-    end, false)
+    end)
 end
 
 -- u -> undo
@@ -301,14 +309,14 @@ bind_fn(visual, { 'ctrl' }, 'd', function()
 end, true)
 
 -- gg -> move to the beginning of the file
-bind_fn(visual, {}, 'g', function()
+bind_press_fn(visual, {}, 'g', function()
     switch_to_mode(visual_g)
-end, false)
-bind_fn(visual_g, {}, 'g', function()
+end)
+bind_press_fn(visual_g, {}, 'g', function()
     key_stroke_fn({ 'shift', 'cmd' }, 'up')()
     visual.is_cursor_right_to_start = false
     switch_to_mode(visual)
-end, false)
+end)
 -- G -> move to the end of the file
 visual_bind_key({ 'shift' }, 'g', { 'cmd' }, 'down', true)
 

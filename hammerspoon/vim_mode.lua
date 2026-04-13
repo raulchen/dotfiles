@@ -182,7 +182,7 @@ for _, op in ipairs({ 'c', 'd' }) do
         key_stroke_fn({ 'cmd' }, 'right')()
         key_stroke_fn({ 'cmd' }, 'delete')()
         if op == 'd' then
-            key_stroke_fn({ '' }, 'forwarddelete')()
+            key_stroke_fn({}, 'forwarddelete')()
         end
         switch_to_mode(target_mode)
     end, false)
@@ -197,6 +197,16 @@ end
 bind_key(normal, {}, 'u', { 'cmd' }, 'z', true)
 -- ctrl + r -> redo
 bind_key(normal, { 'ctrl' }, 'r', { 'shift', 'cmd' }, 'z', true)
+
+-- escape/ctrl-[ -> cancel any pending operator (no-op in plain normal)
+bind_fn(normal, {}, 'escape', function() end, false)
+bind_fn(normal, { 'ctrl' }, '[', function() end, false)
+
+-- escape from pending-operator / g sub-modes back to normal
+for _, sub in ipairs({ normal_g, normal_c, normal_d }) do
+    bind_fn(sub, {}, 'escape', function() switch_to_mode(normal) end, false)
+    bind_fn(sub, { 'ctrl' }, '[', function() switch_to_mode(normal) end, false)
+end
 
 -- i/I/a/A/o/O -> switch to insert mode
 bind_fn(normal, {}, 'i', function()
@@ -216,13 +226,13 @@ bind_fn(normal, { 'shift' }, 'a', function()
 end, false)
 bind_fn(normal, {}, 'o', function()
     key_stroke_fn({ 'cmd' }, 'right')()
-    key_stroke_fn({ '' }, 'return')()
+    key_stroke_fn({}, 'return')()
     switch_to_mode(insert)
 end, false)
 bind_fn(normal, { 'shift' }, 'o', function()
     key_stroke_fn({ 'cmd' }, 'left')()
-    key_stroke_fn({ '' }, 'return')()
-    key_stroke_fn({ '' }, 'up')()
+    key_stroke_fn({}, 'return')()
+    key_stroke_fn({}, 'up')()
     switch_to_mode(insert)
 end, false)
 
@@ -251,9 +261,12 @@ visual.modal.entered = function()
 end
 
 local visual_bind_key = function(source_mod, source_key, target_mod, target_key, right)
-    table.insert(target_mod, 'shift')
+    local mods = { 'shift' }
+    for _, m in ipairs(target_mod) do
+        table.insert(mods, m)
+    end
     local fn = function()
-        key_stroke_fn(target_mod, target_key)()
+        key_stroke_fn(mods, target_key)()
         visual.is_cursor_right_to_start = right
     end
     bind_fn(visual, source_mod, source_key, fn, true)
@@ -299,6 +312,10 @@ end, false)
 -- G -> move to the end of the file
 visual_bind_key({ 'shift' }, 'g', { 'cmd' }, 'down', true)
 
+-- escape from visual:g back to visual
+bind_fn(visual_g, {}, 'escape', function() switch_to_mode(visual) end, false)
+bind_fn(visual_g, { 'ctrl' }, '[', function() switch_to_mode(visual) end, false)
+
 local visual_to_normal = function(clear_selection)
     if clear_selection == nil then
         clear_selection = true
@@ -330,17 +347,17 @@ end, false)
 
 -- x/d -> delete visual selection
 bind_fn(visual, {}, 'x', function()
-    key_stroke_fn({ '' }, 'forwarddelete')()
+    key_stroke_fn({}, 'forwarddelete')()
     visual_to_normal(false)
 end, false)
 bind_fn(visual, {}, 'd', function()
-    key_stroke_fn({ '' }, 'forwarddelete')()
+    key_stroke_fn({}, 'forwarddelete')()
     visual_to_normal(false)
 end, false)
 
 -- c -> delete visual selection and switch to insert mode
 bind_fn(visual, {}, 'c', function()
-    key_stroke_fn({ '' }, 'forwarddelete')()
+    key_stroke_fn({}, 'forwarddelete')()
     switch_to_mode(insert)
 end, false)
 

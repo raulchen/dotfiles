@@ -94,6 +94,24 @@ map("n", "<leader>ym", function() ts_yank.yank_ancestor_name("function") end, { 
 map("n", "<leader>yc", function() ts_yank.yank_ancestor_name("class") end, { desc = "Yank class name" })
 map("n", "<leader>yM", ts_yank.yank_class_method_name, { desc = "Yank class::method name" })
 
+map("n", "<leader>yu", function()
+  local cword = vim.fn.expand("<cWORD>")
+  -- Strip surrounding punctuation (brackets, parens, quotes, angle brackets)
+  cword = cword:match("[%(<\"'%[]*(.-)[\")'>%]]*$") or cword
+  -- Check if it looks like a URL
+  if cword:match("^https?://") or cword:match("^file://") then
+    utils.yank_to_register(cword)
+  else
+    -- Fall back to path under cursor
+    local path = vim.fn.expand("<cfile>")
+    if path ~= "" then
+      utils.yank_to_register(path)
+    else
+      vim.notify("No URL or path under cursor", vim.log.levels.WARN)
+    end
+  end
+end, { desc = "Yank URL or path under cursor" })
+
 -- Make n/N direction consistent regardless of / or ? search
 map("n", "n", "'Nn'[v:searchforward].'zv'", { expr = true, desc = "Next Search Result" })
 map("x", "n", "'Nn'[v:searchforward]", { expr = true, desc = "Next Search Result" })

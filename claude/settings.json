@@ -47,11 +47,8 @@
       "Bash(gh release view*)",
       "Bash(gh release list*)",
       "Bash(gh api *)"
-    ]
-  },
-  "statusLine": {
-    "type": "command",
-    "command": "~/.claude/statusline-command.sh"
+    ],
+    "defaultMode": "auto"
   },
   "hooks": {
     "Notification": [
@@ -66,7 +63,13 @@
       }
     ]
   },
+  "statusLine": {
+    "type": "command",
+    "command": "~/.claude/statusline-command.sh"
+  },
   "enabledPlugins": {
     "context7@claude-plugins-official": true
-  }
+  },
+  "skipDangerousModePermissionPrompt": true,
+  "skipAutoPermissionPrompt": true
 }

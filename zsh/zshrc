@@ -212,7 +212,10 @@ fi
 
 # === Misc ===
 
-if type zoxide >/dev/null 2>&1 ; then
+# Skipped inside Claude Code: we don't want Claude's automated directory
+# traversal polluting the user's frecency database, and its shell snapshot
+# doesn't preserve chpwd_functions (triggers a false-positive doctor warning).
+if [[ -z "$CLAUDECODE" ]] && type zoxide >/dev/null 2>&1 ; then
     eval "$(zoxide init --cmd cd zsh)"
 fi
 

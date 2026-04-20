@@ -160,20 +160,16 @@ opt.diffopt = vim.list_extend(
   { "algorithm:histogram", "linematch:60" }
 )
 
--- Override clipboard copy for remote sessions (ssh/mosh/et all set
--- SSH_CONNECTION) to use yank script, which handles floating tmux panes
--- where the default OSC 52 copy doesn't work.
-if os.getenv('SSH_CONNECTION') then
+-- In a remote tmux session (ssh/mosh/et all set SSH_CONNECTION), override
+-- clipboard copy to use the yank script — it targets the right tmux client
+-- so OSC 52 reaches the terminal even from floating panes (popups) and
+-- populates the tmux paste buffer. Outside tmux, nvim's default OSC 52
+-- handling is sufficient.
+if os.getenv('SSH_CONNECTION') and os.getenv('TMUX') then
   local osc52 = require('vim.ui.clipboard.osc52')
   vim.g.clipboard = {
     name = 'OSC 52 (yank)',
-    copy = {
-      ['+'] = 'yank',
-      ['*'] = 'yank',
-    },
-    paste = {
-      ['+'] = osc52.paste('+'),
-      ['*'] = osc52.paste('*'),
-    },
+    copy = { ['+'] = 'yank', ['*'] = 'yank' },
+    paste = { ['+'] = osc52.paste('+'), ['*'] = osc52.paste('*') },
   }
 end

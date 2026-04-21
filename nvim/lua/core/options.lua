@@ -119,6 +119,9 @@ opt.fillchars = {
 -- Persistent undo history
 opt.undofile = true
 
+-- Load project-local .nvim.lua (trusted via :trust)
+opt.exrc = true
+
 ---------------------
 -- Text/tabs settings
 ---------------------

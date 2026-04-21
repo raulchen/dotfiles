@@ -28,7 +28,7 @@ return {
   },
   opts = {
     formatters_by_ft = {
-      python = { "black", "ruff" },
+      python = { "ruff_fix", "ruff_format" },
     },
     ---@diagnostic disable-next-line
     format_on_save = function(bufnr)

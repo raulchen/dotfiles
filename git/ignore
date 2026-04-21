@@ -15,3 +15,6 @@ CLAUDE.local.md
 
 # pyenv version file
 .python-version
+
+# neovim project-local config (loaded via exrc)
+.nvim.lua

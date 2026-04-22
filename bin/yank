@@ -6,53 +6,55 @@
 buf=$(cat)
 [ -z "$buf" ] && exit 0
 
-if [ -n "$TMUX" ]; then
-    # Send OSC 52 to the tmux client the user is actually looking at, via
-    # `load-buffer -w -t <client-tty>`. Two problems to solve:
-    #
-    # 1. Skip "nested" clients — ones spawned from within tmux itself (popups,
-    #    Claude Code's own `tmux attach`). Their tty is an internal pty that
-    #    can't reach any terminal. Detect by walking the client PID's parent
-    #    chain: if the tmux server PID is an ancestor, it was spawned from
-    #    inside tmux and is nested.
-    #
-    # 2. Pick the right real client when several are attached (e.g. concurrent
-    #    mosh + ssh, or a stale mosh-server lingering after a network drop).
-    #    Use client_activity as the tiebreaker: the client you're typing in
-    #    right now had its activity bumped most recently; stale clients have
-    #    frozen timestamps.
-    server_pid=$(tmux display-message -p '#{pid}')  # tmux server PID
+# Pick the pty to write OSC 52 to:
+# - Outside tmux: /dev/tty is the caller's own pty (ssh/mosh/local terminal).
+# - Inside tmux: /dev/tty is a tmux-internal pane pty that can't reach the
+#   user's terminal directly, so find the pty of the real tmux client
+#   instead. Two problems to solve:
+#
+#   1. Skip "nested" clients — ones spawned from within tmux itself (popups,
+#      Claude Code's own `tmux attach`). Their tty is another internal pty.
+#      Detect by walking the client PID's parent chain: if the tmux server
+#      PID is an ancestor, the client was spawned from inside tmux.
+#
+#   2. Pick the right real client when several are attached (concurrent
+#      mosh + ssh, stale mosh-server lingering after a network drop). Use
+#      client_activity as the tiebreaker: the client you're typing in
+#      right now had its activity bumped most recently; stale clients have
+#      frozen timestamps.
+if [ -z "$TMUX" ]; then
+    tty=/dev/tty
+else
+    server_pid=$(tmux display-message -p '#{pid}')
     tty=$(tmux list-clients -F '#{client_activity} #{client_pid} #{client_tty}' \
         | sort -rn \
         | while read -r _cact cpid ctty; do
             pid=$cpid
             nested=0
-            while [ "$pid" -gt 1 ] 2>/dev/null; do  # walk towards PID 1 (init)
-                ppid=$(ps -o ppid= -p "$pid" 2>/dev/null | tr -d ' ')  # get parent PID
-                [ -z "$ppid" ] && break  # process gone
+            while [ "$pid" -gt 1 ] 2>/dev/null; do
+                ppid=$(ps -o ppid= -p "$pid" 2>/dev/null | tr -d ' ')
+                [ -z "$ppid" ] && break
                 if [ "$ppid" = "$server_pid" ]; then
-                    nested=1  # spawned from within tmux, its tty is a pane pty
+                    nested=1
                     break
                 fi
-                pid=$ppid  # move up one level
+                pid=$ppid
             done
             if [ "$nested" = 0 ]; then
-                printf '%s' "$ctty"  # most recent real client
+                printf '%s' "$ctty"
                 break
             fi
         done)
-    if [ -n "$tty" ]; then
-        printf '%s' "$buf" | tmux load-buffer -w -t "$tty" - 2>/dev/null
-    else
-        printf '%s' "$buf" | tmux load-buffer -w - 2>/dev/null  # no real client found
-    fi
+    # Also populate tmux's own paste buffer so `prefix ]` works.
+    printf '%s' "$buf" | tmux load-buffer - 2>/dev/null
 fi
 
-# Outside tmux, write OSC 52 directly to /dev/tty. This covers cases where
-# yank is invoked from a non-tmux shell (e.g. over plain SSH). When invoked
-# from a process without a controlling terminal (e.g. nvim's jobstart child),
-# this silently fails — the tmux branch above handles that case.
-if [ -z "$TMUX" ]; then
-    b64=$(printf '%s' "$buf" | base64 | tr -d '\n')
-    printf '\033]52;c;%s\a' "$b64" >/dev/tty 2>/dev/null || true
-fi
+# Write OSC 52 directly to the selected pty. We avoid `tmux load-buffer -w`
+# because its output path isn't reliably forwarded by mosh — some mosh
+# versions silently drop escapes that come through tmux's emission path, but
+# happily forward raw writes to the client pty.
+#
+# Silently tolerates failures: no controlling tty (nvim's jobstart child),
+# no real client found, etc.
+b64=$(printf '%s' "$buf" | base64 | tr -d '\n')
+[ -n "$tty" ] && printf '\033]52;c;%s\a' "$b64" > "$tty" 2>/dev/null || true

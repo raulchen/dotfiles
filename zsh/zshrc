@@ -11,6 +11,11 @@ HISTSIZE=130000
 SAVEHIST=130000
 HYPHEN_INSENSITIVE="true"
 
+# Disable SIGQUIT on C-\ so reflex presses don't kill the foreground program.
+# Only affects the shell's line discipline; nvim/other programs that enter
+# raw mode set their own termios and are unaffected.
+[[ -t 0 ]] && stty quit undef 2>/dev/null
+
 function _custom_keybinds ()
 {
     # Also bind C-V to backward-char because C-B is Tmux prefix

@@ -192,6 +192,10 @@ map('t', '<C-]><C-j>', '<cmd>wincmd j<cr>', { desc = 'Move to lower window' })
 map('t', '<C-]><C-k>', '<cmd>wincmd k<cr>', { desc = 'Move to upper window' })
 map('t', '<C-]><C-l>', '<cmd>wincmd l<cr>', { desc = 'Move to right window' })
 
+-- Terminal tab navigation
+map('t', '<C-]><Tab>',   '<cmd>tabn<cr>', { desc = 'Next tab' })
+map('t', '<C-]><S-Tab>', '<cmd>tabp<cr>', { desc = 'Previous tab' })
+
 -- Enhanced gf/gF mappings:
 -- Check for line number after the filename (supports: file:10 or file line(s) 10)
 local function open_file_under_cursor(use_other_window)

@@ -377,7 +377,6 @@ bind_fn(visual, { 'ctrl' }, '[', visual_to_normal, false)
 -- ==== Insert mode ====
 
 bind_fn(insert, {}, 'escape', function() switch_to_mode(normal) end, false)
-bind_fn(insert, { 'ctrl' }, '[', function() switch_to_mode(normal) end, false)
 
 -- ==== Addtional bindings for both off/insert modes ====
 
@@ -391,6 +390,9 @@ for _, mode in ipairs({ off, insert }) do
     -- alt-m/n -> ctrl-tab and ctrl-shift-tab
     bind_key(mode, { 'alt' }, 'm', { 'ctrl' }, 'tab', true)
     bind_key(mode, { 'alt' }, 'n', { 'ctrl', 'shift' }, 'tab', true)
+
+    -- ctrl-[ -> escape
+    bind_key(mode, { 'ctrl' }, '[', {}, 'escape', false)
 
     bind_fn(mode, { 'alt' }, ',', system_key_stroke_fn('SOUND_DOWN'), true)
     bind_fn(mode, { 'alt' }, '.', system_key_stroke_fn('SOUND_UP'), true)

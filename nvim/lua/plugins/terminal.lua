@@ -127,10 +127,10 @@ end
 local ergoterm_keys = {
   { "<c-/>", toggle_terminal, desc = "Toggle terminal", mode = { "n", "t" } },
   { "<c-_>", toggle_terminal, desc = "Toggle terminal", mode = { "n", "t" } },
-  { "<c-\\><c-n>", function() cycle_terminal("next") end, desc = "Next terminal", ft = "ergoterm", mode = "t" },
-  { "<c-\\><c-p>", function() cycle_terminal("prev") end, desc = "Previous terminal", ft = "ergoterm", mode = "t" },
-  { "<c-\\><c-c>", create_new_terminal, desc = "Create new terminal", ft = "ergoterm", mode = "t" },
-  { "<c-\\><c-v>", toggle_layout, desc = "Toggle layout views", ft = "ergoterm", mode = "t" },
+  { "<c-]><c-n>", function() cycle_terminal("next") end, desc = "Next terminal", ft = "ergoterm", mode = "t" },
+  { "<c-]><c-p>", function() cycle_terminal("prev") end, desc = "Previous terminal", ft = "ergoterm", mode = "t" },
+  { "<c-]><c-c>", create_new_terminal, desc = "Create new terminal", ft = "ergoterm", mode = "t" },
+  { "<c-]><c-v>", toggle_layout, desc = "Toggle layout views", ft = "ergoterm", mode = "t" },
   { "<leader>ft", "<cmd>TermSelect<cr>", desc = "Pick a terminal" },
 }
 

@@ -61,9 +61,9 @@ local sidekick = {
           height = 0, -- set to 0 for default split height
         },
         keys = {
-          buffers = { "<c-\\><c-b>", "buffers", mode = "nt", desc = "open buffer picker" },
-          files = { "<c-\\><c-f>", "files", mode = "nt", desc = "open file picker" },
-          prompt = { "<c-\\><c-p>", "prompt", mode = "nt", desc = "insert prompt or context" },
+          buffers = { "<c-]><c-b>", "buffers", mode = "nt", desc = "open buffer picker" },
+          files = { "<c-]><c-f>", "files", mode = "nt", desc = "open file picker" },
+          prompt = { "<c-]><c-p>", "prompt", mode = "nt", desc = "insert prompt or context" },
           hide_ctrl_z = false,
           nav_left = false,
           nav_right = false,
@@ -168,7 +168,7 @@ local sidekick = {
       desc = "Sidekick Select Prompt",
     },
     {
-      "<c-\\><c-v>",
+      "<c-]><c-v>",
       function()
         local State = require("sidekick.cli.state")
         local states = State.get({ terminal = true })

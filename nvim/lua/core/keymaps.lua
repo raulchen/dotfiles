@@ -139,8 +139,9 @@ map('c', '<c-x><c-d>', '<C-R>=expand("%:p:h")."/"<cr>', { desc = 'Insert directo
 map('c', '<c-x><c-f>', '<C-R>=expand("%:p")<cr>', { desc = 'Insert file path' })
 
 -- Terminal Mappings
-map("t", "<c-\\><c-\\>", "<c-\\><c-n>", { desc = "Enter Normal Mode" })
-map("t", "<C-\\><C-r>", function()
+map("t", "<c-]><c-]>", "<c-\\><c-n>", { desc = "Enter Normal Mode" })
+map("t", "<c-]>]", "<c-]>", { noremap = true, desc = "Send literal C-]" })
+map("t", "<C-]><C-r>", function()
   local registers = '*+"-:.%/#=_abcdefghijklmnopqrstuvwxyz0123456789'
   local lines = {}
   for i = 1, #registers do
@@ -186,10 +187,10 @@ map("t", "<C-\\><C-r>", function()
 end, { desc = "Paste register" })
 
 -- Terminal window navigation
-map('t', '<C-\\><C-h>', '<cmd>wincmd h<cr>', { desc = 'Move to left window' })
-map('t', '<C-\\><C-j>', '<cmd>wincmd j<cr>', { desc = 'Move to lower window' })
-map('t', '<C-\\><C-k>', '<cmd>wincmd k<cr>', { desc = 'Move to upper window' })
-map('t', '<C-\\><C-l>', '<cmd>wincmd l<cr>', { desc = 'Move to right window' })
+map('t', '<C-]><C-h>', '<cmd>wincmd h<cr>', { desc = 'Move to left window' })
+map('t', '<C-]><C-j>', '<cmd>wincmd j<cr>', { desc = 'Move to lower window' })
+map('t', '<C-]><C-k>', '<cmd>wincmd k<cr>', { desc = 'Move to upper window' })
+map('t', '<C-]><C-l>', '<cmd>wincmd l<cr>', { desc = 'Move to right window' })
 
 -- Enhanced gf/gF mappings:
 -- Check for line number after the filename (supports: file:10 or file line(s) 10)

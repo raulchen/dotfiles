@@ -71,45 +71,8 @@ local function open_diffview()
       action = function() vim.cmd("DiffviewOpen") end
     },
     {
-      name = "Merge-base with master",
-      action = function()
-        -- Get the master branch name
-        vim.fn.jobstart({ 'sh', '-c', "git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@'" }, {
-          stdout_buffered = true,
-          on_stdout = function(_, data)
-            if data and data[1] and data[1] ~= "" then
-              local default_branch = data[1]:gsub("%s+$", "") -- Trim whitespace
-
-              -- Get the merge-base with the default branch
-              vim.fn.jobstart({ 'git', 'merge-base', 'HEAD', default_branch }, {
-                stdout_buffered = true,
-                on_stdout = function(_, merge_data)
-                  if merge_data and merge_data[1] and merge_data[1] ~= "" then
-                    local merge_base = merge_data[1]:gsub("%s+$", "")
-                    vim.schedule(function()
-                      vim.cmd("DiffviewOpen " .. merge_base)
-                    end)
-                  end
-                end,
-                on_stderr = function(_, merge_err)
-                  if merge_err and merge_err[1] and merge_err[1] ~= "" then
-                    vim.schedule(function()
-                      vim.notify("Error getting merge-base: " .. table.concat(merge_err, "\n"), vim.log.levels.ERROR)
-                    end)
-                  end
-                end
-              })
-            end
-          end,
-          on_stderr = function(_, err_data)
-            if err_data and err_data[1] and err_data[1] ~= "" then
-              vim.schedule(function()
-                vim.notify("Error getting default branch: " .. table.concat(err_data, "\n"), vim.log.levels.ERROR)
-              end)
-            end
-          end
-        })
-      end
+      name = "Branch changes",
+      action = function() vim.cmd("DiffviewOpen origin/HEAD...HEAD") end
     },
     {
       name = "Pick a commit",

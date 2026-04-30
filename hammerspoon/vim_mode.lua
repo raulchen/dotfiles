@@ -387,9 +387,12 @@ for _, mode in ipairs({ off, insert }) do
     bind_key(mode, { 'alt' }, 'k', {}, 'up', true)
     bind_key(mode, { 'alt' }, 'l', {}, 'right', true)
 
-    -- alt-m/n -> ctrl-tab and ctrl-shift-tab
+    -- alt-m/n and alt-2/1 -> ctrl-tab and ctrl-shift-tab
     bind_key(mode, { 'alt' }, 'm', { 'ctrl' }, 'tab', true)
     bind_key(mode, { 'alt' }, 'n', { 'ctrl', 'shift' }, 'tab', true)
+    bind_key(mode, { 'alt' }, '2', { 'ctrl' }, 'tab', true)
+    bind_key(mode, { 'alt' }, '1', { 'ctrl', 'shift' }, 'tab', true)
+    bind_key(mode, { 'alt', 'ctrl' }, 'tab', { 'ctrl', 'shift' }, 'tab', true)
 
     -- ctrl-[ -> escape
     bind_key(mode, { 'ctrl' }, '[', {}, 'escape', false)

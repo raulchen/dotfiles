@@ -71,7 +71,11 @@ local function open_diffview()
       action = function() vim.cmd("DiffviewOpen") end
     },
     {
-      name = "Branch changes",
+      name = "Branch changes (with outstanding)",
+      action = function() vim.cmd("DiffviewOpen origin/HEAD...HEAD --imply-local") end
+    },
+    {
+      name = "Branch changes (committed)",
       action = function() vim.cmd("DiffviewOpen origin/HEAD...HEAD") end
     },
     {

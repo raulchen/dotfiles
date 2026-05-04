@@ -1,19 +1,3 @@
-local vim_tmux_navigator = {
-  "christoomey/vim-tmux-navigator",
-  keys = {
-    { "<C-M-H>", "<cmd>TmuxNavigateLeft<cr>", mode = { "n", "t", "i" }, desc = "TmuxNavigateLeft" },
-    { "<C-M-J>", "<cmd>TmuxNavigateDown<cr>", mode = { "n", "t", "i" }, desc = "TmuxNavigateDown" },
-    { "<C-M-K>", "<cmd>TmuxNavigateUp<cr>", mode = { "n", "t", "i" }, desc = "TmuxNavigateUp" },
-    { "<C-M-L>", "<cmd>TmuxNavigateRight<cr>", mode = { "n", "t", "i" }, desc = "TmuxNavigateRight" },
-    { "<C-M-\\>", "<cmd>TmuxNavigatePrevious<cr>", mode = { "n", "t", "i" }, desc = "TmuxNavigatePrevious" },
-  },
-  init = function()
-    vim.cmd([[
-        let g:tmux_navigator_no_mappings = 1
-      ]])
-  end,
-}
-
 local vim_sleuth = {
   "tpope/vim-sleuth",
   event = "VeryLazy",
@@ -156,7 +140,6 @@ local mini_ai = {
 }
 
 return {
-  vim_tmux_navigator,
   vim_sleuth,
   which_key,
   flash,

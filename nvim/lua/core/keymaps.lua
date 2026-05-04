@@ -42,6 +42,30 @@ map('n', '<c-l>', '<c-w>l', { desc = 'Move to right window' })
 map('n', '<c-j>', '<c-w>j', { desc = 'Move to lower window' })
 map('n', '<c-k>', '<c-w>k', { desc = 'Move to upper window' })
 
+-- Cross-boundary navigation: vim splits + tmux panes.
+-- Falls back to tmux when there's no vim window in that direction, or when
+-- the current window is a float (don't disturb the underlying split).
+local nav_tmux_flag = { h = 'L', j = 'D', k = 'U', l = 'R' }
+local function nav(direction)
+  return function()
+    local in_float = vim.api.nvim_win_get_config(0).relative ~= ''
+    local moved = false
+    if not in_float then
+      local prev = vim.api.nvim_get_current_win()
+      pcall(vim.cmd, 'wincmd ' .. direction)
+      moved = vim.api.nvim_get_current_win() ~= prev
+    end
+    if not moved and vim.env.TMUX and vim.env.TMUX ~= '' then
+      local socket = vim.split(vim.env.TMUX, ',')[1]
+      vim.fn.system({ 'tmux', '-S', socket, 'select-pane', '-t', vim.env.TMUX_PANE, '-' .. nav_tmux_flag[direction] })
+    end
+  end
+end
+map({ 'n', 't', 'i' }, '<C-M-h>', nav('h'), { desc = 'Move to left window or tmux pane' })
+map({ 'n', 't', 'i' }, '<C-M-j>', nav('j'), { desc = 'Move to lower window or tmux pane' })
+map({ 'n', 't', 'i' }, '<C-M-k>', nav('k'), { desc = 'Move to upper window or tmux pane' })
+map({ 'n', 't', 'i' }, '<C-M-l>', nav('l'), { desc = 'Move to right window or tmux pane' })
+
 -- UI toggles
 map('n', '<leader>uh', '<cmd>set hlsearch!<cr>', { desc = 'Toggle search highlight' })
 map('n', '<leader>un', function()

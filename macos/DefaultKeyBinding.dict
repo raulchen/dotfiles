@@ -1,0 +1,9 @@
+{
+    "^w" = "deleteWordBackward:";
+    "^u" = "deleteToBeginningOfLine:";
+    "~f" = "moveWordForward:";
+    "~b" = "moveWordBackward:";
+    "~d" = "deleteWordForward:";
+    "~F" = "moveWordForwardAndModifySelection:";
+    "~B" = "moveWordBackwardAndModifySelection:";
+}

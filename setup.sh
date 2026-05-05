@@ -66,6 +66,7 @@ link_file "$base_dir/vim/vimrc" ~/.vimrc
 
 if [[ $is_darwin == true ]]; then
     link_file "$base_dir/hammerspoon" ~/.hammerspoon
+    "$base_dir/macos/copy_default_key_binding.sh"
 fi
 
 mkdir -p ~/.claude

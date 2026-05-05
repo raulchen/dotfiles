@@ -39,6 +39,54 @@ local function jump_to_prompt(direction)
   end
 end
 
+local function select_prompt()
+  local buf = vim.api.nvim_get_current_buf()
+  local lines = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
+  local items = {}
+  for i, line in ipairs(lines) do
+    local text
+    if line:find("^❯ ") then
+      text = line:sub(#"❯ " + 1)
+    elseif line:find("^› ") then
+      text = line:sub(#"› " + 1)
+    elseif line:find("^ ┌────") then
+      -- cursor: prompt content lives inside the box on the following line
+      local next_line = lines[i + 1] or ""
+      text = next_line:gsub("^[%s│]+", ""):gsub("[%s│]+$", "")
+    elseif line:find("^ >") then
+      text = line:sub(3):gsub("^%s+", "")
+    end
+    if text then
+      table.insert(items, 1, {
+        buf = buf,
+        text = text == "" and "(empty)" or text,
+        pos = { i, 0 },
+      })
+    end
+  end
+
+  if #items == 0 then
+    vim.notify("No prompts found", vim.log.levels.INFO)
+    return
+  end
+
+  Snacks.picker.pick({
+    source = "prompts",
+    items = items,
+    format = function(item)
+      local lnum = string.format("%4d", item.pos[1])
+      return {
+        { lnum, "SnacksPickerIdx" },
+        { "  " },
+        { item.text },
+      }
+    end,
+    layout = { preset = "default" },
+    jump = { match = true },
+    sort = { fields = { "score:desc", "idx" } },
+  })
+end
+
 local sidekick = {
   "folke/sidekick.nvim",
   opts = {
@@ -165,6 +213,22 @@ local sidekick = {
       function() require("sidekick.cli").prompt() end,
       mode = { "n", "x" },
       desc = "Sidekick Select Prompt",
+    },
+    {
+      "<leader>aj",
+      select_prompt,
+      ft = "sidekick_terminal",
+      desc = "Jump to prompt",
+    },
+    {
+      "<c-]><c-j>",
+      function()
+        vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<C-\\><C-n>", true, false, true), "n", false)
+        vim.schedule(select_prompt)
+      end,
+      mode = "t",
+      ft = "sidekick_terminal",
+      desc = "Jump to prompt",
     },
     {
       "<c-]><c-v>",

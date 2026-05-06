@@ -1,9 +1,33 @@
 {
-    "^w" = "deleteWordBackward:";
-    "^u" = "deleteToBeginningOfLine:";
-    "~f" = "moveWordForward:";
-    "~b" = "moveWordBackward:";
-    "~d" = "deleteWordForward:";
-    "~F" = "moveWordForwardAndModifySelection:";
-    "~B" = "moveWordBackwardAndModifySelection:";
+    /* Built-in Emacs shortcuts (no config needed):
+     *   ctrl-a        beginning of line
+     *   ctrl-e        end of line
+     *   ctrl-f        forward character
+     *   ctrl-b        backward character
+     *   ctrl-n        next line
+     *   ctrl-p        previous line
+     *   ctrl-d        delete forward
+     *   ctrl-h        delete backward
+     *   ctrl-k        kill to end of line
+     *   ctrl-y        yank
+     *   ctrl-t        transpose characters
+     *   ctrl-o        insert newline after cursor
+     *   ctrl-l        center cursor
+     *   ctrl-v        page down
+     *   ctrl-shift-f  select character forward
+     *   ctrl-shift-b  select character backward
+     *   ctrl-shift-n  select line down
+     *   ctrl-shift-p  select line up
+     *   ctrl-shift-a  select to beginning of line
+     *   ctrl-shift-e  select to end of line
+     */
+
+    /* Additional Emacs shortcuts */
+    "^w" = "deleteWordBackward:";                 /* ctrl-w */
+    "^u" = "deleteToBeginningOfLine:";            /* ctrl-u */
+    "~f" = "moveWordForward:";                    /* opt-f */
+    "~b" = "moveWordBackward:";                   /* opt-b */
+    "~d" = "deleteWordForward:";                  /* opt-d */
+    "~F" = "moveWordForwardAndModifySelection:";  /* opt-shift-f */
+    "~B" = "moveWordBackwardAndModifySelection:"; /* opt-shift-b */
 }

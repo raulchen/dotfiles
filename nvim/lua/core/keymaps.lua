@@ -82,6 +82,10 @@ end, { desc = 'Toggle line number mode' })
 
 map('n', '<leader>uw', '<cmd>set wrap!<cr>', { desc = 'Toggle line wrapping' })
 map('n', '<leader>us', '<cmd>set spell!<cr>', { desc = 'Toggle spell checking' })
+map('n', '<leader>um', function()
+  vim.o.mouse = vim.o.mouse == '' and 'a' or ''
+  vim.notify('Mouse ' .. (vim.o.mouse == '' and 'disabled' or 'enabled'))
+end, { desc = 'Toggle mouse' })
 
 -- Text manipulation
 map('x', '<', '<gv', { remap = true, desc = 'Indent left (keep selection)' })
@@ -217,7 +221,7 @@ map('t', '<C-]><C-k>', '<cmd>wincmd k<cr>', { desc = 'Move to upper window' })
 map('t', '<C-]><C-l>', '<cmd>wincmd l<cr>', { desc = 'Move to right window' })
 
 -- Terminal tab navigation
-map('t', '<C-]><Tab>',   '<cmd>tabn<cr>', { desc = 'Next tab' })
+map('t', '<C-]><Tab>', '<cmd>tabn<cr>', { desc = 'Next tab' })
 map('t', '<C-]><S-Tab>', '<cmd>tabp<cr>', { desc = 'Previous tab' })
 
 -- Enhanced gf/gF mappings:

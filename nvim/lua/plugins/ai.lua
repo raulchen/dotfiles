@@ -83,8 +83,107 @@ local function select_prompt()
     end,
     layout = { preset = "default" },
     jump = { match = true },
+    main = { current = true },
     sort = { fields = { "score:desc", "idx" } },
   })
+end
+
+local function find_focused_terminal()
+  local Terminal = require("sidekick.cli.terminal")
+  local current_buf = vim.api.nvim_get_current_buf()
+  for _, t in pairs(Terminal.sessions()) do
+    if t.buf == current_buf or t:is_focused() then return t end
+  end
+end
+
+-- Pick a non-float, non-excluded window: prefer the previous window,
+-- then scan the tabpage.
+local function find_borrow_win(exclude)
+  local function suitable(w)
+    return w and w > 0 and w ~= exclude
+        and vim.api.nvim_win_get_config(w).relative == ""
+  end
+  local prev = vim.fn.win_getid(vim.fn.winnr("#"))
+  if suitable(prev) then return prev end
+  for _, w in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+    if suitable(w) then return w end
+  end
+end
+
+local function open_scrollback()
+  local terminal = find_focused_terminal()
+  if not (terminal and terminal.parent and terminal.parent.dump) then
+    vim.notify("No focused sidekick terminal with scrollback", vim.log.levels.WARN)
+    return
+  end
+
+  local text = terminal.parent:dump()
+  if not text or text == "" then
+    vim.notify("Scrollback is empty", vim.log.levels.INFO)
+    return
+  end
+
+  local win = find_borrow_win(terminal.win)
+  local split_restore
+  if win then
+    split_restore = {
+      buf = vim.api.nvim_win_get_buf(win),
+      view = vim.api.nvim_win_call(win, vim.fn.winsaveview),
+    }
+  else
+    -- No other window — split perpendicular to sidekick's layout.
+    local layout = terminal.opts.layout
+    local cmd = (layout == "bottom" or layout == "top") and "topleft split" or "topleft vsplit"
+    vim.cmd(cmd)
+    win = vim.api.nvim_get_current_win()
+  end
+
+  local buf = vim.api.nvim_create_buf(false, true)
+  vim.bo[buf].bufhidden = "wipe"
+  vim.bo[buf].filetype = "sidekick_terminal"
+  vim.api.nvim_buf_set_lines(buf, 0, -1, false,
+    vim.split(text:gsub("\n$", ""), "\n", { plain = true }))
+  vim.api.nvim_win_set_buf(win, buf)
+  vim.api.nvim_set_current_win(win)
+  Snacks.terminal.colorize()
+  -- colorize() also pre-empts terminal-mode propagation, but only on TermEnter;
+  -- mirror sidekick's pattern with synchronous WinEnter/BufEnter as well.
+  vim.api.nvim_create_autocmd({ "BufEnter", "WinEnter" }, {
+    buffer = buf,
+    callback = function() vim.cmd.stopinsert() end,
+  })
+
+  -- For top/bottom sidekick, flip to 8:2 — scrollback gets the larger share.
+  local stacked = terminal.opts.layout == "bottom" or terminal.opts.layout == "top"
+  if stacked then
+    pcall(vim.api.nvim_win_set_height, terminal.win, math.floor(vim.o.lines * 0.2))
+  end
+
+  local function close()
+    if vim.api.nvim_win_is_valid(win) then
+      if split_restore then
+        pcall(vim.api.nvim_win_set_buf, win, split_restore.buf)
+        pcall(vim.api.nvim_win_call, win, function()
+          pcall(vim.fn.winrestview, split_restore.view)
+        end)
+      else
+        vim.api.nvim_win_close(win, true)
+      end
+    end
+    if stacked then
+      pcall(vim.api.nvim_win_set_height, terminal.win, math.floor(vim.o.lines * 0.8))
+    end
+    pcall(function()
+      if terminal:win_valid() then terminal:focus() end
+    end)
+  end
+
+  -- Override colorize's q binding (it does <cmd>q<cr>, we need split-aware close).
+  vim.keymap.set("n", "q", close, { buffer = buf, desc = "Close snapshot" })
+  vim.keymap.set("n", "<esc>", close, { buffer = buf, desc = "Close snapshot" })
+
+  -- Initial setup may inherit terminal-insert mode from sidekick; drop to normal.
+  vim.cmd.stopinsert()
 end
 
 local sidekick = {
@@ -98,14 +197,10 @@ local sidekick = {
     },
     cli = {
       win = {
-        float = {
-          border = "rounded",
-          width = 0.9,
-          height = 0.9,
-        },
+        layout = "bottom",
         split = {
-          width = 0, -- set to 0 for default split width
-          height = 0, -- set to 0 for default split height
+          width = 0, -- 0 = default split width (right/left layout)
+          height = 0.8, -- 80% high for bottom/top layout
         },
         keys = {
           buffers = { "<c-]><c-b>", "buffers", mode = "nt", desc = "open buffer picker" },
@@ -231,6 +326,13 @@ local sidekick = {
       desc = "Jump to prompt",
     },
     {
+      "<c-]><c-h>",
+      open_scrollback,
+      mode = "t",
+      ft = "sidekick_terminal",
+      desc = "Open scrollback snapshot",
+    },
+    {
       "<c-]><c-v>",
       function()
         local State = require("sidekick.cli.state")
@@ -238,7 +340,7 @@ local sidekick = {
         for _, state in ipairs(states) do
           if state.terminal then
             local opts = state.terminal.opts
-            opts.layout = opts.layout == "float" and "right" or "float"
+            opts.layout = opts.layout == "right" and "bottom" or "right"
             if state.terminal:is_open() then
               state.terminal:hide()
               state.terminal:show()

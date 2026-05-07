@@ -138,9 +138,14 @@ local function open_scrollback()
     win = vim.api.nvim_get_current_win()
   end
 
-  local buf = vim.api.nvim_create_buf(false, true)
-  vim.bo[buf].bufhidden = "wipe"
+  local buf = vim.api.nvim_create_buf(true, true)
+  vim.bo[buf].bufhidden = "hide"
   vim.bo[buf].filetype = "sidekick_terminal"
+  local tool = terminal.tool and terminal.tool.name or "sidekick"
+  local name = ("Scrollback: %s"):format(tool)
+  if not pcall(vim.api.nvim_buf_set_name, buf, name) then
+    pcall(vim.api.nvim_buf_set_name, buf, ("%s #%d"):format(name, buf))
+  end
   vim.api.nvim_buf_set_lines(buf, 0, -1, false,
     vim.split(text:gsub("\n$", ""), "\n", { plain = true }))
   vim.api.nvim_win_set_buf(win, buf)
@@ -170,6 +175,7 @@ local function open_scrollback()
         vim.api.nvim_win_close(win, true)
       end
     end
+    pcall(vim.api.nvim_buf_delete, buf, { force = true })
     if stacked then
       pcall(vim.api.nvim_win_set_height, terminal.win, math.floor(vim.o.lines * 0.8))
     end

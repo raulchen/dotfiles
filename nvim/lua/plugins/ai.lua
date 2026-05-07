@@ -110,10 +110,28 @@ local function find_borrow_win(exclude)
   end
 end
 
+-- Active scrollback close functions, indexed by both terminal id and buf.
+local active_scrollbacks = {}
+
 local function open_scrollback()
+  -- Toggle: if invoked from inside a scrollback buf, close it.
+  local current_buf = vim.api.nvim_get_current_buf()
+  for _, info in pairs(active_scrollbacks) do
+    if info.buf == current_buf then
+      info.close()
+      return
+    end
+  end
+
   local terminal = find_focused_terminal()
   if not (terminal and terminal.parent and terminal.parent.dump) then
     vim.notify("No focused sidekick terminal with scrollback", vim.log.levels.WARN)
+    return
+  end
+
+  -- Toggle: if this terminal already has a scrollback open, close it.
+  if active_scrollbacks[terminal.id] then
+    active_scrollbacks[terminal.id].close()
     return
   end
 
@@ -182,11 +200,20 @@ local function open_scrollback()
     pcall(function()
       if terminal:win_valid() then terminal:focus() end
     end)
+    active_scrollbacks[terminal.id] = nil
   end
+
+  local function refresh()
+    close()
+    vim.schedule(open_scrollback)
+  end
+
+  active_scrollbacks[terminal.id] = { buf = buf, close = close }
 
   -- Override colorize's q binding (it does <cmd>q<cr>, we need split-aware close).
   vim.keymap.set("n", "q", close, { buffer = buf, desc = "Close snapshot" })
   vim.keymap.set("n", "<esc>", close, { buffer = buf, desc = "Close snapshot" })
+  vim.keymap.set("n", "r", refresh, { buffer = buf, desc = "Refresh scrollback" })
 
   -- Initial setup may inherit terminal-insert mode from sidekick; drop to normal.
   vim.cmd.stopinsert()

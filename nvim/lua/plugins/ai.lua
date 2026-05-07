@@ -310,25 +310,23 @@ local sidekick = {
       desc = "Sidekick Select Prompt",
     },
     {
-      "<leader>aj",
-      select_prompt,
-      ft = "sidekick_terminal",
-      desc = "Jump to prompt",
-    },
-    {
       "<c-]><c-j>",
       function()
-        vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<C-\\><C-n>", true, false, true), "n", false)
-        vim.schedule(select_prompt)
+        if vim.fn.mode():sub(1, 1) == "t" then
+          vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<C-\\><C-n>", true, false, true), "n", false)
+          vim.schedule(select_prompt)
+        else
+          select_prompt()
+        end
       end,
-      mode = "t",
+      mode = { "n", "t" },
       ft = "sidekick_terminal",
       desc = "Jump to prompt",
     },
     {
       "<c-]><c-h>",
       open_scrollback,
-      mode = "t",
+      mode = { "n", "t" },
       ft = "sidekick_terminal",
       desc = "Open scrollback snapshot",
     },
@@ -350,7 +348,7 @@ local sidekick = {
           end
         end
       end,
-      mode = "t",
+      mode = { "n", "t" },
       ft = "sidekick_terminal",
       desc = "Toggle sidekick layout views",
     },

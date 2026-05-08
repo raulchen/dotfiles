@@ -122,6 +122,14 @@ map("n", "<leader>ym", function() ts_yank.yank_ancestor_name("function") end, { 
 map("n", "<leader>yc", function() ts_yank.yank_ancestor_name("class") end, { desc = "Yank class name" })
 map("n", "<leader>yM", ts_yank.yank_class_method_name, { desc = "Yank class::method name" })
 
+map({ "n", "x" }, "<leader>yg", function()
+  Snacks.gitbrowse.open({
+    what = "permalink",
+    notify = false,
+    open = function(url) utils.yank_to_register(url) end,
+  })
+end, { desc = "Yank GitHub permalink for current line/selection" })
+
 map("n", "<leader>yu", function()
   local cword = vim.fn.expand("<cWORD>")
   -- Strip surrounding punctuation (brackets, parens, quotes, angle brackets)

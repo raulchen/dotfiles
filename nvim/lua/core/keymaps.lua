@@ -42,6 +42,62 @@ map('n', '<c-l>', '<c-w>l', { desc = 'Move to right window' })
 map('n', '<c-j>', '<c-w>j', { desc = 'Move to lower window' })
 map('n', '<c-k>', '<c-w>k', { desc = 'Move to upper window' })
 
+-- Window resize submode: <leader>wr enters, hjkl resize (HJKL for small steps),
+-- = equalizes, q/<Esc> or any other key exits. A floating hint stays visible.
+local function resize_mode()
+  local hint = ' Resize: hjkl: ±5  HJKL: ±1  =: equalize  q/<Esc>: exit '
+  local buf = vim.api.nvim_create_buf(false, true)
+  vim.api.nvim_buf_set_lines(buf, 0, -1, false, { hint })
+  local win = vim.api.nvim_open_win(buf, false, {
+    relative = 'editor',
+    anchor = 'SE',
+    row = vim.o.lines - vim.o.cmdheight - 1,
+    col = vim.o.columns,
+    width = #hint,
+    height = 1,
+    style = 'minimal',
+    border = 'rounded',
+    focusable = false,
+    zindex = 250,
+  })
+  vim.wo[win].winhighlight = 'Normal:ModeMsg,FloatBorder:ModeMsg'
+
+  local function close()
+    pcall(vim.api.nvim_win_close, win, true)
+    pcall(vim.api.nvim_buf_delete, buf, { force = true })
+  end
+
+  while true do
+    vim.cmd('redraw')
+    local ok, ch = pcall(vim.fn.getcharstr)
+    if not ok or ch == '' or ch == '\27' or ch == 'q' then break end
+    if ch == 'h' then
+      vim.cmd('vertical resize -5')
+    elseif ch == 'l' then
+      vim.cmd('vertical resize +5')
+    elseif ch == 'j' then
+      vim.cmd('resize -5')
+    elseif ch == 'k' then
+      vim.cmd('resize +5')
+    elseif ch == 'H' then
+      vim.cmd('vertical resize -1')
+    elseif ch == 'L' then
+      vim.cmd('vertical resize +1')
+    elseif ch == 'J' then
+      vim.cmd('resize -1')
+    elseif ch == 'K' then
+      vim.cmd('resize +1')
+    elseif ch == '=' then
+      vim.cmd('wincmd =')
+    else
+      break
+    end
+  end
+  close()
+end
+map('n', '<leader>wr', resize_mode, { desc = 'Window resize mode' })
+map('t', '<C-]>r', resize_mode, { desc = 'Window resize mode' })
+
 -- Cross-boundary navigation: vim splits + tmux panes.
 -- Falls back to tmux when there's no vim window in that direction, or when
 -- the current window is a float (don't disturb the underlying split).

@@ -73,7 +73,6 @@ end
 hs.hotkey.bind({ "ctrl", "cmd", "alt", "shift" }, "v", module.toggle)
 
 local key_stroke_fn = require("utils").key_stroke_fn
-local system_key_stroke_fn = require("utils").system_key_stroke_fn
 
 local bind_fn = function(mode, mod, key, fn, can_repeat)
     local pressed_fn = nil
@@ -206,14 +205,12 @@ bind_key(normal, {}, 'u', { 'cmd' }, 'z', true)
 -- ctrl + r -> redo
 bind_key(normal, { 'ctrl' }, 'r', { 'shift', 'cmd' }, 'z', true)
 
--- escape/ctrl-[ -> cancel any pending operator (no-op in plain normal)
+-- escape -> cancel any pending operator (no-op in plain normal)
 bind_fn(normal, {}, 'escape', function() end, false)
-bind_fn(normal, { 'ctrl' }, '[', function() end, false)
 
 -- escape from pending-operator / g sub-modes back to normal
 for _, sub in ipairs({ normal_g, normal_c, normal_d }) do
     bind_fn(sub, {}, 'escape', function() switch_to_mode(normal) end, false)
-    bind_fn(sub, { 'ctrl' }, '[', function() switch_to_mode(normal) end, false)
 end
 
 -- i/I/a/A/o/O -> switch to insert mode
@@ -322,7 +319,7 @@ visual_bind_key({ 'shift' }, 'g', { 'cmd' }, 'down', true)
 
 -- escape from visual:g back to visual
 bind_fn(visual_g, {}, 'escape', function() switch_to_mode(visual) end, false)
-bind_fn(visual_g, { 'ctrl' }, '[', function() switch_to_mode(visual) end, false)
+
 
 local visual_to_normal = function(clear_selection)
     if clear_selection == nil then
@@ -369,38 +366,14 @@ bind_fn(visual, {}, 'c', function()
     switch_to_mode(insert)
 end, false)
 
--- v/esc/ctrl-[ -> switch to normal mode
+-- v/esc -> switch to normal mode
 bind_fn(visual, {}, 'v', visual_to_normal, false)
 bind_fn(visual, {}, 'escape', visual_to_normal, false)
-bind_fn(visual, { 'ctrl' }, '[', visual_to_normal, false)
 
 -- ==== Insert mode ====
 
 bind_fn(insert, {}, 'escape', function() switch_to_mode(normal) end, false)
 
--- ==== Addtional bindings for both off/insert modes ====
-
-for _, mode in ipairs({ off, insert }) do
-    -- alt-hjkl -> arrow keys
-    bind_key(mode, { 'alt' }, 'h', {}, 'left', true)
-    bind_key(mode, { 'alt' }, 'j', {}, 'down', true)
-    bind_key(mode, { 'alt' }, 'k', {}, 'up', true)
-    bind_key(mode, { 'alt' }, 'l', {}, 'right', true)
-
-    -- alt-m/n and alt-2/1 -> ctrl-tab and ctrl-shift-tab
-    bind_key(mode, { 'alt' }, 'm', { 'ctrl' }, 'tab', true)
-    bind_key(mode, { 'alt' }, 'n', { 'ctrl', 'shift' }, 'tab', true)
-    bind_key(mode, { 'alt' }, '2', { 'ctrl' }, 'tab', true)
-    bind_key(mode, { 'alt' }, '1', { 'ctrl', 'shift' }, 'tab', true)
-    bind_key(mode, { 'alt', 'ctrl' }, 'tab', { 'ctrl', 'shift' }, 'tab', true)
-
-    -- ctrl-[ -> escape
-    bind_key(mode, { 'ctrl' }, '[', {}, 'escape', false)
-
-    bind_fn(mode, { 'alt' }, ',', system_key_stroke_fn('SOUND_DOWN'), true)
-    bind_fn(mode, { 'alt' }, '.', system_key_stroke_fn('SOUND_UP'), true)
-    bind_fn(mode, { 'alt' }, '/', system_key_stroke_fn('MUTE'), false)
-end
 
 switch_to_mode(off)
 return module

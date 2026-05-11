@@ -110,15 +110,22 @@ local function find_borrow_win(exclude)
   end
 end
 
--- Active scrollback close functions, indexed by both terminal id and buf.
-local active_scrollbacks = {}
+-- Per-terminal scrollback state, keyed by terminal id.
+-- { buf = number, cursor = { lnum, col }, close = fun? }
+-- `close` is non-nil only while the scrollback is currently open.
+--
+-- Why module-level: the buf survives close/reopen via bufhidden=hide, and its
+-- buffer-local autocmds survive with it. The autocmds need shared state with
+-- future open_scrollback invocations — a per-invocation local would orphan
+-- the cursor inside the original closure scope.
+local scrollbacks = {}
 
 local function open_scrollback()
-  -- Toggle: if invoked from inside a scrollback buf, close it.
+  -- Toggle: if invoked from inside an open scrollback buf, close it.
   local current_buf = vim.api.nvim_get_current_buf()
-  for _, info in pairs(active_scrollbacks) do
-    if info.buf == current_buf then
-      info.close()
+  for _, state in pairs(scrollbacks) do
+    if state.close and state.buf == current_buf then
+      state.close()
       return
     end
   end
@@ -129,16 +136,82 @@ local function open_scrollback()
     return
   end
 
-  -- Toggle: if this terminal already has a scrollback open, close it.
-  if active_scrollbacks[terminal.id] then
-    active_scrollbacks[terminal.id].close()
+  -- Toggle: if this terminal's scrollback is open, close it.
+  if scrollbacks[terminal.id] and scrollbacks[terminal.id].close then
+    scrollbacks[terminal.id].close()
     return
   end
 
-  local text = terminal.parent:dump()
-  if not text or text == "" then
+  local cache
+  local function render_dump()
+    local text = terminal.parent:dump()
+    if not text or text == "" then return nil end
+    text = text:gsub("\n$", "")
+    local buf = vim.api.nvim_create_buf(true, true)
+    vim.bo[buf].bufhidden = "hide"
+    vim.bo[buf].filetype = "sidekick_terminal"
+    local tool = terminal.tool and terminal.tool.name or "sidekick"
+    local name = ("Scrollback: %s"):format(tool)
+    if not pcall(vim.api.nvim_buf_set_name, buf, name) then
+      pcall(vim.api.nvim_buf_set_name, buf, ("%s #%d"):format(name, buf))
+    end
+    vim.api.nvim_chan_send(vim.api.nvim_open_term(buf, {}), text)
+    -- HACK: force a refresh of the terminal rendering
+    vim.bo[buf].scrollback = 9999
+    vim.bo[buf].scrollback = 9998
+    -- Terminal-typed bufs have two built-in focus behaviors we have to undo
+    -- for a static snapshot:
+    --   1. mode propagation — if the previously-focused buf was in terminal-
+    --      insert mode, this buf auto-enters terminal-insert too.
+    --   2. cursor snap — the editor cursor snaps to the live terminal cursor
+    --      position (end of the dump for us).
+    -- Override: save cursor on leave, on enter force normal mode synchronously
+    -- (pre-empts (1)), then vim.schedule a cursor restore that runs after
+    -- nvim's snap (which happens inside the focus event itself) to undo (2).
+    vim.api.nvim_create_autocmd({ "BufLeave", "WinLeave" }, {
+      buffer = buf,
+      callback = function()
+        if vim.api.nvim_get_current_buf() == buf then
+          cache.cursor = vim.api.nvim_win_get_cursor(0)
+        end
+      end,
+    })
+    vim.api.nvim_create_autocmd({ "BufEnter", "WinEnter" }, {
+      buffer = buf,
+      callback = function()
+        vim.cmd.stopinsert()
+        if cache.cursor then
+          vim.schedule(function()
+            if vim.api.nvim_get_current_buf() ~= buf then return end
+            local total = vim.api.nvim_buf_line_count(buf)
+            pcall(vim.api.nvim_win_set_cursor, 0, {
+              math.min(cache.cursor[1], total),
+              cache.cursor[2] or 0,
+            })
+          end)
+        end
+      end,
+    })
+    return buf
+  end
+
+  -- Re-render on every open so content is fresh; keep the cache entry so
+  -- cache.cursor persists across close/reopen.
+  cache = scrollbacks[terminal.id]
+  local old_buf = cache and cache.buf
+  local new_buf = render_dump()
+  if not new_buf then
     vim.notify("Scrollback is empty", vim.log.levels.INFO)
     return
+  end
+  if cache then
+    cache.buf = new_buf
+  else
+    cache = { buf = new_buf }
+    scrollbacks[terminal.id] = cache
+  end
+  if old_buf and old_buf ~= new_buf and vim.api.nvim_buf_is_valid(old_buf) then
+    pcall(vim.api.nvim_buf_delete, old_buf, { force = true })
   end
 
   local win = find_borrow_win(terminal.win)
@@ -148,33 +221,33 @@ local function open_scrollback()
       buf = vim.api.nvim_win_get_buf(win),
       view = vim.api.nvim_win_call(win, vim.fn.winsaveview),
     }
+    vim.api.nvim_win_set_buf(win, cache.buf)
+    vim.api.nvim_set_current_win(win)
   else
-    -- No other window — split perpendicular to sidekick's layout.
     local layout = terminal.opts.layout
     local cmd = (layout == "bottom" or layout == "top") and "topleft split" or "topleft vsplit"
     vim.cmd(cmd)
     win = vim.api.nvim_get_current_win()
+    vim.api.nvim_win_set_buf(win, cache.buf)
   end
+  vim.wo.number = false
+  vim.wo.relativenumber = false
+  vim.wo.signcolumn = "no"
 
-  local buf = vim.api.nvim_create_buf(true, true)
-  vim.bo[buf].bufhidden = "hide"
-  vim.bo[buf].filetype = "sidekick_terminal"
-  local tool = terminal.tool and terminal.tool.name or "sidekick"
-  local name = ("Scrollback: %s"):format(tool)
-  if not pcall(vim.api.nvim_buf_set_name, buf, name) then
-    pcall(vim.api.nvim_buf_set_name, buf, ("%s #%d"):format(name, buf))
+  local function place_cursor()
+    local total = vim.api.nvim_buf_line_count(cache.buf)
+    local lnum = cache.cursor and math.min(cache.cursor[1], total) or total
+    local col = cache.cursor and cache.cursor[2] or 0
+    local h = vim.api.nvim_win_get_height(win)
+    vim.api.nvim_win_call(win, function()
+      pcall(vim.fn.winrestview, {
+        topline = math.max(1, lnum - math.floor(h / 2)),
+        lnum = lnum,
+        col = col,
+      })
+    end)
   end
-  vim.api.nvim_buf_set_lines(buf, 0, -1, false,
-    vim.split(text:gsub("\n$", ""), "\n", { plain = true }))
-  vim.api.nvim_win_set_buf(win, buf)
-  vim.api.nvim_set_current_win(win)
-  Snacks.terminal.colorize()
-  -- colorize() also pre-empts terminal-mode propagation, but only on TermEnter;
-  -- mirror sidekick's pattern with synchronous WinEnter/BufEnter as well.
-  vim.api.nvim_create_autocmd({ "BufEnter", "WinEnter" }, {
-    buffer = buf,
-    callback = function() vim.cmd.stopinsert() end,
-  })
+  place_cursor()
 
   -- For top/bottom sidekick, flip to 8:2 — scrollback gets the larger share.
   local stacked = terminal.opts.layout == "bottom" or terminal.opts.layout == "top"
@@ -182,7 +255,14 @@ local function open_scrollback()
     pcall(vim.api.nvim_win_set_height, terminal.win, math.floor(vim.o.lines * 0.2))
   end
 
-  local function close()
+  local close, refresh
+  local function bind_keys(buf)
+    vim.keymap.set("n", "q", close, { buffer = buf, desc = "Close snapshot" })
+    vim.keymap.set("n", "<esc>", close, { buffer = buf, desc = "Close snapshot" })
+    vim.keymap.set("n", "r", refresh, { buffer = buf, desc = "Refresh snapshot" })
+  end
+
+  close = function()
     if vim.api.nvim_win_is_valid(win) then
       if split_restore then
         pcall(vim.api.nvim_win_set_buf, win, split_restore.buf)
@@ -193,29 +273,30 @@ local function open_scrollback()
         vim.api.nvim_win_close(win, true)
       end
     end
-    pcall(vim.api.nvim_buf_delete, buf, { force = true })
     if stacked then
       pcall(vim.api.nvim_win_set_height, terminal.win, math.floor(vim.o.lines * 0.8))
     end
     pcall(function()
       if terminal:win_valid() then terminal:focus() end
     end)
-    active_scrollbacks[terminal.id] = nil
+    cache.close = nil
   end
 
-  local function refresh()
-    close()
-    vim.schedule(open_scrollback)
+  refresh = function()
+    if not vim.api.nvim_win_is_valid(win) then return end
+    local new_buf = render_dump()
+    if not new_buf then return end
+    local old_buf = cache.buf
+    cache.buf = new_buf
+    vim.api.nvim_win_set_buf(win, new_buf)
+    pcall(vim.api.nvim_buf_delete, old_buf, { force = true })
+    bind_keys(new_buf)
+    place_cursor()
   end
 
-  active_scrollbacks[terminal.id] = { buf = buf, close = close }
+  cache.close = close
+  bind_keys(cache.buf)
 
-  -- Override colorize's q binding (it does <cmd>q<cr>, we need split-aware close).
-  vim.keymap.set("n", "q", close, { buffer = buf, desc = "Close snapshot" })
-  vim.keymap.set("n", "<esc>", close, { buffer = buf, desc = "Close snapshot" })
-  vim.keymap.set("n", "r", refresh, { buffer = buf, desc = "Refresh scrollback" })
-
-  -- Initial setup may inherit terminal-insert mode from sidekick; drop to normal.
   vim.cmd.stopinsert()
 end
 

@@ -176,6 +176,15 @@ local function open_scrollback()
         end
       end,
     })
+    -- Block manual entry into terminal-mode (e.g. pressing `i`/`a`). The
+    -- BufEnter handler below only blocks the auto-entry on focus.
+    vim.api.nvim_create_autocmd("TermEnter", {
+      buffer = buf,
+      callback = function()
+        vim.cmd.stopinsert()
+        vim.notify("Scrollback is read-only", vim.log.levels.INFO)
+      end,
+    })
     vim.api.nvim_create_autocmd({ "BufEnter", "WinEnter" }, {
       buffer = buf,
       callback = function()

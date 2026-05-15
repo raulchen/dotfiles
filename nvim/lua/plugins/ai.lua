@@ -239,9 +239,6 @@ local function open_scrollback()
     win = vim.api.nvim_get_current_win()
     vim.api.nvim_win_set_buf(win, cache.buf)
   end
-  vim.wo.number = false
-  vim.wo.relativenumber = false
-  vim.wo.signcolumn = "no"
 
   local function place_cursor()
     local total = vim.api.nvim_buf_line_count(cache.buf)

@@ -71,8 +71,11 @@ local function open_diffview()
       action = function() vim.cmd("DiffviewOpen") end
     },
     {
-      name = "Branch changes (with outstanding)",
-      action = function() vim.cmd("DiffviewOpen origin/HEAD...HEAD --imply-local") end
+      name = "Branch changes (working tree)",
+      action = function()
+        local base = vim.fn.trim(vim.fn.system("git merge-base HEAD origin/HEAD"))
+        vim.cmd("DiffviewOpen " .. base)
+      end
     },
     {
       name = "Branch changes (committed)",

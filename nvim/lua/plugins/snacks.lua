@@ -132,6 +132,47 @@ local function picker_grep_word(opts)
   require("snacks.picker").grep_word(opts)
 end
 
+local function picker_buffer_words()
+  local term_buf = vim.api.nvim_get_current_buf()
+  local term_chan = vim.bo[term_buf].channel
+
+  local items = {}
+  local seen = {}
+  for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+    if vim.api.nvim_buf_is_loaded(buf) then
+      local lines = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
+      for _, line in ipairs(lines) do
+        for word in line:gmatch("[%w_]+") do
+          if #word >= 2 and word:match("[%a_]") and not seen[word] then
+            seen[word] = true
+            table.insert(items, { text = word })
+          end
+        end
+      end
+    end
+  end
+
+  require("snacks.picker").pick({
+    source = "buffer_words",
+    title = "Buffer words",
+    items = items,
+    format = function(item)
+      return { { item.text } }
+    end,
+    preview = "none",
+    layout = { preview = false },
+    confirm = function(picker, item)
+      picker:close()
+      if item and term_chan and term_chan > 0 then
+        vim.api.nvim_chan_send(term_chan, item.text)
+        vim.schedule(function()
+          vim.cmd("startinsert")
+        end)
+      end
+    end,
+  })
+end
+
 local function picker_dirs(opts)
   opts = opts or {}
   -- Set default for hidden if not specified
@@ -244,6 +285,7 @@ local function picker_keys()
     -- Lines
     { "<leader>fl", function() p().lines() end, desc = "Search lines" },
     { "<leader>fL", function() p().grep_buffers() end, desc = "Search lines from all buffers" },
+    { "<c-]><c-w>", picker_buffer_words, desc = "Insert word from buffers", mode = "t" },
     --  Misc
     { "<leader>fu", function() p().undo() end, desc = "Find undo history" },
     { "<leader>f:", function() p().command_history() end, desc = "Find command history" },

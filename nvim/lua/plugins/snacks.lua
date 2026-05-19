@@ -543,9 +543,12 @@ return {
         vim.print = _G.dd -- Override print to use snacks for `:=` command
 
         Snacks.toggle.zoom():map("<leader>wz"):map("<c-w>z"):map("<c-z><c-z>", { mode = { "n", "v", "i" } })
-        -- Zoom terminal window
-        -- <c-\><c-n>: return to normal mode, <c-w>z: zoom, i: enter insert mode
-        vim.keymap.set("t", "<c-z><c-z>", [[<c-\><c-n><c-w>zi]], { desc = "Toggle zoom" })
+        -- Zoom terminal window: leave terminal mode, toggle zoom, re-enter.
+        vim.keymap.set("t", "<c-]><c-z>", function()
+          vim.cmd("stopinsert")
+          Snacks.toggle.zoom():toggle()
+          vim.schedule(function() vim.cmd("startinsert") end)
+        end, { desc = "Toggle zoom" })
 
         Snacks.toggle.zen():map("<leader>uz")
         Snacks.toggle.option("spell", { name = "spelling" }):map("<leader>us")

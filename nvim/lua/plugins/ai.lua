@@ -475,6 +475,20 @@ local sidekick = {
   },
   config = function(_, opts)
     require("sidekick").setup(opts)
+
+    -- Prefix tmux session names with the cwd basename for readability.
+    -- The hash is kept so distinct dirs sharing a basename don't collide,
+    -- and the override stays deterministic so re-attach matching still works.
+    local Session = require("sidekick.cli.session")
+    local orig_sid = Session.sid
+    function Session.sid(o)
+      -- orig_sid returns "<tool> <hash>"; reshape to "<tool>-<hash>-<dir>".
+      -- tmux disallows "." and ":" in session names.
+      local sid = orig_sid(o):gsub(" ", "-")
+      local dir = vim.fn.fnamemodify(Session.cwd(o), ":t"):gsub("[.:]", "_")
+      return ("%s-%s"):format(sid, dir)
+    end
+
     Snacks.toggle({
       name = "Sidekick NES",
       get = function()

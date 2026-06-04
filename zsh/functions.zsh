@@ -67,6 +67,24 @@ vless() {
     fi
 }
 
+# Pick a tmux session with fzf and attach (or switch, if already in tmux).
+# With no existing sessions, create a fresh one.
+ts() {
+    local sessions s
+    sessions=$(tmux ls -F '#{session_created} #{session_name}' 2>/dev/null | sort -n | cut -d' ' -f2-)
+    if [ -z "$sessions" ]; then
+        if [ -n "$TMUX" ]; then
+            s=$(tmux new-session -dP -F '#{session_name}') && tmux switch-client -t "$s"
+        else
+            tmux new-session
+        fi
+        return
+    fi
+    s=$(echo "$sessions" | fzf --reverse --no-tmux \
+        --preview='tmux capture-pane -ep -t {}') || return
+    [ -n "$TMUX" ] && tmux switch-client -t "$s" || tmux attach -t "$s"
+}
+
 if type yazi >/dev/null 2>&1 ; then
     #  Wrapper for yazi to cd into the directory output by yazi
     function yz() {

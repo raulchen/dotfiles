@@ -133,6 +133,21 @@ local function setup_diffview()
   end
   keymaps.disable_defaults = true
 
+  -- Add [q/]q to switch files and [Q/]Q to jump to the first/last file,
+  -- across the diff windows, the file panel, and the file-history panel.
+  local actions = require("diffview.actions")
+  local file_nav = {
+    { "n", "]q", actions.select_next_entry,  { desc = "Open the diff for the next file" } },
+    { "n", "[q", actions.select_prev_entry,  { desc = "Open the diff for the previous file" } },
+    { "n", "]Q", actions.select_last_entry,  { desc = "Open the diff for the last file" } },
+    { "n", "[Q", actions.select_first_entry, { desc = "Open the diff for the first file" } },
+  }
+  for _, ctx in ipairs({ "view", "file_panel", "file_history_panel" }) do
+    for _, m in ipairs(file_nav) do
+      table.insert(keymaps[ctx], m)
+    end
+  end
+
   local diffview_opts = {
     file_panel = {
       win_config = {

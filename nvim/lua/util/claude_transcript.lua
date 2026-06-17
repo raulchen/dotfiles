@@ -302,9 +302,15 @@ function M.open()
     if not lines or #lines == 0 then return nil end
     local buf = vim.api.nvim_create_buf(true, true)
     vim.bo[buf].bufhidden = "hide"
-    -- Always treat the dump as a bigfile: snacks disables treesitter/LSP/
-    -- matchparen/conceal/completion so even a long transcript stays snappy.
-    vim.bo[buf].filetype = "bigfile"
+    -- Snacks' bigfile detection only fires on file-backed buffers, not this
+    -- scratch one, so pick the filetype ourselves. render-markdown needs a
+    -- treesitter parse, and tree-sitter's markdown grammar parses the WHOLE
+    -- document on first parse (~20ms/1000 lines, range hints don't help) — a
+    -- one-time open-time hit. Keep markdown (treesitter + render-markdown) while
+    -- that stays ~100ms; past it fall back to `bigfile` (plain vim syntax, no
+    -- treesitter) so opening a huge dump stays snappy.
+    local big = #lines > 5000
+    vim.bo[buf].filetype = big and "bigfile" or "markdown"
     local tool = terminal.tool and terminal.tool.name or "sidekick"
     local name = ("Transcript: %s"):format(tool)
     if not pcall(vim.api.nvim_buf_set_name, buf, name) then
@@ -315,11 +321,13 @@ function M.open()
     vim.bo[buf].modified = false
     -- bigfile blanks `syntax`; restore cheap markdown syntax so the dump stays
     -- readable (vim regex highlighting — treesitter/render-markdown stay off).
-    vim.schedule(function()
-      if vim.api.nvim_buf_is_valid(buf) then
-        vim.bo[buf].syntax = "markdown"
-      end
-    end)
+    if big then
+      vim.schedule(function()
+        if vim.api.nvim_buf_is_valid(buf) then
+          vim.bo[buf].syntax = "markdown"
+        end
+      end)
+    end
     -- A normal (non-terminal) buffer: no mode-propagation or cursor-snap to
     -- fight. Just persist the cursor across close/reopen and refresh.
     vim.api.nvim_create_autocmd({ "BufLeave", "WinLeave" }, {
@@ -397,7 +405,8 @@ function M.open()
     vim.keymap.set("n", "q", close, { buffer = buf, desc = "Close transcript" })
     vim.keymap.set("n", "<esc>", close, { buffer = buf, desc = "Close transcript" })
     vim.keymap.set("n", "r", refresh, { buffer = buf, desc = "Refresh transcript" })
-    -- bigfile has no markdown heading-nav; jump between turn titles instead.
+    -- Jump between turn titles (works whether or not it's a bigfile, and
+    -- targets speaker dividers rather than `##` content headings).
     vim.keymap.set("n", "]]", function() vim.fn.search([[\v^(You|Claude)$]], "W") end,
       { buffer = buf, desc = "Next turn" })
     vim.keymap.set("n", "[[", function() vim.fn.search([[\v^(You|Claude)$]], "bW") end,

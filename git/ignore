@@ -14,6 +14,8 @@ pyrightconfig.json
 CLAUDE.local.md
 temp-claude-files/
 
+AGENT.local.md
+
 # pyenv version file
 .python-version
 

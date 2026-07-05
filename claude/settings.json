@@ -51,14 +51,32 @@
     "defaultMode": "auto"
   },
   "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          { "type": "command", "command": "~/dotfiles/bin/agent-status busy" }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "hooks": [
+          { "type": "command", "command": "~/dotfiles/bin/agent-status busy" }
+        ]
+      }
+    ],
     "Notification": [
       {
         "matcher": "permission_prompt|idle_prompt",
         "hooks": [
-          {
-            "type": "command",
-            "command": "INPUT=$(cat); MSG=$(echo \"$INPUT\" | jq -r '.message // \"Needs attention\"'); TITLE=$(echo \"$INPUT\" | jq -r '(.title // \"Claude Code\") + \" [\" + (.cwd // \"\" | split(\"/\") | last) + \"]\"'); ~/dotfiles/bin/notify -t \"$TITLE\" \"$MSG\""
-          }
+          { "type": "command", "command": "~/dotfiles/bin/agent-status wait" }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          { "type": "command", "command": "~/dotfiles/bin/agent-status done" }
         ]
       }
     ]
@@ -71,8 +89,8 @@
     "context7@claude-plugins-official": true
   },
   "skipDangerousModePermissionPrompt": true,
-  "skipAutoPermissionPrompt": true,
   "editorMode": "vim",
   "remoteControlAtStartup": true,
-  "agentPushNotifEnabled": true
+  "agentPushNotifEnabled": true,
+  "skipAutoPermissionPrompt": true
 }

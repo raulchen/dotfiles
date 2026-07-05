@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+# Record a coding agent's state for the tmux status-bar indicator.
+#
+# Meant to be called from an agent's lifecycle hooks. It writes one small file
+# per tmux session into $cache/agent-status/, which agent-status-line.sh reads
+# to render a summary in the tmux status bar. This file-based "pull" model is
+# what makes it work even when the agent runs in a hidden tmux session (e.g.
+# nvim's sidekick.nvim backend): the visible status bar just reads the files.
+#
+# Usage: agent-status <state>          # state: busy | wait | done
+#        (the agent's hook JSON, if any, is read from stdin for a project label)
+set -uo pipefail
+
+state=${1:-}
+[ -n "$state" ] || exit 0
+[ -n "${TMUX:-}" ] || exit 0   # only meaningful inside tmux
+
+sess=$(tmux display-message -p '#{session_name}' 2>/dev/null) || exit 0
+[ -n "$sess" ] || exit 0
+
+# Project cwd from the hook payload — used to match this agent to the tmux
+# window showing its project (see agent-window-flag.sh).
+cwd=""
+if [ ! -t 0 ]; then
+  cwd=$(jq -r '.cwd // empty' 2>/dev/null <&0 || true)
+fi
+
+dir=${XDG_CACHE_HOME:-$HOME/.cache}/agent-status
+mkdir -p "$dir"
+printf '%s\t%s\n' "$state" "$cwd" > "$dir/$sess"

@@ -201,9 +201,6 @@ local function setup_octo()
     mappings[buf_type] = {
       -- Disable closing review tabs with ctrl-c.
       close_review_tab = { lhs = "" },
-      -- Use "tab" and "s-tab" to navigate between files.
-      select_next_entry = { lhs = "<tab>" },
-      select_prev_entry = { lhs = "<s-tab>" },
     }
   end
 
@@ -217,6 +214,16 @@ local function setup_octo()
     },
   })
   vim.treesitter.language.register('markdown', 'octo')
+
+  -- Octo defaults to "]q"/"[q" for file navigation. Octo only allows a single
+  -- lhs per action, so add "<tab>"/"<s-tab>" as extra keys alongside them.
+  local function set_file_nav_keys(buf)
+    local m = require("octo.mappings")
+    vim.keymap.set("n", "<tab>", m.select_next_entry,
+      { silent = true, noremap = true, buffer = buf, desc = "Select next changed file" })
+    vim.keymap.set("n", "<s-tab>", m.select_prev_entry,
+      { silent = true, noremap = true, buffer = buf, desc = "Select previous changed file" })
+  end
 
   local function set_which_key(buf)
     require('which-key').add({
@@ -240,7 +247,10 @@ local function setup_octo()
   -- are not usable until <leader> is pressed once.
   vim.api.nvim_create_autocmd("FileType", {
     pattern = { "octo", "octo_panel" },
-    callback = function(ev) set_which_key(ev.buf) end,
+    callback = function(ev)
+      set_which_key(ev.buf)
+      set_file_nav_keys(ev.buf)
+    end,
   })
 
   -- For file review buffers.
@@ -252,6 +262,7 @@ local function setup_octo()
         --- Disable snacks.scroll as it conflicts with the comment buffers
         vim.b[ev.buf].snacks_scroll = false
         set_which_key(ev.buf)
+        set_file_nav_keys(ev.buf)
       end
     end,
   })

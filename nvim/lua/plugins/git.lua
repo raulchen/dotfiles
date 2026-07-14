@@ -249,7 +249,10 @@ local function setup_octo()
     pattern = { "octo", "octo_panel" },
     callback = function(ev)
       set_which_key(ev.buf)
-      set_file_nav_keys(ev.buf)
+      -- Only the file panel navigates between files, not the PR overview.
+      if vim.bo[ev.buf].filetype == "octo_panel" then
+        set_file_nav_keys(ev.buf)
+      end
     end,
   })
 

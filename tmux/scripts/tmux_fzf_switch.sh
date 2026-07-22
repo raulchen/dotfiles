@@ -3,9 +3,6 @@
 #
 #   session  - pick from all sessions and switch the client to it (prefix+s).
 #   window   - pick from windows in the current session and select it (prefix+w).
-#
-# fzf opens itself in a tmux popup via --tmux, so this can be launched from a
-# run-shell binding without a tty of its own.
 
 set -uo pipefail
 
@@ -54,15 +51,16 @@ selected="$(
       [ "$target" = "$current" ] && mark='●' || mark=' '
       flag="$("$flag_script" "$path" ansi)"
       printf '%s\t%s %s%s\n' "$target" "$mark" "$flag" "$display"
-    done \
-  | fzf --ansi \
-        --tmux=center,85%,80% \
+    done |
+  # Popup geometry, --reverse, --preview-window and the common key binds come
+  # from FZF_DEFAULT_OPTS (which sets --tmux, so this runs from a run-shell
+  # binding without a tty); only switcher-specific options are passed here.
+  fzf --ansi \
         --delimiter='\t' \
         --with-nth=2 \
         --bind='load:pos(2)' \
         --prompt="$prompt" \
-        --preview='tmux capture-pane -ep -t {1}' \
-        --preview-window='right,50%'
+        --preview='tmux capture-pane -ep -t {1}'
 )"
 
 # No selection (e.g. Esc) is a normal, silent exit.

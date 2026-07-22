@@ -63,6 +63,142 @@ local gitsigns = {
   config = setup_gitsigns,
 }
 
+-- Fuzzy file switcher shared by the Octo PR review layout and Diffview, built
+-- on snacks.picker. Both plugins expose an ordered list of changed files and a
+-- "jump to this file" call; this wraps them in a fuzzy picker so you can hop
+-- straight to any file instead of cycling with <tab>/<s-tab> or [q/]q.
+--
+-- `opts.items` is a list of { file, path, status, additions, deletions } and
+-- `opts.on_choice` receives the chosen item to perform the jump.
+local function changed_file_picker(opts)
+  if #opts.items == 0 then
+    vim.notify("No changed files", vim.log.levels.WARN)
+    return
+  end
+
+  local devicons = require("nvim-web-devicons")
+  local status_hl = { A = "Added", D = "Removed", M = "Changed", R = "Changed" }
+
+  for i, item in ipairs(opts.items) do
+    item.idx = i
+    item.text = item.path -- fuzzy-match/sort against the repo-relative path
+  end
+
+  require("snacks.picker").pick({
+    title = opts.title,
+    items = opts.items,
+    preview = "none",
+    layout = "select",
+    format = function(item)
+      local ret = {}
+      local ext = item.path:match("%.([^./]+)$")
+      local icon, icon_hl = devicons.get_icon(item.path, ext, { default = true })
+      local parent, basename = item.path:match("^(.*/)([^/]+)$")
+      basename = basename or item.path
+
+      -- Marker for the file currently open in the review / diff.
+      ret[#ret + 1] = { item.current and "● " or "  ", "Special" }
+      ret[#ret + 1] = { item.status or " ", status_hl[item.status] or "Comment" }
+      ret[#ret + 1] = { " " .. icon .. " ", icon_hl }
+      if parent then
+        ret[#ret + 1] = { parent, "SnacksPickerDir" }
+      end
+      ret[#ret + 1] = { basename }
+      if (item.additions or 0) > 0 then
+        ret[#ret + 1] = { "  +" .. item.additions, "Added" }
+      end
+      if (item.deletions or 0) > 0 then
+        ret[#ret + 1] = { " -" .. item.deletions, "Removed" }
+      end
+      return ret
+    end,
+    confirm = function(picker, item)
+      picker:close()
+      if item then
+        opts.on_choice(item)
+      end
+    end,
+    -- Start the cursor on the file currently open in the review / diff.
+    on_show = function(picker)
+      for i, item in ipairs(picker:items()) do
+        if item.current then
+          picker.list:view(i)
+          Snacks.picker.actions.list_scroll_center(picker)
+          break
+        end
+      end
+    end,
+  })
+end
+
+-- Build a picker item from a plugin's file entry. `entry` is kept by reference
+-- because both plugins match the selected file by object identity.
+local function make_file_item(entry, stats)
+  return {
+    file = entry,
+    path = entry.path,
+    status = (entry.status and entry.status ~= " ") and entry.status or nil,
+    additions = stats and stats.additions,
+    deletions = stats and stats.deletions,
+  }
+end
+
+-- Fuzzy switch between files in the current Octo PR review layout.
+local function pick_octo_review_file()
+  local ok, reviews = pcall(require, "octo.reviews")
+  if not ok then return end
+  local review = reviews.get_current_review()
+  if not review or not review.layout then
+    vim.notify("No active Octo review", vim.log.levels.WARN)
+    return
+  end
+  local layout = review.layout
+  local current = layout:get_current_file()
+
+  local items = {}
+  for _, f in ipairs(layout.files) do
+    local item = make_file_item(f, f.stats)
+    item.current = f == current
+    items[#items + 1] = item
+  end
+
+  changed_file_picker({
+    title = "PR review files",
+    items = items,
+    on_choice = function(item)
+      layout:set_current_file(item.file)
+    end,
+  })
+end
+
+-- Fuzzy switch between files in the current Diffview.
+local function pick_diffview_file()
+  local ok, lib = pcall(require, "diffview.lib")
+  if not ok then return end
+  local DiffView = require("diffview.scene.views.diff.diff_view").DiffView
+  local view = lib.get_current_view()
+  if not (view and view:instanceof(DiffView)) then
+    vim.notify("No active Diffview", vim.log.levels.WARN)
+    return
+  end
+
+  local current = view.panel and view.panel.cur_file
+  local items = {}
+  for _, f in view.files:iter() do
+    local item = make_file_item(f, f.stats)
+    item.current = f == current
+    items[#items + 1] = item
+  end
+
+  changed_file_picker({
+    title = "Diffview files",
+    items = items,
+    on_choice = function(item)
+      view:set_file(item.file, true, true) -- focus diff buffers + highlight in panel
+    end,
+  })
+end
+
 local function open_diffview()
   -- Define the diff options with their corresponding action functions
   local diff_options = {
@@ -148,6 +284,12 @@ local function setup_diffview()
     end
   end
 
+  -- Fuzzy file switcher across the diff windows and the file panel.
+  for _, ctx in ipairs({ "view", "file_panel" }) do
+    table.insert(keymaps[ctx],
+      { "n", "<leader>ff", pick_diffview_file, { desc = "Fuzzy switch changed file" } })
+  end
+
   local diffview_opts = {
     file_panel = {
       win_config = {
@@ -223,6 +365,8 @@ local function setup_octo()
       { silent = true, noremap = true, buffer = buf, desc = "Select next changed file" })
     vim.keymap.set("n", "<s-tab>", m.select_prev_entry,
       { silent = true, noremap = true, buffer = buf, desc = "Select previous changed file" })
+    vim.keymap.set("n", "<leader>ff", pick_octo_review_file,
+      { silent = true, noremap = true, buffer = buf, desc = "Fuzzy switch changed file" })
   end
 
   -- Extra keymaps for the PR overview buffer, beyond octo's builtins.

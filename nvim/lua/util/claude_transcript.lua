@@ -1,7 +1,8 @@
 -- Read, render, and view Claude Code session transcripts (the .jsonl files
 -- under ~/.claude/projects/<slug>/). The lower half is pure data (parse a
--- transcript to markdown + folds); the lower-UI half (M.open) renders it into a
--- read-only buffer borrowed next to the focused sidekick terminal.
+-- transcript to markdown + collapsed tool blocks); the lower-UI half (M.open)
+-- renders it into a read-only buffer borrowed next to the focused sidekick
+-- terminal, with tool bodies peeked in a float on demand.
 
 local M = {}
 
@@ -106,15 +107,16 @@ local function transcript_tail(path)
   return data
 end
 
--- Render a transcript .jsonl (tail only) into markdown and a list of foldable
--- {start, end} line ranges. Every tool call / result — and the carried
--- compaction summary — is returned as a fold so only the conversation prose
--- stays open. Each tool block is a one-line `▸` summary + a fenced body.
--- Thinking blocks and bodyless turns are skipped.
+-- Render a transcript .jsonl (tail only) into markdown plus a list of
+-- collapsible blocks. Only the conversation prose and a one-line `▸` summary
+-- per tool call / result (and the carried compaction summary) go into the
+-- returned lines; each block's fenced body is stashed in `blocks` as
+-- { out = <1-based summary line in the lines>, body = { lines… } } to be
+-- spliced into the buffer on demand. Thinking and bodyless turns are skipped.
 local function render_transcript(path)
   local text = transcript_tail(path)
   if not text then return nil end
-  local out, folds = {}, {}
+  local out, blocks_out = {}, {}
   -- Append `s` to `target` as lines, dropping ANSI/CR control bytes.
   local function push(target, s)
     s = s:gsub("\27%[[0-9;?]*[ -/]*[@-~]", ""):gsub("\r", "")
@@ -149,27 +151,31 @@ local function render_transcript(path)
       local blocks = type(content) == "string"
           and { { type = "text", text = content } } or content
       if type(blocks) == "table" then
-        local body, has_text, body_folds = {}, false, {}
-        -- Record a fold over body lines [bs, #body] (one per tool block).
-        local function fold_block(bs)
-          body_folds[#body_folds + 1] = { bs, #body }
+        -- `body` holds the turn's inlined lines (prose + one `▸` summary per
+        -- tool block); `body_blocks` pairs each summary's body index with its
+        -- stashed fenced body { <rel line in body>, { body lines… } }.
+        local body, has_text, body_blocks = {}, false, {}
+        -- Build a fenced code block as a standalone list of lines.
+        local function fenced(lang, code)
+          local b = {}
+          push(b, "```" .. lang)
+          push(b, code)
+          b[#b + 1] = "```"
+          return b
         end
         for _, b in ipairs(blocks) do
           if b.type == "text" and b.text and b.text ~= "" then
             has_text = true
             push(body, b.text)
           elseif b.type == "tool_use" then
-            local i, bs = b.input or {}, #body + 1
+            local i = b.input or {}
             local hint = summary(i.command or i.file_path or i.path or i.pattern
               or i.query or i.skill or i.description or i.url or i.prompt
               or i.content or i.file_text or "")
             local name = b.name or "tool"
             push(body, hint ~= "" and ("▸ %s  %s"):format(name, hint) or ("▸ %s"):format(name))
             local lang, code = tool_render(name, i)
-            push(body, "```" .. lang)
-            push(body, code)
-            body[#body + 1] = "```"
-            fold_block(bs)
+            body_blocks[#body_blocks + 1] = { #body, fenced(lang, code) }
           elseif b.type == "tool_result" then
             local c = b.content
             if type(c) == "table" then
@@ -178,27 +184,29 @@ local function render_transcript(path)
               c = table.concat(parts, "\n")
             end
             if type(c) == "string" and c ~= "" then
-              local bs = #body + 1
               push(body, ("▸ result  %s"):format(summary(c)))
-              body[#body + 1] = "```"
-              push(body, c)
-              body[#body + 1] = "```"
-              fold_block(bs)
+              body_blocks[#body_blocks + 1] = { #body, fenced("", c) }
             end
           end
         end
-        -- Injected context (skills/reminders via isMeta) and the carried
-        -- compaction summary aren't live conversation: collapse each behind one
-        -- `▸ context` line, with no turn divider.
         local aux = ev.isMeta or ev.isCompactSummary
-        if aux and #body > 0 then
-          local label = ev.isCompactSummary and "context summary (compacted)"
-            or ("context  " .. summary(body[1] or ""))
-          table.insert(body, 1, "▸ " .. label)
-          body_folds = { { 1, #body } }
-        end
         if #body > 0 then
-          if not aux then
+          if aux then
+            -- Injected context (skills/reminders via isMeta) and the carried
+            -- compaction summary aren't live conversation: collapse the whole
+            -- turn behind one `▸ context` line (no divider). Materialise its
+            -- tool bodies inline first (bottom-up, so earlier indices stay
+            -- valid) so the single stashed block is self-contained.
+            local label = ev.isCompactSummary and "context summary (compacted)"
+              or ("context  " .. summary(body[1] or ""))
+            table.sort(body_blocks, function(x, y) return x[1] > y[1] end)
+            for _, sb in ipairs(body_blocks) do
+              for k = #sb[2], 1, -1 do table.insert(body, sb[1] + 1, sb[2][k]) end
+            end
+            out[#out + 1] = "▸ " .. label
+            blocks_out[#blocks_out + 1] = { out = #out, body = body }
+            out[#out + 1] = ""
+          else
             -- Setext h2: the speaker name underlined by a rule — native markdown
             -- that reads as a titled divider, distinct from `##` content headings.
             -- The underline must sit directly under the name (no blank line).
@@ -207,21 +215,21 @@ local function render_transcript(path)
               out[#out + 1] = who
               out[#out + 1] = string.rep("-", 48)
             end
+            local base = #out -- body line k lands at out[base + k]
+            vim.list_extend(out, body)
+            for _, sb in ipairs(body_blocks) do
+              blocks_out[#blocks_out + 1] = { out = base + sb[1], body = sb[2] }
+            end
+            out[#out + 1] = ""
           end
-          local base = #out -- body line k lands at out[base + k]
-          vim.list_extend(out, body)
-          for _, f in ipairs(body_folds) do
-            folds[#folds + 1] = { base + f[1], base + f[2] }
-          end
-          out[#out + 1] = ""
         end
       end
     end
   end
-  return out, folds
+  return out, blocks_out
 end
 
--- Render the active Claude transcript for `cwd`: (lines, folds) or nil.
+-- Render the active Claude transcript for `cwd`: (lines, blocks) or nil.
 local function render(cwd)
   local path = session_jsonl(cwd)
   if not path then return nil end
@@ -231,10 +239,16 @@ end
 -- ── viewer (sidekick UI) ─────────────────────────────────────────────────────
 
 -- Per-terminal viewer state, keyed by sidekick terminal id.
--- { buf = number, cursor = { lnum, col }, close = fun?, folds = table? }
+-- { buf = number, cursor = { lnum, col }, close = fun?, blocks = table? }
+-- `blocks` maps a `▸` summary line number -> its stashed body lines, which are
+-- shown in a float on <CR> rather than living in the (immutable) buffer.
 -- Module-level so the buf (bufhidden=hide) and its buffer-local autocmds share
 -- cursor state with future M.open invocations across close/reopen.
 local transcripts = {}
+
+-- Namespace for the dim highlight on each `▸` summary line, so collapsed tool
+-- blocks recede and the conversation prose stays prominent.
+local ns = vim.api.nvim_create_namespace("claude_transcript")
 
 local function find_focused_terminal()
   local Terminal = require("sidekick.cli.terminal")
@@ -255,19 +269,6 @@ local function find_borrow_win(exclude)
   for _, w in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
     if suitable(w) then return w end
   end
-end
-
--- Close manual folds over the given {start, end} line ranges in `win`.
-local function apply_folds(win, folds)
-  if not folds or #folds == 0 then return end
-  vim.api.nvim_win_call(win, function()
-    vim.wo.foldmethod = "manual"
-    vim.wo.foldenable = true
-    for _, f in ipairs(folds) do
-      pcall(vim.cmd, ("%d,%dfold"):format(f[1], f[2]))
-    end
-    vim.wo.foldlevel = 0
-  end)
 end
 
 -- Open (or toggle) the focused sidekick terminal's Claude transcript in a
@@ -298,7 +299,7 @@ function M.open()
 
   local cache
   local function build_buf()
-    local lines, folds = render(term_cwd)
+    local lines, blks = render(term_cwd)
     if not lines or #lines == 0 then return nil end
     local buf = vim.api.nvim_create_buf(true, true)
     vim.bo[buf].bufhidden = "hide"
@@ -306,8 +307,9 @@ function M.open()
     -- scratch one, so pick the filetype ourselves. render-markdown needs a
     -- treesitter parse, and tree-sitter's markdown grammar parses the WHOLE
     -- document on first parse (~20ms/1000 lines, range hints don't help) — a
-    -- one-time open-time hit. Keep markdown (treesitter + render-markdown) while
-    -- that stays ~100ms; past it fall back to `bigfile` (plain vim syntax, no
+    -- one-time open-time hit. Collapsing tool bodies out of the buffer keeps
+    -- this line count small, so markdown (treesitter + render-markdown) stays
+    -- affordable; past 5000 lines fall back to `bigfile` (plain vim syntax, no
     -- treesitter) so opening a huge dump stays snappy.
     local big = #lines > 5000
     vim.bo[buf].filetype = big and "bigfile" or "markdown"
@@ -317,6 +319,20 @@ function M.open()
       pcall(vim.api.nvim_buf_set_name, buf, ("%s #%d"):format(name, buf))
     end
     vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
+    -- Map each `▸` summary line to its stashed body (the buffer never mutates,
+    -- so the line number is a stable key; <CR> on the line pops the body in a
+    -- float) and dim it so collapsed blocks recede beneath the prose. The high
+    -- priority keeps the dim above render-markdown/treesitter highlights.
+    vim.api.nvim_set_hl(0, "ClaudeTranscriptFold", { link = "Comment", default = true })
+    local by_line = {}
+    for _, blk in ipairs(blks) do
+      by_line[blk.out] = blk.body
+      vim.api.nvim_buf_set_extmark(buf, ns, blk.out - 1, 0, {
+        end_col = #lines[blk.out],
+        hl_group = "ClaudeTranscriptFold",
+        priority = 200,
+      })
+    end
     vim.bo[buf].modifiable = false
     vim.bo[buf].modified = false
     -- bigfile blanks `syntax`; restore cheap markdown syntax so the dump stays
@@ -338,14 +354,14 @@ function M.open()
         end
       end,
     })
-    return buf, folds
+    return buf, by_line
   end
 
   -- Re-render on every open so content is fresh; keep the cache entry so
   -- cache.cursor persists across close/reopen.
   cache = transcripts[terminal.id]
   local old_buf = cache and cache.buf
-  local new_buf, new_folds = build_buf()
+  local new_buf, new_blocks = build_buf()
   if not new_buf then
     vim.notify("Transcript is empty", vim.log.levels.INFO)
     return
@@ -356,7 +372,7 @@ function M.open()
     cache = { buf = new_buf }
     transcripts[terminal.id] = cache
   end
-  cache.folds = new_folds
+  cache.blocks = new_blocks
   if old_buf and old_buf ~= new_buf and vim.api.nvim_buf_is_valid(old_buf) then
     pcall(vim.api.nvim_buf_delete, old_buf, { force = true })
   end
@@ -377,7 +393,6 @@ function M.open()
     win = vim.api.nvim_get_current_win()
     vim.api.nvim_win_set_buf(win, cache.buf)
   end
-  apply_folds(win, cache.folds)
 
   local function place_cursor()
     local total = vim.api.nvim_buf_line_count(cache.buf)
@@ -400,11 +415,47 @@ function M.open()
     pcall(vim.api.nvim_win_set_height, terminal.win, math.floor(vim.o.lines * 0.2))
   end
 
+  -- Pop the body of the `▸` block on the cursor line into a centred float,
+  -- loaded on demand (the bodies never live in the transcript buffer). The
+  -- float is a markdown scratch buffer, so its fenced code — diffs included —
+  -- highlights exactly as it would inline. q/<Esc>/<CR> dismiss it.
+  local function peek()
+    local body = cache.blocks and cache.blocks[vim.fn.line(".")]
+    if not body then return end
+    local fbuf = vim.api.nvim_create_buf(false, true)
+    vim.api.nvim_buf_set_lines(fbuf, 0, -1, false, body)
+    vim.bo[fbuf].modifiable = false
+    vim.bo[fbuf].filetype = "markdown"
+    local wanted = 0
+    for _, l in ipairs(body) do wanted = math.max(wanted, vim.fn.strdisplaywidth(l)) end
+    local width = math.min(math.max(wanted + 1, 20), math.floor(vim.o.columns * 0.8))
+    local height = math.min(#body, math.floor(vim.o.lines * 0.8))
+    local fwin = vim.api.nvim_open_win(fbuf, true, {
+      relative = "editor",
+      width = width,
+      height = height,
+      row = math.floor((vim.o.lines - height) / 2),
+      col = math.floor((vim.o.columns - width) / 2),
+      style = "minimal",
+      border = "rounded",
+    })
+    vim.wo[fwin].wrap = false
+    local function shut()
+      if vim.api.nvim_win_is_valid(fwin) then vim.api.nvim_win_close(fwin, true) end
+    end
+    for _, k in ipairs({ "q", "<esc>", "<cr>" }) do
+      vim.keymap.set("n", k, shut, { buffer = fbuf, desc = "Close peek" })
+    end
+    vim.api.nvim_create_autocmd("WinLeave", { buffer = fbuf, once = true, callback = shut })
+  end
+
   local close, refresh
   local function bind_keys(buf)
     vim.keymap.set("n", "q", close, { buffer = buf, desc = "Close transcript" })
     vim.keymap.set("n", "<esc>", close, { buffer = buf, desc = "Close transcript" })
     vim.keymap.set("n", "r", refresh, { buffer = buf, desc = "Refresh transcript" })
+    -- Peek the block under the cursor in a float, loaded on demand.
+    vim.keymap.set("n", "<cr>", peek, { buffer = buf, desc = "Peek block" })
     -- Jump between turn titles (works whether or not it's a bigfile, and
     -- targets speaker dividers rather than `##` content headings).
     vim.keymap.set("n", "]]", function() vim.fn.search([[\v^(You|Claude)$]], "W") end,
@@ -435,14 +486,13 @@ function M.open()
 
   refresh = function()
     if not vim.api.nvim_win_is_valid(win) then return end
-    local rb, rf = build_buf()
+    local rb, rblocks = build_buf()
     if not rb then return end
     local prev = cache.buf
-    cache.buf, cache.folds = rb, rf
+    cache.buf, cache.blocks = rb, rblocks
     vim.api.nvim_win_set_buf(win, rb)
     pcall(vim.api.nvim_buf_delete, prev, { force = true })
     bind_keys(rb)
-    apply_folds(win, rf)
     place_cursor()
   end
 

@@ -2,6 +2,7 @@ local treesitter_filetypes = {
   "bash",
   "c",
   "cpp",
+  "diff",
   "json",
   "lua",
   "luadoc",

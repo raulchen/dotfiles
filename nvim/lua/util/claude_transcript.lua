@@ -126,7 +126,10 @@ local function render_transcript(path)
     return (tostring(s):gsub("\27%[[0-9;?]*[ -/]*[@-~]", ""):match("[^\r\n]*")):sub(1, 120)
   end
   -- Fenced body for a tool_use: Edit/MultiEdit become a unified diff, everything
-  -- else shows its command / content / inspected input. Returns (lang, text).
+  -- else shows its command / content / inspected input. Returns (lang, text),
+  -- where lang is a real treesitter language so the fence highlights (`diff`
+  -- for edits, `bash` for shell commands) — never the tool name, which isn't a
+  -- language and would just kill highlighting.
   local function tool_render(name, i)
     local function diff(a, b)
       local ok, d = pcall(vim.diff, (a or "") .. "\n", (b or "") .. "\n", { ctxlen = 3 })
@@ -141,7 +144,8 @@ local function render_transcript(path)
       end
       return "diff", table.concat(parts, "\n")
     end
-    return name, tostring(i.command or i.content or i.file_text or vim.inspect(i))
+    local lang = i.command and "bash" or ""
+    return lang, tostring(i.command or i.content or i.file_text or vim.inspect(i))
   end
   for line in vim.gsplit(text, "\n", { plain = true }) do
     local ok, ev = pcall(vim.json.decode, line)

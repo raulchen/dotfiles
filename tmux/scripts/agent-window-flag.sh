@@ -8,6 +8,10 @@
 # so the logo leads the window name — even though the agent runs in a hidden
 # tmux session (nvim sidekick.nvim). Matched by exact cwd.
 #
+# Usage: agent-window-flag.sh <path> [tmux|ansi]
+#   tmux (default): emit tmux style escapes, for status/window formats.
+#   ansi          : emit ANSI SGR escapes, for the fzf switcher (--ansi).
+#
 # A matched file for a dead session is pruned here (belt-and-braces with the
 # focus-in cleanup in agent-status-seen.sh).
 set -uo pipefail
@@ -16,6 +20,7 @@ shopt -s nullglob
 LOGO="󰚩 "
 
 wpath=${1:-}
+fmt=${2:-tmux}
 [ -n "$wpath" ] || exit 0
 
 dir=${XDG_CACHE_HOME:-$HOME/.cache}/agent-status
@@ -34,7 +39,15 @@ for f in "$dir"/*; do
   esac
 done
 
-case "$found" in
-  wait) printf '#[fg=red]%s#[default]' "$LOGO" ;;
-  busy) printf '#[fg=yellow]%s#[default]' "$LOGO" ;;
+case "$fmt" in
+  ansi)
+    case "$found" in
+      wait) printf '\033[31m%s\033[0m' "$LOGO" ;;
+      busy) printf '\033[33m%s\033[0m' "$LOGO" ;;
+    esac ;;
+  *)
+    case "$found" in
+      wait) printf '#[fg=red]%s#[default]' "$LOGO" ;;
+      busy) printf '#[fg=yellow]%s#[default]' "$LOGO" ;;
+    esac ;;
 esac

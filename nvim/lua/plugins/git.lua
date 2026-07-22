@@ -225,6 +225,15 @@ local function setup_octo()
       { silent = true, noremap = true, buffer = buf, desc = "Select previous changed file" })
   end
 
+  -- Extra keymaps for the PR overview buffer, beyond octo's builtins.
+  local function set_pr_keys(buf)
+    -- Octo has no builtin mapping for "Octo review browse" (open the review
+    -- layout read-only, without starting a pending review on GitHub). Bind it
+    -- alongside the builtin <localleader>vs (start) / <localleader>vr (resume).
+    vim.keymap.set("n", "<localleader>vb", "<cmd>Octo review browse<CR>",
+      { silent = true, noremap = true, buffer = buf, desc = "Browse review (no pending review)" })
+  end
+
   local function set_which_key(buf)
     require('which-key').add({
       buffer = buf,
@@ -252,6 +261,10 @@ local function setup_octo()
       -- Only the file panel navigates between files, not the PR overview.
       if vim.bo[ev.buf].filetype == "octo_panel" then
         set_file_nav_keys(ev.buf)
+      end
+      -- Extra keymaps for the PR overview buffer.
+      if vim.api.nvim_buf_get_name(ev.buf):match("octo://.*/pull/") then
+        set_pr_keys(ev.buf)
       end
     end,
   })

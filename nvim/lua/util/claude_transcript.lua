@@ -208,9 +208,13 @@ local function render_transcript(path)
             out[#out + 1] = ""
           else
             -- Setext h2: the speaker name underlined by a rule — native markdown
-            -- that reads as a titled divider, distinct from `##` content headings.
-            -- The underline must sit directly under the name (no blank line).
-            local who = ev.type == "assistant" and "Claude" or (has_text and "You" or nil)
+            -- that reads as a titled divider (distinct from `##` content
+            -- headings) and the anchor for [[ / ]] turn navigation. The
+            -- underline must sit directly under the name (no blank line). Only
+            -- prose turns get one: a tool-only message (an agentic step with no
+            -- text) folds into the preceding turn, so navigation lands on
+            -- substantive turns rather than every tool call.
+            local who = has_text and (ev.type == "assistant" and "Claude" or "You") or nil
             if who then
               out[#out + 1] = who
               out[#out + 1] = string.rep("-", 48)

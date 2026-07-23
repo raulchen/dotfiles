@@ -427,6 +427,19 @@ local function setup_octo()
     end,
   })
 
+  -- Octo's diff placeholder ("null") buffer for the empty side of an
+  -- added/deleted file is created as a real, file-backed buffer named
+  -- "octo/null" (relative to cwd), so nvim tries to write a swapfile for it.
+  -- Its name is constant (unlike the "octo://.../<review-id>/..." diff
+  -- buffers), so any two nvim instances doing an Octo review collide on that
+  -- one swapfile. Disable the swapfile so it is never created.
+  vim.api.nvim_create_autocmd("BufFilePost", {
+    pattern = { "octo/null", "*/octo/null" },
+    callback = function(ev)
+      vim.bo[ev.buf].swapfile = false
+    end,
+  })
+
   -- Re-enable wrap when diff mode is enabled in review buffers.
   -- When Octo calls :diffthis, it automatically sets wrap=false.
   -- This autocmd triggers when diff is enabled and overrides that behavior.

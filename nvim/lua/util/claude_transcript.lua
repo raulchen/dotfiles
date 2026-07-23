@@ -202,7 +202,7 @@ local function render_transcript(path)
             -- tool bodies inline first (bottom-up, so earlier indices stay
             -- valid) so the single stashed block is self-contained.
             local label = ev.isCompactSummary and "context summary (compacted)"
-              or ("context  " .. summary(body[1] or ""))
+                or ("context  " .. summary(body[1] or ""))
             table.sort(body_blocks, function(x, y) return x[1] > y[1] end)
             for _, sb in ipairs(body_blocks) do
               for k = #sb[2], 1, -1 do table.insert(body, sb[1] + 1, sb[2][k]) end
@@ -266,21 +266,9 @@ local function find_focused_terminal()
   end
 end
 
--- Pick a non-float, non-excluded window: prefer the previous window, then scan.
-local function find_borrow_win(exclude)
-  local function suitable(w)
-    return w and w > 0 and w ~= exclude
-        and vim.api.nvim_win_get_config(w).relative == ""
-  end
-  local prev = vim.fn.win_getid(vim.fn.winnr("#"))
-  if suitable(prev) then return prev end
-  for _, w in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
-    if suitable(w) then return w end
-  end
-end
-
 -- Open (or toggle) the focused sidekick terminal's Claude transcript in a
--- read-only markdown buffer borrowed in a neighbouring window.
+-- read-only markdown buffer, shown in a centred floating window so it never
+-- disturbs the tab's window layout (e.g. Diffview's multi-pane view).
 function M.open()
   -- Toggle: if invoked from inside an open transcript buf, close it.
   local current_buf = vim.api.nvim_get_current_buf()
@@ -297,7 +285,19 @@ function M.open()
     return
   end
   local term_cwd = (terminal.parent and terminal.parent.cwd)
-    or terminal.cwd or vim.fn.getcwd()
+      or terminal.cwd or vim.fn.getcwd()
+
+  -- Signature of the active transcript file: its path plus size+mtime. A
+  -- session's .jsonl is append-only, so an unchanged signature means the
+  -- rendered buffer is still current and can be reused verbatim (skipping both
+  -- the tail re-parse and the one-time markdown treesitter parse on rebuild).
+  local function current_sig()
+    local p = session_jsonl(term_cwd)
+    if not p then return nil end
+    local st = uv.fs_stat(p)
+    if not st then return nil end
+    return ("%s:%d:%d:%d"):format(p, st.size, st.mtime.sec, st.mtime.nsec)
+  end
 
   -- Toggle: if this terminal's transcript is open, close it.
   if transcripts[terminal.id] and transcripts[terminal.id].close then
@@ -365,42 +365,52 @@ function M.open()
     return buf, by_line
   end
 
-  -- Re-render on every open so content is fresh; keep the cache entry so
-  -- cache.cursor persists across close/reopen.
+  -- Reuse the cached buffer when the transcript file is unchanged; otherwise
+  -- rebuild from fresh content. The cache entry also persists cache.cursor
+  -- across close/reopen.
   cache = transcripts[terminal.id]
-  local old_buf = cache and cache.buf
-  local new_buf, new_blocks = build_buf()
-  if not new_buf then
-    vim.notify("Transcript is empty", vim.log.levels.INFO)
-    return
-  end
-  if cache then
-    cache.buf = new_buf
-  else
-    cache = { buf = new_buf }
-    transcripts[terminal.id] = cache
-  end
-  cache.blocks = new_blocks
-  if old_buf and old_buf ~= new_buf and vim.api.nvim_buf_is_valid(old_buf) then
-    pcall(vim.api.nvim_buf_delete, old_buf, { force = true })
+  local sig = current_sig()
+  local fresh = cache and cache.buf and vim.api.nvim_buf_is_valid(cache.buf)
+      and sig and cache.sig == sig
+  if not fresh then
+    local old_buf = cache and cache.buf
+    local new_buf, new_blocks = build_buf()
+    if not new_buf then
+      vim.notify("Transcript is empty", vim.log.levels.INFO)
+      return
+    end
+    if cache then
+      cache.buf = new_buf
+    else
+      cache = { buf = new_buf }
+      transcripts[terminal.id] = cache
+    end
+    cache.blocks = new_blocks
+    cache.sig = sig
+    if old_buf and old_buf ~= new_buf and vim.api.nvim_buf_is_valid(old_buf) then
+      pcall(vim.api.nvim_buf_delete, old_buf, { force = true })
+    end
   end
 
-  local win = find_borrow_win(terminal.win)
-  local split_restore
-  if win then
-    split_restore = {
-      buf = vim.api.nvim_win_get_buf(win),
-      view = vim.api.nvim_win_call(win, vim.fn.winsaveview),
-    }
-    vim.api.nvim_win_set_buf(win, cache.buf)
-    vim.api.nvim_set_current_win(win)
-  else
-    local layout = terminal.opts.layout
-    local cmd = (layout == "bottom" or layout == "top") and "topleft split" or "topleft vsplit"
-    vim.cmd(cmd)
-    win = vim.api.nvim_get_current_win()
-    vim.api.nvim_win_set_buf(win, cache.buf)
-  end
+  -- Centred float sized to most of the editor: a reading view that overlays the
+  -- tab without touching its windows, so Diffview's multi-pane layout is intact
+  -- underneath and restored the moment the transcript closes.
+  local width = math.floor(vim.o.columns * 0.95)
+  local height = math.floor(vim.o.lines * 0.9)
+  local tool = terminal.tool and terminal.tool.name or "sidekick"
+  local win = vim.api.nvim_open_win(cache.buf, true, {
+    relative = "editor",
+    width = width,
+    height = height,
+    row = math.floor((vim.o.lines - height) / 2),
+    col = math.floor((vim.o.columns - width) / 2),
+    style = "minimal",
+    border = "rounded",
+    title = (" Transcript: %s "):format(tool),
+    title_pos = "center",
+  })
+  vim.wo[win].wrap = true
+  vim.wo[win].linebreak = true
 
   local function place_cursor()
     local total = vim.api.nvim_buf_line_count(cache.buf)
@@ -416,12 +426,6 @@ function M.open()
     end)
   end
   place_cursor()
-
-  -- For top/bottom sidekick, flip to 8:2 — transcript gets the larger share.
-  local stacked = terminal.opts.layout == "bottom" or terminal.opts.layout == "top"
-  if stacked then
-    pcall(vim.api.nvim_win_set_height, terminal.win, math.floor(vim.o.lines * 0.2))
-  end
 
   -- Pop the body of the `▸` block on the cursor line into a centred float,
   -- loaded on demand (the bodies never live in the transcript buffer). The
@@ -474,17 +478,7 @@ function M.open()
 
   close = function()
     if vim.api.nvim_win_is_valid(win) then
-      if split_restore then
-        pcall(vim.api.nvim_win_set_buf, win, split_restore.buf)
-        pcall(vim.api.nvim_win_call, win, function()
-          pcall(vim.fn.winrestview, split_restore.view)
-        end)
-      else
-        vim.api.nvim_win_close(win, true)
-      end
-    end
-    if stacked then
-      pcall(vim.api.nvim_win_set_height, terminal.win, math.floor(vim.o.lines * 0.8))
+      vim.api.nvim_win_close(win, true)
     end
     pcall(function()
       if terminal:win_valid() then terminal:focus() end
@@ -497,7 +491,7 @@ function M.open()
     local rb, rblocks = build_buf()
     if not rb then return end
     local prev = cache.buf
-    cache.buf, cache.blocks = rb, rblocks
+    cache.buf, cache.blocks, cache.sig = rb, rblocks, current_sig()
     vim.api.nvim_win_set_buf(win, rb)
     pcall(vim.api.nvim_buf_delete, prev, { force = true })
     bind_keys(rb)

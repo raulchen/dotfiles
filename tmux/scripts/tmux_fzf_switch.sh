@@ -35,13 +35,21 @@ emit_rows() {
       ;;
   esac
 
-  # Sort by last-visit time (sort key = field 1, desc), then drop the key.
+  # Blank out the current target's sort key so it sinks below every other row
+  # (empty string sorts after "0" under reverse sort). The current session/window
+  # is where you already are, so demoting it puts the most-recently-visited
+  # *other* target on the top row — fzf's default cursor lands there, making a
+  # bare Enter an alt-tab to the last session/window, with no cursor-position
+  # binds needed (which would otherwise fight filtering).
+  #
+  # Then sort by last-visit time (sort key = field 1, desc) and drop the key.
   # String reverse sort is exact for the equal-width ns timestamps and sinks the
-  # never-visited "0" rows to the bottom.
-  # Then, per row: mark the active row and prepend the agent flag for its cwd.
+  # never-visited "0" rows to the bottom (and the blanked current row below them).
+  # Finally, per row: mark the active row and prepend the agent flag for its cwd.
   # Emitted as <target>\t<display>, so fzf shows only field 2 but keeps the
   # target in field 1 for the preview and switch.
   printf '%s\n' "$list" \
+    | awk -F'\t' -v cur="$current" 'BEGIN { OFS = "\t" } $2 == cur { $1 = "" } { print }' \
     | sort -t$'\t' -k1,1r \
     | cut -f2- \
     | while IFS=$'\t' read -r target path display; do
@@ -94,12 +102,15 @@ esac
 #   Tab    -> re-exec in the other mode.
 #   ctrl-x -> kill highlighted target, then reload (session mode guards self).
 #   ctrl-r -> rename highlighted target, then reload.
+#
+# The current target is sorted to the bottom (see emit_rows), so fzf's default
+# top-row cursor sits on the most-recent other target: a bare Enter alt-tabs to
+# it, and typing filters normally with no cursor-position binds to fight.
 selected="$(
   emit_rows "$mode" \
   | fzf --ansi \
         --delimiter='\t' \
         --with-nth=2 \
-        --bind='load:pos(2)' \
         --bind="tab:become($0 $other)" \
         --bind="$kill_bind" \
         --bind="$rename_bind" \

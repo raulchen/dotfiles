@@ -117,6 +117,11 @@ local function render_transcript(path)
   local text = transcript_tail(path)
   if not text then return nil end
   local out, blocks_out = {}, {}
+  -- tool_use ids of subagent launches (Agent/Task), so their tool_result — the
+  -- subagent's full report, which may arrive far from the launch for a
+  -- background agent — can be recognised by tool_use_id and collapsed without
+  -- previewing its body.
+  local agent_ids = {}
   -- Append `s` to `target` as lines, dropping ANSI/CR control bytes.
   local function push(target, s)
     s = s:gsub("\27%[[0-9;?]*[ -/]*[@-~]", ""):gsub("\r", "")
@@ -177,6 +182,9 @@ local function render_transcript(path)
               or i.query or i.skill or i.description or i.url or i.prompt
               or i.content or i.file_text or "")
             local name = b.name or "tool"
+            if b.id and (name == "Agent" or name == "Task" or i.subagent_type) then
+              agent_ids[b.id] = true
+            end
             push(body, hint ~= "" and ("▸ %s  %s"):format(name, hint) or ("▸ %s"):format(name))
             local lang, code = tool_render(name, i)
             body_blocks[#body_blocks + 1] = { #body, fenced(lang, code) }
@@ -188,7 +196,13 @@ local function render_transcript(path)
               c = table.concat(parts, "\n")
             end
             if type(c) == "string" and c ~= "" then
-              push(body, ("▸ result  %s"):format(summary(c)))
+              -- A subagent's report is collapsed with no body preview (its first
+              -- line often leaks the whole gist); other tool results keep the
+              -- one-line summary. Both stay peekable on <CR>.
+              local label = (b.tool_use_id and agent_ids[b.tool_use_id])
+                  and "▸ subagent response"
+                  or ("▸ result  %s"):format(summary(c))
+              push(body, label)
               body_blocks[#body_blocks + 1] = { #body, fenced("", c) }
             end
           end

@@ -132,6 +132,25 @@ local function picker_grep_word(opts)
   require("snacks.picker").grep_word(opts)
 end
 
+-- Build a picker `confirm` handler that sends text to a terminal channel, then
+-- restores focus and insert mode. snacks excludes the terminal window as a
+-- "main" window, so on close it restores focus to a file window; re-focus the
+-- terminal explicitly before startinsert, otherwise it lands in the wrong buffer.
+local function terminal_send_confirm(term_win, term_chan, get_text)
+  return function(picker, item)
+    picker:close()
+    if item and term_chan and term_chan > 0 then
+      vim.api.nvim_chan_send(term_chan, get_text(item))
+      vim.schedule(function()
+        if vim.api.nvim_win_is_valid(term_win) then
+          vim.api.nvim_set_current_win(term_win)
+        end
+        vim.cmd("startinsert")
+      end)
+    end
+  end
+end
+
 local function picker_buffer_words()
   local term_win = vim.api.nvim_get_current_win()
   local term_buf = vim.api.nvim_get_current_buf()
@@ -162,22 +181,17 @@ local function picker_buffer_words()
     end,
     preview = "none",
     layout = { preview = false },
-    confirm = function(picker, item)
-      picker:close()
-      if item and term_chan and term_chan > 0 then
-        vim.api.nvim_chan_send(term_chan, item.text)
-        vim.schedule(function()
-          -- snacks restores focus to a file window on close (the terminal is
-          -- excluded as a "main" window), so re-focus the terminal explicitly
-          -- before entering insert mode, otherwise startinsert lands in the
-          -- wrong buffer.
-          if vim.api.nvim_win_is_valid(term_win) then
-            vim.api.nvim_set_current_win(term_win)
-          end
-          vim.cmd("startinsert")
-        end)
-      end
-    end,
+    confirm = terminal_send_confirm(term_win, term_chan, function(item) return item.text end),
+  })
+end
+
+local function picker_registers()
+  local term_win = vim.api.nvim_get_current_win()
+  local term_chan = vim.bo[vim.api.nvim_get_current_buf()].channel
+  require("snacks.picker").registers({
+    confirm = terminal_send_confirm(term_win, term_chan, function(item)
+      return item.data or vim.fn.getreg(item.reg)
+    end),
   })
 end
 
@@ -294,6 +308,7 @@ local function picker_keys()
     { "<leader>fl", function() p().lines() end, desc = "Search lines" },
     { "<leader>fL", function() p().grep_buffers() end, desc = "Search lines from all buffers" },
     { "<c-]><c-w>", picker_buffer_words, desc = "Insert word from buffers", mode = "t" },
+    { "<c-]><c-r>", picker_registers, desc = "Paste register into terminal", mode = "t" },
     --  Misc
     { "<leader>fu", function() p().undo() end, desc = "Find undo history" },
     { "<leader>f:", function() p().command_history() end, desc = "Find command history" },

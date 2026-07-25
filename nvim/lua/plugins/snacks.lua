@@ -133,6 +133,7 @@ local function picker_grep_word(opts)
 end
 
 local function picker_buffer_words()
+  local term_win = vim.api.nvim_get_current_win()
   local term_buf = vim.api.nvim_get_current_buf()
   local term_chan = vim.bo[term_buf].channel
 
@@ -166,6 +167,13 @@ local function picker_buffer_words()
       if item and term_chan and term_chan > 0 then
         vim.api.nvim_chan_send(term_chan, item.text)
         vim.schedule(function()
+          -- snacks restores focus to a file window on close (the terminal is
+          -- excluded as a "main" window), so re-focus the terminal explicitly
+          -- before entering insert mode, otherwise startinsert lands in the
+          -- wrong buffer.
+          if vim.api.nvim_win_is_valid(term_win) then
+            vim.api.nvim_set_current_win(term_win)
+          end
           vim.cmd("startinsert")
         end)
       end

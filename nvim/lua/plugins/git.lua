@@ -328,6 +328,27 @@ local diffview = {
   config = setup_diffview,
 }
 
+-- Open a review (via the given Octo command), enabling LSP on the reviewed
+-- code when the working tree is checked out at the PR head.
+local function open_review(cmd)
+  -- octo's use_local_fs swaps the right (head) diff side for the real on-disk
+  -- file (=> LSP), but it only checks the branch name, never the commit. Enable
+  -- it only at the exact PR head; otherwise the diff and comments would target
+  -- the wrong content, so fall back to octo's virtual buffers (no LSP). Only
+  -- the right side is ever a real file -- the left/base side stays virtual.
+  local buffer = require("octo.utils").get_current_buffer()
+  local node = buffer and buffer:isPullRequest() and buffer:pullRequest()
+  local head = vim.fn.systemlist("git rev-parse HEAD")[1]
+  local at_head = node and vim.v.shell_error == 0 and head == node.headRefOid or false
+  require("octo.config").values.use_local_fs = at_head
+  if at_head then
+    vim.notify("octo: review using local files (LSP enabled)", vim.log.levels.INFO)
+  else
+    vim.notify("octo: review using virtual buffers (no LSP)", vim.log.levels.WARN)
+  end
+  vim.cmd(cmd)
+end
+
 local function setup_octo()
   local mappings = {}
 
@@ -338,6 +359,12 @@ local function setup_octo()
       copy_url = { lhs = "<localleader>oy" },
     }
   end
+
+  -- Disable octo's builtin review start/resume so our own vs/vr (which enable
+  -- use_local_fs first, see set_pr_keys) can bind buffer-locally without octo
+  -- clobbering them -- octo applies its mappings after setting the filetype.
+  mappings.pull_request.review_start = { lhs = "" }
+  mappings.pull_request.review_resume = { lhs = "" }
 
   for _, buf_type in pairs({ "review_thread", "review_diff", "file_panel" }) do
     mappings[buf_type] = {
@@ -369,13 +396,17 @@ local function setup_octo()
       { silent = true, noremap = true, buffer = buf, desc = "Fuzzy switch changed file" })
   end
 
-  -- Extra keymaps for the PR overview buffer, beyond octo's builtins.
+  -- PR overview keymaps beyond octo's builtins. vs/vr replace octo's own
+  -- start/resume (disabled above); vb (browse) has no octo builtin.
   local function set_pr_keys(buf)
-    -- Octo has no builtin mapping for "Octo review browse" (open the review
-    -- layout read-only, without starting a pending review on GitHub). Bind it
-    -- alongside the builtin <localleader>vs (start) / <localleader>vr (resume).
-    vim.keymap.set("n", "<localleader>vb", "<cmd>Octo review browse<CR>",
-      { silent = true, noremap = true, buffer = buf, desc = "Browse review (no pending review)" })
+    local keys = {
+      { "<localleader>vb", function() open_review("Octo review browse") end, "Browse review (no pending review)" },
+      { "<localleader>vs", function() open_review("Octo review start") end,  "Start review" },
+      { "<localleader>vr", function() open_review("Octo review resume") end, "Resume review" },
+    }
+    for _, k in ipairs(keys) do
+      vim.keymap.set("n", k[1], k[2], { silent = true, noremap = true, buffer = buf, desc = k[3] })
+    end
   end
 
   local function set_which_key(buf)

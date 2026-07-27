@@ -139,7 +139,19 @@ local sidekick = {
       },
       tools = {
         zsh = {
+          -- A bare shell, opened manually when a second CLI is needed in a
+          -- dir that already has a managed session (sidekick allows only one
+          -- per tool+dir). Tag the shell with a marker env var and match it in
+          -- is_proc so sidekick can re-detect and re-attach this exact session
+          -- after nvim restarts. Without an is_proc, the pane is instead
+          -- matched by whatever AI tool runs inside it (e.g. claude); that
+          -- tool's sid won't equal the tmux session name (zsh-<hash>-<dir>),
+          -- so sidekick flags the session "external" and never opens a window.
           cmd = { "zsh" },
+          env = { SIDEKICK_SHELL = "1" },
+          is_proc = function(_, proc)
+            return proc.env and proc.env.SIDEKICK_SHELL == "1"
+          end,
         },
         claude = {
           cmd = { "claude", "--allow-dangerously-skip-permissions" },

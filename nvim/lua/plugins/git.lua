@@ -360,9 +360,9 @@ local function setup_octo()
     }
   end
 
-  -- Disable octo's builtin review start/resume so our own vs/vr (which enable
+  -- Disable octo's builtin review start/resume so our own vs (which enables
   -- use_local_fs first, see set_pr_keys) can bind buffer-locally without octo
-  -- clobbering them -- octo applies its mappings after setting the filetype.
+  -- clobbering it -- octo applies its mappings after setting the filetype.
   mappings.pull_request.review_start = { lhs = "" }
   mappings.pull_request.review_resume = { lhs = "" }
 
@@ -396,13 +396,14 @@ local function setup_octo()
       { silent = true, noremap = true, buffer = buf, desc = "Fuzzy switch changed file" })
   end
 
-  -- PR overview keymaps beyond octo's builtins. vs/vr replace octo's own
-  -- start/resume (disabled above); vb (browse) has no octo builtin.
+  -- PR overview keymaps beyond octo's builtins.
   local function set_pr_keys(buf)
     local keys = {
+      -- Browse the review read-only; octo has no builtin for this.
       { "<localleader>vb", function() open_review("Octo review browse") end, "Browse review (no pending review)" },
-      { "<localleader>vs", function() open_review("Octo review start") end,  "Start review" },
-      { "<localleader>vr", function() open_review("Octo review resume") end, "Resume review" },
+      -- Start or resume a review (bare "Octo review"), replacing octo's
+      -- separate start/resume mappings (disabled above).
+      { "<localleader>vs", function() open_review("Octo review") end,        "Start/resume review" },
     }
     for _, k in ipairs(keys) do
       vim.keymap.set("n", k[1], k[2], { silent = true, noremap = true, buffer = buf, desc = k[3] })

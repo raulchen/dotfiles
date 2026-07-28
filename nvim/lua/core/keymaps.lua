@@ -246,7 +246,7 @@ map('t', '<C-]><S-Tab>', '<cmd>tabp<cr>', { desc = 'Previous tab' })
 
 -- Enhanced gf/gF mappings:
 -- Check for line number after the filename (supports: file:10 or file line(s) 10)
-local function open_file_under_cursor(use_other_window)
+local function open_file_under_cursor(pick_target)
   local cwd = vim.fn.getcwd()
   local filename = vim.fn.expand("<cfile>")
   local path = vim.fn.findfile(filename, cwd)
@@ -278,45 +278,25 @@ local function open_file_under_cursor(use_other_window)
   end
 
   -- Handle window selection
-  if use_other_window then
-    -- Find a different window with winfixbuf disabled
-    local current_win = vim.api.nvim_get_current_win()
-    local target_win = nil
-    local windows = vim.api.nvim_tabpage_list_wins(0)
-
-    for _, win in ipairs(windows) do
-      if win ~= current_win and not vim.wo[win].winfixbuf then
-        target_win = win
-        break
-      end
-    end
-
-    -- Create vertical split if none exists
-    if not target_win then
-      vim.cmd("vsplit")
-      target_win = vim.api.nvim_get_current_win()
-    else
-      vim.api.nvim_set_current_win(target_win)
-    end
-  end
-
-  -- Open the file and jump to line if specified
-  local open_file = function()
+  if not pick_target then
     vim.cmd("e " .. vim.fn.fnameescape(path))
     if line_number then
       vim.api.nvim_win_set_cursor(0, { line_number, 0 })
     end
+    return
   end
 
-  if use_other_window then
-    vim.schedule(open_file)
-  else
-    open_file()
+  local target = utils.pick_window()
+  if not target then
+    return
   end
+  vim.schedule(function()
+    utils.open_file_in_target(target, path, line_number)
+  end)
 end
 
 map("n", "gf", function() open_file_under_cursor(false) end, { desc = "Open file under cursor in current window" })
-map("n", "gF", function() open_file_under_cursor(true) end, { desc = "Open file under cursor in other window" })
+map("n", "gF", function() open_file_under_cursor(true) end, { desc = "Open file under cursor in picked window" })
 
 -- Esc to clear search highlights
 map({ "i", "n", "s" }, "<esc>", function()

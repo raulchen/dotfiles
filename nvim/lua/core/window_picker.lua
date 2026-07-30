@@ -26,9 +26,19 @@ local function pickable_windows(include_current)
   return wins
 end
 
+-- Named so a colorscheme can restyle them. `default` never clobbers an existing
+-- definition, and these are re-applied per pick because :colorscheme clears them.
+local function ensure_highlights()
+  -- Letter and border only, no fill: take Title's colour (a message-family group,
+  -- so it carries a foreground and no background in any theme) and embolden it.
+  local title = vim.api.nvim_get_hl(0, { name = "Title", link = false })
+  vim.api.nvim_set_hl(0, "WindowPickerLabel", { fg = title.fg, bold = true, default = true })
+  vim.api.nvim_set_hl(0, "WindowPickerHint", { link = "ModeMsg", default = true })
+end
+
 -- Draw `text` centered in `win` (or, for a nil `win`, at the bottom right of
--- the editor). Returns a closer for the overlay.
-local function overlay(win, text)
+-- the editor), in highlight group `hl`. Returns a closer for the overlay.
+local function overlay(win, text, hl)
   local buf = vim.api.nvim_create_buf(false, true)
   vim.api.nvim_buf_set_lines(buf, 0, -1, false, { text })
 
@@ -63,7 +73,7 @@ local function overlay(win, text)
     pcall(vim.api.nvim_buf_delete, buf, { force = true })
     return function() end
   end
-  vim.wo[float].winhighlight = "Normal:ModeMsg,FloatBorder:ModeMsg"
+  vim.wo[float].winhighlight = ("Normal:%s,FloatBorder:%s"):format(hl, hl)
   return function()
     pcall(vim.api.nvim_win_close, float, true)
     pcall(vim.api.nvim_buf_delete, buf, { force = true })
@@ -81,6 +91,7 @@ end
 ---   for operations that can sensibly target it (default: false)
 ---@return core.window_picker.Target|nil target nil when cancelled
 M.pick = function(opts)
+  ensure_highlights()
   local wins = pickable_windows(opts and opts.include_current)
   local by_label = {}
   local closers = {}
@@ -88,9 +99,9 @@ M.pick = function(opts)
     local char = PICK_CHARS:sub(i, i)
     if char == "" then break end -- more windows than labels; the rest go unlabelled
     by_label[char] = win
-    table.insert(closers, overlay(win, " " .. char:upper() .. " "))
+    table.insert(closers, overlay(win, " " .. char:upper() .. " ", "WindowPickerLabel"))
   end
-  table.insert(closers, overlay(nil, PICK_HINT))
+  table.insert(closers, overlay(nil, PICK_HINT, "WindowPickerHint"))
 
   vim.cmd("redraw")
   local ok, char = pcall(vim.fn.getcharstr)

@@ -1,5 +1,6 @@
 local map = vim.keymap.set
 local utils = require("core.utils")
+local win_picker = require("core.window_picker")
 local ts_yank = require("core.treesitter")
 
 -- Leader configuration
@@ -44,15 +45,14 @@ local function send_buffer()
   local src = vim.api.nvim_get_current_win()
   local buf = vim.api.nvim_get_current_buf()
 
-  local target = utils.pick_window()
+  local target = win_picker.pick()
   if not target then
     return
   end
 
-  -- Only an already-open window has a buffer worth handing back.
-  local displaced = target.win and not target.created and vim.api.nvim_win_get_buf(target.win)
-
-  utils.show_buf_in_target(target, buf)
+  -- `displaced` is set only when the target was already open, i.e. when there is
+  -- a buffer to hand back.
+  local _, displaced = win_picker.show_buf(target, buf)
 
   if displaced and displaced ~= buf and vim.api.nvim_win_is_valid(src) and not vim.wo[src].winfixbuf then
     vim.api.nvim_win_set_buf(src, displaced)
@@ -300,22 +300,14 @@ local function open_file_under_cursor(pick_target)
     end
   end
 
-  -- Handle window selection
-  if not pick_target then
-    vim.cmd("e " .. vim.fn.fnameescape(path))
-    if line_number then
-      vim.api.nvim_win_set_cursor(0, { line_number, 0 })
+  local target = { win = vim.api.nvim_get_current_win() }
+  if pick_target then
+    target = win_picker.pick()
+    if not target then
+      return
     end
-    return
   end
-
-  local target = utils.pick_window()
-  if not target then
-    return
-  end
-  vim.schedule(function()
-    utils.open_file_in_target(target, path, line_number)
-  end)
+  win_picker.open_file(target, path, line_number)
 end
 
 map("n", "gf", function() open_file_under_cursor(false) end, { desc = "Open file under cursor in current window" })

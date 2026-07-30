@@ -7,7 +7,7 @@
 local M = {}
 
 local uv = vim.uv or vim.loop
-local utils = require("core.utils")
+local win_picker = require("core.window_picker")
 
 -- Read exactly `len` bytes at `offset` (or fewer at EOF), looping over short
 -- reads since uv.fs_read may return less than requested.
@@ -262,11 +262,11 @@ end
 -- ── viewer (sidekick UI) ─────────────────────────────────────────────────────
 
 -- Per-terminal viewer state, keyed by sidekick terminal id.
--- { buf = number, cursor = { lnum, col }, close = fun?, blocks = table? }
+-- { buf = number, cursor = { lnum, col }, blocks = table? }
 -- `blocks` maps a `▸` summary line number -> its stashed body lines, which are
 -- shown in a float on <CR> rather than living in the (immutable) buffer.
 -- Module-level so the buf (bufhidden=hide) and its buffer-local autocmds share
--- cursor state with future M.open invocations across close/reopen.
+-- cursor state with future M.open invocations across reopens.
 local transcripts = {}
 
 -- Namespace for the dim highlight on each `▸` summary line, so collapsed tool
@@ -281,18 +281,10 @@ local function find_focused_terminal()
   end
 end
 
--- Open (or toggle) the focused sidekick terminal's Claude transcript in a
--- read-only markdown buffer, shown wherever the window picker is pointed.
+-- Open the focused sidekick terminal's Claude transcript in a read-only markdown
+-- buffer, shown wherever the window picker is pointed. Closing it is the
+-- window's business, not ours.
 function M.open()
-  -- Toggle: if invoked from inside an open transcript buf, close it.
-  local current_buf = vim.api.nvim_get_current_buf()
-  for _, state in pairs(transcripts) do
-    if state.close and state.buf == current_buf then
-      state.close()
-      return
-    end
-  end
-
   local terminal = find_focused_terminal()
   if not terminal then
     vim.notify("No focused sidekick terminal", vim.log.levels.WARN)
@@ -311,12 +303,6 @@ function M.open()
     local st = uv.fs_stat(p)
     if not st then return nil end
     return ("%s:%d:%d:%d"):format(p, st.size, st.mtime.sec, st.mtime.nsec)
-  end
-
-  -- Toggle: if this terminal's transcript is open, close it.
-  if transcripts[terminal.id] and transcripts[terminal.id].close then
-    transcripts[terminal.id].close()
-    return
   end
 
   local cache
@@ -406,9 +392,9 @@ function M.open()
     end
   end
 
-  local target = utils.pick_window()
+  local target = win_picker.pick()
   if not target then return end
-  local win, dismiss = utils.show_buf_in_target(target, cache.buf)
+  local win = win_picker.show_buf(target, cache.buf)
   if not win then return end
 
   local function place_cursor(w)
@@ -460,7 +446,7 @@ function M.open()
     vim.api.nvim_create_autocmd("WinLeave", { buffer = fbuf, once = true, callback = shut })
   end
 
-  local close, refresh
+  local refresh
   local function bind_keys(buf)
     vim.keymap.set("n", "r", refresh, { buffer = buf, desc = "Refresh transcript" })
     -- Peek the block under the cursor in a float, loaded on demand.
@@ -471,19 +457,6 @@ function M.open()
       { buffer = buf, desc = "Next turn" })
     vim.keymap.set("n", "[[", function() vim.fn.search([[\v^(You|Claude)$]], "bW") end,
       { buffer = buf, desc = "Prev turn" })
-  end
-
-  close = function()
-    -- Only undo the placement while the window is still ours: a borrowed one may
-    -- have been navigated elsewhere since, and restoring over that would discard
-    -- whatever the user moved to.
-    if vim.api.nvim_win_is_valid(win) and vim.api.nvim_win_get_buf(win) == cache.buf then
-      dismiss()
-    end
-    pcall(function()
-      if terminal:win_valid() then terminal:focus() end
-    end)
-    cache.close = nil
   end
 
   refresh = function()
@@ -500,7 +473,6 @@ function M.open()
     place_cursor(w)
   end
 
-  cache.close = close
   bind_keys(cache.buf)
 
   vim.cmd.stopinsert()

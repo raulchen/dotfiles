@@ -44,10 +44,12 @@ local PICK_HINT = " Pick window  C-v: vsplit  C-x: hsplit  C-t: tab  C-f: float 
 
 -- Windows that can host a buffer: real splits in the current tabpage, skipping
 -- floats (pickers, notifications) and winfixbuf windows (file trees, terminals).
-local function pickable_windows()
+-- The window we're in is skipped too, unless the caller wants it as a target.
+local function pickable_windows(include_current)
+  local skip = not include_current and vim.api.nvim_get_current_win() or nil
   local wins = {}
   for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
-    if vim.api.nvim_win_get_config(win).relative == "" and not vim.wo[win].winfixbuf then
+    if win ~= skip and vim.api.nvim_win_get_config(win).relative == "" and not vim.wo[win].winfixbuf then
       table.insert(wins, win)
     end
   end
@@ -109,9 +111,11 @@ end
 
 --- Ask where to open something: an existing window (labelled in place), a new
 --- split or tab (created on the spot), or a float.
+---@param opts? { include_current?: boolean } also label the window we're in,
+---   for operations that can sensibly target it (default: false)
 ---@return core.utils.PickTarget|nil target nil when cancelled
-M.pick_window = function()
-  local wins = pickable_windows()
+M.pick_window = function(opts)
+  local wins = pickable_windows(opts and opts.include_current)
   local by_label = {}
   local closers = {}
   for i, win in ipairs(wins) do
@@ -149,6 +153,46 @@ M.pick_window = function()
   return { win = vim.api.nvim_get_current_win() }
 end
 
+local function goto_line(win, line)
+  if line then
+    pcall(vim.api.nvim_win_set_cursor, win, { line, 0 })
+    vim.api.nvim_win_call(win, function() vim.cmd("normal! zz") end)
+  end
+end
+
+--- Show `buf` in a target returned by `M.pick_window`, optionally jumping to
+--- `line`. A nil target (cancelled pick) is a no-op.
+---@param target core.utils.PickTarget|nil
+---@param buf integer
+---@param line? integer
+M.show_buf_in_target = function(target, buf, line)
+  if not target then
+    return
+  end
+
+  if target.float then
+    Snacks.win({
+      buf = buf,
+      position = "float",
+      border = "rounded",
+      title = " " .. vim.fn.fnamemodify(vim.api.nvim_buf_get_name(buf), ":t") .. " ",
+      enter = true,
+      minimal = false,
+      fixbuf = false, -- allow jumping to other files from within the float
+      width = 0.95,
+      height = 0.95,
+      on_win = function(self) goto_line(self.win, line) end,
+    })
+    return
+  end
+
+  if target.win and vim.api.nvim_win_is_valid(target.win) then
+    vim.api.nvim_win_set_buf(target.win, buf)
+    vim.api.nvim_set_current_win(target.win)
+    goto_line(target.win, line)
+  end
+end
+
 --- Open `path` in a target returned by `M.pick_window`, optionally jumping to
 --- `line`. A nil target (cancelled pick) is a no-op.
 ---@param target core.utils.PickTarget|nil
@@ -159,30 +203,12 @@ M.open_file_in_target = function(target, path, line)
     return
   end
 
-  local function goto_line(win)
-    if line then
-      pcall(vim.api.nvim_win_set_cursor, win, { line, 0 })
-      vim.api.nvim_win_call(win, function() vim.cmd("normal! zz") end)
-    end
-  end
-
   if target.float then
     -- Load the buffer ourselves: Snacks.win's own `file` handling marks the
     -- buffer readonly and nomodifiable.
     local buf = vim.fn.bufadd(path)
     vim.fn.bufload(buf)
-    Snacks.win({
-      buf = buf,
-      position = "float",
-      border = "rounded",
-      title = " " .. vim.fn.fnamemodify(path, ":t") .. " ",
-      enter = true,
-      minimal = false,
-      fixbuf = false, -- allow jumping to other files from within the float
-      width = 0.95,
-      height = 0.95,
-      on_win = function(self) goto_line(self.win) end,
-    })
+    M.show_buf_in_target(target, buf, line)
     return
   end
 
@@ -190,7 +216,7 @@ M.open_file_in_target = function(target, path, line)
     vim.api.nvim_set_current_win(target.win)
   end
   vim.cmd("edit " .. vim.fn.fnameescape(path))
-  goto_line(0)
+  goto_line(0, line)
 end
 
 return M

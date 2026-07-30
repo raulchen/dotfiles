@@ -37,6 +37,34 @@ map('n', '<leader>wh', '<c-w>s', { desc = 'Horizontal split window' })
 map('n', '<leader>we', '<c-w>=', { desc = 'Equalize window sizes' })
 map('n', '<leader>wx', '<c-w>c', { desc = 'Close current window' })
 map('n', '<leader>ww', '<c-w>p', { desc = 'Previous window' })
+-- Send the current buffer to a picked window, taking that window's buffer in
+-- exchange. Picking a new split/tab/float instead just shows the buffer there
+-- and leaves this window alone. Focus follows the buffer to the target.
+local function send_buffer()
+  local src = vim.api.nvim_get_current_win()
+  local buf = vim.api.nvim_get_current_buf()
+
+  local existed = {}
+  for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+    existed[win] = true
+  end
+
+  local target = utils.pick_window()
+  if not target then
+    return
+  end
+
+  -- Only an already-open window has a buffer worth handing back.
+  local displaced = target.win and existed[target.win] and vim.api.nvim_win_get_buf(target.win)
+
+  utils.show_buf_in_target(target, buf)
+
+  if displaced and displaced ~= buf and vim.api.nvim_win_is_valid(src) and not vim.wo[src].winfixbuf then
+    vim.api.nvim_win_set_buf(src, displaced)
+  end
+end
+map('n', '<leader>wm', send_buffer, { desc = 'Send buffer to picked window (swaps with existing)' })
+
 map('n', '<c-h>', '<c-w>h', { desc = 'Move to left window' })
 map('n', '<c-l>', '<c-w>l', { desc = 'Move to right window' })
 map('n', '<c-j>', '<c-w>j', { desc = 'Move to lower window' })

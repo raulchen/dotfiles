@@ -44,18 +44,13 @@ local function send_buffer()
   local src = vim.api.nvim_get_current_win()
   local buf = vim.api.nvim_get_current_buf()
 
-  local existed = {}
-  for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
-    existed[win] = true
-  end
-
   local target = utils.pick_window()
   if not target then
     return
   end
 
   -- Only an already-open window has a buffer worth handing back.
-  local displaced = target.win and existed[target.win] and vim.api.nvim_win_get_buf(target.win)
+  local displaced = target.win and not target.created and vim.api.nvim_win_get_buf(target.win)
 
   utils.show_buf_in_target(target, buf)
 

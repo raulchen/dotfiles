@@ -108,6 +108,8 @@ end
 ---@class core.utils.PickTarget
 ---@field win? integer window to open in (already created for split/tab picks)
 ---@field float? boolean open in a floating window instead
+---@field created? boolean the pick made this window, so nothing in it predates
+---   us and it is ours to close
 
 --- Ask where to open something: an existing window (labelled in place), a new
 --- split or tab (created on the spot), or a float.
@@ -150,7 +152,7 @@ M.pick_window = function(opts)
   else
     return nil
   end
-  return { win = vim.api.nvim_get_current_win() }
+  return { win = vim.api.nvim_get_current_win(), created = true }
 end
 
 local function goto_line(win, line)
@@ -165,31 +167,54 @@ end
 ---@param target core.utils.PickTarget|nil
 ---@param buf integer
 ---@param line? integer
+---@return integer|nil win the window now showing `buf`
+---@return fun()|nil dismiss undo the placement: close a window the pick created,
+---   or hand a borrowed one back to the buffer it was showing
 M.show_buf_in_target = function(target, buf, line)
   if not target then
     return
   end
 
   if target.float then
-    Snacks.win({
+    local name = vim.api.nvim_buf_get_name(buf)
+    local float = Snacks.win({
       buf = buf,
       position = "float",
       border = "rounded",
-      title = " " .. vim.fn.fnamemodify(vim.api.nvim_buf_get_name(buf), ":t") .. " ",
+      title = name ~= "" and (" " .. vim.fn.fnamemodify(name, ":t") .. " ") or nil,
       enter = true,
+      -- No backdrop: it is a second window with its own lifetime, which leaks
+      -- when a caller closes the float directly.
+      backdrop = false,
       minimal = false,
       fixbuf = false, -- allow jumping to other files from within the float
       width = 0.95,
       height = 0.95,
       on_win = function(self) goto_line(self.win, line) end,
     })
-    return
+    return float.win, function() float:close() end
   end
 
-  if target.win and vim.api.nvim_win_is_valid(target.win) then
-    vim.api.nvim_win_set_buf(target.win, buf)
-    vim.api.nvim_set_current_win(target.win)
-    goto_line(target.win, line)
+  local win = target.win
+  if not (win and vim.api.nvim_win_is_valid(win)) then
+    return
+  end
+  local prev = not target.created and vim.api.nvim_win_get_buf(win) or nil
+  vim.api.nvim_win_set_buf(win, buf)
+  vim.api.nvim_set_current_win(win)
+  goto_line(win, line)
+
+  return win, function()
+    if not vim.api.nvim_win_is_valid(win) then
+      return
+    end
+    if prev and vim.api.nvim_buf_is_valid(prev) then
+      vim.api.nvim_win_set_buf(win, prev)
+    else
+      -- Ours to close, or borrowed from a buffer that is gone. pcall since it
+      -- may be a tabpage's last window.
+      pcall(vim.api.nvim_win_close, win, true)
+    end
   end
 end
 

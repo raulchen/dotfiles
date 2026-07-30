@@ -7,6 +7,7 @@
 local M = {}
 
 local uv = vim.uv or vim.loop
+local utils = require("core.utils")
 
 -- Read exactly `len` bytes at `offset` (or fewer at EOF), looping over short
 -- reads since uv.fs_read may return less than requested.
@@ -281,8 +282,7 @@ local function find_focused_terminal()
 end
 
 -- Open (or toggle) the focused sidekick terminal's Claude transcript in a
--- read-only markdown buffer, shown in a centred floating window so it never
--- disturbs the tab's window layout (e.g. Diffview's multi-pane view).
+-- read-only markdown buffer, shown wherever the window picker is pointed.
 function M.open()
   -- Toggle: if invoked from inside an open transcript buf, close it.
   local current_buf = vim.api.nvim_get_current_buf()
@@ -406,32 +406,17 @@ function M.open()
     end
   end
 
-  -- Centred float sized to most of the editor: a reading view that overlays the
-  -- tab without touching its windows, so Diffview's multi-pane layout is intact
-  -- underneath and restored the moment the transcript closes.
-  local width = math.floor(vim.o.columns * 0.95)
-  local height = math.floor(vim.o.lines * 0.9)
-  local tool = terminal.tool and terminal.tool.name or "sidekick"
-  local win = vim.api.nvim_open_win(cache.buf, true, {
-    relative = "editor",
-    width = width,
-    height = height,
-    row = math.floor((vim.o.lines - height) / 2),
-    col = math.floor((vim.o.columns - width) / 2),
-    style = "minimal",
-    border = "rounded",
-    title = (" Transcript: %s "):format(tool),
-    title_pos = "center",
-  })
-  vim.wo[win].wrap = true
-  vim.wo[win].linebreak = true
+  local target = utils.pick_window()
+  if not target then return end
+  local win, dismiss = utils.show_buf_in_target(target, cache.buf)
+  if not win then return end
 
-  local function place_cursor()
+  local function place_cursor(w)
     local total = vim.api.nvim_buf_line_count(cache.buf)
     local lnum = cache.cursor and math.min(cache.cursor[1], total) or total
     local col = cache.cursor and cache.cursor[2] or 0
-    local h = vim.api.nvim_win_get_height(win)
-    vim.api.nvim_win_call(win, function()
+    local h = vim.api.nvim_win_get_height(w)
+    vim.api.nvim_win_call(w, function()
       pcall(vim.fn.winrestview, {
         topline = math.max(1, lnum - math.floor(h / 2)),
         lnum = lnum,
@@ -439,7 +424,7 @@ function M.open()
       })
     end)
   end
-  place_cursor()
+  place_cursor(win)
 
   -- Pop the body of the `▸` block on the cursor line into a centred float,
   -- loaded on demand (the bodies never live in the transcript buffer). The
@@ -477,8 +462,6 @@ function M.open()
 
   local close, refresh
   local function bind_keys(buf)
-    vim.keymap.set("n", "q", close, { buffer = buf, desc = "Close transcript" })
-    vim.keymap.set("n", "<esc>", close, { buffer = buf, desc = "Close transcript" })
     vim.keymap.set("n", "r", refresh, { buffer = buf, desc = "Refresh transcript" })
     -- Peek the block under the cursor in a float, loaded on demand.
     vim.keymap.set("n", "<cr>", peek, { buffer = buf, desc = "Peek block" })
@@ -491,8 +474,11 @@ function M.open()
   end
 
   close = function()
-    if vim.api.nvim_win_is_valid(win) then
-      vim.api.nvim_win_close(win, true)
+    -- Only undo the placement while the window is still ours: a borrowed one may
+    -- have been navigated elsewhere since, and restoring over that would discard
+    -- whatever the user moved to.
+    if vim.api.nvim_win_is_valid(win) and vim.api.nvim_win_get_buf(win) == cache.buf then
+      dismiss()
     end
     pcall(function()
       if terminal:win_valid() then terminal:focus() end
@@ -501,15 +487,17 @@ function M.open()
   end
 
   refresh = function()
-    if not vim.api.nvim_win_is_valid(win) then return end
+    -- Wherever the transcript is now, which need not be the window it opened in.
+    local w = vim.fn.bufwinid(cache.buf)
+    if w == -1 then return end
     local rb, rblocks = build_buf()
     if not rb then return end
     local prev = cache.buf
     cache.buf, cache.blocks, cache.sig = rb, rblocks, current_sig()
-    vim.api.nvim_win_set_buf(win, rb)
+    vim.api.nvim_win_set_buf(w, rb)
     pcall(vim.api.nvim_buf_delete, prev, { force = true })
     bind_keys(rb)
-    place_cursor()
+    place_cursor(w)
   end
 
   cache.close = close

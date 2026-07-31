@@ -130,9 +130,9 @@ M.pick = function(opts)
   return { win = vim.api.nvim_get_current_win(), created = true }
 end
 
-local function goto_line(win, line)
+local function goto_line(win, line, col)
   if line then
-    pcall(vim.api.nvim_win_set_cursor, win, { line, 0 })
+    pcall(vim.api.nvim_win_set_cursor, win, { line, col or 0 })
     vim.api.nvim_win_call(win, function() vim.cmd("normal! zz") end)
   end
 end
@@ -142,9 +142,10 @@ end
 ---@param target core.window_picker.Target|nil
 ---@param buf integer
 ---@param line? integer
+---@param col? integer 0-based
 ---@return integer|nil win the window now showing `buf`
 ---@return integer|nil displaced the buffer pushed out of a borrowed window, if any
-M.show_buf = function(target, buf, line)
+M.show_buf = function(target, buf, line, col)
   if not target then
     return
   end
@@ -164,7 +165,7 @@ M.show_buf = function(target, buf, line)
       fixbuf = false, -- allow jumping to other files from within the float
       width = 0.95,
       height = 0.95,
-      on_win = function(self) goto_line(self.win, line) end,
+      on_win = function(self) goto_line(self.win, line, col) end,
     })
     return float.win
   end
@@ -176,7 +177,7 @@ M.show_buf = function(target, buf, line)
   local prev = not target.created and vim.api.nvim_win_get_buf(win) or nil
   vim.api.nvim_win_set_buf(win, buf)
   vim.api.nvim_set_current_win(win)
-  goto_line(win, line)
+  goto_line(win, line, col)
   return win, prev
 end
 
@@ -185,7 +186,8 @@ end
 ---@param target core.window_picker.Target|nil
 ---@param path string
 ---@param line? integer
-M.open_file = function(target, path, line)
+---@param col? integer 0-based
+M.open_file = function(target, path, line, col)
   if not target then
     return
   end
@@ -195,7 +197,7 @@ M.open_file = function(target, path, line)
     -- buffer readonly and nomodifiable.
     local buf = vim.fn.bufadd(path)
     vim.fn.bufload(buf)
-    M.show_buf(target, buf, line)
+    M.show_buf(target, buf, line, col)
     return
   end
 
@@ -203,7 +205,7 @@ M.open_file = function(target, path, line)
     vim.api.nvim_set_current_win(target.win)
   end
   vim.cmd("edit " .. vim.fn.fnameescape(path))
-  goto_line(0, line)
+  goto_line(0, line, col)
 end
 
 return M

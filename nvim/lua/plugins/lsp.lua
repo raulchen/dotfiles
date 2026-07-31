@@ -77,7 +77,33 @@ local function setup_lsp_basics()
     end
 
     local wk = require("which-key")
-    local gp = require('goto-preview')
+    local win_picker = require("core.window_picker")
+
+    -- Resolve an LSP location, then ask where to put it. `on_list` keeps the
+    -- request anchored to this buffer and cursor; picking a window first would
+    -- move them. Multiple hits open the first — use the lowercase mappings when
+    -- you want to browse the set.
+    local function goto_picked(request)
+      return function()
+        request({
+          on_list = function(list)
+            local items = list.items or {}
+            if #items == 0 then
+              vim.notify("No location found", vim.log.levels.WARN, { title = "LSP" })
+              return
+            end
+            local target = win_picker.pick()
+            if not target then return end
+            local item = items[1]
+            win_picker.open_file(target, item.filename, item.lnum, (item.col or 1) - 1)
+            if #items > 1 then
+              vim.notify(("%d locations, opened the first"):format(#items),
+                vim.log.levels.INFO, { title = "LSP" })
+            end
+          end,
+        })
+      end
+    end
 
     wk.add({
       buffer = ev.buf,
@@ -118,10 +144,10 @@ local function setup_lsp_basics()
       map('n', '<leader>cs', vim.lsp.buf.document_symbol, "Search LSP symbols")
       map('n', '<leader>cS', vim.lsp.buf.workspace_symbol, "Search LSP symbols in workspace")
     end
-    map('n', 'gD', gp.goto_preview_definition, "Preview definition")
-    map('n', '<leader>cD', gp.goto_preview_declaration, "Preview declaration")
-    map('n', '<leader>cI', gp.goto_preview_implementation, "Preview implementation")
-    map('n', '<leader>cT', gp.goto_preview_type_definition, "Preview type definition")
+    map('n', 'gD', goto_picked(vim.lsp.buf.definition), "Definition in picked window")
+    map('n', '<leader>cD', goto_picked(vim.lsp.buf.declaration), "Declaration in picked window")
+    map('n', '<leader>cI', goto_picked(vim.lsp.buf.implementation), "Implementation in picked window")
+    map('n', '<leader>cT', goto_picked(vim.lsp.buf.type_definition), "Type definition in picked window")
 
     map('n', 'K', function() vim.lsp.buf.hover(float_win_opts) end, "Display hover information")
     map('i', '<C-k>', function() vim.lsp.buf.signature_help(float_win_opts) end, "Show signature")
@@ -178,22 +204,6 @@ local function setup_lsp_servers()
   end
 end
 
-local goto_preview = {
-  'rmagatti/goto-preview',
-  opts = {
-    default_mappings = false,
-    height = 30,
-    post_open_hook = function(_, win)
-      -- Close the current preview window with <Esc> or 'q'.
-      local function close_window()
-        vim.api.nvim_win_close(win, true)
-      end
-      vim.keymap.set('n', '<Esc>', close_window, { buffer = true })
-      vim.keymap.set('n', 'q', close_window, { buffer = true })
-    end,
-  }
-}
-
 local lspconfig = {
   'neovim/nvim-lspconfig',
   event = { "BufReadPre", "BufNewFile" },
@@ -204,7 +214,6 @@ local lspconfig = {
   dependencies = {
     "saghen/blink.cmp",
     "mason-org/mason-lspconfig.nvim",
-    goto_preview,
   },
 }
 

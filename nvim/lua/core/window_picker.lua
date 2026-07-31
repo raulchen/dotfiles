@@ -3,9 +3,18 @@
 
 local M = {}
 
--- Home row, left to right.
-local PICK_CHARS = "asdfghjkl;"
-local PICK_HINT = " Pick window  C-v: vsplit  C-x: hsplit  C-t: tab  C-f: float  q/<Esc>: cancel "
+-- Left-hand keys label the windows; the right hand acts. No char appears in
+-- both sets, so a label can never shadow an action.
+local PICK_CHARS = "asdfgqwerzxcv"
+local PICK_HINT = " Pick window  HJKL: split  T: tab  ;: float  <Esc>: cancel "
+
+-- Splits placed relative to the window we're in, ignoring splitright/splitbelow.
+local SPLITS = {
+  h = "leftabove vsplit",
+  j = "belowright split",
+  k = "aboveleft split",
+  l = "rightbelow vsplit",
+}
 
 -- Windows that can host a buffer: real splits in the current tabpage, skipping
 -- floats (pickers, notifications) and winfixbuf windows (file trees, terminals).
@@ -33,10 +42,9 @@ local function ensure_highlights()
   -- so it carries a foreground and no background in any theme) and embolden it.
   local title = vim.api.nvim_get_hl(0, { name = "Title", link = false })
   vim.api.nvim_set_hl(0, "WindowPickerLabel", { fg = title.fg, bold = true, default = true })
-  vim.api.nvim_set_hl(0, "WindowPickerHint", { link = "ModeMsg", default = true })
 end
 
--- Draw `text` centered in `win` (or, for a nil `win`, at the bottom right of
+-- Draw `text` centered in `win` (or, for a nil `win`, along the bottom centre of
 -- the editor), in highlight group `hl`. Returns a closer for the overlay.
 local function overlay(win, text, hl)
   local buf = vim.api.nvim_create_buf(false, true)
@@ -51,11 +59,13 @@ local function overlay(win, text, hl)
       col = math.max(0, math.floor((vim.api.nvim_win_get_width(win) - #text) / 2)),
     }
   else
+    -- Anchored bottom-right, so `col` is the right edge; put that half a width
+    -- past centre and the box lands centred.
     config = {
       relative = "editor",
       anchor = "SE",
       row = vim.o.lines - vim.o.cmdheight - 1,
-      col = vim.o.columns,
+      col = math.floor((vim.o.columns + #text) / 2),
     }
   end
   config = vim.tbl_extend("error", config, {
@@ -101,7 +111,7 @@ M.pick = function(opts)
     by_label[char] = win
     table.insert(closers, overlay(win, " " .. char:upper() .. " ", "WindowPickerLabel"))
   end
-  table.insert(closers, overlay(nil, PICK_HINT, "WindowPickerHint"))
+  table.insert(closers, overlay(nil, PICK_HINT, "WindowPickerLabel"))
 
   vim.cmd("redraw")
   local ok, char = pcall(vim.fn.getcharstr)
@@ -110,19 +120,19 @@ M.pick = function(opts)
   end
   vim.cmd("redraw")
 
-  if not ok or char == "" or char == "\27" or char == "q" then
+  if not ok or char == "" or char == "\27" then
     return nil
   end
-  if by_label[char:lower()] then
-    return { win = by_label[char:lower()] }
+  -- Labels and actions are both shown uppercase, so accept either case.
+  local key = char:lower()
+  if by_label[key] then
+    return { win = by_label[key] }
   end
-  if char == "\22" then -- <C-v>
-    vim.cmd("vsplit")
-  elseif char == "\24" then -- <C-x>
-    vim.cmd("split")
-  elseif char == "\20" then -- <C-t>
+  if SPLITS[key] then
+    vim.cmd(SPLITS[key])
+  elseif key == "t" then
     vim.cmd("tabnew")
-  elseif char == "\6" then -- <C-f>
+  elseif key == ";" then
     return { float = true }
   else
     return nil

@@ -142,6 +142,29 @@ vim.api.nvim_create_autocmd("FileType", {
 })
 
 vim.api.nvim_create_autocmd("FileType", {
+  desc = "Open the quickfix entry in a picked window",
+  group = filetype_group,
+  pattern = "qf",
+  callback = function(event)
+    vim.keymap.set("n", "<S-CR>", function()
+      local info = vim.fn.getwininfo(vim.api.nvim_get_current_win())[1]
+      local list = info.loclist == 1 and vim.fn.getloclist(0) or vim.fn.getqflist()
+      local item = list[vim.fn.line(".")]
+      -- Entries without a buffer are plain text (compiler notes, separators):
+      -- nothing to place, so let the built-in <CR> deal with them.
+      if not item or item.bufnr == 0 then
+        vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<CR>", true, false, true), "n", false)
+        return
+      end
+      local win_picker = require("core.window_picker")
+      local target = win_picker.pick()
+      if not target then return end
+      win_picker.show_buf(target, item.bufnr, item.lnum, math.max(0, (item.col or 1) - 1))
+    end, { buffer = event.buf, desc = "Open entry in picked window" })
+  end,
+})
+
+vim.api.nvim_create_autocmd("FileType", {
   desc = "Disable buffer listing for certain filetypes",
   group = filetype_group,
   pattern = {

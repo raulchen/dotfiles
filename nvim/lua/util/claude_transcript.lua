@@ -446,9 +446,58 @@ function M.open()
     vim.api.nvim_create_autocmd("WinLeave", { buffer = fbuf, once = true, callback = shut })
   end
 
+  -- Pick a turn and jump to it. Turns are rendered as a speaker name over a
+  -- rule, so a `You`/`Claude` heading followed by one is the anchor; the label
+  -- is that turn's first line of prose. The speaker is part of `text` so typing
+  -- "claude" or "you" narrows the list.
+  local function select_message()
+    local lines = vim.api.nvim_buf_get_lines(cache.buf, 0, -1, false)
+    local items = {}
+    for i, line in ipairs(lines) do
+      if (line == "You" or line == "Claude") and (lines[i + 1] or ""):match("^%-%-%-") then
+        -- The body starts right under the rule. A blank there means the turn
+        -- has no prose, so don't reach further and borrow the next one's.
+        local msg = vim.trim(lines[i + 2] or "")
+        if msg == "" then msg = "(empty)" end
+        table.insert(items, 1, {
+          buf = cache.buf,
+          who = line,
+          msg = msg,
+          text = line .. " " .. msg,
+          pos = { i, 0 },
+        })
+      end
+    end
+    if #items == 0 then
+      vim.notify("No messages found", vim.log.levels.INFO)
+      return
+    end
+
+    Snacks.picker.pick({
+      source = "messages",
+      items = items,
+      format = function(item)
+        return {
+          { string.format("%4d", item.pos[1]), "SnacksPickerIdx" },
+          { "  " },
+          -- Distinct hues: SnacksPickerLabel links to SnacksPickerSpecial, so the
+          -- two speakers would otherwise render identically.
+          { ("%-6s"):format(item.who), item.who == "You" and "MoreMsg" or "Special" },
+          { "  " },
+          { item.msg },
+        }
+      end,
+      layout = { preset = "default" },
+      jump = { match = true },
+      main = { current = true },
+      sort = { fields = { "score:desc", "idx" } },
+    })
+  end
+
   local refresh
   local function bind_keys(buf)
     vim.keymap.set("n", "r", refresh, { buffer = buf, desc = "Refresh transcript" })
+    vim.keymap.set("n", "m", select_message, { buffer = buf, desc = "Search messages" })
     -- Peek the block under the cursor in a float, loaded on demand.
     vim.keymap.set("n", "<cr>", peek, { buffer = buf, desc = "Peek block" })
     -- Jump between turn titles (works whether or not it's a bigfile, and

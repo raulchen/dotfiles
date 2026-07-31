@@ -44,31 +44,16 @@ local function ensure_highlights()
   vim.api.nvim_set_hl(0, "WindowPickerLabel", { fg = title.fg, bold = true, default = true })
 end
 
--- Draw `text` centered in `win` (or, for a nil `win`, along the bottom centre of
--- the editor), in highlight group `hl`. Returns a closer for the overlay.
-local function overlay(win, text, hl)
+-- Draw `text` centered in `win`, in highlight group `hl`. Returns a closer.
+local function label_overlay(win, text, hl)
   local buf = vim.api.nvim_create_buf(false, true)
   vim.api.nvim_buf_set_lines(buf, 0, -1, false, { text })
 
-  local config
-  if win then
-    config = {
-      relative = "win",
-      win = win,
-      row = math.max(0, math.floor(vim.api.nvim_win_get_height(win) / 2) - 1),
-      col = math.max(0, math.floor((vim.api.nvim_win_get_width(win) - #text) / 2)),
-    }
-  else
-    -- Anchored bottom-right, so `col` is the right edge; put that half a width
-    -- past centre and the box lands centred.
-    config = {
-      relative = "editor",
-      anchor = "SE",
-      row = vim.o.lines - vim.o.cmdheight - 1,
-      col = math.floor((vim.o.columns + #text) / 2),
-    }
-  end
-  config = vim.tbl_extend("error", config, {
+  local ok, float = pcall(vim.api.nvim_open_win, buf, false, {
+    relative = "win",
+    win = win,
+    row = math.max(0, math.floor(vim.api.nvim_win_get_height(win) / 2) - 1),
+    col = math.max(0, math.floor((vim.api.nvim_win_get_width(win) - #text) / 2)),
     width = #text,
     height = 1,
     style = "minimal",
@@ -77,8 +62,6 @@ local function overlay(win, text, hl)
     zindex = 250,
     noautocmd = true,
   })
-
-  local ok, float = pcall(vim.api.nvim_open_win, buf, false, config)
   if not ok then
     pcall(vim.api.nvim_buf_delete, buf, { force = true })
     return function() end
@@ -96,7 +79,8 @@ end
 ---@field created? boolean the pick made this window, so nothing in it predates us
 
 --- Ask where to open something: an existing window (labelled in place), a new
---- split or tab (created on the spot), or a float.
+--- split or tab (created on the spot), or a float. Only <Esc> cancels;
+--- unrecognised keys are ignored.
 ---@param opts? { include_current?: boolean } also label the window we're in,
 ---   for operations that can sensibly target it (default: false)
 ---@return core.window_picker.Target|nil target nil when cancelled
@@ -109,35 +93,56 @@ M.pick = function(opts)
     local char = PICK_CHARS:sub(i, i)
     if char == "" then break end -- more windows than labels; the rest go unlabelled
     by_label[char] = win
-    table.insert(closers, overlay(win, " " .. char:upper() .. " ", "WindowPickerLabel"))
+    table.insert(closers, label_overlay(win, " " .. char:upper() .. " ", "WindowPickerLabel"))
   end
-  table.insert(closers, overlay(nil, PICK_HINT, "WindowPickerLabel"))
+  table.insert(closers, require("core.utils").hint_float(PICK_HINT, "WindowPickerLabel"))
 
   vim.cmd("redraw")
-  local ok, char = pcall(vim.fn.getcharstr)
+
+  -- Read until a key means something. What it means is captured as a thunk
+  -- rather than run here, so a split lands in the layout the labels described
+  -- instead of shifting windows out from under them.
+  local resolve
+  while true do
+    local ok, char = pcall(vim.fn.getcharstr)
+    -- Bail on a failed read too, or an interrupt would spin here forever.
+    if not ok or char == "" or char == "\27" then
+      break
+    end
+    -- Labels and actions are both shown uppercase, so accept either case.
+    local key = char:lower()
+    local made = function()
+      return { win = vim.api.nvim_get_current_win(), created = true }
+    end
+    if by_label[key] then
+      local win = by_label[key]
+      resolve = function() return { win = win } end
+    elseif SPLITS[key] then
+      local cmd = SPLITS[key]
+      resolve = function()
+        vim.cmd(cmd)
+        return made()
+      end
+    elseif key == "t" then
+      resolve = function()
+        vim.cmd("tabnew")
+        return made()
+      end
+    elseif key == ";" then
+      resolve = function() return { float = true } end
+    end
+    if resolve then break end
+  end
+
   for _, close in ipairs(closers) do
     close()
   end
   vim.cmd("redraw")
 
-  if not ok or char == "" or char == "\27" then
+  if not resolve then
     return nil
   end
-  -- Labels and actions are both shown uppercase, so accept either case.
-  local key = char:lower()
-  if by_label[key] then
-    return { win = by_label[key] }
-  end
-  if SPLITS[key] then
-    vim.cmd(SPLITS[key])
-  elseif key == "t" then
-    vim.cmd("tabnew")
-  elseif key == ";" then
-    return { float = true }
-  else
-    return nil
-  end
-  return { win = vim.api.nvim_get_current_win(), created = true }
+  return resolve()
 end
 
 local function goto_line(win, line, col)

@@ -30,6 +30,43 @@ M.dot_repeatable_keymap = function(keymap_opts)
   return keymap_opts
 end
 
+--- A bordered one-line hint along the bottom centre of the editor, for modes
+--- that read keys directly and so can't rely on the message area.
+---@param text string
+---@param hl? string highlight for the text and border (default: ModeMsg)
+---@return fun() close
+M.hint_float = function(text, hl)
+  hl = hl or "ModeMsg"
+  local buf = vim.api.nvim_create_buf(false, true)
+  vim.api.nvim_buf_set_lines(buf, 0, -1, false, { text })
+
+  -- Anchored bottom-right, so `col` is the right edge; put that half a width
+  -- past centre and the box lands centred.
+  local ok, win = pcall(vim.api.nvim_open_win, buf, false, {
+    relative = 'editor',
+    anchor = 'SE',
+    row = vim.o.lines - vim.o.cmdheight - 1,
+    col = math.floor((vim.o.columns + #text) / 2),
+    width = #text,
+    height = 1,
+    style = 'minimal',
+    border = 'rounded',
+    focusable = false,
+    zindex = 250,
+    noautocmd = true,
+  })
+  if not ok then
+    pcall(vim.api.nvim_buf_delete, buf, { force = true })
+    return function() end
+  end
+  vim.wo[win].winhighlight = ('Normal:%s,FloatBorder:%s'):format(hl, hl)
+
+  return function()
+    pcall(vim.api.nvim_win_close, win, true)
+    pcall(vim.api.nvim_buf_delete, buf, { force = true })
+  end
+end
+
 M.yank_to_register = function(value)
   local reg = vim.v.register == '"' and '+' or vim.v.register
   vim.fn.setreg(reg, value)

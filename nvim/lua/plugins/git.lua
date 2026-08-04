@@ -316,7 +316,11 @@ local function open_diffview()
           title = "Select commit for diff",
           confirm = function(picker, item)
             picker:close()
-            vim.cmd("DiffviewOpen " .. item.commit)
+            -- `:DiffviewOpen` runs git synchronously via `vim.wait`, which pumps
+            -- the event loop mid-teardown: the picker has already cleared its
+            -- matcher while the finder is still streaming, and the finder then
+            -- indexes it. Defer so teardown completes first.
+            vim.schedule(function() vim.cmd("DiffviewOpen " .. item.commit) end)
           end,
         })
       end

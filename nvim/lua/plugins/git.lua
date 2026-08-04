@@ -199,6 +199,98 @@ local function pick_diffview_file()
   })
 end
 
+-- Dump the current Diffview's rev range (or the selected commit, in a file
+-- history view) into a single flat unified-diff buffer.
+local function open_flat_diff()
+  local ok, lib = pcall(require, "diffview.lib")
+  if not ok then return end
+  local view = lib.get_current_view()
+  if not view then
+    vim.notify("No active Diffview", vim.log.levels.WARN)
+    return
+  end
+
+  local adapter = view.adapter
+  -- FilePanel has no `cur_item`; only the file history panel does.
+  local entry = view.panel and view.panel.cur_item and view.panel.cur_item[1]
+  local args, title
+
+  if entry and entry.commit then
+    args = { "show", "--no-ext-diff", entry.commit.hash }
+    title = entry.commit.hash:sub(1, 8)
+  else
+    if not (view.left and view.right) then
+      vim.notify("This view has no rev range to flatten", vim.log.levels.WARN)
+      return
+    end
+
+    local RevType = require("diffview.vcs.rev").RevType
+    local rev_args = adapter:rev_to_args(view.left, view.right)
+
+    if view.left.type == RevType.STAGE and view.right.type == RevType.LOCAL then
+      -- Plain `:DiffviewOpen`: the panel lists staged changes as well, while
+      -- `rev_to_args` yields the unstaged half only. Diff against HEAD so the
+      -- patch covers both (untracked files can't show up in a patch either way).
+      rev_args, title = { "HEAD" }, "HEAD"
+    elseif view.right.type == RevType.STAGE then
+      title = (view.left:abbrev() or "HEAD") .. " (staged)"
+    else
+      -- Nil for anything else that tracks HEAD, hence the fallbacks below.
+      title = view.rev_arg or adapter:rev_to_pretty_string(view.left, view.right)
+    end
+
+    if not title or title == "" then
+      title = #rev_args > 0 and table.concat(rev_args, " ") or "working tree"
+    end
+
+    args = vim.list_extend({ "diff", "--no-ext-diff" }, rev_args)
+  end
+
+  local path_args = (entry and entry.path_args) or view.path_args
+  if path_args and #path_args > 0 then
+    table.insert(args, "--")
+    vim.list_extend(args, path_args)
+  end
+
+  local out, code, stderr = adapter:exec_sync(args, adapter.ctx.toplevel)
+  if code ~= 0 then
+    vim.notify("git " .. table.concat(args, " ") .. " failed:\n"
+      .. table.concat(stderr or {}, "\n"), vim.log.levels.ERROR)
+    return
+  end
+
+  -- Refresh the buffer from a previous run instead of stacking up tabs (and
+  -- reusing the name would throw E95 anyway).
+  local name = "flat-diff://" .. title
+  local buf
+  for _, b in ipairs(vim.api.nvim_list_bufs()) do
+    if vim.api.nvim_buf_get_name(b) == name then
+      buf = b
+      break
+    end
+  end
+
+  if buf then
+    local win = vim.fn.win_findbuf(buf)[1]
+    if win then
+      vim.api.nvim_set_current_win(win) -- switches tabpage too
+    else
+      vim.cmd("tabnew")
+      vim.api.nvim_win_set_buf(0, buf)
+    end
+  else
+    vim.cmd("tabnew")
+    buf = vim.api.nvim_get_current_buf()
+    vim.api.nvim_buf_set_name(buf, name)
+  end
+
+  vim.bo[buf].modifiable = true
+  vim.api.nvim_buf_set_lines(buf, 0, -1, false, out)
+  vim.bo[buf].filetype = "diff"
+  vim.bo[buf].buftype = "nofile"
+  vim.bo[buf].modifiable = false
+end
+
 local function open_diffview()
   -- Define the diff options with their corresponding action functions
   local diff_options = {
@@ -288,6 +380,12 @@ local function setup_diffview()
   for _, ctx in ipairs({ "view", "file_panel" }) do
     table.insert(keymaps[ctx],
       { "n", "<leader>ff", pick_diffview_file, { desc = "Fuzzy switch changed file" } })
+  end
+
+  -- Flatten the whole view into one unified-diff buffer.
+  for _, ctx in ipairs({ "view", "file_panel", "file_history_panel" }) do
+    table.insert(keymaps[ctx],
+      { "n", "<leader>gD", open_flat_diff, { desc = "Flat unified diff of this view" } })
   end
 
   local diffview_opts = {

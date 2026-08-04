@@ -212,6 +212,9 @@ M.open_file = function(target, path, line, col)
     -- buffer readonly and nomodifiable.
     local buf = vim.fn.bufadd(path)
     vim.fn.bufload(buf)
+    -- bufadd() leaves it unlisted, unlike the `:edit` below, which would hide
+    -- the file from the bufferline and buffer navigation.
+    vim.bo[buf].buflisted = true
     M.show_buf(target, buf, line, col)
     return
   end

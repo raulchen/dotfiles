@@ -101,6 +101,68 @@ end
 map('n', '<leader>wr', resize_mode, { desc = 'Window resize mode' })
 map('t', '<C-]>r', resize_mode, { desc = 'Window resize mode' })
 
+local zoom_steps = { 0.2, 0.8 }
+
+local zoom_axes = {
+  -- `total` excludes the command line: it's not space a window can take.
+  height = {
+    total = function() return vim.o.lines - vim.o.cmdheight end,
+    current = vim.api.nvim_win_get_height,
+    neighbours = { 'j', 'k' },
+    resize = 'resize ',
+  },
+  width = {
+    total = function() return vim.o.columns end,
+    current = vim.api.nvim_win_get_width,
+    neighbours = { 'h', 'l' },
+    resize = 'vertical resize ',
+  },
+}
+
+--- Toggle the current window between the `zoom_steps` fractions of the editor on
+--- one axis: each call grows it to the next step up, wrapping round at the top.
+--- A count picks a fraction directly instead -- 7 is 70%, 10 is the whole editor.
+---@param axis 'height'|'width'
+local function zoom(axis)
+  local spec = zoom_axes[axis]
+  return function()
+    -- With no neighbour along this axis there's nobody to trade space with, and
+    -- a resize would either be ignored or shove an unrelated window around.
+    local this = vim.fn.winnr()
+    if vim.fn.winnr(spec.neighbours[1]) == this and vim.fn.winnr(spec.neighbours[2]) == this then
+      return
+    end
+
+    local total = spec.total()
+    local function size_for(fraction) return math.max(1, math.floor(total * fraction)) end
+
+    local target
+    if vim.v.count > 0 then
+      target = size_for(math.min(vim.v.count, 10) / 10)
+    else
+      -- The first step clearly larger than the current size, else the smallest,
+      -- which is the wrap-around. The slack absorbs a line or two of drift from
+      -- statuslines and equalisation, so a window on a step doesn't re-pick it.
+      local current = spec.current(0)
+      target = size_for(zoom_steps[1])
+      for _, fraction in ipairs(zoom_steps) do
+        local size = size_for(fraction)
+        if size > current + 2 then
+          target = size
+          break
+        end
+      end
+    end
+
+    vim.cmd(spec.resize .. target)
+  end
+end
+
+map('n', '<c-w>.', zoom('height'), { desc = 'Toggle window height (20/80%)' })
+map('n', '<c-w>,', zoom('width'), { desc = 'Toggle window width (20/80%)' })
+map('n', '<leader>w.', zoom('height'), { desc = 'Toggle window height (20/80%)' })
+map('n', '<leader>w,', zoom('width'), { desc = 'Toggle window width (20/80%)' })
+
 -- Cross-boundary navigation: vim splits + tmux panes.
 -- Falls back to tmux when there's no vim window in that direction, or when
 -- the current window is a float (don't disturb the underlying split).

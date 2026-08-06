@@ -162,6 +162,8 @@ map('n', '<c-w>.', zoom('height'), { desc = 'Toggle window height (20/80%)' })
 map('n', '<c-w>,', zoom('width'), { desc = 'Toggle window width (20/80%)' })
 map('n', '<leader>w.', zoom('height'), { desc = 'Toggle window height (20/80%)' })
 map('n', '<leader>w,', zoom('width'), { desc = 'Toggle window width (20/80%)' })
+map('t', '<C-]>.', zoom('height'), { desc = 'Toggle window height (20/80%)' })
+map('t', '<C-]>,', zoom('width'), { desc = 'Toggle window width (20/80%)' })
 
 -- Cross-boundary navigation: vim splits + tmux panes.
 -- Falls back to tmux when there's no vim window in that direction, or when

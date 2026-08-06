@@ -504,6 +504,24 @@ local image_opts = {
   }
 }
 
+-- snacks.image caches by source path with no mtime check, so reopening an
+-- updated image renders the stale one. Drop its caches on attach.
+local function image_force_reload()
+  local Buf = require("snacks.image.buf")
+  local attach = Buf.attach
+  Buf.attach = function(buf, opts)
+    local src = opts and opts.src or vim.api.nvim_buf_get_name(buf)
+    -- resolve-only: names the cache files for `src`, spawns no converter
+    for _, step in ipairs(Snacks.image.convert.convert({ src = src }).steps) do
+      if vim.startswith(step.file, Snacks.image.config.cache .. "/") then -- never the source itself
+        vim.fn.delete(step.file)
+      end
+    end
+    require("snacks.image.image").clear() -- forget what was already sent to the terminal
+    return attach(buf, opts)
+  end
+end
+
 return {
   "folke/snacks.nvim",
   priority = 1000,
@@ -537,6 +555,8 @@ return {
   },
   keys = snacks_keys,
   init = function()
+    image_force_reload() -- before snacks loads, so the session's first image is fresh too
+
     vim.api.nvim_create_autocmd("User", {
       pattern = "VeryLazy",
       callback = function()

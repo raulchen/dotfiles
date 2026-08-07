@@ -314,6 +314,10 @@ local function open_diffview()
       action = function()
         require("snacks.picker").git_log({
           title = "Select commit for diff",
+          -- Show ref names (branches, tags) in front of the commit message.
+          -- snacks' own `--pretty` omits `%d`; git honours the last one, and
+          -- `cmd_args` is appended after the built-in args, so this wins.
+          cmd_args = { "--pretty=format:%h%d %s (%ch) <%an>" },
           confirm = function(picker, item)
             picker:close()
             -- `:DiffviewOpen` runs git synchronously via `vim.wait`, which pumps

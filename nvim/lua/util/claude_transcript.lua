@@ -22,13 +22,29 @@ local function read_at(fd, len, offset)
   return table.concat(parts)
 end
 
--- Resolve the Claude Code transcript (.jsonl) for a session running in `cwd`.
--- Claude stores them at ~/.claude/projects/<slug>/<uuid>.jsonl, where <slug> is
--- the cwd with "/" and "." replaced by "-"; the active session is the
--- most-recently-modified one.
-local function session_jsonl(cwd)
+-- Claude stores transcripts at ~/.claude/projects/<slug>/<session-id>.jsonl,
+-- where <slug> is the cwd with "/" and "." replaced by "-".
+local function project_dir(cwd)
   local slug = (vim.fs.normalize(cwd):gsub("[/.]", "-"))
-  local dir = vim.fn.expand("~/.claude/projects/" .. slug)
+  return vim.fn.expand("~/.claude/projects/" .. slug)
+end
+
+-- A live Claude CLI registers itself at ~/.claude/sessions/<pid>.json as
+-- { sessionId, cwd, … }, rewritten as the session changes. It's the one record
+-- tying a *process* to a transcript, so it tells sessions sharing a cwd apart
+-- and follows a pane through /clear (a new session id in the same process).
+local function live_session(pid)
+  local ok, lines = pcall(vim.fn.readfile, vim.fn.expand("~/.claude/sessions/" .. pid .. ".json"))
+  if not ok then return nil end
+  local decoded, s = pcall(vim.json.decode, table.concat(lines, "\n"))
+  return (decoded and type(s) == "table" and s.sessionId and s.cwd) and s or nil
+end
+
+-- The newest transcript under `cwd`: the best guess left when no CLI running in
+-- the terminal is registered (an exited session, a CLI too old to register, a
+-- non-tmux backend, or a non-Claude tool).
+local function newest_jsonl(cwd)
+  local dir = project_dir(cwd)
   local ok, entries = pcall(vim.fn.readdir, dir)
   if not ok then return nil end
   local newest, newest_mt = nil, -1
@@ -42,6 +58,35 @@ local function session_jsonl(cwd)
     end
   end
   return newest
+end
+
+-- Signature of a transcript file: its path plus size+mtime. A session's .jsonl
+-- is append-only, so an unchanged signature means an already-rendered buffer is
+-- still current and can be reused verbatim.
+local function file_sig(path)
+  local st = path and uv.fs_stat(path)
+  return st and ("%s:%d:%d:%d"):format(path, st.size, st.mtime.sec, st.mtime.nsec) or nil
+end
+
+-- Resolve the transcript (.jsonl) of the session running in `terminal`.
+-- Returns (path, guessed), where `guessed` marks the newest-in-dir fallback:
+-- it silently shows a *neighbouring* session when several share a cwd, which is
+-- the one thing this resolution exists to avoid, so the caller says so.
+local function session_jsonl(terminal, cwd)
+  -- The tmux pane's process is the CLI itself for a sidekick-managed session,
+  -- or its parent shell for the `zsh` tool that hosts a manually started one.
+  local pane = terminal and terminal.parent and terminal.parent.tmux_pid
+  local pids = pane and vim.list_extend({ pane }, vim.api.nvim_get_proc_children(pane)) or {}
+  for _, pid in ipairs(pids) do
+    local s = live_session(pid)
+    if s then
+      -- The file appears with the session's first message. Until then it has no
+      -- transcript, and saying so beats falling back to a *different* session's.
+      local path = ("%s/%s.jsonl"):format(project_dir(s.cwd), s.sessionId)
+      return uv.fs_stat(path) and path or nil
+    end
+  end
+  return newest_jsonl(cwd), true
 end
 
 -- Read only the transcript tail: bytes after the last `compact_boundary` line,
@@ -252,13 +297,6 @@ local function render_transcript(path)
   return out, blocks_out
 end
 
--- Render the active Claude transcript for `cwd`: (lines, blocks) or nil.
-local function render(cwd)
-  local path = session_jsonl(cwd)
-  if not path then return nil end
-  return render_transcript(path)
-end
-
 -- ── viewer (sidekick UI) ─────────────────────────────────────────────────────
 
 -- Per-terminal viewer state, keyed by sidekick terminal id.
@@ -293,21 +331,29 @@ function M.open()
   local term_cwd = (terminal.parent and terminal.parent.cwd)
       or terminal.cwd or vim.fn.getcwd()
 
-  -- Signature of the active transcript file: its path plus size+mtime. A
-  -- session's .jsonl is append-only, so an unchanged signature means the
-  -- rendered buffer is still current and can be reused verbatim (skipping both
-  -- the tail re-parse and the one-time markdown treesitter parse on rebuild).
+  -- Signature of the session's current transcript, for the freshness check that
+  -- decides whether a rebuild is needed at all (skipping both the tail re-parse
+  -- and the one-time markdown treesitter parse).
   local function current_sig()
-    local p = session_jsonl(term_cwd)
-    if not p then return nil end
-    local st = uv.fs_stat(p)
-    if not st then return nil end
-    return ("%s:%d:%d:%d"):format(p, st.size, st.mtime.sec, st.mtime.nsec)
+    local path = session_jsonl(terminal, term_cwd)
+    return file_sig(path)
   end
 
   local cache
+  -- Returns (buf, blocks, sig). The signature is taken *before* the read and
+  -- returned alongside the buffer, so the cache is always labelled with the
+  -- content it actually holds: resolving a second time to sign it could pick up
+  -- an append (or a different session) that this buffer doesn't contain, and
+  -- that rebuild would then never happen.
   local function build_buf()
-    local lines, blks = render(term_cwd)
+    local path, guessed = session_jsonl(terminal, term_cwd)
+    if path and guessed then
+      vim.notify("Couldn't identify this pane's session; showing the most recent transcript",
+        vim.log.levels.WARN)
+    end
+    if not path then return nil end
+    local sig = file_sig(path)
+    local lines, blks = render_transcript(path)
     if not lines or #lines == 0 then return nil end
     local buf = vim.api.nvim_create_buf(true, true)
     vim.bo[buf].bufhidden = "hide"
@@ -362,7 +408,7 @@ function M.open()
         end
       end,
     })
-    return buf, by_line
+    return buf, by_line, sig
   end
 
   -- Reuse the cached buffer when the transcript file is unchanged; otherwise
@@ -374,7 +420,7 @@ function M.open()
       and sig and cache.sig == sig
   if not fresh then
     local old_buf = cache and cache.buf
-    local new_buf, new_blocks = build_buf()
+    local new_buf, new_blocks, new_sig = build_buf()
     if not new_buf then
       vim.notify("Transcript is empty", vim.log.levels.INFO)
       return
@@ -386,7 +432,7 @@ function M.open()
       transcripts[terminal.id] = cache
     end
     cache.blocks = new_blocks
-    cache.sig = sig
+    cache.sig = new_sig
     if old_buf and old_buf ~= new_buf and vim.api.nvim_buf_is_valid(old_buf) then
       pcall(vim.api.nvim_buf_delete, old_buf, { force = true })
     end
@@ -512,10 +558,10 @@ function M.open()
     -- Wherever the transcript is now, which need not be the window it opened in.
     local w = vim.fn.bufwinid(cache.buf)
     if w == -1 then return end
-    local rb, rblocks = build_buf()
+    local rb, rblocks, rsig = build_buf()
     if not rb then return end
     local prev = cache.buf
-    cache.buf, cache.blocks, cache.sig = rb, rblocks, current_sig()
+    cache.buf, cache.blocks, cache.sig = rb, rblocks, rsig
     vim.api.nvim_win_set_buf(w, rb)
     pcall(vim.api.nvim_buf_delete, prev, { force = true })
     bind_keys(rb)

@@ -54,14 +54,20 @@
     "UserPromptSubmit": [
       {
         "hooks": [
-          { "type": "command", "command": "~/dotfiles/bin/agent-status busy" }
+          {
+            "type": "command",
+            "command": "~/dotfiles/bin/agent-status busy"
+          }
         ]
       }
     ],
     "PreToolUse": [
       {
         "hooks": [
-          { "type": "command", "command": "~/dotfiles/bin/agent-status busy" }
+          {
+            "type": "command",
+            "command": "~/dotfiles/bin/agent-status busy"
+          }
         ]
       }
     ],
@@ -69,14 +75,20 @@
       {
         "matcher": "permission_prompt|idle_prompt",
         "hooks": [
-          { "type": "command", "command": "~/dotfiles/bin/agent-status wait" }
+          {
+            "type": "command",
+            "command": "~/dotfiles/bin/agent-status wait"
+          }
         ]
       }
     ],
     "Stop": [
       {
         "hooks": [
-          { "type": "command", "command": "~/dotfiles/bin/agent-status done" }
+          {
+            "type": "command",
+            "command": "~/dotfiles/bin/agent-status done"
+          }
         ]
       }
     ]

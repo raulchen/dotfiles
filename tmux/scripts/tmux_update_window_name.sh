@@ -10,10 +10,14 @@
 
 [[ -z "$TMUX" ]] && exit 0
 
-# Only update from the first pane in the window (pane-base-index is 1)
-[[ "$(tmux display-message -p '#{pane_index}')" != "1" ]] && exit 0
+# Fetch both fields in one round-trip: each `display-message` costs ~30-45ms.
+IFS=' ' read -r pane_index tmux_window_id \
+    <<< "$(tmux display-message -p '#{pane_index} #{window_id}')"
 
-window_id="${1:-$(tmux display-message -p '#{window_id}')}"
+# Only update from the first pane in the window (pane-base-index is 1)
+[[ "$pane_index" != "1" ]] && exit 0
+
+window_id="${1:-$tmux_window_id}"
 pane_path="${2:-$PWD}"
 
 # Get git info in a single call (avoids multiple subprocess spawns)

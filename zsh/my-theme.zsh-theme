@@ -12,6 +12,11 @@ ZSH_THEME_GIT_PROMPT_AHEAD="%{$fg[blue]%}%{↑%G%}"
 ZSH_THEME_GIT_PROMPT_UNTRACKED="%{$fg[blue]%}%{~%G%}"
 ZSH_THEME_GIT_PROMPT_STASHED="%{$fg[blue]%}%{⚑%G%}"
 ZSH_THEME_GIT_PROMPT_CLEAN="%{$fg[green]%}%{✔%G%}"
+# These four used to come from the git-prompt plugin's defaults.
+ZSH_THEME_GIT_PROMPT_STAGED="%{$fg[red]%}%{●%G%}"
+ZSH_THEME_GIT_PROMPT_CONFLICTS="%{$fg[red]%}%{✖%G%}"
+ZSH_THEME_GIT_PROMPT_CHANGED="%{$fg[blue]%}%{✚%G%}"
+ZSH_THEME_GIT_PROMPT_DELETED="%{$fg[blue]%}%{-%G%}"
 
 # Disable default venv prompt modification
 export VIRTUAL_ENV_DISABLE_PROMPT=1
@@ -30,7 +35,8 @@ function venv_prompt() {
 }
 
 PROMPT='%{$fg[yellow]%}%(?,,%{${fg[red]}%})❯$PROMPT_SEPARATOR%{$reset_color%}'
-RPROMPT='$(git_super_status)%{$fg[yellow]%}$(venv_prompt)%~$PROMPT_SEPARATOR%{$fg[green]%}%*%{$reset_color%}'
+# $_GIT_PROMPT is rendered once per prompt by zsh/gitstatus.zsh.
+RPROMPT='$_GIT_PROMPT%{$fg[yellow]%}$(venv_prompt)%~$PROMPT_SEPARATOR%{$fg[green]%}%*%{$reset_color%}'
 
 # Remove the extra space after the right prompt.
 ZLE_RPROMPT_INDENT=0

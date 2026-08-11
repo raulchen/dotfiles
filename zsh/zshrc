@@ -76,7 +76,6 @@ if type fzf >/dev/null 2>&1 ; then
 fi
 antigen bundle colored-man-pages
 antigen bundle extract
-antigen bundle git-prompt
 antigen bundle jeffreytse/zsh-vi-mode
 antigen bundle zsh-users/zsh-autosuggestions
 antigen bundle zsh-users/zsh-completions
@@ -107,6 +106,9 @@ antigen theme $DOTFILES/zsh my-theme --no-local-clone
 antigen apply
 
 # === plugin configs ===
+
+# Git segment for the prompt (replaces the oh-my-zsh git-prompt plugin).
+source $DOTFILES/zsh/gitstatus.zsh
 
 # zsh-history-substring-search
 function _zshrc_bind_history_substring_search_keys() {

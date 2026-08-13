@@ -90,19 +90,23 @@ local sidekick = {
       },
       tools = {
         zsh = {
-          -- A bare shell, opened manually when a second CLI is needed in a
-          -- dir that already has a managed session (sidekick allows only one
-          -- per tool+dir). Tag the shell with a marker env var and match it in
-          -- is_proc so sidekick can re-detect and re-attach this exact session
-          -- after nvim restarts. Without an is_proc, the pane is instead
-          -- matched by whatever AI tool runs inside it (e.g. claude); that
-          -- tool's sid won't equal the tmux session name (zsh-<hash>-<dir>),
-          -- so sidekick flags the session "external" and never opens a window.
-          cmd = { "zsh" },
-          env = { SIDEKICK_SHELL = "1" },
-          is_proc = function(_, proc)
-            return proc.env and proc.env.SIDEKICK_SHELL == "1"
-          end,
+          -- A bare shell, opened manually when a second CLI is needed in a dir
+          -- that already has a managed session (sidekick allows one per tool+dir).
+          --
+          -- cmd: `exec -a` starts a normal interactive zsh, but names it
+          -- "zsh-sidekick" in `ps`. Keep the "zsh" prefix: with any other argv0,
+          -- zsh starts in sh emulation and skips .zshrc.
+          --
+          -- is_proc: how sidekick re-finds this pane after nvim restarts. Without
+          -- it the pane matches whatever AI tool runs inside (e.g. claude), whose
+          -- sid won't equal the tmux session name (zsh-<hash>-<dir>), so sidekick
+          -- flags the session "external" and never opens a window.
+          --
+          -- Match argv0 rather than a marker env var: sidekick runs is_proc on
+          -- every process in every tmux pane, and reading a process env forks
+          -- `ps` each time, while argv is already in its process snapshot.
+          cmd = { "zsh", "-c", "exec -a zsh-sidekick zsh" },
+          is_proc = "^zsh-sidekick$",
         },
         claude = {
           cmd = { "claude", "--allow-dangerously-skip-permissions" },

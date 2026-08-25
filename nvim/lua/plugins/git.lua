@@ -567,12 +567,17 @@ local function setup_octo()
 
   -- Octo's buffers ("octo://..." for PRs/issues/review files, and the
   -- "octo/null" diff placeholder) are virtual, API-backed buffers, not real
-  -- files, so a swapfile is meaningless. Octo names them via ":file" /
-  -- nvim_buf_set_name, and on a swap collision (e.g. two nvim instances on the
-  -- same PR) Neovim only prints a non-interactive warning -- SwapExists never
-  -- fires for a rename, so there is no prompt to recover from. Disable the
-  -- swapfile so one is never created and instances never collide.
-  vim.api.nvim_create_autocmd("BufFilePost", {
+  -- files, so a swapfile is meaningless. On a swap collision (e.g. two nvim
+  -- instances on the same PR) Neovim only prints a non-interactive warning:
+  -- the swapfile is created outside a file-open, so SwapExists never fires and
+  -- there is no prompt to recover from. Disable the swapfile so one is never
+  -- created and instances never collide.
+  --
+  -- Both events are needed, one per way Octo names a buffer:
+  --   BufFilePost -- ":file octo://..." on a fresh buffer ("Octo pr list")
+  --   BufAdd      -- ":e octo://...", loaded by Octo's BufReadCmd
+  --                  ("Octo pr edit"), where BufFilePost never fires
+  vim.api.nvim_create_autocmd({ "BufAdd", "BufFilePost" }, {
     pattern = { "octo://*", "octo/null", "*/octo/null" },
     callback = function(ev)
       vim.bo[ev.buf].swapfile = false

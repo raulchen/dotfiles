@@ -99,6 +99,7 @@ local function resize_mode()
   close()
 end
 map('n', '<leader>wr', resize_mode, { desc = 'Window resize mode' })
+map('n', '<c-w>r', resize_mode, { desc = 'Window resize mode' })
 map('t', '<C-]>r', resize_mode, { desc = 'Window resize mode' })
 
 local zoom_steps = { 0.2, 0.8 }

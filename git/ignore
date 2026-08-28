@@ -15,6 +15,7 @@ CLAUDE.local.md
 temp-claude-files/
 
 AGENTS.local.md
+AGENTS.override.md
 temp-agent-files/
 
 # pyenv version file

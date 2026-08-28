@@ -39,7 +39,7 @@ local function jump_to_prompt(direction)
   end
 end
 
-local transcript = require("util.claude_transcript")
+local transcript = require("util.agent_transcript")
 
 local sidekick = {
   "folke/sidekick.nvim",
@@ -185,7 +185,7 @@ local sidekick = {
       transcript.open,
       mode = { "n", "t" },
       ft = "sidekick_terminal",
-      desc = "Open transcript snapshot",
+      desc = "Open agent transcript snapshot",
     },
     {
       "<c-]><c-v>",

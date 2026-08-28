@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+# Adapt Codex lifecycle hook events to the shared tmux agent-status protocol.
+set -uo pipefail
+
+payload=$(cat)
+event=$(printf '%s' "$payload" | jq -r '.hook_event_name // empty' 2>/dev/null || true)
+
+case "$event" in
+  UserPromptSubmit|PreToolUse)
+    state=busy
+    ;;
+  PermissionRequest|Stop)
+    state=wait
+    ;;
+  SessionEnd)
+    state=done
+    ;;
+  *)
+    exit 0
+    ;;
+esac
+
+printf '%s' "$payload" | ~/dotfiles/bin/agent-status "$state"
+
+# Stop requires valid JSON on stdout even when the hook has no model-facing
+# result. Other events accept an empty successful response.
+if [ "$event" = Stop ]; then
+  printf '{}\n'
+fi

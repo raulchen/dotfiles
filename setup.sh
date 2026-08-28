@@ -74,6 +74,11 @@ for f in "$base_dir"/claude/*; do
     link_file "$f" ~/.claude/"$(basename "$f")"
 done
 
+mkdir -p ~/.codex
+for f in "$base_dir"/codex/*; do
+    link_file "$f" ~/.codex/"$(basename "$f")"
+done
+
 mkdir -p ~/.config
 xdg_configs=(nvim tmux git lsd wezterm ghostty yazi)
 for name in "${xdg_configs[@]}"; do

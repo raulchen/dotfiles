@@ -6,10 +6,10 @@ payload=$(cat)
 event=$(printf '%s' "$payload" | jq -r '.hook_event_name // empty' 2>/dev/null || true)
 
 case "$event" in
-  UserPromptSubmit|PreToolUse)
+  UserPromptSubmit|PreToolUse|PermissionRequest)
     state=busy
     ;;
-  PermissionRequest|Stop)
+  Stop)
     state=wait
     ;;
   SessionEnd)

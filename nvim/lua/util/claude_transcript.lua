@@ -64,15 +64,16 @@ function M.resolve(terminal, cwd)
   return newest_jsonl(cwd), true
 end
 
--- Read only the transcript tail: bytes after the last `compact_boundary` line,
--- or the whole file if it was never compacted. Walks backward in chunks so the
--- (possibly huge) pre-compaction bulk is never read; each marker is confirmed
--- by decoding its line, so the string appearing in message content (as in this
--- very session) can't trigger a false cut.
-local function transcript_tail(path, transcript)
-  -- Offset just past the last verified compact_boundary line in `buf`, or nil.
-  local function boundary_cut(buf)
-    local from, cut = 1, nil
+-- Read the current window plus `compact_windows` preceding windows (one by
+-- default): bytes after the corresponding `compact_boundary`, or the whole
+-- file if too few exist. Walk backward in chunks so older bulk is never read;
+-- each marker is decoded so mentions in message content cannot trigger a cut.
+local function transcript_tail(path, transcript, compact_windows)
+  local wanted = (compact_windows or 1) + 1
+  local seen, count = {}, 0
+  -- Offset just past the wanted boundary found while walking backward.
+  local function boundary_cut(buf, at_file_start, window_offset)
+    local from, cuts = 1, {}
     while true do
       local s = buf:find("compact_boundary", from, true)
       if not s then break end
@@ -91,11 +92,19 @@ local function transcript_tail(path, transcript)
         local ok, ev = pcall(vim.json.decode, buf:sub(ls or lb, le - 1))
         if ok and type(ev) == "table" and ev.type == "system"
             and ev.subtype == "compact_boundary" then
-          cut = le + 1
+          cuts[#cuts + 1] = le + 1
         end
       end
     end
-    return cut
+    table.sort(cuts, function(a, b) return a > b end)
+    for _, cut in ipairs(cuts) do
+      local absolute = window_offset + cut - 1
+      if not seen[absolute] then
+        seen[absolute], count = true, count + 1
+        if count == wanted then return cut end
+      end
+    end
+    return at_file_start and 1 or nil
   end
   return transcript.tail(path, boundary_cut)
 end
@@ -106,8 +115,8 @@ end
 -- returned lines; each block's fenced body is stashed in `blocks` as
 -- { out = <1-based summary line in the lines>, body = { lines… } } to be
 -- spliced into the buffer on demand. Thinking and bodyless turns are skipped.
-function M.render(path, transcript)
-  local text = transcript_tail(path, transcript)
+function M.render(path, transcript, compact_windows)
+  local text = transcript_tail(path, transcript, compact_windows)
   if not text then return nil end
   local out, blocks_out = {}, {}
   local push, summary = transcript.push, transcript.summary

@@ -48,12 +48,14 @@ function M.resolve(_, cwd, transcript)
   end
 end
 
--- Read from the latest top-level `compacted` record. That record carries the
--- replacement history and must remain in the tail, unlike Claude's boundary
--- marker, which is discarded by its parser.
-local function transcript_tail(path, transcript)
-  local function boundary_cut(buf, at_file_start)
-    local from, cut = 1, nil
+-- Read the current window plus `compact_windows` preceding windows (one by
+-- default). A `compacted` record begins a window, so retain the corresponding
+-- record; with too few compactions, retain the whole file.
+local function transcript_tail(path, transcript, compact_windows)
+  local wanted = (compact_windows or 1) + 1
+  local seen, count = {}, 0
+  local function boundary_cut(buf, at_file_start, window_offset)
+    local from, cuts = 1, {}
     while true do
       local marker = buf:find('"type":"compacted"', from, true)
       if not marker then break end
@@ -64,15 +66,23 @@ local function transcript_tail(path, transcript)
         if not newline or newline >= marker then break end
         line_start, p = newline + 1, newline + 1
       end
-      if line_start or at_file_start then cut = line_start or 1 end
+      cuts[#cuts + 1] = line_start or 1
     end
-    return cut
+    table.sort(cuts, function(a, b) return a > b end)
+    for _, cut in ipairs(cuts) do
+      local absolute = window_offset + cut - 1
+      if not seen[absolute] then
+        seen[absolute], count = true, count + 1
+        if count == wanted then return cut end
+      end
+    end
+    return at_file_start and 1 or nil
   end
   return transcript.tail(path, boundary_cut)
 end
 
-function M.render(path, transcript)
-  local text = transcript_tail(path, transcript)
+function M.render(path, transcript, compact_windows)
+  local text = transcript_tail(path, transcript, compact_windows)
   if not text then return nil end
   local out, blocks, calls = {}, {}, {}
   local push = transcript.push
@@ -141,8 +151,6 @@ function M.render(path, transcript)
     local ok, ev = pcall(vim.json.decode, line)
     if ok and type(ev) == "table" then
       if ev.type == "compacted" and type(ev.payload) == "table" then
-        out, blocks, calls = {}, {}, {}
-        for _, item in ipairs(ev.payload.replacement_history or {}) do message(item) end
         collapsed("context summary (compacted)",
           "Codex stores the carried compaction summary encrypted in its transcript.")
       elseif ev.type == "response_item" and type(ev.payload) == "table" then

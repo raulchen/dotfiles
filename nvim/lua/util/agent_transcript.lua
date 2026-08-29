@@ -18,8 +18,9 @@ function M.read_at(fd, len, offset)
 end
 
 -- Read the whole file, or only the range beginning at the latest boundary
--- reported by `find_cut(window, at_file_start)`. Windows are scanned backward
--- in bounded chunks, with overlap for records crossing a chunk edge.
+-- reported by `find_cut(window, at_file_start, window_offset)`. Windows are
+-- scanned backward in bounded chunks, with overlap for records crossing an
+-- edge; the absolute window offset lets stateful finders de-duplicate it.
 function M.tail(path, find_cut)
   local fd = uv.fs_open(path, "r", 438)
   if not fd then return nil end
@@ -37,7 +38,7 @@ function M.tail(path, find_cut)
       local len = math.min(chunk_size, pos)
       pos = pos - len
       local chunk = M.read_at(fd, len, pos)
-      local cut = find_cut(chunk .. carry, pos == 0)
+      local cut = find_cut(chunk .. carry, pos == 0, pos)
       if cut then
         from = pos + cut - 1
         break
@@ -147,7 +148,7 @@ end
 -- ── viewer (sidekick UI) ─────────────────────────────────────────────────────
 
 -- Per-terminal viewer state, keyed by sidekick terminal id.
--- { buf = number, cursor = { lnum, col }, blocks = table? }
+-- { buf = number, cursor = { lnum, col }, blocks = table?, compact_windows = number }
 -- `blocks` maps a `▸` summary line number -> its stashed body lines, which are
 -- shown in a float on <CR> rather than living in the (immutable) buffer.
 -- Module-level so the buf (bufhidden=hide) and its buffer-local autocmds share
@@ -167,9 +168,16 @@ local function find_focused_terminal()
 end
 
 -- Open the focused sidekick terminal's agent transcript in a read-only markdown
--- buffer, shown wherever the window picker is pointed. Closing it is the
--- window's business, not ours.
-function M.open()
+-- buffer, shown wherever the window picker is pointed. `compact_windows` is the
+-- number of completed windows to retain before the current one (default one).
+-- Closing the buffer is the window's business, not ours.
+function M.open(compact_windows)
+  compact_windows = compact_windows == nil and 1 or compact_windows
+  if type(compact_windows) ~= "number" or compact_windows < 0
+      or compact_windows ~= math.floor(compact_windows) then
+    vim.notify("compact_windows must be a non-negative integer", vim.log.levels.ERROR)
+    return
+  end
   local terminal = find_focused_terminal()
   if not terminal then
     vim.notify("No focused sidekick terminal", vim.log.levels.WARN)
@@ -200,7 +208,7 @@ function M.open()
     end
     if not path then return nil end
     local sig = transcript.file_sig(path)
-    local lines, blks = formats[agent].render(path, transcript)
+    local lines, blks = formats[agent].render(path, transcript, compact_windows)
     if not lines or #lines == 0 then return nil end
     local buf = vim.api.nvim_create_buf(true, true)
     vim.bo[buf].bufhidden = "hide"
@@ -264,7 +272,7 @@ function M.open()
   cache = transcripts[terminal.id]
   local sig = current_sig()
   local fresh = cache and cache.buf and vim.api.nvim_buf_is_valid(cache.buf)
-      and sig and cache.sig == sig
+      and sig and cache.sig == sig and cache.compact_windows == compact_windows
   if not fresh then
     local old_buf = cache and cache.buf
     local new_buf, new_blocks, new_sig = build_buf()
@@ -280,6 +288,7 @@ function M.open()
     end
     cache.blocks = new_blocks
     cache.sig = new_sig
+    cache.compact_windows = compact_windows
     if old_buf and old_buf ~= new_buf and vim.api.nvim_buf_is_valid(old_buf) then
       pcall(vim.api.nvim_buf_delete, old_buf, { force = true })
     end

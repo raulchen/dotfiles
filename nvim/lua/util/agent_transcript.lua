@@ -98,6 +98,7 @@ end
 
 function M.append_turn(out, blocks, role, body, body_blocks, has_text)
   if has_text then
+    if #out > 0 and out[#out] ~= "" then out[#out + 1] = "" end
     out[#out + 1] = role == "user" and "You" or "Agent"
     out[#out + 1] = string.rep("-", 48)
   end

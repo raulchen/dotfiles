@@ -1,12 +1,28 @@
 {
-  "description": "Expose Codex lifecycle state to the tmux status bar.",
+  "description": "Expose Codex session identity and lifecycle state to tmux.",
   "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/dotfiles/bin/agent-session codex",
+            "timeout": 1
+          }
+        ]
+      }
+    ],
     "UserPromptSubmit": [
       {
         "hooks": [
           {
             "type": "command",
-            "command": "~/dotfiles/bin/codex-agent-status",
+            "command": "~/dotfiles/bin/agent-session codex",
+            "timeout": 1
+          },
+          {
+            "type": "command",
+            "command": "~/dotfiles/bin/agent-status busy",
             "timeout": 1
           }
         ]
@@ -17,7 +33,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "~/dotfiles/bin/codex-agent-status",
+            "command": "~/dotfiles/bin/agent-status busy",
             "timeout": 1
           }
         ]
@@ -28,7 +44,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "~/dotfiles/bin/codex-agent-status",
+            "command": "~/dotfiles/bin/agent-status busy",
             "timeout": 1
           }
         ]
@@ -39,7 +55,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "~/dotfiles/bin/codex-agent-status",
+            "command": "~/dotfiles/bin/agent-status wait --json",
             "timeout": 1
           }
         ]
@@ -50,7 +66,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "~/dotfiles/bin/codex-agent-status",
+            "command": "~/dotfiles/bin/agent-status done",
             "timeout": 1
           }
         ]

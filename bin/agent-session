@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+# Map a coding-agent session to the tmux pane that owns it.
+#
+# Usage: agent-session <claude|codex>
+# Reads lifecycle hook JSON from stdin. Intended for SessionStart and
+# UserPromptSubmit; stable records are compared before being replaced.
+set -uo pipefail
+
+agent=${1:-}
+[[ "$agent" == claude || "$agent" == codex ]] || exit 0
+
+IFS=$'\t' read -r cwd session_id transcript_path < <(
+  jq -r '[.cwd // "", .session_id // "", .transcript_path // ""] | @tsv' 2>/dev/null
+) || true
+
+pane_pid=""
+pane_cwd=""
+if [[ -n "${TMUX_PANE:-}" ]]; then
+  IFS=$'\t' read -r pane_pid pane_cwd < <(
+    tmux display-message -p -t "$TMUX_PANE" \
+      $'#{pane_pid}\t#{pane_current_path}' 2>/dev/null
+  ) || true
+fi
+
+[[ "$pane_pid" =~ ^[0-9]+$ && -n "$session_id" && -n "$transcript_path" ]] || exit 0
+
+# A legacy shared Codex daemon inherits the pane and cwd that launched the
+# daemon rather than the pane owning its client. Refuse that stale context.
+if [[ "$agent" == codex && -n "$cwd" && "$pane_cwd" != "$cwd" ]]; then
+  exit 0
+fi
+
+registry_dir=${XDG_CACHE_HOME:-$HOME/.cache}/agent-sessions
+registry_file=$registry_dir/$pane_pid.json
+wanted=$(jq -cn \
+  --arg agent "$agent" \
+  --arg session_id "$session_id" \
+  --arg transcript_path "$transcript_path" \
+  --arg cwd "$cwd" \
+  --argjson pane_pid "$pane_pid" \
+  '{agent: $agent, session_id: $session_id, transcript_path: $transcript_path,
+    cwd: $cwd, pane_pid: $pane_pid}')
+current=$(sed -n '1p' "$registry_file" 2>/dev/null || true)
+[[ "$current" == "$wanted" ]] && exit 0
+
+mkdir -p "$registry_dir"
+tmp=$(mktemp "$registry_dir/.${pane_pid}.XXXXXX") || exit 0
+printf '%s\n' "$wanted" > "$tmp"
+mv -f "$tmp" "$registry_file"

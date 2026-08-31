@@ -19,8 +19,25 @@ local function first_line(fd, transcript)
   return table.concat(parts)
 end
 
--- Inspect newest root rollouts first and choose the first session whose cwd
--- matches. This works without lifecycle hooks or a tmux-specific registry.
+local function session_meta(path, transcript)
+  local fd = uv.fs_open(path, "r", 438)
+  if not fd then return end
+  local first = first_line(fd, transcript)
+  uv.fs_close(fd)
+  local ok, ev = pcall(vim.json.decode, first or "")
+  return ok and ev.type == "session_meta" and ev.payload or nil
+end
+
+local function is_root_for_cwd(path, cwd, transcript)
+  local p = session_meta(path, transcript)
+  local parent = p and p.parent_thread_id
+  return p and (parent == nil or parent == vim.NIL) and type(p.source) ~= "table"
+      and vim.fs.normalize(p.cwd or "") == vim.fs.normalize(cwd)
+end
+
+-- If the common pane registry is unavailable, inspect newest root rollouts
+-- first and choose the first cwd match. Return `guessed` so the viewer exposes
+-- the ambiguity when multiple threads share one working directory.
 function M.resolve(_, cwd, transcript)
   local root = vim.fn.expand("~/.codex/sessions")
   local paths = vim.fn.glob(root .. "/**/*.jsonl", false, true)
@@ -33,18 +50,7 @@ function M.resolve(_, cwd, transcript)
     return a > b
   end)
   for _, path in ipairs(paths) do
-    local fd = uv.fs_open(path, "r", 438)
-    if fd then
-      local first = first_line(fd, transcript)
-      uv.fs_close(fd)
-      local ok, ev = pcall(vim.json.decode, first or "")
-      local p = ok and ev.type == "session_meta" and ev.payload or nil
-      local parent = p and p.parent_thread_id
-      if p and (parent == nil or parent == vim.NIL) and type(p.source) ~= "table"
-          and vim.fs.normalize(p.cwd or "") == vim.fs.normalize(cwd) then
-        return path
-      end
-    end
+    if is_root_for_cwd(path, cwd, transcript) then return path, true end
   end
 end
 

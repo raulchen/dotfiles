@@ -111,16 +111,6 @@ local sidekick = {
         claude = {
           cmd = { "claude", "--allow-dangerously-skip-permissions" },
         },
-        codex = {
-          -- Start (or reuse) the shared app server before launching Codex.
-          -- "$@" forwards Sidekick's resume/continue arguments.
-          cmd = {
-            "sh",
-            "-c",
-            [[codex app-server daemon start >/dev/null && exec codex --remote unix:// "$@"]],
-            "sidekick-codex",
-          },
-        },
       },
     },
   },

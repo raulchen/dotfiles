@@ -181,3 +181,10 @@ if os.getenv('SSH_CONNECTION') and os.getenv('TMUX') then
     paste = { ['+'] = osc52.paste('+'), ['*'] = osc52.paste('*') },
   }
 end
+
+-- Also copy URLs and paths opened by gx or plugins to the system clipboard.
+local original_ui_open = vim.ui.open
+vim.ui.open = function(path, opts)
+  require('core.utils').yank_to_register(path, '+')
+  return original_ui_open(path, opts)
+end

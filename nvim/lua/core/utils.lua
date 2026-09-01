@@ -67,8 +67,8 @@ M.hint_float = function(text, hl)
   end
 end
 
-M.yank_to_register = function(value)
-  local reg = vim.v.register == '"' and '+' or vim.v.register
+M.yank_to_register = function(value, register)
+  local reg = register or (vim.v.register == '"' and '+' or vim.v.register)
   vim.fn.setreg(reg, value)
   vim.notify(string.format('Copied to "%s: %s', reg, value), vim.log.levels.INFO)
 end

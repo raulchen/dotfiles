@@ -28,6 +28,8 @@ This dotfiles repository contains configuration files for various development to
 
 4. **File organization**: Each tool has its own directory with configuration files. Keep related configs together.
 
+5. **Temporary files**: Never create `nvim.log` or any other logs, test artifacts, caches, or temporary files anywhere in this repository. Direct all temporary output to `/tmp` instead.
+
 ## Commit Message Convention
 
 ### Title Format
@@ -50,4 +52,3 @@ If the changes are non-trivial, also include a commit body summarizing the chang
 - What was changed
 - Why it was changed (if not obvious)
 - Key implementation details
-

@@ -12,8 +12,8 @@
 #   tmux (default): emit tmux style escapes, for status/window formats.
 #   ansi          : emit ANSI SGR escapes, for the fzf switcher (--ansi).
 #
-# A matched file for a dead session is pruned here (belt-and-braces with the
-# focus-in cleanup in agent-status-seen.sh).
+# Status files are keyed by agent session id and removed by the SessionEnd/Stop
+# hook or when a waiting notification is acknowledged.
 set -uo pipefail
 shopt -s nullglob
 
@@ -28,11 +28,6 @@ found=""
 for f in "$dir"/*; do
   IFS=$'\t' read -r state cwd < "$f" || continue
   [ "$cwd" = "$wpath" ] || continue
-  # prune if the owning tmux session is gone
-  if ! tmux has-session -t "=$(basename "$f")" 2>/dev/null; then
-    rm -f "$f"
-    continue
-  fi
   case "$state" in
     wait) found=wait; break ;;   # waiting wins over working
     busy) found=busy ;;

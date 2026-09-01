@@ -2,8 +2,8 @@
 # Record a coding agent's state for the tmux status-bar indicator.
 #
 # Usage: agent-status <busy|wait|done> [--json]
-# Reads hook JSON from stdin for the project cwd. --json emits an empty JSON
-# response for hook events whose caller requires one.
+# Reads the session id and project cwd from hook JSON. --json emits an empty
+# JSON response for hook events whose caller requires one.
 set -uo pipefail
 
 state=${1:-}
@@ -11,20 +11,22 @@ output=${2:-}
 [[ "$state" == busy || "$state" == wait || "$state" == done ]] || exit 0
 [[ -z "$output" || "$output" == --json ]] || exit 0
 
-cwd=$(jq -r '.cwd // empty' 2>/dev/null) || cwd=""
-sess=""
-if [[ -n "${TMUX_PANE:-}" ]]; then
-  sess=$(tmux display-message -p -t "$TMUX_PANE" '#{session_name}' 2>/dev/null) || true
-fi
+IFS=$'\t' read -r session_id cwd < <(
+  jq -r '[.session_id // "", .cwd // ""] | @tsv' 2>/dev/null
+) || true
 
-if [[ -n "$sess" ]]; then
+if [[ "$session_id" =~ ^[A-Za-z0-9._-]+$ ]]; then
   status_dir=${XDG_CACHE_HOME:-$HOME/.cache}/agent-status
-  status_file=$status_dir/$sess
-  wanted=$(printf '%s\t%s' "$state" "$cwd")
-  current=$(sed -n '1p' "$status_file" 2>/dev/null || true)
-  if [[ "$current" != "$wanted" ]]; then
-    mkdir -p "$status_dir"
-    printf '%s\n' "$wanted" > "$status_file"
+  status_file=$status_dir/$session_id
+  if [[ "$state" == done ]]; then
+    rm -f "$status_file"
+  else
+    wanted=$(printf '%s\t%s' "$state" "$cwd")
+    current=$(sed -n '1p' "$status_file" 2>/dev/null || true)
+    if [[ "$current" != "$wanted" ]]; then
+      mkdir -p "$status_dir"
+      printf '%s\n' "$wanted" > "$status_file"
+    fi
   fi
 fi
 

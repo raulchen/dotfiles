@@ -7,6 +7,9 @@ is_darwin=false
 
 link_file() {
     local src=$1 dst=$2
+    local use_sudo=${3:-false}
+    local -a command_prefix=()
+    [[ $use_sudo == true ]] && command_prefix=(sudo)
     local backup_dst=false delete_dst=false link_dst=true
     if [[ -e $dst ]]; then
         current_link=$(readlink "$dst")
@@ -41,14 +44,14 @@ link_file() {
         mkdir -p "$backup_dir"
         local backup_file
         backup_file="$backup_prefix$(basename "$dst")"
-        mv "$dst" "$backup_file"
+        "${command_prefix[@]}" mv "$dst" "$backup_file"
         echo "$dst was backed up to $backup_file"
     fi
     if [[ "$delete_dst" == "true" ]]; then
-        rm -rf "$dst"
+        "${command_prefix[@]}" rm -rf "$dst"
     fi
     if [[ "$link_dst" == "true" ]]; then
-        ln -s "$src" "$dst"
+        "${command_prefix[@]}" ln -s "$src" "$dst"
         echo "$dst linked to $src"
         return 0
     fi
@@ -76,8 +79,11 @@ done
 
 mkdir -p ~/.codex
 for f in "$base_dir"/codex/*; do
+    [[ $(basename "$f") == config.toml ]] && continue
     link_file "$f" ~/.codex/"$(basename "$f")"
 done
+sudo mkdir -p /etc/codex
+link_file "$base_dir/codex/config.toml" /etc/codex/config.toml true
 
 mkdir -p ~/.config
 xdg_configs=(nvim tmux git lsd wezterm ghostty yazi)

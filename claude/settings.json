@@ -51,23 +51,9 @@
     "defaultMode": "auto"
   },
   "hooks": {
-    "SessionStart": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "~/dotfiles/bin/agent-session claude"
-          }
-        ]
-      }
-    ],
     "UserPromptSubmit": [
       {
         "hooks": [
-          {
-            "type": "command",
-            "command": "~/dotfiles/bin/agent-session claude"
-          },
           {
             "type": "command",
             "command": "~/dotfiles/bin/agent-status busy"

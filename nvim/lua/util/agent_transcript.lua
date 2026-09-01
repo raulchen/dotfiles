@@ -139,31 +139,8 @@ local formats = {
   codex = require("util.codex_transcript"),
 }
 
--- Hooks for both agents write the same pane-root-PID record. The pane root is
--- the agent for a normal Sidekick tool and the long-lived shell for the zsh
--- tool, so it remains stable across startup, /resume, and agent process swaps.
-local function pane_session(terminal, cwd)
-  local pane = terminal and terminal.parent and terminal.parent.tmux_pid
-  if not pane then return end
-  local cache_root = vim.env.XDG_CACHE_HOME or vim.fn.expand("~/.cache")
-  local file = ("%s/agent-sessions/%s.json"):format(cache_root, pane)
-  local ok, lines = pcall(vim.fn.readfile, file)
-  if not ok then return end
-  local decoded, session = pcall(vim.json.decode, table.concat(lines, "\n"))
-  if not decoded or type(session) ~= "table"
-      or (session.agent ~= "claude" and session.agent ~= "codex")
-      or tostring(session.pane_pid) ~= tostring(pane)
-      or type(session.session_id) ~= "string" or session.session_id == ""
-      or type(session.transcript_path) ~= "string"
-      or not session.transcript_path:match("%.jsonl$")
-      or vim.fs.normalize(session.cwd or "") ~= vim.fs.normalize(cwd) then
-    return
-  end
-  return session
-end
-
--- The registry normally identifies a zsh pane. Process inspection is only a
--- compatibility fallback for a session whose hooks have not run yet.
+-- A named Sidekick tool identifies itself directly. For the generic zsh tool,
+-- inspect the pane's process tree so Claude and Codex still share this viewer.
 local function process_agent(terminal)
   local name = terminal and terminal.tool and terminal.tool.name
   if name == "claude" or name == "codex" then return name end
@@ -184,13 +161,6 @@ local function process_agent(terminal)
 end
 
 function M.resolve(terminal, cwd)
-  local session = pane_session(terminal, cwd)
-  if session then
-    -- SessionStart may run before the transcript's first record is created.
-    -- An exact but not-yet-materialised path must not fall back to a neighbour.
-    local path = uv.fs_stat(session.transcript_path) and session.transcript_path or nil
-    return path, false, session.agent
-  end
   local name = process_agent(terminal)
   local path, guessed = formats[name].resolve(terminal, cwd, transcript)
   return path, guessed, name
@@ -253,8 +223,8 @@ function M.open(compact_windows)
   -- that rebuild would then never happen.
   local function build_buf()
     local path, guessed, agent = M.resolve(terminal, term_cwd)
-    if path and guessed then
-      vim.notify("Couldn't identify this pane's session; showing the most recent transcript",
+    if path and guessed and agent ~= "codex" then
+      vim.notify("Couldn't identify this pane's session; showing the most recent transcript for this cwd",
         vim.log.levels.WARN)
     end
     if not path then return nil end

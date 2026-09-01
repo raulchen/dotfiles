@@ -35,9 +35,16 @@ local function is_root_for_cwd(path, cwd, transcript)
       and vim.fs.normalize(p.cwd or "") == vim.fs.normalize(cwd)
 end
 
--- If the common pane registry is unavailable, inspect newest root rollouts
--- first and choose the first cwd match. Return `guessed` so the viewer exposes
--- the ambiguity when multiple threads share one working directory.
+-- Codex does not expose an authoritative client-PID-to-thread mapping. Its
+-- lifecycle hooks include the thread id and transcript path, but when Codex is
+-- connected through the shared app-server daemon those hooks inherit the
+-- daemon's tmux environment, not the client pane's. A hook-written pane marker
+-- would therefore be wrong after another pane starts or resumes a thread.
+--
+-- Inspect newest root rollouts and choose the first cwd match instead. This is
+-- deliberately reported as a guess: concurrent Codex threads in the same cwd
+-- cannot be distinguished, and /resume is exact only once its rollout becomes
+-- the most recently modified matching file.
 function M.resolve(_, cwd, transcript)
   local root = vim.fn.expand("~/.codex/sessions")
   local paths = vim.fn.glob(root .. "/**/*.jsonl", false, true)

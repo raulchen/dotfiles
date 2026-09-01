@@ -1,25 +1,9 @@
 {
-  "description": "Expose Codex session identity and lifecycle state to tmux.",
+  "description": "Expose Codex lifecycle state to tmux.",
   "hooks": {
-    "SessionStart": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "~/dotfiles/bin/agent-session codex",
-            "timeout": 1
-          }
-        ]
-      }
-    ],
     "UserPromptSubmit": [
       {
         "hooks": [
-          {
-            "type": "command",
-            "command": "~/dotfiles/bin/agent-session codex",
-            "timeout": 1
-          },
           {
             "type": "command",
             "command": "~/dotfiles/bin/agent-status busy",

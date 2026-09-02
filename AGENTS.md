@@ -8,15 +8,23 @@ This dotfiles repository contains configuration files for various development to
   - `init.lua` - Entry point, sets up lazy.nvim
   - `lua/core/` - Core settings (options, keymaps, autocmds)
   - `lua/plugins/` - Plugin configurations
+  - `lua/util/` - Shared Lua utilities
 - **`vim/`** - Vim configuration (vim-plug based)
 - **`zsh/`** - Zsh configuration (zshrc, aliases, functions, theme)
 - **`tmux/`** - Tmux configuration
 - **`hammerspoon/`** - macOS automation scripts (macOS only)
+- **`macos/`** - macOS-specific system configuration and setup scripts
 - **`git/`** - Git configuration
 - **`wezterm/`** - WezTerm terminal configuration
 - **`ghostty/`** - Ghostty terminal configuration
 - **`lsd/`** - lsd (ls alternative) configuration
-- **`bin/`** - Utility scripts
+- **`yazi/`** - Yazi terminal file manager configuration
+- **`claude/`** - Claude Code settings and keybindings
+- **`codex/`** - Codex configuration and hooks
+- **`bin/`** - Human-facing commands and utility scripts; added to `PATH`
+- **`libexec/`** - Internal executables invoked by configurations and other scripts; not intended for direct use
+- **`installers/`** - Per-tool installation scripts
+- **`setup.sh`** - Main setup script that creates configuration symlinks
 
 ## Key Conventions
 

@@ -134,6 +134,13 @@ function M.file_sig(path)
 end
 
 local transcript = M
+---@class AgentTranscriptCandidate
+---@field id string
+---@field path string
+---@field title string
+---@field status string
+---@field updated_at? number
+
 local formats = {
   claude = require("util.claude_transcript"),
   codex = require("util.codex_transcript"),
@@ -160,8 +167,8 @@ local function process_agent(terminal)
   return found or "claude"
 end
 
-function M.resolve(terminal, cwd)
-  local name = process_agent(terminal)
+function M.resolve(terminal, cwd, name)
+  name = name or process_agent(terminal)
   local path, guessed = formats[name].resolve(terminal, cwd, transcript)
   return path, guessed, name
 end
@@ -188,30 +195,17 @@ local function find_focused_terminal()
   end
 end
 
--- Open the focused sidekick terminal's agent transcript in a read-only markdown
--- buffer, shown wherever the window picker is pointed. `compact_windows` is the
--- number of completed windows to retain before the current one (default one).
--- Closing the buffer is the window's business, not ours.
-function M.open(compact_windows)
-  compact_windows = compact_windows == nil and 1 or compact_windows
-  if type(compact_windows) ~= "number" or compact_windows < 0
-      or compact_windows ~= math.floor(compact_windows) then
-    vim.notify("compact_windows must be a non-negative integer", vim.log.levels.ERROR)
-    return
+local function open_terminal(terminal, term_cwd, agent, compact_windows, selected_path)
+  local function resolve_path()
+    if selected_path then return selected_path, false, agent end
+    return M.resolve(terminal, term_cwd, agent)
   end
-  local terminal = find_focused_terminal()
-  if not terminal then
-    vim.notify("No focused sidekick terminal", vim.log.levels.WARN)
-    return
-  end
-  local term_cwd = (terminal.parent and terminal.parent.cwd)
-      or terminal.cwd or vim.fn.getcwd()
 
   -- Signature of the session's current transcript, for the freshness check that
   -- decides whether a rebuild is needed at all (skipping both the tail re-parse
   -- and the one-time markdown treesitter parse).
   local function current_sig()
-    local path = M.resolve(terminal, term_cwd)
+    local path = resolve_path()
     return transcript.file_sig(path)
   end
 
@@ -222,7 +216,7 @@ function M.open(compact_windows)
   -- an append (or a different session) that this buffer doesn't contain, and
   -- that rebuild would then never happen.
   local function build_buf()
-    local path, guessed, agent = M.resolve(terminal, term_cwd)
+    local path, guessed, agent = resolve_path()
     if path and guessed and agent ~= "codex" then
       vim.notify("Couldn't identify this pane's session; showing the most recent transcript for this cwd",
         vim.log.levels.WARN)
@@ -449,6 +443,55 @@ function M.open(compact_windows)
   bind_keys(cache.buf)
 
   vim.cmd.stopinsert()
+end
+
+-- Open the focused sidekick terminal's agent transcript in a read-only markdown
+-- buffer, shown wherever the window picker is pointed. `compact_windows` is the
+-- number of completed windows to retain before the current one (default one).
+-- Closing the buffer is the window's business, not ours.
+function M.open(compact_windows)
+  compact_windows = compact_windows == nil and 1 or compact_windows
+  if type(compact_windows) ~= "number" or compact_windows < 0
+      or compact_windows ~= math.floor(compact_windows) then
+    vim.notify("compact_windows must be a non-negative integer", vim.log.levels.ERROR)
+    return
+  end
+  local terminal = find_focused_terminal()
+  if not terminal then
+    vim.notify("No focused sidekick terminal", vim.log.levels.WARN)
+    return
+  end
+  local term_cwd = (terminal.parent and terminal.parent.cwd)
+      or terminal.cwd or vim.fn.getcwd()
+  local agent = process_agent(terminal)
+
+  formats[agent].list_candidates(terminal, term_cwd, function(candidates)
+    if #candidates == 0 then
+      open_terminal(terminal, term_cwd, agent, compact_windows)
+      return
+    end
+    if #candidates == 1 then
+      open_terminal(terminal, term_cwd, agent, compact_windows, candidates[1].path)
+      return
+    end
+    vim.ui.select(candidates, {
+      prompt = agent:gsub("^%l", string.upper) .. " session",
+      kind = "agent_session",
+      format_item = function(candidate)
+        local title = vim.trim(tostring(candidate.title or candidate.id):gsub("%s+", " "))
+        if title == "" then title = candidate.id end
+        local stamp = type(candidate.updated_at) == "number"
+            and os.date("%m-%d %H:%M", candidate.updated_at) or ""
+        return ("%-11s  %s  %s  %s"):format(
+          candidate.status or "live", stamp, vim.fn.strcharpart(title, 0, 100),
+          candidate.id:sub(1, 8))
+      end,
+    }, function(candidate)
+      if candidate then
+        open_terminal(terminal, term_cwd, agent, compact_windows, candidate.path)
+      end
+    end)
+  end)
 end
 
 return M

@@ -42,25 +42,41 @@ local function newest_jsonl(cwd)
   return newest
 end
 
--- Resolve the transcript (.jsonl) of the session running in `terminal`.
--- Returns (path, guessed), where `guessed` marks the newest-in-dir fallback:
--- it silently shows a *neighbouring* session when several share a cwd, which is
--- the one thing this resolution exists to avoid, so the caller says so.
-function M.resolve(terminal, cwd)
+-- Return the exact live session belonging to this pane. Claude's native PID
+-- registry follows /resume and /clear, so this never needs a manual picker.
+---@param done fun(candidates: AgentTranscriptCandidate[])
+function M.list_candidates(terminal, cwd, done)
   -- The tmux pane's process is the CLI itself for a sidekick-managed session,
   -- or its parent shell for the `zsh` tool that hosts a manually started one.
   local pane = terminal and terminal.parent and terminal.parent.tmux_pid
   local pids = pane and vim.list_extend({ pane }, vim.api.nvim_get_proc_children(pane)) or {}
+  local target_cwd = uv.fs_realpath(cwd) or vim.fs.normalize(cwd)
   for _, pid in ipairs(pids) do
     local s = live_session(pid)
-    if s then
+    local session_cwd = s and (uv.fs_realpath(s.cwd) or vim.fs.normalize(s.cwd))
+    if s and session_cwd == target_cwd then
       -- The file appears with the session's first message. Until then it has no
       -- transcript, and saying so beats falling back to a *different* session's.
       local path = ("%s/%s.jsonl"):format(project_dir(s.cwd), s.sessionId)
-      return uv.fs_stat(path) and path or nil, false
+      local stat = uv.fs_stat(path)
+      vim.schedule(function()
+        done({ {
+          id = s.sessionId,
+          path = path,
+          title = s.sessionId,
+          status = "live",
+          updated_at = stat and stat.mtime.sec or nil,
+        } })
+      end)
+      return
     end
   end
+  vim.schedule(function() done({}) end)
+end
 
+-- Resolve the newest persisted transcript when there is no live PID match.
+-- Returns guessed=true because another session may share this cwd.
+function M.resolve(_, cwd)
   return newest_jsonl(cwd), true
 end
 

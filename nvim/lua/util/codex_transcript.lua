@@ -35,11 +35,47 @@ local function is_root_for_cwd(path, cwd, transcript)
       and vim.fs.normalize(p.cwd or "") == vim.fs.normalize(cwd)
 end
 
--- Codex does not expose an authoritative client-PID-to-thread mapping. Its
--- lifecycle hooks include the thread id and transcript path, but when Codex is
--- connected through the shared app-server daemon those hooks inherit the
--- daemon's tmux environment, not the client pane's. A hook-written pane marker
--- would therefore be wrong after another pane starts or resumes a thread.
+-- Return every live root thread under this cwd. The app server cannot identify
+-- the owning client pane, so the shared viewer selects automatically only when
+-- this list contains one candidate.
+---@param done fun(candidates: AgentTranscriptCandidate[])
+function M.list_candidates(_, cwd, done)
+  local command = vim.fn.exepath("codex-live-threads")
+  if command == "" then
+    vim.schedule(function() done({}) end)
+    return
+  end
+  local query_cwd = uv.fs_realpath(cwd) or vim.fs.normalize(cwd)
+  vim.system({ command, query_cwd }, { text = true }, function(result)
+    vim.schedule(function()
+      local ok, decoded = pcall(vim.json.decode, result.code == 0 and result.stdout or "")
+      if not ok or type(decoded) ~= "table" then
+        done({})
+        return
+      end
+      local candidates = {}
+      for _, thread in ipairs(decoded) do
+        if type(thread) == "table" and type(thread.id) == "string"
+            and type(thread.path) == "string" and thread.path:match("%.jsonl$")
+            and type(thread.status) == "table" then
+          candidates[#candidates + 1] = {
+            id = thread.id,
+            path = thread.path,
+            title = thread.name or thread.preview or thread.id,
+            status = thread.status.type or "loaded",
+            updated_at = thread.updatedAt,
+          }
+        end
+      end
+      done(candidates)
+    end)
+  end)
+end
+
+-- If no live thread is available, inspect persisted rollouts. Codex lifecycle
+-- hooks include the thread id and transcript path, but daemon-dispatched hooks
+-- inherit the daemon's tmux environment rather than the client pane's, so they
+-- cannot safely maintain a pane marker.
 --
 -- Inspect newest root rollouts and choose the first cwd match instead. This is
 -- deliberately reported as a guess: concurrent Codex threads in the same cwd

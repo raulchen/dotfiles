@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Record a coding agent's state for the tmux status-bar indicator.
 #
-# Usage: agent-status <busy|wait|done> [--json]
+# Usage: ~/dotfiles/libexec/agent-status <busy|wait|done> [--json]
 # Reads the session id and project cwd from hook JSON. --json emits an empty
 # JSON response for hook events whose caller requires one.
 set -uo pipefail

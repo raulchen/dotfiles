@@ -232,7 +232,7 @@ fi
 if [ -n "$TMUX" ]; then
     # Hook function to update tmux window name
     function tmux_update_window_name() {
-        ~/.config/tmux/scripts/tmux_update_window_name.sh
+        ~/dotfiles/libexec/tmux-update-window-name
     }
     # The name derives from $PWD, so hook chpwd rather than precmd: each run
     # costs ~70ms of tmux IPC, and nothing changes between prompts in the same

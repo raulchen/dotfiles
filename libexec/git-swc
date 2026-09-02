@@ -1,3 +1,4 @@
 #!/bin/bash
+# Implements the `git swc` alias.
 
 git switch -c "$1" 2>/dev/null || git switch "$1"

@@ -61,12 +61,12 @@
     ss = "stash"
     st = "status"
     sw = "switch"
-    swc = "!~/.config/git/scripts/git-swc"
+    swc = "!~/dotfiles/libexec/git-swc"
     swm = "!git switch $(git master-branch)"
     swl = "switch -"  -- switch to last branch
     wt = "worktree"
     # Convert repo to bare and checkout main branch as worktree
-    to-bare = "!~/.config/git/scripts/git-to-bare"
+    to-bare = "!~/dotfiles/libexec/git-to-bare"
 [include]
     path = ~/.config/git/delta.txt
 [include]

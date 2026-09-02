@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Tmux fzf file picker - select files and insert them into the current pane
+# Select files with fzf and insert them into the current tmux pane.
 
 # Exit if not running in tmux
 if [ -z "$TMUX" ]; then

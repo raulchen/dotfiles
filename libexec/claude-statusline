@@ -1,4 +1,5 @@
 #!/bin/bash
+# Render Claude Code's status line from its JSON input.
 
 input=$(cat)
 

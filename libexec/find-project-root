@@ -1,5 +1,5 @@
 #!/bin/bash
-# Script to find the project root based on specific files or directories
+# Find a project root for internal dotfiles callers.
 
 # Files or directories that signify a project root.
 special_paths=(".git" "package.json" "Cargo.toml" "go.mod" "pyproject.toml" "pom.xml" "build.gradle" "build.gradle.kts")

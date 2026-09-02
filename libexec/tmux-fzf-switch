@@ -12,7 +12,7 @@
 set -uo pipefail
 
 # Emits the coloured agent logo (ANSI) for a given cwd, empty if none waiting.
-flag_script="$HOME/.config/tmux/scripts/agent-window-flag.sh"
+flag_script="$HOME/dotfiles/libexec/tmux-agent-window-flag"
 
 # Print the fzf input rows for a mode as <target>\t<display>, where display is
 # the active-row marker + agent flag + the human-readable columns. Shared by the

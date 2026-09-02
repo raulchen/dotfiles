@@ -40,8 +40,8 @@ end
 -- this list contains one candidate.
 ---@param done fun(candidates: AgentTranscriptCandidate[])
 function M.list_candidates(_, cwd, done)
-  local command = vim.fn.exepath("codex-live-threads")
-  if command == "" then
+  local command = vim.fn.expand("~/dotfiles/libexec/codex-live-threads")
+  if vim.fn.executable(command) ~= 1 then
     vim.schedule(function() done({}) end)
     return
   end

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // List transcript-bearing threads currently loaded by the managed Codex daemon.
-// Usage: codex-live-threads <absolute-cwd>
+// Usage: ~/dotfiles/libexec/codex-live-threads <absolute-cwd>
 // Prints a JSON array. Failures are silent so callers can fall back to disk.
 "use strict";
 

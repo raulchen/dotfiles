@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Acknowledge a waiting agent when you switch to the window showing its project,
+# Acknowledge a waiting agent when tmux focuses its project window,
 # after it has requested attention.
 #
 # Bound to tmux's pane-focus-in: clears the "waiting" (red) flag for the agent

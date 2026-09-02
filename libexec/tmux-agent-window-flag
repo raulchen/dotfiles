@@ -4,11 +4,11 @@
 # Prints the agent logo, coloured, when an agent whose project cwd matches THIS
 # window is waiting (red) or working (yellow); nothing otherwise. Used as a
 # prefix in window-status-format via:
-#     #(agent-window-flag.sh '#{pane_current_path}')#I.#W#F
+#     #(tmux-agent-window-flag '#{pane_current_path}')#I.#W#F
 # so the logo leads the window name — even though the agent runs in a hidden
 # tmux session (nvim sidekick.nvim). Matched by exact cwd.
 #
-# Usage: agent-window-flag.sh <path> [tmux|ansi]
+# Usage: tmux-agent-window-flag <path> [tmux|ansi]
 #   tmux (default): emit tmux style escapes, for status/window formats.
 #   ansi          : emit ANSI SGR escapes, for the fzf switcher (--ansi).
 #

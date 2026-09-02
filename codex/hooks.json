@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "~/dotfiles/bin/agent-status busy",
+            "command": "~/dotfiles/libexec/agent-status busy",
             "timeout": 1
           }
         ]
@@ -17,7 +17,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "~/dotfiles/bin/agent-status busy",
+            "command": "~/dotfiles/libexec/agent-status busy",
             "timeout": 1
           }
         ]
@@ -28,7 +28,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "~/dotfiles/bin/agent-status busy",
+            "command": "~/dotfiles/libexec/agent-status busy",
             "timeout": 1
           }
         ]
@@ -39,7 +39,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "~/dotfiles/bin/agent-status wait --json",
+            "command": "~/dotfiles/libexec/agent-status wait --json",
             "timeout": 1
           }
         ]
@@ -50,7 +50,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "~/dotfiles/bin/agent-status done",
+            "command": "~/dotfiles/libexec/agent-status done",
             "timeout": 1
           }
         ]

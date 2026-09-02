@@ -34,6 +34,17 @@
         ]
       }
     ],
+    "Interrupt": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/dotfiles/libexec/agent-status done",
+            "timeout": 1
+          }
+        ]
+      }
+    ],
     "Stop": [
       {
         "hooks": [

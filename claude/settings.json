@@ -91,6 +91,26 @@
           }
         ]
       }
+    ],
+    "StopFailure": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/dotfiles/libexec/agent-status done"
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/dotfiles/libexec/agent-status done"
+          }
+        ]
+      }
     ]
   },
   "statusLine": {

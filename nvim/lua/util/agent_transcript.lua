@@ -183,6 +183,11 @@ end
 -- cursor state with future M.open invocations across reopens.
 local transcripts = {}
 
+-- Remember an explicit session choice for the lifetime of its Sidekick terminal
+-- object. Weak keys make restarting the terminal a guaranteed escape hatch even
+-- when Sidekick reuses its deterministic tool+cwd terminal id.
+local selections = setmetatable({}, { __mode = "k" })
+
 -- Namespace for the dim highlight on each `▸` summary line, so collapsed tool
 -- blocks recede and the conversation prose stays prominent.
 local ns = vim.api.nvim_create_namespace("agent_transcript")
@@ -193,6 +198,54 @@ local function find_focused_terminal()
   for _, t in pairs(Terminal.sessions()) do
     if t.buf == current_buf or t:is_focused() then return t end
   end
+end
+
+local function choose_candidate(terminal, term_cwd, agent, done)
+  formats[agent].list_candidates(terminal, term_cwd, function(candidates)
+    local cwd = uv.fs_realpath(term_cwd) or vim.fs.normalize(term_cwd)
+    local remembered = selections[terminal]
+    local match
+    if remembered and remembered.agent == agent and remembered.cwd == cwd then
+      for _, candidate in ipairs(candidates) do
+        if candidate.id == remembered.id then
+          match = candidate
+          break
+        end
+      end
+    end
+    if remembered and not match then selections[terminal] = nil end
+
+    if match then
+      done(match, false)
+      return
+    end
+    if #candidates == 0 then
+      done(nil, true)
+      return
+    end
+    if #candidates == 1 then
+      done(candidates[1], false)
+      return
+    end
+    vim.ui.select(candidates, {
+      prompt = agent:gsub("^%l", string.upper) .. " session",
+      kind = "agent_session",
+      format_item = function(candidate)
+        local title = vim.trim(tostring(candidate.title or candidate.id):gsub("%s+", " "))
+        if title == "" then title = candidate.id end
+        local stamp = type(candidate.updated_at) == "number"
+            and os.date("%m-%d %H:%M", candidate.updated_at) or ""
+        return ("%-11s  %s  %s  %s"):format(
+          candidate.status or "live", stamp, vim.fn.strcharpart(title, 0, 100),
+          candidate.id:sub(1, 8))
+      end,
+    }, function(candidate)
+      if candidate then
+        selections[terminal] = { agent = agent, cwd = cwd, id = candidate.id }
+      end
+      done(candidate, false)
+    end)
+  end)
 end
 
 local function open_terminal(terminal, term_cwd, agent, compact_windows, selected_path)
@@ -465,32 +518,12 @@ function M.open(compact_windows)
       or terminal.cwd or vim.fn.getcwd()
   local agent = process_agent(terminal)
 
-  formats[agent].list_candidates(terminal, term_cwd, function(candidates)
-    if #candidates == 0 then
+  choose_candidate(terminal, term_cwd, agent, function(candidate, fallback)
+    if candidate then
+      open_terminal(terminal, term_cwd, agent, compact_windows, candidate.path)
+    elseif fallback then
       open_terminal(terminal, term_cwd, agent, compact_windows)
-      return
     end
-    if #candidates == 1 then
-      open_terminal(terminal, term_cwd, agent, compact_windows, candidates[1].path)
-      return
-    end
-    vim.ui.select(candidates, {
-      prompt = agent:gsub("^%l", string.upper) .. " session",
-      kind = "agent_session",
-      format_item = function(candidate)
-        local title = vim.trim(tostring(candidate.title or candidate.id):gsub("%s+", " "))
-        if title == "" then title = candidate.id end
-        local stamp = type(candidate.updated_at) == "number"
-            and os.date("%m-%d %H:%M", candidate.updated_at) or ""
-        return ("%-11s  %s  %s  %s"):format(
-          candidate.status or "live", stamp, vim.fn.strcharpart(title, 0, 100),
-          candidate.id:sub(1, 8))
-      end,
-    }, function(candidate)
-      if candidate then
-        open_terminal(terminal, term_cwd, agent, compact_windows, candidate.path)
-      end
-    end)
   end)
 end
 

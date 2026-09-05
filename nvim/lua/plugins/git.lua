@@ -291,6 +291,77 @@ local function open_flat_diff()
   vim.bo[buf].modifiable = false
 end
 
+local function worktree_head(path)
+  local result = vim.system({
+    "git", "-C", path, "rev-parse", "HEAD",
+  }, { text = true }):wait()
+
+  if result.code ~= 0 then
+    vim.notify(result.stderr or "Unable to resolve worktree HEAD", vim.log.levels.ERROR)
+    return
+  end
+  return vim.trim(result.stdout)
+end
+
+local function open_worktree_diff(local_side)
+  local bufname = vim.api.nvim_buf_get_name(0)
+  local cwd = bufname ~= "" and vim.fs.dirname(bufname) or vim.fn.getcwd()
+  local toplevel = vim.system({
+    "git", "-C", cwd, "rev-parse", "--show-toplevel",
+  }, { text = true }):wait()
+
+  if toplevel.code ~= 0 then
+    vim.notify(toplevel.stderr or "Current buffer is not in a Git worktree", vim.log.levels.ERROR)
+    return
+  end
+
+  local current_path = vim.fs.normalize(vim.trim(toplevel.stdout))
+  local result = vim.system({
+    "git", "-C", cwd, "worktree", "list", "--porcelain",
+  }, { text = true }):wait()
+
+  if result.code ~= 0 then
+    vim.notify(result.stderr or "Unable to list Git worktrees", vim.log.levels.ERROR)
+    return
+  end
+
+  local worktrees = {}
+  for path in result.stdout:gmatch("worktree ([^\n]+)") do
+    path = vim.fs.normalize(path)
+    if path ~= current_path then
+      worktrees[#worktrees + 1] = {
+        path = path,
+        name = vim.fs.basename(path),
+      }
+    end
+  end
+
+  if #worktrees == 0 then
+    vim.notify("No other Git worktrees", vim.log.levels.WARN)
+    return
+  end
+
+  vim.ui.select(worktrees, {
+    prompt = "Select worktree:",
+    format_item = function(item)
+      return ("%s  %s"):format(item.name, item.path)
+    end,
+  }, function(choice)
+    if not choice then return end
+    vim.schedule(function()
+      local revision_path = local_side == "current" and choice.path or current_path
+      local local_path = local_side == "current" and current_path or choice.path
+      local revision = worktree_head(revision_path)
+      if not revision then return end
+
+      vim.api.nvim_cmd({
+        cmd = "DiffviewOpen",
+        args = { revision, "-C" .. local_path },
+      }, {})
+    end)
+  end)
+end
+
 local function open_diffview()
   -- Define the diff options with their corresponding action functions
   local diff_options = {
@@ -308,6 +379,14 @@ local function open_diffview()
     {
       name = "Branch changes (committed)",
       action = function() vim.cmd("DiffviewOpen origin/HEAD...HEAD") end
+    },
+    {
+      name = "Compare worktree (current local)",
+      action = function() open_worktree_diff("current") end,
+    },
+    {
+      name = "Compare worktree (other local)",
+      action = function() open_worktree_diff("other") end,
     },
     {
       name = "Pick a commit",

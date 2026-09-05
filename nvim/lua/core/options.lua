@@ -96,9 +96,9 @@ opt.splitbelow = true
 opt.splitright = true
 
 -- Min height of any window
-opt.winheight = 3
+opt.winheight = 5
 -- Min height of the current window
-opt.winminheight = 3
+opt.winminheight = 5
 
 -- Merge signcolumn and number column
 opt.signcolumn = 'number'

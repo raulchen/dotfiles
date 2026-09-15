@@ -6,6 +6,7 @@ check_for_update_on_startup = false
 in_app_updates = false
 
 [tui]
+terminal_title = ["activity", "project-name", "thread-title"]
 status_line = ["model-with-reasoning", "pull-request-number", "context-remaining", "used-tokens", "task-progress"]
 status_line_use_colors = true
 vim_mode_default = true

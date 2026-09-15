@@ -9,6 +9,17 @@ local lualine_opts = {
   sections = {
     lualine_c = {
       {
+        function()
+          local title = vim.b.term_title or ""
+          -- Titles are plain text, not statusline format strings.
+          return (title:gsub("[%c]", " "):gsub("%%", "%%%%"))
+        end,
+        color = function()
+          local fg = vim.api.nvim_get_hl(0, { name = "Title", link = false }).fg
+          return { fg = fg and string.format("#%06x", fg), gui = "NONE" }
+        end,
+      },
+      {
         "filename",
         path = 1,
       },

@@ -485,10 +485,6 @@ local function setup_diffview()
     },
     keymaps = keymaps,
     hooks = {
-      diff_buf_read = function(bufnr)
-        -- Disable snacks.scroll
-        vim.b[bufnr].snacks_scroll = false
-      end,
       ---@diagnostic disable-next-line
       view_enter = function(view)
         -- Save the current view
@@ -636,8 +632,6 @@ local function setup_octo()
     callback = function(ev)
       if not vim.b[ev.buf].octo_setup_done then
         vim.b[ev.buf].octo_setup_done = true
-        --- Disable snacks.scroll as it conflicts with the comment buffers
-        vim.b[ev.buf].snacks_scroll = false
         set_which_key(ev.buf)
         set_file_nav_keys(ev.buf)
       end

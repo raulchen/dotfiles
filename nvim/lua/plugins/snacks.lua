@@ -533,7 +533,7 @@ return {
     indent = {},
     notifier = {},
     bigfile = {},
-    scroll = {},
+    scroll = { enabled = false },
     gitbrowse = {
       what = "permalink",
     },

@@ -53,15 +53,7 @@ vim.api.nvim_create_autocmd({ "BufWritePre" }, {
   end,
 })
 
-vim.api.nvim_create_autocmd({ "VimResized" }, {
-  desc = "Equalize window sizes when vim is resized",
-  group = general_group,
-  callback = function()
-    local current_tab = vim.api.nvim_get_current_tabpage()
-    vim.cmd("tabdo wincmd =")
-    vim.api.nvim_set_current_tabpage(current_tab)
-  end,
-})
+require("util.window_resize").setup(general_group)
 
 -- When using clangd with Bazel, "go to definition" often lands on symlinked
 -- files under bazel-out/. This autocmd resolves them to the real source files.

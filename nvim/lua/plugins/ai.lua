@@ -53,6 +53,10 @@ local sidekick = {
     cli = {
       win = {
         layout = "bottom",
+        wo = {
+          winfixwidth = false,
+          winfixheight = false,
+        },
         split = {
           width = 0, -- 0 = default split width (right/left layout)
           height = 0.8, -- 80% high for bottom/top layout

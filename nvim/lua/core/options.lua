@@ -86,6 +86,11 @@ opt.termguicolors = true
 -- Always show one status line across all windows
 opt.laststatus = 3
 
+-- Update the outer terminal title (or tmux pane title) as focus changes.
+-- Show "nvim · " followed by the focused buffer's terminal title, or the cwd.
+opt.title = true
+opt.titlestring = [[nvim · %{empty(get(b:, 'term_title', '')) ? fnamemodify(getcwd(), ':~') : b:term_title}]]
+
 -- Always show tabline
 opt.showtabline = 2
 

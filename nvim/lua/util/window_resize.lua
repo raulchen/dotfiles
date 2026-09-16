@@ -14,32 +14,38 @@ local function measure(layout)
       width = info.width,
       height = api.nvim_win_get_height(win) + info.status_height,
       padding = info.status_height,
+      min_width = 1,
+      min_height = 1 + info.status_height,
       fixed_width = vim.wo[win].winfixwidth,
       fixed_height = vim.wo[win].winfixheight,
     }
   end
-  local node = { axis = layout[1] == "row" and "width" or "height", children = {} }
+  local node = { layout = layout, axis = layout[1] == "row" and "width" or "height", children = {} }
   for i, child in ipairs(layout[2]) do
     node.children[i] = measure(child)
   end
   node.x, node.y = node.children[1].x, node.children[1].y
   for _, axis in ipairs({ "width", "height" }) do
     local position = axis == "width" and "x" or "y"
-    local size, fixed = 0, node.axis == axis
+    local size, total, minimum, fixed = 0, 0, 0, node.axis == axis
     for _, child in ipairs(node.children) do
       size = math.max(size, child[position] + child[axis] - node[position])
+      total = total + child[axis]
       if node.axis == axis then
+        minimum = minimum + child["min_" .. axis]
         fixed = fixed and child["fixed_" .. axis]
       else
+        minimum = math.max(minimum, child["min_" .. axis])
         fixed = fixed or child["fixed_" .. axis]
       end
     end
+    node["min_" .. axis] = minimum + (node.axis == axis and size - total or 0)
     node[axis], node["fixed_" .. axis] = size, fixed
   end
   return node
 end
 
-local function restore(old, current, axis, size)
+local function restore(old, current, axis, size, keep_fixed)
   if current.win then
     local target = math.max(1, size - (axis == "height" and current.padding or 0))
     if axis == "width" then
@@ -51,31 +57,70 @@ local function restore(old, current, axis, size)
   end
   if current.axis ~= axis then
     for i, child in ipairs(current.children) do
-      restore(old.children[i], child, axis, size)
+      restore(old.children[i], child, axis, size, keep_fixed)
     end
     return
   end
 
-  local gaps, fixed, weight = current[axis], 0, 0
+  local gaps, fixed, weight, minimum, targets = current[axis], 0, 0, 0, {}
   for i, child in ipairs(current.children) do
     gaps = gaps - child[axis]
-    local previous = old.children[i][axis]
+    local previous = keep_fixed and child["fixed_" .. axis] and child[axis] or old.children[i][axis]
+    targets[i] = previous
     if child["fixed_" .. axis] then
       fixed = fixed + previous
     else
       weight = weight + previous
+      minimum = minimum + child["min_" .. axis]
+    end
+  end
+  -- If the fixed sizes cannot fill this frame, use Neovim's allocation as
+  -- the weights. Descendants still retain their own saved proportions.
+  local constrained = weight == 0 or fixed + minimum > size - gaps
+  if constrained then
+    fixed, weight, minimum = 0, 0, 0
+    for i, child in ipairs(current.children) do
+      targets[i] = child[axis]
+      weight = weight + child[axis]
+      minimum = minimum + child["min_" .. axis]
     end
   end
   local available = math.max(0, size - gaps - fixed)
   local cumulative, allocated = 0, 0
   for i, child in ipairs(current.children) do
-    local target = old.children[i][axis]
-    if not child["fixed_" .. axis] then
+    local target = targets[i]
+    if constrained or not child["fixed_" .. axis] then
       cumulative = cumulative + target
+      minimum = minimum - child["min_" .. axis]
       local boundary = math.floor(available * cumulative / math.max(1, weight) + 0.5)
+      -- Leave room for every remaining child, even when a ratio rounds to zero.
+      boundary = math.max(allocated + child["min_" .. axis], math.min(available - minimum, boundary))
       target, allocated = boundary - allocated, boundary
     end
-    restore(old.children[i], child, axis, target)
+    restore(old.children[i], child, axis, target, keep_fixed)
+  end
+end
+
+local function find_frame(tree, layout)
+  if vim.deep_equal(tree.layout, layout) then return tree end
+  for _, child in ipairs(tree.children or {}) do
+    local found = find_frame(child, layout)
+    if found then return found end
+  end
+end
+
+-- Keep Neovim's allocation between siblings. Only restore proportions inside
+-- surviving frames whose available space changed, including after open/close.
+local function restore_inner(old, current, axis)
+  if current.win then return end
+  local previous = find_frame(old, current.layout)
+  if previous and current.axis == axis and previous[axis] ~= current[axis] then
+    -- Fixed windows keep Neovim's chosen sizes, which may already be clamped.
+    restore(previous, current, axis, current[axis], true)
+  else
+    for _, child in ipairs(current.children) do
+      restore_inner(old, child, axis)
+    end
   end
 end
 
@@ -105,6 +150,20 @@ function M.setup(group)
       return
     end
     local tabs = snapshot()
+    state.resizing = true
+    local ok, err = pcall(function()
+      for tab, current in pairs(tabs) do
+        local previous = state.observed[tab]
+        if previous and not vim.deep_equal(previous, current) then
+          for _ = 1, 2 do
+            restore_inner(previous.tree, current.tree, "width")
+            restore_inner(previous.tree, current.tree, "height")
+          end
+        end
+      end
+    end)
+    state.resizing = false
+    tabs = snapshot()
     for tab, saved in pairs(tabs) do
       if not vim.deep_equal(saved, state.observed[tab]) then
         state.saved[tab] = saved
@@ -114,6 +173,7 @@ function M.setup(group)
       if not tabs[tab] then state.saved[tab] = nil end
     end
     state.observed = tabs
+    if not ok then vim.notify(tostring(err), vim.log.levels.ERROR) end
   end
 
   local function schedule_snapshot()
@@ -164,7 +224,7 @@ function M.setup(group)
 
   remember()
   api.nvim_create_autocmd({ "VimEnter", "WinResized", "WinNew", "WinClosed", "TabEnter", "TabClosed" }, {
-    desc = "Remember split proportions after layout changes settle",
+    desc = "Preserve inner split proportions after layout changes settle",
     group = group,
     callback = schedule_snapshot,
   })

@@ -18,20 +18,21 @@ flag_script="$HOME/dotfiles/libexec/tmux-agent-window-flag"
 # the active-row marker + agent flag + the human-readable columns. Shared by the
 # initial run and by ctrl-x/ctrl-r's reload (invoked as `$0 --emit <mode>`).
 emit_rows() {
-  local mode="$1" current list session
+  local mode="$1" current list session rows
   case "$mode" in
     session)
       current="$(tmux display-message -p '#{session_name}')"
-      # <sortkey>\t<target=session_name>\t<path>\t<display: name + window count>
+      # Show the title of the active pane in the session's current window.
+      # <sortkey>\t<target=session_name>\t<path>\t<name>\t<count>\t<title>
       list="$(tmux list-sessions -F \
-        '#{?#{@svisit},#{@svisit},0}	#{session_name}	#{pane_current_path}	#{p24:#{session_name}} #{session_windows} windows')"
+        '#{?#{@svisit},#{@svisit},0}	#{session_name}	#{pane_current_path}	#{session_name}	#{session_windows} windows	#{pane_title}')"
       ;;
     window)
       session="$(tmux display-message -p '#{session_name}')"
       current="$(tmux display-message -p '#{session_name}:#{window_index}')"
-      # <sortkey>\t<target=session:index>\t<path>\t<display: index:name + path>
+      # <sortkey>\t<target=session:index>\t<path>\t<index:name>\t<display path>\t<title>
       list="$(tmux list-windows -t "$session" -F \
-        '#{?#{@wvisit},#{@wvisit},0}	#{session_name}:#{window_index}	#{pane_current_path}	#{p20:#{window_index}:#{window_name}} #{=/-50/…:#{s|^$HOME|~:pane_current_path}}')"
+        '#{?#{@wvisit},#{@wvisit},0}	#{session_name}:#{window_index}	#{pane_current_path}	#{window_index}:#{window_name}	#{=/-50/…:#{s|^$HOME|~:pane_current_path}}	#{pane_title}')"
       ;;
   esac
 
@@ -48,15 +49,22 @@ emit_rows() {
   # Finally, per row: mark the active row and prepend the agent flag for its cwd.
   # Emitted as <target>\t<display>, so fzf shows only field 2 but keeps the
   # target in field 1 for the preview and switch.
-  printf '%s\n' "$list" \
+  rows="$(printf '%s\n' "$list" \
     | awk -F'\t' -v cur="$current" 'BEGIN { OFS = "\t" } $2 == cur { $1 = "" } { print }' \
     | sort -t$'\t' -k1,1r \
     | cut -f2- \
-    | while IFS=$'\t' read -r target path display; do
+    | while IFS=$'\t' read -r target path name detail title; do
         [ "$target" = "$current" ] && mark='●' || mark=' '
         flag="$("$flag_script" "$path" ansi)"
-        printf '%s\t%s %s%s\n' "$target" "$mark" "$flag" "$display"
-      done
+        printf '%s\t%s\t%s\t%s\t%s\t%s\n' \
+          "$target" "$mark" "${flag:- }" "$name" "$detail" "${title:- }"
+      done)"
+
+  # Align only the visible columns, including the coloured agent indicator.
+  # Keep each exact target separate so padding never reaches tmux commands.
+  paste -d$'\t' \
+    <(printf '%s\n' "$rows" | cut -f1) \
+    <(printf '%s\n' "$rows" | cut -f2- | column -t -s $'\t')
 }
 
 # Reload/emit hook: print rows for the given mode and exit. Used by ctrl-x and

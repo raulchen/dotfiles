@@ -2,6 +2,21 @@ local api = vim.api
 
 local general_group = api.nvim_create_augroup('GeneralSettings', { clear = true })
 
+api.nvim_create_autocmd('TermRequest', {
+  desc = 'Refresh the outer terminal title when the focused terminal is renamed',
+  group = general_group,
+  callback = function(event)
+    -- OSC 0 and 2 change b:term_title, but only redraw the status line.
+    if not event.data.sequence:match('^\027%][02];') then return end
+    vim.schedule(function()
+      if event.buf == api.nvim_get_current_buf() then
+        -- Reassigning the option forces Neovim to reevaluate its expression.
+        vim.o.titlestring = vim.o.titlestring
+      end
+    end)
+  end,
+})
+
 api.nvim_create_autocmd('BufReadPost', {
   desc = 'Return to last cursor position',
   group = general_group,

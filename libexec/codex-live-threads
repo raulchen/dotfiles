@@ -4,146 +4,43 @@
 // Prints a JSON array. Failures are silent so callers can fall back to disk.
 "use strict";
 
-const net = require("node:net");
-const { execFileSync } = require("node:child_process");
-
+const { connect } = require("./codex-rpc.cjs");
 const cwd = process.argv[2];
 if (!cwd || !cwd.startsWith("/") || typeof WebSocket !== "function") process.exit(2);
 
-let daemon;
-try {
-  daemon = JSON.parse(execFileSync(
-    "codex", ["app-server", "daemon", "version"],
-    { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"], timeout: 2000 },
-  ));
-} catch {
-  process.exit(1);
-}
-if (daemon.status !== "running" || typeof daemon.socketPath !== "string") process.exit(1);
-
-let finished = false;
-let socket;
-let threads = [];
-let requestId = 2;
-let pendingListId = 0;
-const bridges = new Set();
-const timer = setTimeout(() => finish(1), 3000);
-
-// Node's WebSocket client does not accept Unix sockets. Give it a process-local
-// TCP bridge and let the standard implementation own the handshake and frames.
-const bridge = net.createServer((client) => {
-  const upstream = net.createConnection(daemon.socketPath);
-  let request = Buffer.alloc(0);
-  let upgraded = false;
-  bridges.add(client).add(upstream);
-  client.on("close", () => bridges.delete(client));
-  upstream.on("close", () => bridges.delete(upstream));
-  client.on("error", () => upstream.destroy());
-  upstream.on("error", () => client.destroy());
-  client.on("data", (chunk) => {
-    if (upgraded) {
-      upstream.write(chunk);
-      return;
-    }
-    request = Buffer.concat([request, chunk]);
-    const end = request.indexOf("\r\n\r\n");
-    if (end < 0) {
-      if (request.length > 16 * 1024) client.destroy();
-      return;
-    }
-    // The Unix listener expects its own local authority. Node derives Host and
-    // Origin from the temporary TCP bridge, so normalize them before forwarding.
-    const lines = request.subarray(0, end).toString("latin1").split("\r\n");
-    const keep = ["connection:", "upgrade:", "sec-websocket-key:", "sec-websocket-version:"];
-    const headers = [
-      lines[0],
-      "Host: localhost",
-      ...lines.slice(1).filter((line) => keep.some((prefix) => line.toLowerCase().startsWith(prefix))),
-    ].join("\r\n");
-    upstream.write(Buffer.concat([
-      Buffer.from(headers + "\r\n\r\n", "latin1"),
-      request.subarray(end + 4),
-    ]));
-    request = Buffer.alloc(0);
-    upgraded = true;
-  });
-  upstream.pipe(client);
-});
-
-function finish(code, value) {
-  if (finished) return;
-  finished = true;
-  clearTimeout(timer);
-  if (value !== undefined) process.stdout.write(JSON.stringify(value) + "\n");
-  if (socket && socket.readyState < WebSocket.CLOSING) socket.close();
-  for (const stream of bridges) stream.destroy();
-  if (bridge.listening) bridge.close();
-  process.exitCode = code;
-}
-
-function send(message) {
-  socket.send(JSON.stringify(message));
-}
-
-function list(cursor) {
-  pendingListId = requestId++;
-  send({
-    id: pendingListId,
-    method: "thread/list",
-    params: {
-      cwd,
-      cursor: cursor || null,
-      limit: 100,
-      sortKey: "updated_at",
-      sortDirection: "desc",
-      sourceKinds: [
-        "cli", "vscode", "exec", "appServer", "subAgent", "subAgentReview",
-        "subAgentCompact", "subAgentThreadSpawn", "subAgentOther", "unknown",
-      ],
-      useStateDbOnly: true,
-    },
-  });
-}
-
-function receive(event) {
-  let message;
+async function main() {
+  const timer = setTimeout(() => process.exit(1), 3000);
+  let rpc;
   try {
-    message = JSON.parse(event.data);
-  } catch {
-    return finish(1);
-  }
-  if (message.id === 1) {
-    if (message.error) return finish(1);
-    send({ method: "initialized", params: {} });
-    return list(null);
-  }
-  if (message.id !== pendingListId) return;
-  if (message.error || !Array.isArray(message.result?.data)) return finish(1);
-  threads.push(...message.result.data);
-  if (message.result.nextCursor) return list(message.result.nextCursor);
+    rpc = await connect("dotfiles_transcript_viewer", 2000);
+    const threads = [];
+    let cursor = null;
+    do {
+      const page = await rpc.call("thread/list", {
+        cwd, cursor, limit: 100, sortKey: "updated_at", sortDirection: "desc",
+        sourceKinds: [
+          "cli", "vscode", "exec", "appServer", "subAgent", "subAgentReview",
+          "subAgentCompact", "subAgentThreadSpawn", "subAgentOther", "unknown",
+        ],
+        useStateDbOnly: true,
+      });
+      threads.push(...page.data);
+      cursor = page.nextCursor;
+    } while (cursor);
 
-  const seen = new Set();
-  const live = threads.filter((thread) => {
-    if (typeof thread?.id !== "string" || seen.has(thread.id)) return false;
-    if (thread.cwd !== cwd || thread.parentThreadId != null) return false;
-    if (thread.status?.type === "notLoaded" || typeof thread.path !== "string") return false;
-    seen.add(thread.id);
-    return true;
-  });
-  finish(0, live);
+    const seen = new Set();
+    const live = threads.filter((thread) => {
+      if (typeof thread?.id !== "string" || seen.has(thread.id)) return false;
+      if (thread.cwd !== cwd || thread.parentThreadId != null) return false;
+      if (thread.status?.type === "notLoaded" || typeof thread.path !== "string") return false;
+      seen.add(thread.id);
+      return true;
+    });
+    process.stdout.write(JSON.stringify(live) + "\n");
+  } finally {
+    clearTimeout(timer);
+    rpc?.close();
+  }
 }
 
-bridge.on("error", () => finish(1));
-bridge.listen(0, "127.0.0.1", () => {
-  const address = bridge.address();
-  if (!address || typeof address === "string") return finish(1);
-  socket = new WebSocket(`ws://127.0.0.1:${address.port}`);
-  socket.addEventListener("error", () => finish(1));
-  socket.addEventListener("close", () => finish(1));
-  socket.addEventListener("message", receive);
-  socket.addEventListener("open", () => send({
-    id: 1,
-    method: "initialize",
-    params: { clientInfo: { name: "dotfiles_transcript_viewer", version: "1" } },
-  }));
-});
+main().catch(() => { process.exitCode = 1; });

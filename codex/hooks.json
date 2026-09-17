@@ -1,5 +1,5 @@
 {
-  "description": "Expose Codex lifecycle state to tmux.",
+  "description": "Expose Codex lifecycle state to tmux and retitle sessions when their first turn ends.",
   "hooks": {
     "UserPromptSubmit": [
       {
@@ -8,6 +8,11 @@
             "type": "command",
             "command": "~/dotfiles/libexec/agent-status busy",
             "timeout": 1
+          },
+          {
+            "type": "command",
+            "command": "~/dotfiles/libexec/codex-retitle --watch",
+            "timeout": 3
           }
         ]
       }

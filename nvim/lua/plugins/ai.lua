@@ -65,11 +65,13 @@ local sidekick = {
           buffers = { "<c-]><c-b>", "buffers", mode = "nt", desc = "open buffer picker" },
           files = { "<c-]><c-f>", "files", mode = "nt", desc = "open file picker" },
           prompt = { "<c-]><c-p>", "prompt", mode = "nt", desc = "insert prompt or context" },
-          hide_ctrl_z = false,
-          nav_left = false,
-          nav_right = false,
-          nav_up = false,
-          nav_down = false,
+          hide_ctrl_q = false, -- Disable hiding the terminal with Ctrl-Q in normal mode.
+          hide_ctrl_z = false, -- Disable moving focus away from the terminal with Ctrl-Z.
+          stopinsert = false, -- Disable entering terminal-normal mode with Ctrl-Q.
+          nav_left = false, -- Disable navigating to the left window with Ctrl-H.
+          nav_right = false, -- Disable navigating to the right window with Ctrl-L.
+          nav_up = false, -- Disable navigating to the window above with Ctrl-K.
+          nav_down = false, -- Disable navigating to the window below with Ctrl-J.
           send_selection = {
             "<leader>av",
             function()

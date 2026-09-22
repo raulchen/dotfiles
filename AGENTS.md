@@ -28,15 +28,17 @@ This dotfiles repository contains configuration files for various development to
 
 ## Key Conventions
 
-1. **Neovim plugins**: Managed by lazy.nvim and stored in `~/.local/share/nvim/lazy/`. Always check plugin code when configuring or using plugin APIs.
+- **Neovim plugins**: Managed by lazy.nvim and stored in `~/.local/share/nvim/lazy/`. Always check plugin code when configuring or using plugin APIs.
 
-2. **Symlink setup**: The `setup.sh` script creates symlinks from this repository to standard config locations (e.g., `nvim/` → `~/.config/nvim`).
+- **Symlink setup**: The `setup.sh` script creates symlinks from this repository to standard config locations (e.g., `nvim/` → `~/.config/nvim`).
 
-3. **Local overrides**: Some tools support local config files (e.g., `hammerspoon/local.lua`, `*.local` files) which are gitignored.
+- **Codex configuration**: Put portable, globally applicable Codex settings in this repository under `codex/`. Keep machine-local Codex settings in `~/.codex/config.toml`.
 
-4. **File organization**: Each tool has its own directory with configuration files. Keep related configs together.
+- **Local overrides**: Some tools support local config files (e.g., `hammerspoon/local.lua`, `*.local` files) which are gitignored.
 
-5. **Temporary files**: Never create `nvim.log` or any other logs, test artifacts, caches, or temporary files anywhere in this repository. Direct all temporary output to `/tmp` instead.
+- **File organization**: Each tool has its own directory with configuration files. Keep related configs together.
+
+- **Temporary files**: Never create `nvim.log` or any other logs, test artifacts, caches, or temporary files anywhere in this repository. Direct all temporary output to `/tmp` instead.
 
 ## Commit Message Convention
 

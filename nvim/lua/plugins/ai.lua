@@ -232,6 +232,22 @@ local sidekick = {
       return ("%s-%s"):format(sid, dir)
     end
 
+    -- Sidekick renders normal mode in a temporary scrollback terminal. Copy
+    -- the live terminal's title when that buffer opens.
+    local title_group = vim.api.nvim_create_augroup("SidekickTerminalTitle", { clear = true })
+    vim.api.nvim_create_autocmd("TermOpen", {
+      group = title_group,
+      callback = function(event)
+        local win = vim.fn.bufwinid(event.buf)
+        local session_id = win ~= -1 and vim.w[win].sidekick_session_id
+        local terminal = session_id and require("sidekick.cli.terminal").get(session_id)
+        if terminal and terminal.scrollback and terminal.scrollback.buf == event.buf
+            and vim.api.nvim_buf_is_valid(terminal.buf) then
+          vim.b[event.buf].term_title = vim.b[terminal.buf].term_title
+        end
+      end,
+    })
+
     Snacks.toggle({
       name = "Sidekick NES",
       get = function()

@@ -487,14 +487,6 @@ local dashboard_opts = {
   },
 }
 
-local image_keys = {
-  { "<leader>ui", function() Snacks.image.hover() end, desc = "Preview image under cursor" },
-}
-
-for _, key in ipairs(image_keys) do
-  table.insert(snacks_keys, key)
-end
-
 local image_opts = {
   doc = {
     inline = false,

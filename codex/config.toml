@@ -10,6 +10,7 @@ terminal_title = ["activity", "project-name", "thread-title"]
 status_line = ["model-with-reasoning", "run-state", "pull-request-number", "context-remaining", "context-window-size", "used-tokens", "task-progress", "thread-title"]
 status_line_use_colors = true
 vim_mode_default = true
+fullscreen_transcript = false
 
 [tui.keymap.chat]
 edit_queued_message = ["ctrl-q", "alt-up", "shift-left"]

@@ -657,6 +657,22 @@ local function setup_octo()
     end,
   })
 
+  -- Octo's TabClosed handler passes the tab *number* (<afile>) to
+  -- reviews.close(), which looks reviews up by tabpage *handle*, so closed
+  -- reviews usually leak their buffers. Those buffers then get reused, stale,
+  -- by the next review (browse always uses id -1). Close any review whose tab
+  -- is gone.
+  vim.api.nvim_create_autocmd("TabClosed", {
+    callback = function()
+      local reviews = require("octo.reviews")
+      for tab in pairs(reviews.reviews) do
+        if not vim.api.nvim_tabpage_is_valid(tonumber(tab)) then
+          reviews.close(tonumber(tab))
+        end
+      end
+    end,
+  })
+
   -- Re-enable wrap when diff mode is enabled in review buffers.
   -- When Octo calls :diffthis, it automatically sets wrap=false.
   -- This autocmd triggers when diff is enabled and overrides that behavior.

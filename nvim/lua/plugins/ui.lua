@@ -240,6 +240,13 @@ local config_render_markdown = function(_, _)
       lsp = { enabled = true },
       blink = { enabled = true, },
     },
+    -- Keep the cursor line rendered in normal mode; reveal raw text only when editing.
+    anti_conceal = {
+      disabled_modes = { 'n' },
+    },
+    win_options = {
+      concealcursor = { rendered = 'n' },
+    },
   }
   require("render-markdown").setup(opts)
   vim.cmd [[

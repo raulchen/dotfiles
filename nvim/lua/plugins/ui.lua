@@ -7,6 +7,20 @@ local lualine_opts = {
     globalstatus = true,
   },
   sections = {
+    lualine_b = {
+      "branch",
+      "diff",
+      "diagnostics",
+      {
+        -- Current window's cwd, only when set by :tcd or :lcd.
+        function()
+          return vim.fn.pathshorten(vim.fn.fnamemodify(vim.fn.getcwd(), ":~"))
+        end,
+        cond = function()
+          return vim.fn.haslocaldir() == 1 or vim.fn.haslocaldir(-1) == 1
+        end,
+      },
+    },
     lualine_c = {
       {
         function()

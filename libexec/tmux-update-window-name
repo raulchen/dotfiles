@@ -10,9 +10,15 @@
 
 [[ -z "$TMUX" ]] && exit 0
 
+# Called without a path (from the shell's chpwd hook): record the shell's cwd
+# as @shell_path so the pane-focus-in hook can use it instead of
+# pane_current_path, which follows the foreground process (e.g. nvim's :cd).
+record_path=()
+[[ -z "$2" && -n "$TMUX_PANE" ]] && record_path=(set -p -t "$TMUX_PANE" @shell_path "$PWD" \;)
+
 # Fetch both fields in one round-trip: each `display-message` costs ~30-45ms.
 IFS=' ' read -r pane_index tmux_window_id \
-    <<< "$(tmux display-message -p '#{pane_index} #{window_id}')"
+    <<< "$(tmux "${record_path[@]}" display-message -p '#{pane_index} #{window_id}')"
 
 # Only update from the first pane in the window (pane-base-index is 1)
 [[ "$pane_index" != "1" ]] && exit 0

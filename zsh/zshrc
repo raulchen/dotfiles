@@ -229,18 +229,25 @@ if type bat >/dev/null 2>&1 ; then
     export BAT_THEME="ansi"
 fi
 
-if [ -n "$TMUX" ]; then
-    # Hook function to update tmux window name
+# Only for the pane's top-level shell, i.e. one forked directly by the tmux
+# server ($TMUX is "socket,server_pid,session"). Shells nested under nvim's
+# :terminal, vim, another zsh, etc. inherit the outer pane's $TMUX_PANE, so
+# their cd's would rename the window and overwrite the pane's @shell_path.
+if [[ -n "$TMUX" && $PPID == ${${TMUX#*,}%%,*} ]]; then
+    # Update the tmux window name when the shell's cwd has changed since the
+    # last prompt. Each update costs ~70ms of tmux IPC, so compare $PWD first.
+    # precmd rather than chpwd: chpwd also fires for cd inside (...) and $(...),
+    # which don't move the shell, and misses cd -q. Pane switches are covered
+    # by the pane-focus-in hook in tmux.conf.
     function tmux_update_window_name() {
+        [[ $PWD == $_tmux_last_pwd ]] && return
+        _tmux_last_pwd=$PWD
         ~/dotfiles/libexec/tmux-update-window-name
     }
-    # The name derives from $PWD, so hook chpwd rather than precmd: each run
-    # costs ~70ms of tmux IPC, and nothing changes between prompts in the same
-    # directory. Pane switches are already covered by the pane-focus-in hook in
-    # tmux.conf.
-    add-zsh-hook chpwd tmux_update_window_name
+    add-zsh-hook precmd tmux_update_window_name
     # Seed the name for a fresh window without delaying the first prompt.
-    tmux_update_window_name &!
+    _tmux_last_pwd=$PWD
+    ~/dotfiles/libexec/tmux-update-window-name &!
 fi
 
 # uv shell completion

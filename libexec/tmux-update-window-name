@@ -10,7 +10,7 @@
 
 [[ -z "$TMUX" ]] && exit 0
 
-# Called without a path (from the shell's chpwd hook): record the shell's cwd
+# Called without a path (from the shell's precmd hook): record the shell's cwd
 # as @shell_path so the pane-focus-in hook can use it instead of
 # pane_current_path, which follows the foreground process (e.g. nvim's :cd).
 record_path=()

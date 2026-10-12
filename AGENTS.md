@@ -39,6 +39,9 @@ This dotfiles repository contains configuration files for various development to
 - **File organization**: Each tool has its own directory with configuration files. Keep related configs together.
 
 - **Temporary files**: Never create `nvim.log` or any other logs, test artifacts, caches, or temporary files anywhere in this repository. Direct all temporary output to `/tmp` instead.
+  When running Neovim checks, set `NVIM_LOG_FILE` to a path under `/tmp`
+  (e.g., `NVIM_LOG_FILE=/tmp/nvim-restart.log`) before launching Neovim.
+  Prevent logs from being created in the repository instead of deleting them afterward.
 
 ## Commit Message Convention
 

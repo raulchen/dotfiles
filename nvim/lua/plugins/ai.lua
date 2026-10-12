@@ -53,6 +53,9 @@ local sidekick = {
     cli = {
       win = {
         layout = "bottom",
+        float = {
+          border = "single",
+        },
         wo = {
           winfixwidth = false,
           winfixheight = false,
@@ -201,7 +204,7 @@ local sidekick = {
         for _, state in ipairs(states) do
           if state.terminal then
             local opts = state.terminal.opts
-            opts.layout = opts.layout == "right" and "bottom" or "right"
+            opts.layout = ({ bottom = "right", right = "float", float = "bottom" })[opts.layout] or "bottom"
             if state.terminal:is_open() then
               state.terminal:hide()
               state.terminal:show()
@@ -213,7 +216,7 @@ local sidekick = {
       end,
       mode = { "n", "t" },
       ft = "sidekick_terminal",
-      desc = "Toggle sidekick layout views",
+      desc = "Cycle sidekick layout: bottom/right/float",
     },
   },
   config = function(_, opts)

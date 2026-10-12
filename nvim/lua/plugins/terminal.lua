@@ -81,8 +81,8 @@ end
 local function toggle_layout()
   local ergoterm = require("ergoterm")
   local current = ergoterm.identify()
-  default_layout = default_layout == "float" and "below" or "float"
-  -- Toggle all open terminals
+  default_layout = ({ below = "right", right = "float", float = "below" })[default_layout] or "below"
+  -- Cycle all open terminals
   for _, term in ipairs(ergoterm.get_all()) do
     if term:is_open() then
       term:close()
@@ -130,7 +130,7 @@ local ergoterm_keys = {
   { "<c-]><c-n>", function() cycle_terminal("next") end, desc = "Next terminal", ft = "ergoterm", mode = "t" },
   { "<c-]><c-p>", function() cycle_terminal("prev") end, desc = "Previous terminal", ft = "ergoterm", mode = "t" },
   { "<c-]><c-c>", create_new_terminal, desc = "Create new terminal", ft = "ergoterm", mode = "t" },
-  { "<c-]><c-v>", toggle_layout, desc = "Toggle layout views", ft = "ergoterm", mode = "t" },
+  { "<c-]><c-v>", toggle_layout, desc = "Cycle layout: bottom/right/float", ft = "ergoterm", mode = "t" },
   { "<leader>ft", "<cmd>TermSelect<cr>", desc = "Pick a terminal" },
 }
 

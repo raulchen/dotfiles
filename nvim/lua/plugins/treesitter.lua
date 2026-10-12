@@ -1,4 +1,4 @@
-local treesitter_filetypes = {
+local treesitter_parsers = {
   "bash",
   "c",
   "cpp",
@@ -15,16 +15,29 @@ local treesitter_filetypes = {
   "yaml",
 }
 
+local function managed_treesitter_buffer(buf)
+  if not vim.api.nvim_buf_is_loaded(buf) then
+    return false
+  end
+  local lang = vim.treesitter.language.get_lang(vim.bo[buf].filetype)
+  return lang ~= nil and vim.tbl_contains(treesitter_parsers, lang)
+end
+
 local function setup_treesitter_filetype_features(buf)
+  if not managed_treesitter_buffer(buf) or not vim.treesitter.get_parser(buf) then
+    return
+  end
   -- Enable syntax highlighting from Neovim's built-in Treesitter runtime.
   vim.treesitter.start(buf)
   -- Use Treesitter-aware indentation for better structural indent behavior.
   vim.bo[buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
   -- Compute folds from syntax tree structure.
-  vim.opt_local.foldmethod = "expr"
-  vim.opt_local.foldexpr = "v:lua.vim.treesitter.foldexpr()"
-  -- Keep folds expanded by default; folding is available on demand.
-  vim.opt_local.foldenable = false
+  vim.api.nvim_buf_call(buf, function()
+    vim.opt_local.foldmethod = "expr"
+    vim.opt_local.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+    -- Keep folds expanded by default; folding is available on demand.
+    vim.opt_local.foldenable = false
+  end)
 end
 
 local function treesitter_install_preset(wait)
@@ -37,9 +50,9 @@ local function treesitter_install_preset(wait)
     end
   end
 
-  if #treesitter_filetypes > 0 then
+  if #treesitter_parsers > 0 then
     vim.notify("Treesitter: installing managed parsers", vim.log.levels.INFO)
-    local install = require("nvim-treesitter").install(treesitter_filetypes, {
+    local install = require("nvim-treesitter").install(treesitter_parsers, {
       summary = true,
       max_jobs = 4,
     })
@@ -50,19 +63,22 @@ local function treesitter_install_preset(wait)
 end
 
 local function setup_treesitter(_, _)
-  local ts = require("nvim-treesitter")
-  ts.setup({})
   vim.api.nvim_create_user_command("TSInstallPreset", function()
     treesitter_install_preset(false)
   end, { desc = "Install preset Treesitter parsers" })
 
-  -- Tree-sitter based folding/highlighting.
+  -- Enable features through FileType as recommended by nvim-treesitter.
   vim.api.nvim_create_autocmd("FileType", {
-    pattern = treesitter_filetypes,
+    group = vim.api.nvim_create_augroup("TreesitterFeatures", { clear = true }),
     callback = function(args)
       setup_treesitter_filetype_features(args.buf)
     end,
   })
+
+  -- FileType may have fired before plugin setup; attach existing buffers too.
+  for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+    setup_treesitter_filetype_features(buf)
+  end
 end
 
 local function build_treesitter()
@@ -116,19 +132,29 @@ local treesitter_move_mappings = {
 local function setup_treesitter_textobjects(_, opts)
   require("nvim-treesitter-textobjects").setup(opts)
 
-  vim.api.nvim_create_autocmd("FileType", {
-    pattern = treesitter_filetypes,
-    callback = function(args)
-      local move = require("nvim-treesitter-textobjects.move")
-      for mode_fn, mappings in pairs(treesitter_move_mappings) do
-        for _, mapping in ipairs(mappings) do
-          vim.keymap.set({ "n", "x", "o" }, mapping.key, function()
-            move[mode_fn](mapping.query, "textobjects")
-          end, { buffer = args.buf, desc = mapping.desc })
-        end
+  local function attach(buf)
+    if not managed_treesitter_buffer(buf) then
+      return
+    end
+    local move = require("nvim-treesitter-textobjects.move")
+    for mode_fn, mappings in pairs(treesitter_move_mappings) do
+      for _, mapping in ipairs(mappings) do
+        vim.keymap.set({ "n", "x", "o" }, mapping.key, function()
+          move[mode_fn](mapping.query, "textobjects")
+        end, { buffer = buf, desc = mapping.desc })
       end
+    end
+  end
+
+  vim.api.nvim_create_autocmd("FileType", {
+    group = vim.api.nvim_create_augroup("TreesitterTextobjects", { clear = true }),
+    callback = function(args)
+      attach(args.buf)
     end,
   })
+  for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+    attach(buf)
+  end
 end
 
 return {

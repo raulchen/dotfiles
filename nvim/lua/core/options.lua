@@ -33,6 +33,13 @@ opt.confirm = true
 -- and swap file updates more responsive
 opt.updatetime = 1000
 
+-- Save and restore buffer-local and window-local options and mappings in
+-- sessions, including filetypes, indentation, wrapping, and line numbers.
+-- :restart restores a session; its first buffer can miss filetype detection
+-- and remain untyped, preventing FileType hooks from enabling highlighting.
+-- Restoring the saved filetype avoids that issue.
+opt.sessionoptions:append('localoptions')
+
 --------------------------
 -- User Interface settings
 --------------------------

@@ -55,6 +55,8 @@ local sidekick = {
         layout = "bottom",
         float = {
           border = "single",
+          width = 0.95,
+          height = 0.95,
         },
         wo = {
           winfixwidth = false,

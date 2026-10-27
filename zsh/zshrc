@@ -195,6 +195,21 @@ if type fzf >/dev/null 2>&1 ; then
     FZF_CTRL_R_OPTS="${FZF_CTRL_R_OPTS//$'\n'    / }"
     export FZF_CTRL_R_OPTS
 
+    # tmux can't draw popups on control-mode clients (tmux -CC, e.g. mobile
+    # apps). Run this after switching clients to make fzf and fzf-tab inline
+    # on a control-mode client and use popups otherwise, in the current shell.
+    function fzf-set-popup() {
+        FZF_DEFAULT_OPTS=${FZF_DEFAULT_OPTS% --no-tmux}
+        if [[ $(tmux display -p '#{client_control_mode}' 2>/dev/null) == 1 ]]; then
+            FZF_DEFAULT_OPTS+=" --no-tmux"
+            zstyle ':fzf-tab:*' fzf-command fzf
+            echo "fzf: inline"
+        else
+            zstyle ':fzf-tab:*' fzf-command ftb-tmux-popup
+            echo "fzf: tmux popup"
+        fi
+    }
+
     function _zshrc_init_fzf() {
         eval "$(fzf --zsh)"
         # Fix fzf-git.sh key bindings incompatible with zsh-vi-mode.

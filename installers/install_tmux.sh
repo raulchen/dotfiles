@@ -35,7 +35,7 @@ prefix="${1:-$HOME/.local}"
 opt_dir="$prefix/opt"
 bin_dir="$prefix/bin"
 
-tag="$(curl -fsSL -o /dev/null -w '%{url_effective}' "https://github.com/nelsonenzo/tmux-appimage/releases/latest" | sed -n 's#.*/tag/\([^/]*\)$#\1#p')"
+tag="$(curl -fsSL -o /dev/null -w '%{url_effective}' "https://github.com/kiyoon/tmux-appimage/releases/latest" | sed -n 's#.*/tag/\([^/]*\)$#\1#p')"
 
 if [ -z "$tag" ]; then
   echo "error: failed to determine latest tmux release tag" >&2
@@ -44,7 +44,7 @@ fi
 
 version="${tag#v}"
 asset="tmux.appimage"
-download_url="https://github.com/nelsonenzo/tmux-appimage/releases/latest/download/${asset}"
+download_url="https://github.com/kiyoon/tmux-appimage/releases/latest/download/${asset}"
 install_dir="$opt_dir/tmux-${version}"
 current_link="$opt_dir/tmux"
 target_bin="$bin_dir/tmux"

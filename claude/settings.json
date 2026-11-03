@@ -76,5 +76,6 @@
   "editorMode": "vim",
   "remoteControlAtStartup": true,
   "agentPushNotifEnabled": true,
-  "skipAutoPermissionPrompt": true
+  "skipAutoPermissionPrompt": true,
+  "idleCompaction": false
 }

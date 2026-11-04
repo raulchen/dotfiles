@@ -20,9 +20,9 @@ local lualine_opts = {
           return vim.fn.haslocaldir() == 1 or vim.fn.haslocaldir(-1) == 1
         end,
       },
-    },
-    lualine_c = {
       {
+        -- Terminal title. In lualine_b so it isn't truncated: lualine
+        -- truncates from the start of lualine_c.
         function()
           local title = vim.b.term_title or ""
           -- Titles are plain text, not statusline format strings.
@@ -33,6 +33,8 @@ local lualine_opts = {
           return { fg = fg and string.format("#%06x", fg), gui = "NONE" }
         end,
       },
+    },
+    lualine_c = {
       {
         "filename",
         path = 1,

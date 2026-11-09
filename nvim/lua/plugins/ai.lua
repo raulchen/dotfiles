@@ -237,6 +237,22 @@ local sidekick = {
       return ("%s-%s"):format(sid, dir)
     end
 
+    -- Send absolute paths in every location context ({file}, {line}, {this},
+    -- {position}, {buffers}, diagnostics, quickfix, ...). They all go through
+    -- Loc.get, which makes the path relative to ctx.cwd. Setting cwd to the
+    -- file itself makes relpath return ".", which Loc.get treats as "keep the
+    -- name as is".
+    local Loc = require("sidekick.cli.context.location")
+    local orig_loc_get = Loc.get
+    function Loc.get(ctx, loc_opts)
+      local name = ctx.name or (ctx.buf and vim.api.nvim_buf_get_name(ctx.buf))
+      if name and name ~= "" then
+        name = vim.fs.normalize(vim.fn.fnamemodify(name, ":p"))
+        ctx = vim.tbl_extend("force", ctx, { name = name, cwd = name })
+      end
+      return orig_loc_get(ctx, loc_opts)
+    end
+
     -- Sidekick renders normal mode in a temporary scrollback terminal. Copy
     -- the live terminal's title when that buffer opens.
     local title_group = vim.api.nvim_create_augroup("SidekickTerminalTitle", { clear = true })

@@ -259,6 +259,63 @@ local sidekick = {
       return orig_loc_get(ctx, loc_opts)
     end
 
+    -- Refocus the CLI window in the mode it was left in, and in normal mode
+    -- also at the same scrollback position.
+    --
+    -- Normal mode shows a scrollback snapshot buffer, which sidekick wipes
+    -- on hide and rebuilds (scrolled to the bottom) on the next open. Hide
+    -- now keeps that buffer and its view, and focus puts both back.
+    -- Terminal:focus() always enters terminal mode; :stopinsert cancels that.
+    --
+    -- PLUGIN-PATCH(sidekick.nvim): overrides internal Terminal:hide and
+    -- Terminal:focus.
+    local Terminal = require("sidekick.cli.terminal")
+
+    local orig_hide = Terminal.hide
+    function Terminal:hide()
+      local sb = self.scrollback
+      -- close() also calls hide(), after setting self.closed: don't keep
+      -- anything for a terminal that is going away.
+      if sb and sb:is_open() and not self.closed then
+        vim.bo[sb.buf].bufhidden = "hide"
+        self.kept_scrollback = {
+          buf = sb.buf,
+          view = vim.api.nvim_win_call(self.win, vim.fn.winsaveview),
+        }
+      end
+      return orig_hide(self)
+    end
+
+    local orig_focus = Terminal.focus
+    function Terminal:focus()
+      local normal_mode = self.normal_mode
+      local kept = self.kept_scrollback
+      self.kept_scrollback = nil
+      orig_focus(self)
+
+      local restore = kept and vim.api.nvim_buf_is_valid(kept.buf)
+      if normal_mode and self:is_focused() then
+        vim.cmd.stopinsert()
+        self.normal_mode = true
+        if restore then
+          vim.api.nvim_win_set_buf(self.win, kept.buf)
+          vim.fn.winrestview(kept.view)
+          vim.bo[kept.buf].bufhidden = "wipe"
+          return self
+        end
+      end
+      if restore then
+        -- Not going back to normal mode: drop the kept snapshot. Deleting it
+        -- fires TermClose, which sets scrollback.term_buf; clear that, or the
+        -- scrollback's WinEnter check would force terminal mode later.
+        vim.api.nvim_buf_delete(kept.buf, { force = true })
+        if self.scrollback then
+          self.scrollback.term_buf = nil
+        end
+      end
+      return self
+    end
+
     -- Sidekick renders normal mode in a temporary scrollback terminal. Copy
     -- the live terminal's title when that buffer opens.
     --

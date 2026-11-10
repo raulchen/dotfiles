@@ -174,11 +174,13 @@ opt.wrap = true
 -- Show line wrap indicator
 opt.showbreak = '↪ '
 
--- Use histogram algorithm and line matching for more accurate diffs
-opt.diffopt = vim.list_extend(
-  opt.diffopt:get(),
-  { "algorithm:histogram", "linematch:60" }
-)
+opt.diffopt = vim.list_extend(opt.diffopt:get(), {
+  -- Use histogram algorithm and line matching for more accurate diffs.
+  "algorithm:histogram",
+  "linematch:60",
+  -- Keep 'wrap' as is in diff mode instead of forcing it off.
+  "followwrap",
+})
 
 -- In a remote tmux session (ssh/mosh/et all set SSH_CONNECTION), override
 -- clipboard copy to use the yank script — it targets the right tmux client

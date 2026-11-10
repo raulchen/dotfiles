@@ -517,6 +517,9 @@ local function open_review(cmd)
   -- it only at the exact PR head; otherwise the diff and comments would target
   -- the wrong content, so fall back to octo's virtual buffers (no LSP). Only
   -- the right side is ever a real file -- the left/base side stays virtual.
+  --
+  -- PLUGIN-PATCH(octo.nvim): mutates config at runtime. Drop once octo
+  -- checks the head commit itself before using local files.
   local buffer = require("octo.utils").get_current_buffer()
   local node = buffer and buffer:isPullRequest() and buffer:pullRequest()
   local head = vim.fn.systemlist("git rev-parse HEAD")[1]
@@ -650,6 +653,9 @@ local function setup_octo()
   --   BufFilePost -- ":file octo://..." on a fresh buffer ("Octo pr list")
   --   BufAdd      -- ":e octo://...", loaded by Octo's BufReadCmd
   --                  ("Octo pr edit"), where BufFilePost never fires
+  --
+  -- PLUGIN-PATCH(octo.nvim): drop once octo disables swapfiles on its
+  -- virtual buffers.
   vim.api.nvim_create_autocmd({ "BufAdd", "BufFilePost" }, {
     pattern = { "octo://*", "octo/null", "*/octo/null" },
     callback = function(ev)
@@ -662,6 +668,9 @@ local function setup_octo()
   -- reviews usually leak their buffers. Those buffers then get reused, stale,
   -- by the next review (browse always uses id -1). Close any review whose tab
   -- is gone.
+  --
+  -- PLUGIN-PATCH(octo.nvim): drop once octo's TabClosed handler closes
+  -- reviews by tabpage handle.
   vim.api.nvim_create_autocmd("TabClosed", {
     callback = function()
       local reviews = require("octo.reviews")
@@ -673,6 +682,8 @@ local function setup_octo()
     end,
   })
 
+  -- PLUGIN-PATCH(octo.nvim): drop once octo stops forcing nowrap (or makes
+  -- it configurable) in review diffs.
   -- Re-enable wrap when diff mode is enabled in review buffers.
   -- When Octo calls :diffthis, it automatically sets wrap=false.
   -- This autocmd triggers when diff is enabled and overrides that behavior.

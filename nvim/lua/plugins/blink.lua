@@ -105,8 +105,11 @@ local blink_opts = {
     },
     providers = {
       buffer = {
-        -- Workaround to enable buffer provider for cmdline, see
-        -- https://github.com/saghen/blink.cmp/issues/2251
+        -- Enable the buffer provider in the cmdline. Blink disables it
+        -- there except for search and :s/:g.
+        --
+        -- PLUGIN-PATCH(blink.cmp): drop once
+        -- https://github.com/saghen/blink.cmp/issues/2251 is fixed.
         enabled = true,
         opts = {
           -- Make the buffer source include all normal buffers.

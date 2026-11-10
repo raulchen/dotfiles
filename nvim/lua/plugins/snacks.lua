@@ -498,6 +498,9 @@ local image_opts = {
 
 -- snacks.image caches by source path with no mtime check, so reopening an
 -- updated image renders the stale one. Drop its caches on attach.
+--
+-- PLUGIN-PATCH(snacks.nvim): overrides internal snacks.image.buf.attach.
+-- Drop once snacks.image invalidates its cache on source mtime.
 local function image_force_reload()
   local Buf = require("snacks.image.buf")
   local attach = Buf.attach

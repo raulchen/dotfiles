@@ -30,6 +30,8 @@ This dotfiles repository contains configuration files for various development to
 
 - **Neovim plugins**: Managed by lazy.nvim and stored in `~/.local/share/nvim/lazy/`. Always check plugin code when configuring or using plugin APIs.
 
+- **Plugin patches**: Mark any code that overrides plugin internals or works around a plugin bug or limitation with a `PLUGIN-PATCH(<plugin>):` comment. Put it at the end of the code's comment, after the description of what the code does and how. In the marker, say what it patches and when it can be dropped, e.g., an upstream issue or PR. List them with `rg 'PLUGIN-PATCH'` to revisit after plugin updates.
+
 - **Symlink setup**: The `setup.sh` script creates symlinks from this repository to standard config locations (e.g., `nvim/` → `~/.config/nvim`).
 
 - **Codex configuration**: Put portable, globally applicable Codex settings in this repository under `codex/`. Keep machine-local Codex settings in `~/.codex/config.toml`.

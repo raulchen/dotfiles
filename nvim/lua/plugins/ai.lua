@@ -227,6 +227,8 @@ local sidekick = {
     -- Prefix tmux session names with the cwd basename for readability.
     -- The hash is kept so distinct dirs sharing a basename don't collide,
     -- and the override stays deterministic so re-attach matching still works.
+    --
+    -- PLUGIN-PATCH(sidekick.nvim): overrides internal Session.sid.
     local Session = require("sidekick.cli.session")
     local orig_sid = Session.sid
     function Session.sid(o)
@@ -238,10 +240,14 @@ local sidekick = {
     end
 
     -- Send absolute paths in every location context ({file}, {line}, {this},
-    -- {position}, {buffers}, diagnostics, quickfix, ...). They all go through
-    -- Loc.get, which makes the path relative to ctx.cwd. Setting cwd to the
-    -- file itself makes relpath return ".", which Loc.get treats as "keep the
-    -- name as is".
+    -- {position}, {buffers}, diagnostics, quickfix, ...).
+    --
+    -- They all go through Loc.get, which makes the path relative to ctx.cwd.
+    -- Setting cwd to the file itself makes relpath return ".", which Loc.get
+    -- treats as "keep the name as is".
+    --
+    -- PLUGIN-PATCH(sidekick.nvim): overrides internal Loc.get. Drop once
+    -- folke/sidekick.nvim#293 (cli.absolute_paths option) is merged.
     local Loc = require("sidekick.cli.context.location")
     local orig_loc_get = Loc.get
     function Loc.get(ctx, loc_opts)
@@ -255,6 +261,9 @@ local sidekick = {
 
     -- Sidekick renders normal mode in a temporary scrollback terminal. Copy
     -- the live terminal's title when that buffer opens.
+    --
+    -- PLUGIN-PATCH(sidekick.nvim): drop once the scrollback terminal keeps
+    -- the live terminal's title.
     local title_group = vim.api.nvim_create_augroup("SidekickTerminalTitle", { clear = true })
     vim.api.nvim_create_autocmd("TermOpen", {
       group = title_group,

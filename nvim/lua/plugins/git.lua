@@ -362,6 +362,65 @@ local function open_worktree_diff(local_side)
   end)
 end
 
+-- Candidate bases for a branch diff: the branches stacked between the trunk
+-- and HEAD (nearest first), then the trunk itself. `base` is the commit to
+-- diff the working tree against.
+local function stack_bases()
+  local trunk = "origin/HEAD"
+  local mb = vim.fn.trim(vim.fn.system({ "git", "merge-base", trunk, "HEAD" }))
+  if vim.v.shell_error ~= 0 then
+    vim.notify("No merge base between HEAD and " .. trunk, vim.log.levels.ERROR)
+    return
+  end
+  local head = vim.fn.trim(vim.fn.system({ "git", "rev-parse", "HEAD" }))
+
+  -- One line per decorated commit in mb..HEAD, with full ref names so local
+  -- branches can be told apart from remote ones (`--decorate-refs` doesn't
+  -- filter `%D` on older git).
+  local lines = vim.fn.systemlist({
+    "git", "log", "--format=%H %D", "--decorate=full",
+    "--simplify-by-decoration", mb .. "..HEAD",
+  })
+  local bases = {}
+  for _, line in ipairs(lines) do
+    local hash, refs = line:match("^(%x+) ?(.*)$")
+    if hash and hash ~= head then -- branches at HEAD would give an empty diff
+      for ref in vim.gsplit(refs, ", ", { plain = true }) do
+        local branch = ref:match("^refs/heads/(.+)$")
+        if branch then
+          bases[#bases + 1] = { name = branch, base = branch }
+        end
+      end
+    end
+  end
+  bases[#bases + 1] = { name = trunk, base = mb }
+  return bases
+end
+
+-- Diff the branch against a base chosen from stack_bases(), prompting only
+-- when there are stacked branches to choose from.
+local function open_branch_diff(committed)
+  local bases = stack_bases()
+  if not bases then return end
+
+  local function open(choice)
+    -- Every base is an ancestor of HEAD (or the trunk, via its merge base), so
+    -- "<name>...HEAD" is exactly the commits on top of it.
+    vim.cmd("DiffviewOpen " .. (committed and choice.name .. "...HEAD" or choice.base))
+  end
+
+  if #bases == 1 then
+    open(bases[1])
+    return
+  end
+  vim.ui.select(bases, {
+    prompt = "Diff against base:",
+    format_item = function(item) return item.name end,
+  }, function(choice)
+    if choice then open(choice) end
+  end)
+end
+
 local function open_diffview()
   -- Define the diff options with their corresponding action functions
   local diff_options = {
@@ -371,14 +430,11 @@ local function open_diffview()
     },
     {
       name = "Branch changes (working tree)",
-      action = function()
-        local base = vim.fn.trim(vim.fn.system("git merge-base HEAD origin/HEAD"))
-        vim.cmd("DiffviewOpen " .. base)
-      end
+      action = function() open_branch_diff(false) end
     },
     {
       name = "Branch changes (committed)",
-      action = function() vim.cmd("DiffviewOpen origin/HEAD...HEAD") end
+      action = function() open_branch_diff(true) end
     },
     {
       name = "Compare worktree (current local)",

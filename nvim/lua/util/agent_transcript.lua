@@ -254,14 +254,6 @@ local function open_terminal(terminal, term_cwd, agent, compact_windows, selecte
     return M.resolve(terminal, term_cwd, agent)
   end
 
-  -- Signature of the session's current transcript, for the freshness check that
-  -- decides whether a rebuild is needed at all (skipping both the tail re-parse
-  -- and the one-time markdown treesitter parse).
-  local function current_sig()
-    local path = resolve_path()
-    return transcript.file_sig(path)
-  end
-
   local cache
   -- Returns (buf, blocks, sig). The signature is taken *before* the read and
   -- returned alongside the buffer, so the cache is always labelled with the
@@ -334,17 +326,34 @@ local function open_terminal(terminal, term_cwd, agent, compact_windows, selecte
     return buf, by_line, sig
   end
 
+  -- Bail on a missing or zero-byte transcript with a cheap stat, before asking
+  -- where to show it. The picker then comes ahead of the (possibly slow)
+  -- parse, so it appears immediately.
+  local path = resolve_path()
+  local stat = path and uv.fs_stat(path)
+  if not stat or stat.size == 0 then
+    vim.notify("Transcript is empty", vim.log.levels.INFO)
+    return
+  end
+  local target = win_picker.pick()
+  if not target then return end
+
   -- Reuse the cached buffer when the transcript file is unchanged; otherwise
   -- rebuild from fresh content. The cache entry also persists cache.cursor
   -- across close/reopen.
   cache = transcripts[terminal.id]
-  local sig = current_sig()
+  local sig = transcript.file_sig(path)
   local fresh = cache and cache.buf and vim.api.nvim_buf_is_valid(cache.buf)
       and sig and cache.sig == sig and cache.compact_windows == compact_windows
   if not fresh then
     local old_buf = cache and cache.buf
     local new_buf, new_blocks, new_sig = build_buf()
     if not new_buf then
+      -- The file had bytes but nothing renderable (e.g. only metadata records).
+      -- Don't leave behind an empty split/tab the pick made for us.
+      if target.created and target.win and vim.api.nvim_win_is_valid(target.win) then
+        pcall(vim.api.nvim_win_close, target.win, false)
+      end
       vim.notify("Transcript is empty", vim.log.levels.INFO)
       return
     end
@@ -362,8 +371,6 @@ local function open_terminal(terminal, term_cwd, agent, compact_windows, selecte
     end
   end
 
-  local target = win_picker.pick()
-  if not target then return end
   local win = win_picker.show_buf(target, cache.buf)
   if not win then return end
 

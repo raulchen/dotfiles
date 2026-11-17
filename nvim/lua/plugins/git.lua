@@ -303,6 +303,75 @@ local function worktree_head(path)
   return vim.trim(result.stdout)
 end
 
+-- Open a Diffview with the `:DiffviewOpen` args returned by `make_args`, which
+-- is kept on the view so reload_diff() can call it again: any revs it resolves
+-- (merge bases, worktree HEADs) then pick up new commits. `selected_file` is
+-- the absolute path of the file to start on. Returns the new view, if any.
+local function open_diff(make_args, selected_file)
+  local args = make_args()
+  if not args then return end
+  if selected_file then
+    -- Options must go before a "--" that starts the path args.
+    table.insert(args, (vim.tbl_contains(args, "--") and vim.fn.index(args, "--") or #args) + 1,
+      "--selected-file=" .. selected_file)
+  end
+
+  local lib = require("diffview.lib")
+  local prev = lib.get_current_view()
+  vim.api.nvim_cmd({ cmd = "DiffviewOpen", args = args }, {})
+  local view = lib.get_current_view()
+  if not view or view == prev then return end -- failed to open
+  view.reload_args = make_args
+  return view
+end
+
+-- Reopen the current Diffview with its revs resolved again, on the same file
+-- and in the same tab position. Diffview resolves revs to fixed commits on
+-- open, and its own refresh only re-reads the working tree.
+local function reload_diff()
+  local lib = require("diffview.lib")
+  local DiffView = require("diffview.scene.views.diff.diff_view").DiffView
+  local view = lib.get_current_view()
+  if not (view and view:instanceof(DiffView)) then
+    require("diffview.actions").refresh_files()
+    return
+  end
+
+  local toplevel = view.adapter.ctx.toplevel
+  local make_args = view.reload_args
+  if not make_args and view.rev_arg then
+    -- Not opened through open_diff() (e.g. typed by hand): replay its rev
+    -- and path args. Other flags it was opened with aren't recorded.
+    local rev, path_args = view.rev_arg, view.path_args or {}
+    make_args = function()
+      local args = { rev, "-C" .. toplevel }
+      if #path_args > 0 then
+        vim.list_extend(args, { "--", unpack(path_args) })
+      end
+      return args
+    end
+  end
+  if not make_args then
+    -- Nothing to resolve again (plain `:DiffviewOpen` already tracks HEAD).
+    require("diffview.actions").refresh_files()
+    vim.notify("Diffview refreshed")
+    return
+  end
+
+  local file = view:infer_cur_file()
+  local selected = file and vim.fs.joinpath(toplevel, file.path)
+  local new_view = open_diff(make_args, selected)
+  if new_view then
+    -- The new tab opens right after the old one, so it takes its place.
+    view:close()
+    lib.dispose_view(view)
+    local rev = (new_view.panel.rev_pretty_name or "working tree"):gsub("%x+", function(hex)
+      return #hex == 40 and hex:sub(1, 10) or hex -- abbreviate full hashes
+    end)
+    vim.notify("Diffview reloaded: " .. rev)
+  end
+end
+
 local function open_worktree_diff(local_side)
   local bufname = vim.api.nvim_buf_get_name(0)
   local cwd = bufname ~= "" and vim.fs.dirname(bufname) or vim.fn.getcwd()
@@ -351,13 +420,10 @@ local function open_worktree_diff(local_side)
     vim.schedule(function()
       local revision_path = local_side == "current" and choice.path or current_path
       local local_path = local_side == "current" and current_path or choice.path
-      local revision = worktree_head(revision_path)
-      if not revision then return end
-
-      vim.api.nvim_cmd({
-        cmd = "DiffviewOpen",
-        args = { revision, "-C" .. local_path },
-      }, {})
+      open_diff(function()
+        local revision = worktree_head(revision_path)
+        return revision and { revision, "-C" .. local_path }
+      end)
     end)
   end)
 end
@@ -418,12 +484,28 @@ local function choose_base(head, open)
   end)
 end
 
+-- The rev to diff the working tree of `dir` against for base branch `name`:
+-- the branch itself, or for the trunk its merge base with HEAD.
+local function base_rev(dir, name)
+  if name ~= TRUNK then return name end
+  local mb = vim.fn.trim(vim.fn.system({ "git", "-C", dir, "merge-base", TRUNK, "HEAD" }))
+  if vim.v.shell_error ~= 0 then
+    vim.notify("No merge base between HEAD and " .. TRUNK, vim.log.levels.ERROR)
+    return
+  end
+  return mb
+end
+
 -- Diff the branch against a base chosen from stack_bases().
 local function open_branch_diff(committed)
+  local dir = vim.fn.getcwd()
   choose_base(nil, function(choice)
-    -- Every base is an ancestor of HEAD (or the trunk, via its merge base), so
-    -- "<name>...HEAD" is exactly the commits on top of it.
-    vim.cmd("DiffviewOpen " .. (committed and choice.name .. "...HEAD" or choice.base))
+    open_diff(function()
+      -- Every base is an ancestor of HEAD (or the trunk, via its merge base),
+      -- so "<name>...HEAD" is exactly the commits on top of it.
+      local rev = committed and choice.name .. "...HEAD" or base_rev(dir, choice.name)
+      return rev and { rev, "-C" .. dir }
+    end)
   end)
 end
 
@@ -474,6 +556,7 @@ local function open_stack_diff()
   end
   local worktrees = branch_worktrees()
   local current = vim.fn.trim(vim.fn.system({ "git", "branch", "--show-current" }))
+  local dir = vim.fn.getcwd()
 
   vim.ui.select(branches, {
     prompt = "Review branch:",
@@ -486,11 +569,13 @@ local function open_stack_diff()
     vim.schedule(function()
       choose_base(head, function(choice)
         local path = worktrees[head]
-        if path then
-          vim.api.nvim_cmd({ cmd = "DiffviewOpen", args = { choice.base, "-C" .. path } }, {})
-        else
-          vim.cmd("DiffviewOpen " .. choice.name .. "..." .. head)
-        end
+        open_diff(function()
+          if path then
+            local rev = base_rev(path, choice.name)
+            return rev and { rev, "-C" .. path }
+          end
+          return { choice.name .. "..." .. head, "-C" .. dir }
+        end)
       end)
     end)
   end)
@@ -603,6 +688,17 @@ local function setup_diffview()
     table.insert(keymaps[ctx],
       { "n", "<leader>ff", pick_diffview_file, { desc = "Fuzzy switch changed file" } })
   end
+
+  -- Reload with revs resolved again (new commits, rebased bases): replaces
+  -- the file panel's R, and adds <localleader>r in the diff windows.
+  for _, keymap in ipairs(keymaps.file_panel) do
+    if keymap[2] == "R" then
+      keymap[3] = reload_diff
+      keymap[4] = { desc = "Reload, picking up new commits" }
+    end
+  end
+  table.insert(keymaps.view,
+    { "n", "<localleader>r", reload_diff, { desc = "Reload, picking up new commits" } })
 
   -- Flatten the whole view into one unified-diff buffer.
   for _, ctx in ipairs({ "view", "file_panel", "file_history_panel" }) do

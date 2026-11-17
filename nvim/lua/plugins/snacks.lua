@@ -366,12 +366,14 @@ local picker_opts = {
         ["<c-e>"] = { "go_to_end", mode = { "i" } },
         ["<Esc>"] = false, -- disable <Esc> to close picker
         ["<c-w><c-w>"] = { "cycle_win", mode = { "n" } },
+        ["<c-w>;"] = { "layout_float", mode = { "n" } },
       },
     },
     list = {
       keys = {
         ["<Esc>"] = false, -- disable <Esc> to close picker
         ["<c-w><c-w>"] = { "cycle_win", mode = { "n" } },
+        ["<c-w>;"] = { "layout_float", mode = { "n" } },
       },
     },
     pipeline = {
@@ -402,6 +404,20 @@ local picker_opts = {
         "i",
         true
       )
+    end,
+    -- Float counterpart of the built-in <c-w>HJKL layout_* actions: return
+    -- to the picker's own float layout, or the global one for pickers that
+    -- open as a split (e.g. the explorer). The layout_* actions turn off
+    -- auto_close and jump.close for splits; restore the picker's own values.
+    layout_float = function(picker)
+      local opts = Snacks.picker.config.get(picker.init_opts)
+      local layout = Snacks.picker.config.layout(opts)
+      if (layout.layout.position or "float") ~= "float" then
+        layout = Snacks.picker.config.layout({ layout = Snacks.picker.config.get().layout })
+      end
+      picker:set_layout(layout)
+      picker.opts.auto_close = opts.auto_close
+      picker.opts.jump.close = opts.jump.close
     end,
   },
   formatters = {

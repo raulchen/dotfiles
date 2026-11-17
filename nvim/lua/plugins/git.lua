@@ -752,6 +752,14 @@ local function setup_diffview()
   end
 
   local diffview_opts = {
+    -- Without -C, Diffview infers the repo from the current buffer before the
+    -- cwd, so a buffer from another worktree wins over :tcd. Default to the
+    -- cwd instead ("." is resolved at each call); an explicit -C or a path
+    -- arg still takes precedence.
+    default_args = {
+      DiffviewOpen = { "-C." },
+      DiffviewFileHistory = { "-C." },
+    },
     file_panel = {
       win_config = {
         type = "split",

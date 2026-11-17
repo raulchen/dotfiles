@@ -430,23 +430,24 @@ end
 
 local TRUNK = "origin/HEAD"
 
--- Candidate bases for a branch diff of `head` (default HEAD): the branches
--- stacked between the trunk and `head` (nearest first), then the trunk
--- itself. `base` is the commit to diff `head`'s working tree against.
-local function stack_bases(head)
+-- Candidate bases for a branch diff of `head` (default HEAD) in the worktree
+-- at `dir`: the branches stacked between the trunk and `head` (nearest
+-- first), then the trunk itself. `base` is the commit to diff `head`'s
+-- working tree against.
+local function stack_bases(dir, head)
   head = head or "HEAD"
-  local mb = vim.fn.trim(vim.fn.system({ "git", "merge-base", TRUNK, head }))
+  local mb = vim.fn.trim(vim.fn.system({ "git", "-C", dir, "merge-base", TRUNK, head }))
   if vim.v.shell_error ~= 0 then
     vim.notify("No merge base between " .. head .. " and " .. TRUNK, vim.log.levels.ERROR)
     return
   end
-  local head_hash = vim.fn.trim(vim.fn.system({ "git", "rev-parse", head }))
+  local head_hash = vim.fn.trim(vim.fn.system({ "git", "-C", dir, "rev-parse", head }))
 
   -- One line per decorated commit in mb..head, with full ref names so local
   -- branches can be told apart from remote ones (`--decorate-refs` doesn't
   -- filter `%D` on older git).
   local lines = vim.fn.systemlist({
-    "git", "log", "--format=%H %D", "--decorate=full",
+    "git", "-C", dir, "log", "--format=%H %D", "--decorate=full",
     "--simplify-by-decoration", mb .. ".." .. head,
   })
   local bases = {}
@@ -466,10 +467,11 @@ local function stack_bases(head)
   return bases
 end
 
--- Pass a base for `head` (default HEAD), chosen from stack_bases(), to
--- `open`, prompting only when there are stacked branches to choose from.
-local function choose_base(head, open)
-  local bases = stack_bases(head)
+-- Pass a base for `head` (default HEAD) in the worktree at `dir`, chosen from
+-- stack_bases(), to `open`, prompting only when there are stacked branches to
+-- choose from.
+local function choose_base(dir, head, open)
+  local bases = stack_bases(dir, head)
   if not bases then return end
 
   if #bases == 1 then
@@ -496,10 +498,10 @@ local function base_rev(dir, name)
   return mb
 end
 
--- Diff the branch against a base chosen from stack_bases().
-local function open_branch_diff(committed)
-  local dir = vim.fn.getcwd()
-  choose_base(nil, function(choice)
+-- Diff the branch of the worktree at `dir` against a base chosen from
+-- stack_bases().
+local function open_branch_diff(committed, dir)
+  choose_base(dir, nil, function(choice)
     open_diff(function()
       -- Every base is an ancestor of HEAD (or the trunk, via its merge base),
       -- so "<name>...HEAD" is exactly the commits on top of it.
@@ -509,20 +511,21 @@ local function open_branch_diff(committed)
   end)
 end
 
--- Local branches on the current stack, i.e. below HEAD (in its history) or
--- above it (built on it) and not yet in the trunk, top of the stack first.
-local function stack_branches()
+-- Local branches on the stack of the worktree at `dir`, i.e. below its HEAD
+-- (in its history) or above it (built on it) and not yet in the trunk, top of
+-- the stack first.
+local function stack_branches(dir)
   -- A HEAD already in the trunk has no stack: every branch would be above it.
-  vim.fn.system({ "git", "merge-base", "--is-ancestor", "HEAD", TRUNK })
+  vim.fn.system({ "git", "-C", dir, "merge-base", "--is-ancestor", "HEAD", TRUNK })
   if vim.v.shell_error == 0 then return {} end
 
   local height, branches = {}, {}
   for _, filter in ipairs({ "--merged=HEAD", "--contains=HEAD" }) do
     for _, branch in ipairs(vim.fn.systemlist({
-      "git", "for-each-ref", "--format=%(refname:lstrip=2)", filter, "--no-merged=" .. TRUNK, "refs/heads/",
+      "git", "-C", dir, "for-each-ref", "--format=%(refname:lstrip=2)", filter, "--no-merged=" .. TRUNK, "refs/heads/",
     })) do
       if not height[branch] then
-        height[branch] = tonumber(vim.fn.system({ "git", "rev-list", "--count", TRUNK .. ".." .. branch })) or 0
+        height[branch] = tonumber(vim.fn.system({ "git", "-C", dir, "rev-list", "--count", TRUNK .. ".." .. branch })) or 0
         branches[#branches + 1] = branch
       end
     end
@@ -534,29 +537,48 @@ local function stack_branches()
   return branches
 end
 
--- Map of branch name -> path of the worktree it is checked out in.
-local function branch_worktrees()
-  local worktrees, path = {}, nil
-  for _, line in ipairs(vim.fn.systemlist({ "git", "worktree", "list", "--porcelain" })) do
-    path = line:match("^worktree (.+)$") or path
-    local branch = line:match("^branch refs/heads/(.+)$")
-    if branch then worktrees[branch] = path end
+-- Worktrees of the repo at `dir` as { path, branch }, the most recently
+-- committed branch first and detached ones last. `git worktree list` itself
+-- can't sort: it lists the main worktree, then the others by path.
+local function list_worktrees(dir)
+  local dates = {}
+  for _, line in ipairs(vim.fn.systemlist({
+    "git", "-C", dir, "for-each-ref", "--format=%(committerdate:unix) %(refname:lstrip=2)", "refs/heads/",
+  })) do
+    local date, branch = line:match("^(%d+) (.+)$")
+    if date then dates[branch] = tonumber(date) end
   end
+
+  local worktrees = {}
+  for _, line in ipairs(vim.fn.systemlist({ "git", "-C", dir, "worktree", "list", "--porcelain" })) do
+    local path = line:match("^worktree (.+)$")
+    if path then worktrees[#worktrees + 1] = { path = path } end
+    local branch = line:match("^branch refs/heads/(.+)$")
+    if branch then worktrees[#worktrees].branch = branch end
+  end
+  table.sort(worktrees, function(a, b)
+    local da, db = dates[a.branch] or -1, dates[b.branch] or -1
+    if da ~= db then return da > db end
+    return a.path < b.path
+  end)
   return worktrees
 end
 
--- Diff two branches of the current stack: pick the branch to review, then its
--- base. Opens in the reviewed branch's worktree when it has one (real files,
--- so LSP and uncommitted changes), otherwise diffs its commits.
-local function open_stack_diff()
-  local branches = stack_branches()
+-- Diff two branches of the stack of the worktree at `dir`: pick the branch to
+-- review, then its base. Opens in the reviewed branch's worktree when it has
+-- one (real files, so LSP and uncommitted changes), otherwise diffs its
+-- commits.
+local function open_stack_diff(dir)
+  local branches = stack_branches(dir)
   if #branches == 0 then
     vim.notify("No stacked branches: HEAD is already in " .. TRUNK, vim.log.levels.WARN)
     return
   end
-  local worktrees = branch_worktrees()
-  local current = vim.fn.trim(vim.fn.system({ "git", "branch", "--show-current" }))
-  local dir = vim.fn.getcwd()
+  local worktrees = {}
+  for _, wt in ipairs(list_worktrees(dir)) do
+    if wt.branch then worktrees[wt.branch] = wt.path end
+  end
+  local current = vim.fn.trim(vim.fn.system({ "git", "-C", dir, "branch", "--show-current" }))
 
   vim.ui.select(branches, {
     prompt = "Review branch:",
@@ -567,7 +589,7 @@ local function open_stack_diff()
   }, function(head)
     if not head then return end
     vim.schedule(function()
-      choose_base(head, function(choice)
+      choose_base(dir, head, function(choice)
         local path = worktrees[head]
         open_diff(function()
           if path then
@@ -581,24 +603,28 @@ local function open_stack_diff()
   end)
 end
 
-local function open_diffview()
+-- `wt` is the worktree picked with "Switch worktree", which the index, branch
+-- and stack options then diff; without one they use the cwd.
+local function open_diffview(wt)
+  local dir = wt and wt.path or vim.fn.getcwd()
+
   -- Define the diff options with their corresponding action functions
   local diff_options = {
     {
       name = "Index (Working tree)",
-      action = function() vim.cmd("DiffviewOpen") end
+      action = function() vim.api.nvim_cmd({ cmd = "DiffviewOpen", args = { "-C" .. dir } }, {}) end
     },
     {
       name = "Branch changes (working tree)",
-      action = function() open_branch_diff(false) end
+      action = function() open_branch_diff(false, dir) end
     },
     {
       name = "Branch changes (committed)",
-      action = function() open_branch_diff(true) end
+      action = function() open_branch_diff(true, dir) end
     },
     {
       name = "Stack: compare two branches",
-      action = open_stack_diff,
+      action = function() open_stack_diff(dir) end,
     },
     {
       name = "Compare worktree (current local)",
@@ -631,7 +657,26 @@ local function open_diffview()
     {
       name = "Manually specify",
       action = function() vim.api.nvim_feedkeys(":DiffviewOpen ", "c", true) end
-    }
+    },
+    {
+      -- Retarget the index, branch and stack options at another worktree, then
+      -- come back to this menu.
+      name = wt and ("Switch worktree (now: %s)"):format(wt.branch or vim.fs.basename(wt.path))
+        or "Switch worktree",
+      action = function()
+        local toplevel = vim.fn.trim(vim.fn.system({ "git", "-C", dir, "rev-parse", "--show-toplevel" }))
+        vim.ui.select(list_worktrees(dir), {
+          prompt = "Select worktree:",
+          format_item = function(item)
+            return ("%s%s  %s"):format(item.path == toplevel and "● " or "  ",
+              item.branch or "(detached)", item.path)
+          end,
+        }, function(choice)
+          if not choice then return end
+          vim.schedule(function() open_diffview(choice) end)
+        end)
+      end,
+    },
   }
 
   -- Show the selector
